@@ -27,6 +27,15 @@
         <item name="android:fontFamily">@font/vazir_medium</item>
     </style>
 
+    <!-- Normal text with medium weight and size 16 style -->
+    <style name="TextNormalMD16">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">@font/vazir_medium</item>
+    </style>
+
     <!-- Text with regular weight and size 14 style -->
     <style name="TextRG14">
         <item name="android:textAllCaps">false</item>
@@ -52,6 +61,14 @@
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:fontFamily">@font/vazir_regular</item>
+    </style>
+
+    <!-- Checkbox -->
+    <style name="CheckBox" parent="TextNormalMD16">
+        <item name="android:button">@null</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:drawableEnd">@drawable/checkbox</item>
+        <item name="android:drawablePadding">10dp</item>
     </style>
 
 </resources>
