@@ -20,5 +20,7 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowDisablePreview">true</item>
 
+        <item name="android:colorControlHighlight">@color/HighlightBlue</item>
+
     </style>
 </resources>
