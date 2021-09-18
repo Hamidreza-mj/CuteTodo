@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Toolbar title in english style -->
+    <style name="ToolbarTitleEN">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">@font/circular</item>
+    </style>
+
+    <!-- Toolbar title in persian style -->
+    <style name="ToolbarTitleFA">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">@font/vazir_bold</item>
+    </style>
+
+    <!-- Normal text with medium weight and size 18 style -->
+    <style name="TextNormalMD18">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">@font/vazir_medium</item>
+    </style>
+
+    <!-- Text with regular weight and size 14 style -->
+    <style name="TextRG14">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">@font/vazir_regular</item>
+    </style>
+
+    <!-- Text with medium weight and size 14 style -->
+    <style name="TextMD14">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">@font/vazir_medium</item>
+    </style>
+
+    <!-- Text with regular weight and size 16 style -->
+    <style name="TextRG16">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">@font/vazir_regular</item>
+    </style>
+
+</resources>

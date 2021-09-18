@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Cute Todo</string>
+    <string name="fa_lorem">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.</string>
+    <string name="en_lorem">Lorem ipsum dolor sit amet.</string>
 </resources>
