@@ -25,7 +25,7 @@
         android:layout_marginTop="200dp"
         android:backgroundTint="@color/blue"
         android:paddingVertical="10dp"
-        android:text="ذخیره"
+        android:text="@string/save"
         android:textColor="@color/white"
         app:cornerRadius="20dp"
         app:layout_constraintEnd_toEndOf="parent"

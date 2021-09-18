@@ -2,4 +2,34 @@
     <string name="app_name">Cute Todo</string>
     <string name="fa_lorem">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.</string>
     <string name="en_lorem">Lorem ipsum dolor sit amet.</string>
+
+    <string name="add">اضافه کردن</string>
+    <string name="add_new_todo">اضافه کردن کار جدید</string>
+    <string name="enter_todo_name">عنوان کار را وارد کنید</string>
+    <string name="select_category">انتخاب دسته بندی</string>
+    <string name="priority">اولویت</string>
+    <string name="low">کم</string>
+    <string name="normal">عادی</string>
+    <string name="high">زیاد</string>
+    <string name="save">ذخیره</string>
+
+    <string name="edit">ویرایش</string>
+    <string name="edit_todo">ویرایش کردن کار</string>
+
+    <string name="add_new_category">اضافه کردن دسته جدید</string>
+    <string name="enter_category_name">عنوان دسته را وارد کنید</string>
+    <string name="categories">دسته بندی‌ها</string>
+    <string name="delete">حذف</string>
+    <string name="info">درباره ما</string>
+
+    <string name="search">جستجو</string>
+    <string name="search_in_todo_list">جستجو در لیست کارها</string>
+    <string name="search_note">عنوان کار را وارد کرده و منتظر بمانید…</string>
+    <string name="search_result">۲ نتیجه از مجموع ۱۵ کار یافت شد!</string>
+
+    <string name="done_todo">کارهای انجام شده</string>
+    <string name="undone_todo">کارهای انجام نشده</string>
+
+
+
 </resources>
