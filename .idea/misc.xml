@@ -20,7 +20,7 @@
         <entry key="app/src/main/res/drawable/ic_unchecked_chbox.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/rec.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/shadow.xml" value="0.31979166666666664" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.31979166666666664" />
       </map>
     </option>

@@ -26,8 +26,8 @@
         android:layout_height="48dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
-        android:focusable="true"
         android:contentDescription="@string/categories"
+        android:focusable="true"
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="@id/txtTitle"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,8 +40,8 @@
         android:layout_height="48dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
-        android:focusable="true"
         android:contentDescription="@string/search"
+        android:focusable="true"
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="@id/txtTitle"
         app:layout_constraintEnd_toEndOf="parent"
@@ -64,12 +64,9 @@
         app:layout_constraintGuide_percent="0.85" />
 
     <View
+        style="@style/ShadowButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="-1dp"
-        android:layout_marginEnd="-1dp"
-        android:layout_marginBottom="-13dp"
-        android:background="@drawable/shadow"
         app:layout_constraintBottom_toBottomOf="@id/btn"
         app:layout_constraintEnd_toEndOf="@id/btn"
         app:layout_constraintStart_toStartOf="@id/btn"
@@ -77,21 +74,14 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn"
-        style="@style/TextNormalMD18"
+        style="@style/MaterialButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="35dp"
-        android:backgroundTint="@color/blue"
-        android:paddingVertical="12dp"
         android:text="@string/add"
-        android:textColor="@color/white"
-        app:cornerRadius="20dp"
-        app:elevation="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guidelineV85"
         app:layout_constraintStart_toStartOf="@id/guidelineV15"
-        app:rippleColor="@color/rippleBlue"
-        app:strokeWidth="0dp"
         tools:ignore="TextContrastCheck" />
 
 

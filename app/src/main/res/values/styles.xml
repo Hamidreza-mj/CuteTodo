@@ -72,4 +72,25 @@
         <item name="android:drawablePadding">10dp</item>
     </style>
 
+    <!-- Shadow Button -->
+    <style name="ShadowButton">
+        <item name="android:width">0dp</item>
+        <item name="android:height">0dp</item>
+        <item name="android:layout_marginStart">-1dp</item>
+        <item name="android:layout_marginEnd">-1dp</item>
+        <item name="android:layout_marginBottom">-13dp</item>
+        <item name="android:background">@drawable/shadow</item>
+    </style>
+
+    <!-- Material Button -->
+    <style name="MaterialButton" parent="TextNormalMD18">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:backgroundTint">@color/blue</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="cornerRadius">20dp</item>
+        <item name="elevation">10dp</item>
+        <item name="rippleColor">@color/rippleBlue</item>
+        <item name="strokeWidth">0dp</item>
+    </style>
 </resources>
