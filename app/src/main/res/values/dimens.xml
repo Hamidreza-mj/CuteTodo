@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="corners">20dp</dimen>
+    <dimen name="padding">20dp</dimen>
     <dimen name="cornersInput">15dp</dimen>
 </resources>

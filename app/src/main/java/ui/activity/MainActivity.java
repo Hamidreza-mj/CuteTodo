@@ -2,9 +2,13 @@ package ui.activity;
 
 import android.os.Bundle;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.ActivityMainBinding;
-import utils.ToastHelper;
+import ui.fragment.HomeFragment;
+import utils.Tags;
 
 public class MainActivity extends BaseActivity {
 
@@ -19,6 +23,9 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initViews() {
-
+        Fragment homeFragment = HomeFragment.newInstance();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.mainContainer, homeFragment, Tags.FragmentTag.HOME);
+        transaction.commit();
     }
 }

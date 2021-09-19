@@ -5,83 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/whiteBlue"
-    android:fitsSystemWindows="true"
-    android:paddingHorizontal="20dp">
+    android:fitsSystemWindows="true">
 
-    <TextView
-        android:id="@+id/txtTitle"
-        style="@style/ToolbarTitleEN"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="@string/app_name"
-        app:layout_constraintEnd_toStartOf="@id/aImgSearch"
-        app:layout_constraintStart_toEndOf="@id/aImgGlobalMenu"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/aImgGlobalMenu"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
-        android:contentDescription="@string/categories"
-        android:focusable="true"
-        android:padding="10dp"
-        app:layout_constraintBottom_toBottomOf="@id/txtTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/txtTitle"
-        app:srcCompat="@drawable/ic_category" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/aImgSearch"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
-        android:contentDescription="@string/search"
-        android:focusable="true"
-        android:padding="10dp"
-        app:layout_constraintBottom_toBottomOf="@id/txtTitle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/txtTitle"
-        app:srcCompat="@drawable/ic_search" />
-
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guidelineV15"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.15" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guidelineV85"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.85" />
-
-    <View
-        style="@style/ShadowButton"
+    <FrameLayout
+        android:id="@+id/mainContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/btn"
-        app:layout_constraintEnd_toEndOf="@id/btn"
-        app:layout_constraintStart_toStartOf="@id/btn"
-        app:layout_constraintTop_toTopOf="@id/btn" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn"
-        style="@style/MaterialButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="35dp"
-        android:text="@string/add"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/guidelineV85"
-        app:layout_constraintStart_toStartOf="@id/guidelineV15"
-        tools:ignore="TextContrastCheck" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/nameLname"
