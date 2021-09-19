@@ -156,4 +156,12 @@
         <item name="android:textColorHint">@color/gray</item>
         <item name="android:fontFamily">@font/vazir_medium</item>
     </style>
+
+    <!-- Custom Dialog Style-->
+    <style name="TranslucentDialog" parent="Theme.MaterialComponents.Dialog.Alert">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowMinWidthMajor">100%</item>
+        <item name="android:windowMinWidthMinor">100%</item>
+    </style>
+
 </resources>

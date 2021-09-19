@@ -22,6 +22,8 @@ import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.FragmentHomeBinding;
 import model.Todo;
 import ui.adapter.TodoAdapter;
+import ui.adapter.event.OnCheckChangedListener;
+import ui.dialog.MoreDialog;
 import utils.Tags;
 
 public class HomeFragment extends BaseFragment {
@@ -75,7 +77,15 @@ public class HomeFragment extends BaseFragment {
         if (getActivity() == null)
             return;
 
-        adapter = new TodoAdapter(getActivity());
+        adapter = new TodoAdapter(getActivity(),
+                todo -> {
+
+                },
+                todo -> {
+                    MoreDialog moreDialog = new MoreDialog(getActivity());
+                    moreDialog.show();
+                }
+        );
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         rvTodo.setLayoutManager(layoutManager);
@@ -102,14 +112,14 @@ public class HomeFragment extends BaseFragment {
         todo3.setTitle("نوشتن قرارداد پروژه مشتری");
         todo3.setCategory("کاری");
         todo3.setPriority(Todo.Priority.HIGH);
-        todo3.setDone(false);
+        todo3.setDone(true);
 
         Todo todo4 = new Todo();
         todo4.setId(4);
         todo4.setTitle("خرید نان");
         todo4.setCategory("منزل");
         todo4.setPriority(Todo.Priority.HIGH);
-        todo4.setDone(false);
+        todo4.setDone(true);
 
         Todo todo5 = new Todo();
         todo5.setId(5);

@@ -57,7 +57,7 @@ public class Todo {
         LOW, NORMAL, HIGH
     }
 
-    @Override
+/*    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Todo)) return false;
@@ -68,6 +68,6 @@ public class Todo {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
+    }*/
 
 }
