@@ -31,5 +31,9 @@
     <string name="undone_todo">کارهای انجام نشده</string>
 
     <string name="back">بازگشت</string>
+    <string name="more">بیشتر</string>
+    <string name="high_priority">اولویت: زیاد</string>
+    <string name="normal_priority">اولویت: عادی</string>
+    <string name="low_priority">اولویت: کم</string>
 
 </resources>
