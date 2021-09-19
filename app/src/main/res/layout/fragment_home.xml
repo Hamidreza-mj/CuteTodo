@@ -92,7 +92,8 @@
         android:text="@string/add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guidelineV85"
-        app:layout_constraintStart_toStartOf="@id/guidelineV15" />
+        app:layout_constraintStart_toStartOf="@id/guidelineV15"
+        tools:ignore="TextContrastCheck" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
