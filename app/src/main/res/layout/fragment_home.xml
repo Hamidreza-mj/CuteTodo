@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/whiteBlue"
-    android:paddingHorizontal="@dimen/padding">
+    android:paddingHorizontal="@dimen/paddingHome">
 
     <TextView
         android:id="@+id/txtTitle"
@@ -64,17 +64,17 @@
         style="@style/ShadowButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/btn"
-        app:layout_constraintEnd_toEndOf="@id/btn"
-        app:layout_constraintStart_toStartOf="@id/btn"
-        app:layout_constraintTop_toTopOf="@id/btn" />
+        app:layout_constraintBottom_toBottomOf="@id/mBtnAdd"
+        app:layout_constraintEnd_toEndOf="@id/mBtnAdd"
+        app:layout_constraintStart_toStartOf="@id/mBtnAdd"
+        app:layout_constraintTop_toTopOf="@id/mBtnAdd" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn"
+        android:id="@+id/mBtnAdd"
         style="@style/MaterialButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="35dp"
+        android:layout_marginBottom="@dimen/mb_button"
         android:text="@string/add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guidelineV85"

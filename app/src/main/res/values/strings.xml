@@ -30,6 +30,6 @@
     <string name="done_todo">کارهای انجام شده</string>
     <string name="undone_todo">کارهای انجام نشده</string>
 
-
+    <string name="back">بازگشت</string>
 
 </resources>
