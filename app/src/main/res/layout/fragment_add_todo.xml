@@ -89,18 +89,19 @@
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/menuCategory"
-                    android:textStyle="normal"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:textAllCaps="false"
-                    android:paddingVertical="16dp"
-                    android:fontFamily="@font/vazir_medium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/vazir_medium"
                     android:imeOptions="actionDone"
                     android:lines="1"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:paddingVertical="16dp"
+                    android:singleLine="true"
+                    android:textAllCaps="false"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    tools:ignore="TextContrastCheck" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

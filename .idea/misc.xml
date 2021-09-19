@@ -23,7 +23,7 @@
         <entry key="app/src/main/res/drawable/shadow.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_add_todo.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.30364583333333334" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.25" />
         <entry key="app/src/main/res/layout/toast.xml" value="0.30364583333333334" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.31979166666666664" />
       </map>

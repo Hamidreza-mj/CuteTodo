@@ -1,5 +1,8 @@
 package ui.fragment;
 
+import android.transition.Slide;
+import android.view.Gravity;
+
 import androidx.annotation.IdRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
