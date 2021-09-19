@@ -17,5 +17,6 @@
 
     <!-- for unfocused TextInputLayout stroke color -->
     <color name="mtrl_textinput_default_box_stroke_color">#8d8d8d</color>
+    <color name="toastColor">#F5040A15</color>
 
 </resources>
