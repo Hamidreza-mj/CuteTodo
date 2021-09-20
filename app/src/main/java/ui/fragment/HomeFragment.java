@@ -154,16 +154,19 @@ public class HomeFragment extends BaseFragment {
 
         rvTodo.addOnScrollListener(new RecyclerView.OnScrollListener() {
             int scrollYPos = 0;
-            final float dp20Shadow = DisplayUtils.getDisplay().dpToPx(rvTodo.getContext(), 12);
+            final float dpShadow = DisplayUtils.getDisplay().dpToPx(rvTodo.getContext(), 12);
 
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 scrollYPos += dy;
 
-                if (scrollYPos == 0)
-                    toolbar.setTranslationZ(0);
-                else if (scrollYPos > 50)
-                    toolbar.setTranslationZ(dp20Shadow);
+                if (scrollYPos == 0) {
+                    toolbar.animate().translationZ(0).setStartDelay(0).setDuration(200).start();
+                    //toolbar.setTranslationZ(0);
+                } else if (scrollYPos > 50) {
+                    toolbar.setTranslationZ(dpShadow);
+                    toolbar.animate().translationZ(dpShadow).setStartDelay(0).setDuration(90).start();
+                }
 
                 super.onScrolled(recyclerView, dx, dy);
             }
