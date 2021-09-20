@@ -82,49 +82,58 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/transparent"
+        android:translationZ="0dp"
         app:layout_anchor="@id/rvTodo"
         app:layout_anchorGravity="center_horizontal|bottom"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guidelineV2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.2" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guidelineV8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.8" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guidelineV2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.2" />
 
-        <View
-            android:id="@+id/shadow"
-            style="@style/ShadowButton"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/mBtnAdd"
-            app:layout_constraintEnd_toEndOf="@id/mBtnAdd"
-            app:layout_constraintStart_toStartOf="@id/mBtnAdd"
-            app:layout_constraintTop_toTopOf="@id/mBtnAdd" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guidelineV8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.8" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/mBtnAdd"
-            style="@style/MaterialButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
-            android:text="@string/add"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/guidelineV8"
-            app:layout_constraintStart_toStartOf="@id/guidelineV2"
-            tools:ignore="TextContrastCheck" />
+            <View
+                android:id="@+id/shadow"
+                style="@style/ShadowButton"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@id/mBtnAdd"
+                app:layout_constraintEnd_toEndOf="@id/mBtnAdd"
+                app:layout_constraintStart_toStartOf="@id/mBtnAdd"
+                app:layout_constraintTop_toTopOf="@id/mBtnAdd" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/mBtnAdd"
+                style="@style/MaterialButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
+                android:text="@string/add"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/guidelineV8"
+                app:layout_constraintStart_toStartOf="@id/guidelineV2"
+                tools:ignore="TextContrastCheck" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

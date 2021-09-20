@@ -1,6 +1,5 @@
 package ui.fragment;
 
-import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.transition.Slide;
 import android.view.Gravity;
