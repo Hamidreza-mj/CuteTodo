@@ -92,25 +92,7 @@ public class HomeFragment extends BaseFragment {
         rvTodo.setLayoutManager(layoutManager);
         rvTodo.setAdapter(adapter);
 
-        ConstraintLayout toolbar = binding.toolbar;
-
-        rvTodo.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            int scrollYPos = 0;
-            final float dp20Shadow = DisplayUtils.getDisplay().dpToPx(rvTodo.getContext(), 12);
-
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                scrollYPos += dy;
-
-                if (scrollYPos == 0) {
-                    toolbar.setTranslationZ(0);
-                } else if (scrollYPos > 50) {
-                    toolbar.setTranslationZ(dp20Shadow);
-                }
-
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
+        handleShadowScroll();
 
         ArrayList<Todo> list = new ArrayList<>();
 
@@ -165,5 +147,26 @@ public class HomeFragment extends BaseFragment {
 
 
         adapter.getDiffer().submitList(list);
+    }
+
+    private void handleShadowScroll() {
+        ConstraintLayout toolbar = binding.toolbar;
+
+        rvTodo.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            int scrollYPos = 0;
+            final float dp20Shadow = DisplayUtils.getDisplay().dpToPx(rvTodo.getContext(), 12);
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                scrollYPos += dy;
+
+                if (scrollYPos == 0)
+                    toolbar.setTranslationZ(0);
+                else if (scrollYPos > 50)
+                    toolbar.setTranslationZ(dp20Shadow);
+
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
     }
 }
