@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,6 +36,9 @@ public class HomeFragment extends BaseFragment {
     private RecyclerView rvTodo;
     private TodoAdapter adapter;
 
+    private int scrollYPos = 0;
+    private NestedScrollView nested;
+
     public HomeFragment() {
     }
 
@@ -59,6 +63,7 @@ public class HomeFragment extends BaseFragment {
     private void initViews() {
         btnAdd = binding.mBtnAdd;
         rvTodo = binding.rvTodo;
+        nested = binding.nested;
     }
 
     private void handleActions() {
@@ -152,8 +157,7 @@ public class HomeFragment extends BaseFragment {
     private void handleShadowScroll() {
         ConstraintLayout toolbar = binding.toolbar;
 
-        rvTodo.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            int scrollYPos = 0;
+        /*rvTodo.addOnScrollListener(new RecyclerView.OnScrollListener() {
             final float dpShadow = DisplayUtils.getDisplay().dpToPx(rvTodo.getContext(), 12);
 
             @Override
@@ -170,6 +174,35 @@ public class HomeFragment extends BaseFragment {
 
                 super.onScrolled(recyclerView, dx, dy);
             }
+        });*/
+
+        nested.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            final float dpShadow = DisplayUtils.getDisplay().dpToPx(rvTodo.getContext(), 12);
+
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                scrollYPos = scrollY;
+
+                if (scrollY == 0) {
+                    toolbar.animate().translationZ(0).setStartDelay(0).setDuration(200).start();
+                    //toolbar.setTranslationZ(0);
+                } else if (scrollY > 50) {
+                    toolbar.setTranslationZ(dpShadow);
+                    toolbar.animate().translationZ(dpShadow).setStartDelay(0).setDuration(90).start();
+                }
+            }
         });
     }
+
+    public void goToTop() {
+        if (rvTodo == null)
+            return;
+
+        nested.smoothScrollTo(0, 0);
+    }
+
+    public int getScrollYPos() {
+        return scrollYPos;
+    }
+
 }

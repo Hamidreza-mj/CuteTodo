@@ -28,4 +28,20 @@ public class MainActivity extends BaseActivity {
         transaction.add(R.id.mainContainer, homeFragment, Tags.FragmentTag.HOME);
         transaction.commit();
     }
+
+    @Override
+    public void onBackPressed() {
+        int backstackCount = getSupportFragmentManager().getBackStackEntryCount();
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(Tags.FragmentTag.HOME);
+
+        if (fragment instanceof HomeFragment) {
+            int scrollY = ((HomeFragment) fragment).getScrollYPos();
+            if (fragment.isVisible() && scrollY > 0 && backstackCount == 0) {
+                ((HomeFragment) fragment).goToTop();
+                return;
+            }
+        }
+
+        super.onBackPressed();
+    }
 }
