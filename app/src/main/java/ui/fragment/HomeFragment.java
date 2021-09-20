@@ -1,5 +1,6 @@
 package ui.fragment;
 
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.transition.Slide;
 import android.view.Gravity;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,8 +24,8 @@ import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.FragmentHomeBinding;
 import model.Todo;
 import ui.adapter.TodoAdapter;
-import ui.adapter.event.OnCheckChangedListener;
 import ui.dialog.MoreDialog;
+import utils.DisplayUtils;
 import utils.Tags;
 
 public class HomeFragment extends BaseFragment {
@@ -90,6 +92,26 @@ public class HomeFragment extends BaseFragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         rvTodo.setLayoutManager(layoutManager);
         rvTodo.setAdapter(adapter);
+
+        ConstraintLayout toolbar = binding.toolbar;
+
+        rvTodo.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            int scrollYPos = 0;
+            final float dp20Shadow = DisplayUtils.getDisplay().dpToPx(rvTodo.getContext(), 12);
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                scrollYPos += dy;
+
+                if (scrollYPos == 0) {
+                    toolbar.setTranslationZ(0);
+                } else if (scrollYPos > 50) {
+                    toolbar.setTranslationZ(dp20Shadow);
+                }
+
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
 
         ArrayList<Todo> list = new ArrayList<>();
 

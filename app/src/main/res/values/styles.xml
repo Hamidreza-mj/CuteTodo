@@ -88,7 +88,7 @@
         <item name="android:backgroundTint">@color/blue</item>
         <item name="android:paddingTop">12dp</item>
         <item name="android:paddingBottom">12dp</item>
-        <item name="cornerRadius">20dp</item>
+        <item name="cornerRadius">@dimen/corners</item>
         <item name="elevation">10dp</item>
         <item name="rippleColor">@color/rippleBlue</item>
         <item name="strokeWidth">0dp</item>
