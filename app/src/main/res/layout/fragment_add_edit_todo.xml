@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/whiteBlue"
+    android:clickable="true"
+    android:focusable="true"
     android:paddingHorizontal="@dimen/paddingChild">
 
     <TextView
@@ -68,8 +70,8 @@
                     android:hint="@string/enter_todo_name"
                     android:imeOptions="actionNext"
                     android:inputType="text"
-                    android:paddingVertical="16dp"
                     android:maxLines="1"
+                    android:paddingVertical="16dp"
                     tools:ignore="TextContrastCheck" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -81,9 +83,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="40dp"
+                android:hint="@string/enter_category_name"
                 app:boxStrokeColor="@color/blue"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:hint="@string/enter_category_name"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/inpTitle">
 

@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/whiteBlue"
+    android:clickable="true"
+    android:focusable="true"
     android:paddingHorizontal="@dimen/paddingChild">
 
     <TextView
@@ -15,7 +17,7 @@
         android:layout_marginTop="30dp"
         android:layout_marginEnd="10dp"
         android:gravity="right"
-        android:text="@string/add_new_todo"
+        android:text="@string/add_new_category"
         app:layout_constraintEnd_toStartOf="@id/aImgBack"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -56,6 +58,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="35dp"
+                android:layout_marginBottom="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -65,42 +69,11 @@
                     style="@style/TextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/enter_todo_name"
+                    android:hint="@string/enter_category_name"
                     android:imeOptions="actionNext"
                     android:inputType="text"
-                    android:paddingVertical="16dp"
-                    android:maxLines="1"
-                    tools:ignore="TextContrastCheck" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/inpCategory"
-                style="@style/ExposedDropdownMenu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="40dp"
-                app:boxStrokeColor="@color/blue"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:hint="@string/enter_category_name"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/inpTitle">
-
-                <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                    android:id="@+id/menuCategory"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/vazir_medium"
-                    android:imeOptions="actionDone"
-                    android:lines="1"
                     android:maxLines="1"
                     android:paddingVertical="16dp"
-                    android:singleLine="true"
-                    android:textAllCaps="false"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:textStyle="normal"
                     tools:ignore="TextContrastCheck" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -116,13 +89,13 @@
         style="@style/ShadowButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/mBtnAdd"
-        app:layout_constraintEnd_toEndOf="@id/mBtnAdd"
-        app:layout_constraintStart_toStartOf="@id/mBtnAdd"
-        app:layout_constraintTop_toTopOf="@id/mBtnAdd" />
+        app:layout_constraintBottom_toBottomOf="@id/mBtnSave"
+        app:layout_constraintEnd_toEndOf="@id/mBtnSave"
+        app:layout_constraintStart_toStartOf="@id/mBtnSave"
+        app:layout_constraintTop_toTopOf="@id/mBtnSave" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/mBtnAdd"
+        android:id="@+id/mBtnSave"
         style="@style/MaterialButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

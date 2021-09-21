@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.ActivityMainBinding;
+import ui.fragment.CategoriesFragment;
 import ui.fragment.HomeFragment;
 import utils.Tags;
 
@@ -32,7 +33,7 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         int backstackCount = getSupportFragmentManager().getBackStackEntryCount();
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(Tags.FragmentTag.HOME);
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.mainContainer);
 
         if (fragment instanceof HomeFragment) {
             HomeFragment homeFragment = ((HomeFragment) fragment);
@@ -40,6 +41,14 @@ public class MainActivity extends BaseActivity {
 
             if (fragment.isVisible() && scrollY > 0 && backstackCount == 0) {
                 homeFragment.goToTop();
+                return;
+            }
+        } else if (fragment instanceof CategoriesFragment) {
+            CategoriesFragment categoriesFragment = ((CategoriesFragment) fragment);
+            int scrollY = categoriesFragment.getScrollYPos();
+
+            if (fragment.isVisible() && scrollY > 0) {
+                categoriesFragment.goToTop();
                 return;
             }
         }

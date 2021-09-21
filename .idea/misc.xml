@@ -30,8 +30,11 @@
         <entry key="app/src/main/res/layout/dialog_global_menu.xml" value="0.30364583333333334" />
         <entry key="app/src/main/res/layout/dialog_more.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_add_edit_category.xml" value="0.30364583333333334" />
+        <entry key="app/src/main/res/layout/fragment_add_edit_todo.xml" value="0.30364583333333334" />
         <entry key="app/src/main/res/layout/fragment_add_todo.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_categories.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/item_category.xml" value="0.30364583333333334" />
         <entry key="app/src/main/res/layout/item_todo.xml" value="0.33" />
         <entry key="app/src/main/res/layout/item_todo2.xml" value="0.30364583333333334" />
         <entry key="app/src/main/res/layout/toast.xml" value="0.30364583333333334" />

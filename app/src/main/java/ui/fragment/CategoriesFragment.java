@@ -26,40 +26,42 @@ import com.google.android.material.button.MaterialButton;
 import java.util.ArrayList;
 
 import hlv.cute.todo.R;
+import hlv.cute.todo.databinding.FragmentCategoriesBinding;
 import hlv.cute.todo.databinding.FragmentHomeBinding;
+import model.Category;
 import model.Todo;
+import ui.adapter.CategoryAdapter;
 import ui.adapter.TodoAdapter;
 import ui.dialog.GlobalMenuDialog;
 import ui.dialog.MoreDialog;
 import utils.DisplayUtils;
 import utils.Tags;
 
-public class HomeFragment extends BaseFragment {
+public class CategoriesFragment extends BaseFragment {
 
-    private FragmentHomeBinding binding;
+    private FragmentCategoriesBinding binding;
 
     private ConstraintLayout toolbar;
-    private AppCompatImageView imgGlobalMenu;
     private NestedScrollView nested;
-    private RecyclerView rvTodo;
+    private RecyclerView rvCategory;
     private FrameLayout frameLytButton;
     private MaterialButton btnAdd;
     private HideBottomViewOnScrollBehavior<FrameLayout> scrollBehavior;
 
-    private TodoAdapter adapter;
+    private CategoryAdapter adapter;
     private int scrollYPos = 0;
 
-    public HomeFragment() {
+    public CategoriesFragment() {
     }
 
-    public static HomeFragment newInstance() {
-        return new HomeFragment();
+    public static CategoriesFragment newInstance() {
+        return new CategoriesFragment();
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentHomeBinding.inflate(inflater);
+        binding = FragmentCategoriesBinding.inflate(inflater);
         return binding.getRoot();
     }
 
@@ -71,10 +73,11 @@ public class HomeFragment extends BaseFragment {
     }
 
     private void initViews() {
+        binding.aImgBack.setOnClickListener(view -> back(Tags.BackStack.CATEGORY));
+
         toolbar = binding.toolbar;
-        imgGlobalMenu = binding.aImgGlobalMenu;
         nested = binding.nested;
-        rvTodo = binding.rvTodo;
+        rvCategory = binding.rvCategory;
         frameLytButton = binding.frameLytButton;
         btnAdd = binding.mBtnAdd;
 
@@ -89,25 +92,6 @@ public class HomeFragment extends BaseFragment {
     }
 
     private void handleShadowScroll() {
-        /*rvTodo.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            final float dpShadow = DisplayUtils.getDisplay().dpToPx(rvTodo.getContext(), 12);
-
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                scrollYPos += dy;
-
-                if (scrollYPos == 0) {
-                    toolbar.animate().translationZ(0).setStartDelay(0).setDuration(200).start();
-                    //toolbar.setTranslationZ(0);
-                } else if (scrollYPos > 50) {
-                    toolbar.setTranslationZ(dpShadow);
-                    toolbar.animate().translationZ(dpShadow).setStartDelay(0).setDuration(90).start();
-                }
-
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });*/
-
         nested.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             final float dpShadow = DisplayUtils.getDisplay().dpToPx(nested.getContext(), 12);
 
@@ -127,28 +111,12 @@ public class HomeFragment extends BaseFragment {
     }
 
     private void handleActions() {
-        imgGlobalMenu.setOnClickListener(view -> {
-            GlobalMenuDialog globalMenu = new GlobalMenuDialog(getActivity());
-            globalMenu.show();
-
-            globalMenu.setOnClickCategories(() -> {
-                Fragment fragment = CategoriesFragment.newInstance();
-                fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.add(R.id.mainContainer, fragment, Tags.FragmentTag.CATEGORY);
-                transaction.addToBackStack(Tags.BackStack.CATEGORY);
-                transaction.commit();
-
-                globalMenu.dismiss();
-            });
-        });
-
         btnAdd.setOnClickListener(view -> {
-            Fragment fragment = AddEditTodoFragment.newInstance();
+            Fragment fragment = AddEditCategoryFragment.newInstance();
             fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-            transaction.add(R.id.mainContainer, fragment, Tags.FragmentTag.ADD_EDIT_TODO);
-            transaction.addToBackStack(Tags.BackStack.ADD_EDIT_TODO);
+            transaction.add(R.id.mainContainer, fragment, Tags.FragmentTag.ADD_EDIT_CATEGORY);
+            transaction.addToBackStack(Tags.BackStack.ADD_EDIT_CATEGORY);
             transaction.commit();
         });
 
@@ -159,77 +127,47 @@ public class HomeFragment extends BaseFragment {
         if (getActivity() == null)
             return;
 
-        adapter = new TodoAdapter(getActivity(),
-                todo -> {
-
-                },
-                todo -> {
+        adapter = new CategoryAdapter(getActivity(),
+                category -> {
                     MoreDialog moreDialog = new MoreDialog(getActivity());
                     moreDialog.show();
                 }
         );
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        rvTodo.setLayoutManager(layoutManager);
-        rvTodo.setAdapter(adapter);
+        rvCategory.setLayoutManager(layoutManager);
+        rvCategory.setAdapter(adapter);
 
-        ArrayList<Todo> list = new ArrayList<>();
+        ArrayList<Category> list = new ArrayList<>();
 
-        Todo todo1 = new Todo();
-        todo1.setId(1);
-        todo1.setTitle("آموزش معماری MVVM");
-        todo1.setCategory("برنامه نویسی");
-        todo1.setPriority(Todo.Priority.NORMAL);
-        todo1.setDone(false);
+        Category category1 = new Category();
+        category1.setId(1);
+        category1.setCategory("دانشگاه");
 
-        Todo todo2 = new Todo();
-        todo2.setId(2);
-        todo2.setTitle("خرید کتاب درسی");
-        todo2.setCategory("دانشگاه");
-        todo2.setPriority(Todo.Priority.LOW);
-        todo2.setDone(true);
+        Category category2 = new Category();
+        category2.setId(2);
+        category2.setCategory("کاری");
 
-        Todo todo3 = new Todo();
-        todo3.setId(3);
-        todo3.setTitle("نوشتن قرارداد پروژه مشتری");
-        todo3.setCategory("کاری");
-        todo3.setPriority(Todo.Priority.HIGH);
-        todo3.setDone(true);
+        Category category3 = new Category();
+        category3.setId(3);
+        category3.setCategory("منزل");
 
-        Todo todo4 = new Todo();
-        todo4.setId(4);
-        todo4.setTitle("خرید نان");
-        todo4.setCategory("منزل");
-        todo4.setPriority(Todo.Priority.HIGH);
-        todo4.setDone(true);
-
-        Todo todo5 = new Todo();
-        todo5.setId(5);
-        todo5.setTitle("خرید میوه");
-        todo5.setCategory("منزل");
-        todo5.setPriority(Todo.Priority.LOW);
-        todo5.setDone(false);
-
-        Todo todo6 = new Todo();
-        todo6.setId(6);
-        todo6.setTitle("خرید شیر");
-        todo6.setCategory("منزل");
-        todo6.setPriority(Todo.Priority.NORMAL);
-        todo6.setDone(true);
-
-        list.add(todo1);
-        list.add(todo2);
-        list.add(todo3);
-        list.add(todo4);
-        list.add(todo5);
-        list.add(todo6);
-        list.add(todo6);
-        list.add(todo6);
-        list.add(todo6);
-        list.add(todo6);
-        list.add(todo6);
-        list.add(todo6);
-        list.add(todo6);
+        list.add(category1);
+        list.add(category3);
+        list.add(category3);
+        list.add(category3);
+        list.add(category3);
+        list.add(category3);
+        list.add(category3);
+        list.add(category3);
+        list.add(category3);
+        list.add(category3);
+        list.add(category3);
+        list.add(category3);
+        list.add(category3);
+        list.add(category3);
+        list.add(category3);
+        list.add(category3);
 
 
         adapter.getDiffer().submitList(list);
