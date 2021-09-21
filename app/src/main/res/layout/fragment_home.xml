@@ -91,14 +91,14 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
+        android:id="@+id/frameLytButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@color/transparent"
         android:translationZ="0dp"
         app:layout_anchor="@id/rvTodo"
-        app:layout_anchorGravity="center_horizontal|bottom"
-        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior">
+        app:layout_anchorGravity="center_horizontal|bottom">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

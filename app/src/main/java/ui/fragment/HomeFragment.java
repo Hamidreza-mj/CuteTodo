@@ -1,21 +1,25 @@
 package ui.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.transition.Slide;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.behavior.HideBottomViewOnScrollBehavior;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
@@ -37,7 +41,10 @@ public class HomeFragment extends BaseFragment {
     private TodoAdapter adapter;
 
     private int scrollYPos = 0;
+
+    private FrameLayout frameLytButton;
     private NestedScrollView nested;
+    private HideBottomViewOnScrollBehavior<FrameLayout> scrollBehavior;
 
     public HomeFragment() {
     }
@@ -64,6 +71,15 @@ public class HomeFragment extends BaseFragment {
         btnAdd = binding.mBtnAdd;
         rvTodo = binding.rvTodo;
         nested = binding.nested;
+        frameLytButton = binding.frameLytButton;
+
+        setScrollBehavior();
+    }
+
+    private void setScrollBehavior() {
+        scrollBehavior = new HideBottomViewOnScrollBehavior<>();
+        CoordinatorLayout.LayoutParams lp = ((CoordinatorLayout.LayoutParams) frameLytButton.getLayoutParams());
+        lp.setBehavior(scrollBehavior);
     }
 
     private void handleActions() {
@@ -149,6 +165,13 @@ public class HomeFragment extends BaseFragment {
         list.add(todo4);
         list.add(todo5);
         list.add(todo6);
+        list.add(todo6);
+        list.add(todo6);
+        list.add(todo6);
+        list.add(todo6);
+        list.add(todo6);
+        list.add(todo6);
+        list.add(todo6);
 
 
         adapter.getDiffer().submitList(list);
@@ -195,10 +218,11 @@ public class HomeFragment extends BaseFragment {
     }
 
     public void goToTop() {
-        if (rvTodo == null)
+        if (nested == null || scrollBehavior == null || frameLytButton == null)
             return;
 
-        nested.smoothScrollTo(0, 0);
+        nested.smoothScrollTo(0, 0, 800);
+        new Handler().postDelayed(() -> scrollBehavior.slideUp(frameLytButton), 500);
     }
 
     public int getScrollYPos() {
