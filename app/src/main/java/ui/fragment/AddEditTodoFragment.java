@@ -7,17 +7,15 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButton;
 
-import hlv.cute.todo.databinding.FragmentAddTodoBinding;
-import hlv.cute.todo.databinding.FragmentHomeBinding;
+import hlv.cute.todo.databinding.FragmentAddEditTodoBinding;
 import utils.Tags;
 
 public class AddEditTodoFragment extends BaseFragment {
 
-    private FragmentAddTodoBinding binding;
+    private FragmentAddEditTodoBinding binding;
 
     private MaterialButton btnAdd;
 
@@ -31,7 +29,7 @@ public class AddEditTodoFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentAddTodoBinding.inflate(inflater);
+        binding = FragmentAddEditTodoBinding.inflate(inflater);
         return binding.getRoot();
     }
 
@@ -42,6 +40,6 @@ public class AddEditTodoFragment extends BaseFragment {
     }
 
     private void initViews() {
-        binding.aImgBack.setOnClickListener(view -> back(Tags.BackStack.ADD_TODO));
+        binding.aImgBack.setOnClickListener(view -> back(Tags.BackStack.ADD_EDIT_TODO));
     }
 }

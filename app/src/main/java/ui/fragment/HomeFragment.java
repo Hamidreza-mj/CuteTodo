@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.widget.NestedScrollView;
@@ -28,6 +29,7 @@ import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.FragmentHomeBinding;
 import model.Todo;
 import ui.adapter.TodoAdapter;
+import ui.dialog.GlobalMenuDialog;
 import ui.dialog.MoreDialog;
 import utils.DisplayUtils;
 import utils.Tags;
@@ -36,16 +38,16 @@ public class HomeFragment extends BaseFragment {
 
     private FragmentHomeBinding binding;
 
-    private MaterialButton btnAdd;
-    private RecyclerView rvTodo;
-    private TodoAdapter adapter;
-
-    private int scrollYPos = 0;
-
-    private FrameLayout frameLytButton;
-    private NestedScrollView nested;
-    private HideBottomViewOnScrollBehavior<FrameLayout> scrollBehavior;
     private ConstraintLayout toolbar;
+    private AppCompatImageView imgGlobalMenu;
+    private NestedScrollView nested;
+    private RecyclerView rvTodo;
+    private FrameLayout frameLytButton;
+    private MaterialButton btnAdd;
+    private HideBottomViewOnScrollBehavior<FrameLayout> scrollBehavior;
+
+    private TodoAdapter adapter;
+    private int scrollYPos = 0;
 
     public HomeFragment() {
     }
@@ -70,10 +72,11 @@ public class HomeFragment extends BaseFragment {
 
     private void initViews() {
         toolbar = binding.toolbar;
-        btnAdd = binding.mBtnAdd;
-        rvTodo = binding.rvTodo;
+        imgGlobalMenu = binding.aImgGlobalMenu;
         nested = binding.nested;
+        rvTodo = binding.rvTodo;
         frameLytButton = binding.frameLytButton;
+        btnAdd = binding.mBtnAdd;
 
         setScrollBehavior();
         handleShadowScroll();
@@ -124,12 +127,17 @@ public class HomeFragment extends BaseFragment {
     }
 
     private void handleActions() {
+        imgGlobalMenu.setOnClickListener(view -> {
+            GlobalMenuDialog globalMenu = new GlobalMenuDialog(getActivity());
+            globalMenu.show();
+        });
+
         btnAdd.setOnClickListener(view -> {
             Fragment addFragment = AddEditTodoFragment.newInstance();
             addFragment.setEnterTransition(new Slide(Gravity.BOTTOM));
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-            transaction.add(R.id.mainContainer, addFragment, Tags.FragmentTag.ADD_TODO);
-            transaction.addToBackStack(Tags.BackStack.ADD_TODO);
+            transaction.add(R.id.mainContainer, addFragment, Tags.FragmentTag.ADD_EDIT_TODO);
+            transaction.addToBackStack(Tags.BackStack.ADD_EDIT_TODO);
             transaction.commit();
         });
 
