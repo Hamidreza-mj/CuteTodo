@@ -45,6 +45,7 @@ public class HomeFragment extends BaseFragment {
     private FrameLayout frameLytButton;
     private NestedScrollView nested;
     private HideBottomViewOnScrollBehavior<FrameLayout> scrollBehavior;
+    private ConstraintLayout toolbar;
 
     public HomeFragment() {
     }
@@ -68,18 +69,58 @@ public class HomeFragment extends BaseFragment {
     }
 
     private void initViews() {
+        toolbar = binding.toolbar;
         btnAdd = binding.mBtnAdd;
         rvTodo = binding.rvTodo;
         nested = binding.nested;
         frameLytButton = binding.frameLytButton;
 
         setScrollBehavior();
+        handleShadowScroll();
     }
 
     private void setScrollBehavior() {
         scrollBehavior = new HideBottomViewOnScrollBehavior<>();
         CoordinatorLayout.LayoutParams lp = ((CoordinatorLayout.LayoutParams) frameLytButton.getLayoutParams());
         lp.setBehavior(scrollBehavior);
+    }
+
+    private void handleShadowScroll() {
+        /*rvTodo.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            final float dpShadow = DisplayUtils.getDisplay().dpToPx(rvTodo.getContext(), 12);
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                scrollYPos += dy;
+
+                if (scrollYPos == 0) {
+                    toolbar.animate().translationZ(0).setStartDelay(0).setDuration(200).start();
+                    //toolbar.setTranslationZ(0);
+                } else if (scrollYPos > 50) {
+                    toolbar.setTranslationZ(dpShadow);
+                    toolbar.animate().translationZ(dpShadow).setStartDelay(0).setDuration(90).start();
+                }
+
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });*/
+
+        nested.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            final float dpShadow = DisplayUtils.getDisplay().dpToPx(nested.getContext(), 12);
+
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                scrollYPos = scrollY;
+
+                if (scrollY == 0) {
+                    toolbar.animate().translationZ(0).setStartDelay(0).setDuration(200).start();
+                    //toolbar.setTranslationZ(0);
+                } else if (scrollY > 50) {
+                    toolbar.setTranslationZ(dpShadow);
+                    toolbar.animate().translationZ(dpShadow).setStartDelay(0).setDuration(90).start();
+                }
+            }
+        });
     }
 
     private void handleActions() {
@@ -112,8 +153,6 @@ public class HomeFragment extends BaseFragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         rvTodo.setLayoutManager(layoutManager);
         rvTodo.setAdapter(adapter);
-
-        handleShadowScroll();
 
         ArrayList<Todo> list = new ArrayList<>();
 
@@ -175,46 +214,6 @@ public class HomeFragment extends BaseFragment {
 
 
         adapter.getDiffer().submitList(list);
-    }
-
-    private void handleShadowScroll() {
-        ConstraintLayout toolbar = binding.toolbar;
-
-        /*rvTodo.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            final float dpShadow = DisplayUtils.getDisplay().dpToPx(rvTodo.getContext(), 12);
-
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                scrollYPos += dy;
-
-                if (scrollYPos == 0) {
-                    toolbar.animate().translationZ(0).setStartDelay(0).setDuration(200).start();
-                    //toolbar.setTranslationZ(0);
-                } else if (scrollYPos > 50) {
-                    toolbar.setTranslationZ(dpShadow);
-                    toolbar.animate().translationZ(dpShadow).setStartDelay(0).setDuration(90).start();
-                }
-
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });*/
-
-        nested.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            final float dpShadow = DisplayUtils.getDisplay().dpToPx(rvTodo.getContext(), 12);
-
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                scrollYPos = scrollY;
-
-                if (scrollY == 0) {
-                    toolbar.animate().translationZ(0).setStartDelay(0).setDuration(200).start();
-                    //toolbar.setTranslationZ(0);
-                } else if (scrollY > 50) {
-                    toolbar.setTranslationZ(dpShadow);
-                    toolbar.animate().translationZ(dpShadow).setStartDelay(0).setDuration(90).start();
-                }
-            }
-        });
     }
 
     public void goToTop() {
