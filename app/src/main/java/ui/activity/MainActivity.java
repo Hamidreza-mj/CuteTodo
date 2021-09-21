@@ -35,9 +35,11 @@ public class MainActivity extends BaseActivity {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(Tags.FragmentTag.HOME);
 
         if (fragment instanceof HomeFragment) {
-            int scrollY = ((HomeFragment) fragment).getScrollYPos();
+            HomeFragment homeFragment = ((HomeFragment) fragment);
+            int scrollY = homeFragment.getScrollYPos();
+
             if (fragment.isVisible() && scrollY > 0 && backstackCount == 0) {
-                ((HomeFragment) fragment).goToTop();
+                homeFragment.goToTop();
                 return;
             }
         }
