@@ -40,6 +40,7 @@ public class HomeFragment extends BaseFragment {
 
     private ConstraintLayout toolbar;
     private AppCompatImageView imgGlobalMenu;
+    private AppCompatImageView imgSearch;
     private NestedScrollView nested;
     private RecyclerView rvTodo;
     private FrameLayout frameLytButton;
@@ -73,6 +74,7 @@ public class HomeFragment extends BaseFragment {
     private void initViews() {
         toolbar = binding.toolbar;
         imgGlobalMenu = binding.aImgGlobalMenu;
+        imgSearch = binding.aImgSearch;
         nested = binding.nested;
         rvTodo = binding.rvTodo;
         frameLytButton = binding.frameLytButton;
@@ -141,6 +143,15 @@ public class HomeFragment extends BaseFragment {
 
                 globalMenu.dismiss();
             });
+        });
+
+        imgSearch.setOnClickListener(view -> {
+            Fragment fragment = SearchFragment.newInstance();
+            fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.add(R.id.mainContainer, fragment, Tags.FragmentTag.SEARCH);
+            transaction.addToBackStack(Tags.BackStack.SEARCH);
+            transaction.commit();
         });
 
         btnAdd.setOnClickListener(view -> {

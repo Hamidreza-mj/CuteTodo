@@ -7,12 +7,14 @@ public class Tags {
         public static final String CATEGORY = "category-fragment";
         public static final String ADD_EDIT_TODO = "add-edit-todo-fragment";
         public static final String ADD_EDIT_CATEGORY = "add-edit-category-fragment";
+        public static final String SEARCH = "search-fragment";
     }
 
     public static class BackStack {
         public static final String CATEGORY = "category-backstack";
         public static final String ADD_EDIT_TODO = "add-edit-todo-backstack";
         public static final String ADD_EDIT_CATEGORY = "add-edit-category-backstack";
+        public static final String SEARCH = "search-backstack";
     }
 
     public static class Log {
