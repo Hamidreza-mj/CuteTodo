@@ -1,9 +1,6 @@
 package ui.fragment;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.transition.Slide;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +9,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.widget.NestedScrollView;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,16 +18,11 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 
-import hlv.cute.todo.R;
-import hlv.cute.todo.databinding.FragmentCategoriesBinding;
 import hlv.cute.todo.databinding.FragmentSearchBinding;
-import model.Category;
 import model.Todo;
-import ui.adapter.CategoryAdapter;
 import ui.adapter.TodoAdapter;
 import ui.dialog.MoreDialog;
 import utils.DisplayUtils;
-import utils.Tags;
 
 public class SearchFragment extends BaseFragment {
 
@@ -77,33 +66,25 @@ public class SearchFragment extends BaseFragment {
         rvSearch = binding.rvSearch;
         btnSearch = binding.mBtnSearch;
 
-        setScrollBehavior();
         handleShadowScroll();
     }
 
-    private void setScrollBehavior() {
-      /*  scrollBehavior = new HideBottomViewOnScrollBehavior<>();
-        CoordinatorLayout.LayoutParams lp = ((CoordinatorLayout.LayoutParams) frameLytButton.getLayoutParams());
-        lp.setBehavior(scrollBehavior);*/
-    }
-
     private void handleShadowScroll() {
-//        nested.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-//            final float dpShadow = DisplayUtils.getDisplay().dpToPx(nested.getContext(), 12);
-//
-//            @Override
-//            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-//                scrollYPos = scrollY;
-//
-//                if (scrollY == 0) {
-//                    toolbar.animate().translationZ(0).setStartDelay(0).setDuration(200).start();
-//                    //toolbar.setTranslationZ(0);
-//                } else if (scrollY > 50) {
-//                    toolbar.setTranslationZ(dpShadow);
-//                    toolbar.animate().translationZ(dpShadow).setStartDelay(0).setDuration(90).start();
-//                }
-//            }
-//        });
+        nested.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            final float dpShadow = DisplayUtils.getDisplay().dpToPx(nested.getContext(), 12);
+
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                scrollYPos = scrollY;
+
+                if (scrollY == 0) {
+                    toolbar.animate().translationZ(0).setStartDelay(0).setDuration(200).start();
+                } else if (scrollY > 50) {
+                    toolbar.setTranslationZ(dpShadow);
+                    toolbar.animate().translationZ(dpShadow).setStartDelay(0).setDuration(90).start();
+                }
+            }
+        });
     }
 
     private void handleActions() {
