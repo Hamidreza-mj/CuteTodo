@@ -73,7 +73,7 @@ public class CategoriesFragment extends BaseFragment {
     }
 
     private void initViews() {
-        binding.aImgBack.setOnClickListener(view -> back(Tags.BackStack.CATEGORY));
+        binding.aImgBack.setOnClickListener(view -> back());
 
         toolbar = binding.toolbar;
         nested = binding.nested;

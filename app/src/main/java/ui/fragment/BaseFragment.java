@@ -25,6 +25,11 @@ public class BaseFragment extends Fragment {
         KeyboardInputHelper.getKeyboardInput().showKeyboard(getContext());
     }
 
+    protected void back() {
+        hideKeyboard();
+        getParentFragmentManager().popBackStack();
+    }
+
     protected void back(String fragmentTagName) {
         hideKeyboard();
         getParentFragmentManager().popBackStack(fragmentTagName, FragmentManager.POP_BACK_STACK_INCLUSIVE);

@@ -40,6 +40,6 @@ public class AddEditTodoFragment extends BaseFragment {
     }
 
     private void initViews() {
-        binding.aImgBack.setOnClickListener(view -> back(Tags.BackStack.ADD_EDIT_TODO));
+        binding.aImgBack.setOnClickListener(view -> back());
     }
 }

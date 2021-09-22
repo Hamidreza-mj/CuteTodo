@@ -41,6 +41,6 @@ public class AddEditCategoryFragment extends BaseFragment {
     }
 
     private void initViews() {
-        binding.aImgBack.setOnClickListener(view -> back(Tags.BackStack.ADD_EDIT_CATEGORY));
+        binding.aImgBack.setOnClickListener(view -> back());
     }
 }
