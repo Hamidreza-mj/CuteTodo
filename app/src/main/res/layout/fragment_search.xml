@@ -49,31 +49,54 @@
             app:layout_constraintTop_toTopOf="@id/txtTitle"
             app:srcCompat="@drawable/ic_back_light" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/inpSearch"
-            style="@style/TextInputLayout"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/search_shape"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/aImgBack"
-            app:startIconDrawable="@drawable/ic_close_square">
+            app:layout_constraintTop_toBottomOf="@id/aImgBack">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/inpEdtSearch"
-                style="@style/TextInputEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/edtSearch"
+                style="@style/TextNormalMD16"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginVertical="8dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="20dp"
+                android:background="@color/transparent"
                 android:hint="@string/search_in_todo_list"
-                android:imeOptions="actionDone"
+                android:importantForAutofill="no"
                 android:inputType="text"
-                android:maxLines="1"
-                android:paddingVertical="16dp"
-                tools:ignore="TextContrastCheck" />
+                android:textColorHint="@color/gray"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/aImgClear"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/aImgClear"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginVertical="5dp"
+                android:layout_marginStart="10dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="پاک کردن"
+                android:focusable="true"
+                android:padding="1dp"
+                android:tint="@color/gray"
+                app:layout_constraintBottom_toBottomOf="@id/edtSearch"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/edtSearch"
+                app:srcCompat="@drawable/ic_close_square"
+                tools:ignore="HardcodedText" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
