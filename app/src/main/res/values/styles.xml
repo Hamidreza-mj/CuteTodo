@@ -164,4 +164,15 @@
         <item name="android:windowMinWidthMinor">100%</item>
     </style>
 
+    <!-- Chip -->
+    <style name="Chip" parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="android:checkable">true</item>
+        <item name="android:textAppearance">@style/TextNormalMD16</item>
+        <item name="checkedIcon">@drawable/ic_tick_square</item>
+        <item name="chipMinHeight">44dp</item>
+        <item name="chipStartPadding">22dp</item>
+        <item name="chipEndPadding">22dp</item>
+        <item name="chipStrokeWidth">1dp</item>
+    </style>
+
 </resources>

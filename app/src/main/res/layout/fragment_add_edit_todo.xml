@@ -42,6 +42,8 @@
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="5dp"
+        android:scrollbarThumbVertical="@drawable/scrollbar"
+        android:scrollbars="vertical"
         app:layout_constraintBottom_toTopOf="@id/shadow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -107,6 +109,75 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <TextView
+                android:id="@+id/priority"
+                style="@style/TextNormalMD18"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="40dp"
+                android:text="@string/priority"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/inpCategory" />
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:scrollbars="none"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/priority">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="10dp"
+                    app:selectionRequired="true"
+                    app:singleSelection="true">
+
+                    <com.google.android.material.chip.Chip
+                        style="@style/Chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/high"
+                        android:textColor="@color/chips_text_high"
+                        app:checkedIconTint="#BF0505"
+                        app:chipBackgroundColor="@color/chip_bg_high"
+                        app:chipStrokeColor="@color/chip_stroke_high"
+                        app:chipSurfaceColor="@color/chip_bg_high"
+                        app:rippleColor="@color/red" />
+
+
+                    <com.google.android.material.chip.Chip
+                        style="@style/Chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/normal"
+                        android:textColor="@color/chips_text_normal"
+                        app:checkedIconTint="#CD3100"
+                        app:chipBackgroundColor="@color/chip_bg_normal"
+                        app:chipStrokeColor="@color/chip_stroke_normal"
+                        app:chipSurfaceColor="@color/chip_bg_normal"
+                        app:rippleColor="@color/orange" />
+
+                    <com.google.android.material.chip.Chip
+                        style="@style/Chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/low"
+                        android:textColor="@color/chips_text_low"
+                        app:checkedIconTint="#10238C"
+                        app:chipBackgroundColor="@color/chip_bg_low"
+                        app:chipStrokeColor="@color/chip_stroke_low"
+                        app:chipSurfaceColor="@color/chip_bg_low"
+                        app:rippleColor="@color/blue" />
+
+
+                </com.google.android.material.chip.ChipGroup>
+
+            </HorizontalScrollView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
