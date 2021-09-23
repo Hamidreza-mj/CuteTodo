@@ -24,5 +24,6 @@
     <color name="toastColor">#F5040A15</color>
     <color name="card_color">#F9FCFF</color>
     <color name="line_color">#5C979797</color>
+    <color name="dialog_message">#818181</color>
 
 </resources>

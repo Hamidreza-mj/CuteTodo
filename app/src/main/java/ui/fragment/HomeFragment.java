@@ -29,6 +29,7 @@ import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.FragmentHomeBinding;
 import model.Todo;
 import ui.adapter.TodoAdapter;
+import ui.dialog.DeleteDialog;
 import ui.dialog.GlobalMenuDialog;
 import ui.dialog.MoreDialog;
 import utils.DisplayUtils;
@@ -175,8 +176,10 @@ public class HomeFragment extends BaseFragment {
 
                 },
                 todo -> {
-                    MoreDialog moreDialog = new MoreDialog(getActivity());
-                    moreDialog.show();
+                    /*MoreDialog moreDialog = new MoreDialog(getActivity());
+                    moreDialog.show();*/
+                    DeleteDialog deleteDialog = new DeleteDialog(getActivity());
+                    deleteDialog.show();
                 }
         );
 

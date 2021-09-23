@@ -36,5 +36,9 @@
     <string name="high_priority">اولویت: زیاد</string>
     <string name="normal_priority">اولویت: عادی</string>
     <string name="low_priority">اولویت: کم</string>
+    
+    <string name="delete_message">آیا از حذف این مورد اطمینان دارید؟</string>
+    <string name="cancel">انصراف</string>
+
 
 </resources>
