@@ -15,7 +15,6 @@ import java.util.Objects;
 
 import hlv.cute.todo.databinding.ItemCategoryBinding;
 import model.Category;
-import model.Todo;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
 
