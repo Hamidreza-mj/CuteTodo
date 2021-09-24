@@ -31,9 +31,7 @@ public class DeleteDialog {
         txtCancel.setOnClickListener(view -> dismiss());
         txtDelete.setOnClickListener(view -> {
             if (onClickDelete == null) {
-                if (dialog != null)
-                    dismiss();
-
+                dismiss();
                 return;
             }
 

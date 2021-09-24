@@ -36,9 +36,7 @@ public class GlobalMenuDialog {
 
         txtDeleteAll.setOnClickListener(view -> {
             if (onClickDeleteAll == null) {
-                if (dialog != null)
-                    dismiss();
-
+                dismiss();
                 return;
             }
 
