@@ -145,9 +145,10 @@ public class HomeFragment extends BaseFragment {
             });
 
             globalMenu.setOnClickDeleteAll(() -> {
+                globalMenu.dismiss();
+
                 if (getTodoViewModel().todosIsEmpty()) {
                     ToastHelper.get().toast(getString(R.string.todos_is_empty));
-                    globalMenu.dismiss();
                     return;
                 }
 
@@ -161,7 +162,6 @@ public class HomeFragment extends BaseFragment {
                     scrollBehavior.slideUp(frameLytButton);
                     deleteDialog.dismiss();
                 });
-                globalMenu.dismiss();
             });
         });
 
