@@ -47,7 +47,7 @@ public class ToastHelper {
             TextView txtToast = view.findViewById(R.id.toast_txt);
             txtToast.setText(message);
             toast.setDuration(isLongDuration ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.BOTTOM, 0, 60);
+            toast.setGravity(Gravity.BOTTOM, 0, 100);
             toast.setView(view);
             toast.show();
 
