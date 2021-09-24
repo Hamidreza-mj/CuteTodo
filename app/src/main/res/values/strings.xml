@@ -41,4 +41,7 @@
     <string name="cancel">انصراف</string>
 
 
+    <string name="todos_is_empty">لیست کارها خالی است!</string>
+    <string name="delete_all_todos">حذف همه کارها</string>
+
 </resources>
