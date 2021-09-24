@@ -159,6 +159,7 @@ public class HomeFragment extends BaseFragment {
                 deleteDialog.setMessage(getString(R.string.delete_all_todos_message, getTodoViewModel().getTodosCount()));
                 deleteDialog.setOnClickDelete(() -> {
                     getTodoViewModel().deleteAllTodos();
+//                    nested.smoothScrollTo(0, 0, 800);
                     scrollBehavior.slideUp(frameLytButton);
                     deleteDialog.dismiss();
                 });
@@ -197,8 +198,24 @@ public class HomeFragment extends BaseFragment {
                 todo -> {
                     MoreDialog moreDialog = new MoreDialog(getActivity());
                     moreDialog.show();
-                    /*DeleteDialog deleteDialog = new DeleteDialog(getActivity());
-                    deleteDialog.show();*/
+                    moreDialog.setOnClickDelete(() -> {
+                        moreDialog.dismiss();
+
+                        DeleteDialog deleteDialog = new DeleteDialog(getActivity());
+                        deleteDialog.show();
+                        deleteDialog.setTitle(getString(R.string.delete_todo));
+
+                        String todoTitle = todo.getTitle();
+                        if (todoTitle != null && todoTitle.trim().length() > 60)
+                            todoTitle = todoTitle.substring(0, 60);
+
+                        deleteDialog.setMessage(getString(R.string.delete_todo_message, todoTitle.trim()));
+                        deleteDialog.setOnClickDelete(() -> {
+                            getTodoViewModel().deleteTodo(todo);
+                            scrollBehavior.slideUp(frameLytButton);
+                            deleteDialog.dismiss();
+                        });
+                    });
                 }
         );
 
