@@ -15,7 +15,7 @@ import java.util.Objects;
 
 import hlv.cute.todo.databinding.ItemCategoryBinding;
 import model.Category;
-import ui.adapter.event.OnClickMenuListener;
+import model.Todo;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
 
@@ -81,4 +81,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     public AsyncListDiffer<Category> getDiffer() {
         return differ;
     }
+
+    public interface OnCheckChangedListener {
+        void onChange(Category category);
+    }
+
+    public interface OnClickMenuListener {
+        void onClick(Category category);
+    }
+
 }

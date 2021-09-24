@@ -17,8 +17,6 @@ import java.util.Objects;
 
 import hlv.cute.todo.databinding.ItemTodoBinding;
 import model.Todo;
-import ui.adapter.event.OnCheckChangedListener;
-import ui.adapter.event.OnClickMenuListener;
 import utils.TextHelper;
 
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
@@ -125,5 +123,13 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
 
     public AsyncListDiffer<Todo> getDiffer() {
         return differ;
+    }
+
+    public interface OnCheckChangedListener {
+        void onChange(Todo todo);
+    }
+
+    public interface OnClickMenuListener {
+        void onClick(Todo todo);
     }
 }
