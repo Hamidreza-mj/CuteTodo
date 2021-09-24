@@ -207,9 +207,9 @@ public class HomeFragment extends BaseFragment {
 
                         String todoTitle = todo.getTitle();
                         if (todoTitle != null && todoTitle.trim().length() > 60)
-                            todoTitle = todoTitle.substring(0, 60);
+                            todoTitle = todoTitle.substring(0, 60).trim();
 
-                        deleteDialog.setMessage(getString(R.string.delete_todo_message, todoTitle.trim()));
+                        deleteDialog.setMessage(getString(R.string.delete_todo_message, todoTitle));
                         deleteDialog.setOnClickDelete(() -> {
                             getTodoViewModel().deleteTodo(todo);
                             scrollBehavior.slideUp(frameLytButton);

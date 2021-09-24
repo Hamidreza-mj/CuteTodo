@@ -46,7 +46,7 @@
     <string name="delete_all_todos_message">همه %1$d کار موجود حذف شود؟</string>
 
     <string name="delete_todo">حذف کار</string>
-    <string name="delete_todo_message"> کار %1$s\n حذف شود؟</string>
+    <string name="delete_todo_message"> کار \"%1$s\" حذف شود؟</string>
 
 
 </resources>
