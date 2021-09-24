@@ -26,8 +26,8 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
     private final Context context;
     private final AsyncListDiffer<Todo> differ;
 
-    private OnCheckChangedListener onCheckChangedListener;
-    private OnClickMenuListener onClickMenuListener;
+    private final OnCheckChangedListener onCheckChangedListener;
+    private final OnClickMenuListener onClickMenuListener;
 
     public TodoAdapter(Context context, OnCheckChangedListener onCheckChangedListener, OnClickMenuListener onClickMenuListener) {
         this.context = context;
@@ -89,14 +89,18 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
         private void bind(Todo todo, OnCheckChangedListener onCheckChangedListener, OnClickMenuListener onClickMenuListener) {
             checkBox.setChecked(todo.isDone());
             checkBox.setText(todo.getTitle());
-            checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
-                onCheckChangedListener.onChange(todo);
-            });
+            checkBox.setOnCheckedChangeListener((compoundButton, b) -> onCheckChangedListener.onChange(todo));
 
             TextHelper.configLineThrough(checkBox, todo.isDone());
 
             imgMenu.setOnClickListener(view -> onClickMenuListener.onClick(todo));
-            txtCategory.setText(todo.getCategory());
+
+            if (todo.getCategory() != null) {
+                txtCategory.setVisibility(View.VISIBLE);
+                txtCategory.setText(todo.getCategory());
+            } else {
+                txtCategory.setVisibility(View.GONE);
+            }
 
             switch (todo.getPriority()) {
                 case LOW:
