@@ -13,6 +13,7 @@ public class GlobalMenuDialog {
     private AlertDialog dialog;
 
     private OnClickCategories onClickCategories;
+    private OnClickDeleteAll onClickDeleteAll;
 
     public GlobalMenuDialog(Context context, boolean cancelable) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.TranslucentDialog);
@@ -20,7 +21,7 @@ public class GlobalMenuDialog {
 
         hlv.cute.todo.databinding.DialogGlobalMenuBinding binding = DialogGlobalMenuBinding.inflate(LayoutInflater.from(context), null, false);
         TextView txtCategories = binding.txtCategories;
-        TextView txtInfo = binding.txtInfo;
+        TextView txtDeleteAll = binding.txtDeleteAll;
 
         txtCategories.setOnClickListener(view -> {
             if (onClickCategories == null) {
@@ -33,6 +34,17 @@ public class GlobalMenuDialog {
             onClickCategories.onClick();
         });
 
+        txtDeleteAll.setOnClickListener(view -> {
+            if (onClickDeleteAll == null) {
+                if (dialog != null)
+                    dismiss();
+
+                return;
+            }
+
+            onClickDeleteAll.onClick();
+        });
+
         builder.setView(binding.getRoot());
 
         if (dialog == null)
@@ -43,9 +55,12 @@ public class GlobalMenuDialog {
         this(context, true);
     }
 
-    public GlobalMenuDialog setOnClickCategories(OnClickCategories onClickCategories) {
+    public void setOnClickCategories(OnClickCategories onClickCategories) {
         this.onClickCategories = onClickCategories;
-        return this;
+    }
+
+    public void setOnClickDeleteAll(OnClickDeleteAll onClickDeleteAll) {
+        this.onClickDeleteAll = onClickDeleteAll;
     }
 
     public void dismiss() {
@@ -60,6 +75,10 @@ public class GlobalMenuDialog {
     }
 
     public interface OnClickCategories {
+        void onClick();
+    }
+
+    public interface OnClickDeleteAll {
         void onClick();
     }
 
