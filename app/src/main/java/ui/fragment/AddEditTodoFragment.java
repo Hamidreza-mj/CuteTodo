@@ -81,7 +81,7 @@ public class AddEditTodoFragment extends BaseFragment {
 
         btnAdd.setOnClickListener(view -> {
             Todo todo = new Todo();
-            todo.setTitle(edtTitle.getText().toString());
+            todo.setTitle(edtTitle.getText().toString().trim());
             todo.setPriority(priority);
             todo.setCategory(null);
 
