@@ -43,5 +43,6 @@
 
     <string name="todos_is_empty">لیست کارها خالی است!</string>
     <string name="delete_all_todos">حذف همه کارها</string>
+    <string name="delete_all_todos_message">همه %1$d کار موجود حذف شود؟</string>
 
 </resources>

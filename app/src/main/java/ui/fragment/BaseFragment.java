@@ -1,14 +1,13 @@
 package ui.fragment;
 
-import android.transition.Slide;
-import android.view.Gravity;
-
 import androidx.annotation.IdRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import ui.activity.MainActivity;
 import utils.KeyboardInputHelper;
+import viewmodel.TodoViewModel;
 
 
 public class BaseFragment extends Fragment {
@@ -46,6 +45,13 @@ public class BaseFragment extends Fragment {
 
     protected FragmentTransaction transit(FragmentTransaction transaction) {
         return transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+    }
+
+    protected TodoViewModel getTodoViewModel() {
+        if (getActivity() == null)
+            return null;
+
+        return ((MainActivity) getActivity()).getTodoViewModel();
     }
 
 }

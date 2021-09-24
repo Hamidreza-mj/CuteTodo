@@ -1,16 +1,31 @@
 package model;
 
 import androidx.annotation.Keep;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
 import java.util.Objects;
 
 @Keep
+@Entity(tableName = "todos")
 public class Todo {
 
+    @ColumnInfo(name = "id")
+    @PrimaryKey(autoGenerate = true)
     private int id;
+
+    @ColumnInfo(name = "title")
     private String title;
+
+    @ColumnInfo(name = "category")
     private String category;
+
+    @ColumnInfo(name = "priority")
     private Priority priority;
+
+    @ColumnInfo(name = "is_done")
     private boolean isDone;
 
     public int getId() {

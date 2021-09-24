@@ -4,16 +4,20 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.ActivityMainBinding;
 import ui.fragment.CategoriesFragment;
 import ui.fragment.HomeFragment;
 import utils.Tags;
+import viewmodel.TodoViewModel;
 
 public class MainActivity extends BaseActivity {
 
     private ActivityMainBinding binding;
+
+    private TodoViewModel todoViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +25,7 @@ public class MainActivity extends BaseActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         initViews();
+        handleTodoObserver();
     }
 
     private void initViews() {
@@ -28,6 +33,14 @@ public class MainActivity extends BaseActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.mainContainer, homeFragment, Tags.FragmentTag.HOME);
         transaction.commit();
+    }
+
+    private void handleTodoObserver() {
+        todoViewModel = new ViewModelProvider(this).get(TodoViewModel.class);
+    }
+
+    public TodoViewModel getTodoViewModel() {
+        return todoViewModel;
     }
 
     @Override
