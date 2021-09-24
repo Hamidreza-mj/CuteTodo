@@ -130,6 +130,7 @@
                 app:layout_constraintTop_toBottomOf="@id/priority">
 
                 <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGP"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:paddingVertical="10dp"
@@ -137,6 +138,7 @@
                     app:singleSelection="true">
 
                     <com.google.android.material.chip.Chip
+                        android:id="@+id/chipHigh"
                         style="@style/Chip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -150,6 +152,7 @@
 
 
                     <com.google.android.material.chip.Chip
+                        android:id="@+id/chipNormal"
                         style="@style/Chip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -162,6 +165,7 @@
                         app:rippleColor="@color/orange" />
 
                     <com.google.android.material.chip.Chip
+                        android:id="@+id/chipLow"
                         style="@style/Chip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
