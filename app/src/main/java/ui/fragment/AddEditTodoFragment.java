@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -93,10 +94,23 @@ public class AddEditTodoFragment extends BaseFragment {
         nested = binding.nested;
         txtTitle = binding.txtTitle;
 
-        handleShadowScroll();
+        handleScroll();
     }
 
-    private void handleShadowScroll() {
+    @SuppressLint("ClickableViewAccessibility")
+    private void handleScroll() {
+        edtTitle.setOnTouchListener((v, event) -> {
+            if (edtTitle.hasFocus()) {
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_SCROLL) {
+                    v.getParent().requestDisallowInterceptTouchEvent(false);
+                    return true;
+                }
+            }
+            return false;
+        });
+
+
         nested.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             final float dpShadow = DisplayUtils.getDisplay().dpToPx(nested.getContext(), 12);
 
