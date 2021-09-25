@@ -63,6 +63,13 @@ public class TodoViewModel extends ViewModel {
         return getTodosCount() == 0;
     }
 
+    public void setDoneTodo(Todo todo) {
+        try {
+            dbRepository.setDoneTodo(todo.getId());
+        } catch (InterruptedException ignored) {
+        }
+    }
+
     public boolean pureValidateTodo(Todo todo) {
         String todoTitle = todo.getTitle();
         return todoTitle != null && !todoTitle.trim().isEmpty() && todoTitle.trim().length() != 0;

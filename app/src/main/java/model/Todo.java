@@ -3,14 +3,13 @@ package model;
 import androidx.annotation.Keep;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Objects;
 
 @Keep
 @Entity(tableName = "todos")
-public class Todo {
+public class Todo implements Comparable<Todo> {
 
     @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true)
@@ -68,21 +67,34 @@ public class Todo {
         isDone = done;
     }
 
+    @Override
+    public int compareTo(Todo todo) {
+        if (id == todo.getId() &&
+                Objects.equals(title, todo.getTitle()) &&
+                Objects.equals(category, todo.category) &&
+                Objects.equals(priority, todo.priority) &&
+                isDone == todo.isDone())
+            return 0;
+
+        return 1;
+    }
+
     public enum Priority {
         LOW, NORMAL, HIGH
     }
 
-/*    @Override
+/*
+    @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
         if (!(o instanceof Todo)) return false;
         Todo todo = (Todo) o;
-        return Objects.equals(id, todo.getId());
+        return this.compareTo(todo) == 0;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }*/
+    }
+*/
 
 }

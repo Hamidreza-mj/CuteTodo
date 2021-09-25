@@ -159,7 +159,6 @@ public class HomeFragment extends BaseFragment {
                 deleteDialog.setMessage(getString(R.string.delete_all_todos_message, getTodoViewModel().getTodosCount()));
                 deleteDialog.setOnClickDelete(() -> {
                     getTodoViewModel().deleteAllTodos();
-//                    nested.smoothScrollTo(0, 0, 800);
                     scrollBehavior.slideUp(frameLytButton);
                     deleteDialog.dismiss();
                 });
@@ -192,10 +191,9 @@ public class HomeFragment extends BaseFragment {
             return;
 
         adapter = new TodoAdapter(getActivity(),
-                todo -> {
+                todoCheck -> getTodoViewModel().setDoneTodo(todoCheck),
 
-                },
-                todo -> {
+                todoMenu -> {
                     MoreDialog moreDialog = new MoreDialog(getActivity());
                     moreDialog.show();
                     moreDialog.setOnClickDelete(() -> {
@@ -205,13 +203,13 @@ public class HomeFragment extends BaseFragment {
                         deleteDialog.show();
                         deleteDialog.setTitle(getString(R.string.delete_todo));
 
-                        String todoTitle = todo.getTitle();
+                        String todoTitle = todoMenu.getTitle();
                         if (todoTitle != null && todoTitle.trim().length() > 60)
                             todoTitle = todoTitle.substring(0, 60).trim();
 
                         deleteDialog.setMessage(getString(R.string.delete_todo_message, todoTitle));
                         deleteDialog.setOnClickDelete(() -> {
-                            getTodoViewModel().deleteTodo(todo);
+                            getTodoViewModel().deleteTodo(todoMenu);
                             scrollBehavior.slideUp(frameLytButton);
                             deleteDialog.dismiss();
                         });
@@ -221,6 +219,7 @@ public class HomeFragment extends BaseFragment {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         rvTodo.setLayoutManager(layoutManager);
+//        rvTodo.setItemAnimator(new CustomItemAnimator());
         rvTodo.setAdapter(adapter);
     }
 
@@ -228,7 +227,11 @@ public class HomeFragment extends BaseFragment {
         getTodoViewModel().fetch();
 
         getTodoViewModel().getTodosLiveDate().observe(getViewLifecycleOwner(),
-                todos -> adapter.getDiffer().submitList(todos)
+                todos -> rvTodo.post(() -> adapter.getDiffer().submitList(todos))
+        );
+
+        getScrollToTopLive().observe(getViewLifecycleOwner(), scroll ->
+                nested.smoothScrollTo(0, 0)
         );
     }
 

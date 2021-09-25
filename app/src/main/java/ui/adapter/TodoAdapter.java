@@ -13,8 +13,6 @@ import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Objects;
-
 import hlv.cute.todo.databinding.ItemTodoBinding;
 import model.Todo;
 import utils.TextHelper;
@@ -40,7 +38,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
 
             @Override
             public boolean areContentsTheSame(@NonNull Todo oldItem, @NonNull Todo newItem) {
-                return Objects.equals(oldItem, newItem);
+                return oldItem.compareTo(newItem) == 0;
             }
         };
 
@@ -85,11 +83,28 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
         }
 
         private void bind(Todo todo, OnCheckChangedListener onCheckChangedListener, OnClickMenuListener onClickMenuListener) {
+            checkBox.setOnCheckedChangeListener(null);
             checkBox.setChecked(todo.isDone());
             checkBox.setText(todo.getTitle());
-            checkBox.setOnCheckedChangeListener((compoundButton, b) -> onCheckChangedListener.onChange(todo));
 
-            TextHelper.configLineThrough(checkBox, todo.isDone());
+            if (todo.isDone())
+                TextHelper.addLineThrough(checkBox);
+            else
+                TextHelper.removeLineThrough(checkBox);
+
+            checkBox.setOnCheckedChangeListener((compoundButton, checked) -> {
+                if (compoundButton.isPressed()) {
+                    todo.setDone(checked);
+
+                    if (todo.isDone())
+                        TextHelper.addLineThrough(checkBox);
+                    else
+                        TextHelper.removeLineThrough(checkBox);
+
+                    onCheckChangedListener.onChange(todo);
+                }
+            });
+
 
             imgMenu.setOnClickListener(view -> onClickMenuListener.onClick(todo));
 

@@ -22,7 +22,10 @@ public class TodoDBRepository {
     }
 
     public void fetchAllTodos() {
-        todos.setValue(todoDao.getAllTodos());
+        //it must call be in another thread
+        //use .postValue() instead of .setValue()
+        // because the .postValue() run in the background thread (non-ui thread)
+        new Thread(() -> todos.postValue(todoDao.getAllTodos())).start();
     }
 
     public void addTodo(Todo todo) throws InterruptedException {
@@ -62,6 +65,14 @@ public class TodoDBRepository {
         thread.start();
         thread.join();
         return count;
+    }
+
+    public void setDoneTodo(long todoID) throws InterruptedException {
+        Thread thread = new Thread(() -> todoDao.setDoneTodo(todoID));
+        thread.start();
+        thread.join();
+
+        fetchAllTodos();
     }
 
     public MutableLiveData<List<Todo>> getTodosLiveDate() {

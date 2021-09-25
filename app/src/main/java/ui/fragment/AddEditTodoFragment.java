@@ -88,6 +88,7 @@ public class AddEditTodoFragment extends BaseFragment {
             String res = getTodoViewModel().validateTodo(todo);
 
             if (res == null) {
+                setScrollTop();
                 getTodoViewModel().addTodo(todo);
                 back();
                 return;

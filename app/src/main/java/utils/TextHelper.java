@@ -6,11 +6,12 @@ import android.widget.TextView;
 
 public class TextHelper {
 
-    public static void configLineThrough(TextView textView, boolean addLine) {
-        if (addLine)
-            textView.setPaintFlags(textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        else
-            textView.setPaintFlags(textView.getPaintFlags());
+    public static void addLineThrough(TextView textView) {
+        textView.setPaintFlags(textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+    }
+
+    public static void removeLineThrough(TextView textView) {
+        textView.setPaintFlags(Paint.HINTING_OFF);
     }
 
 }

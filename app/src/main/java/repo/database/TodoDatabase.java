@@ -25,7 +25,8 @@ public abstract class TodoDatabase extends RoomDatabase {
             instance = Room.databaseBuilder(context.getApplicationContext(), TodoDatabase.class, DB_NAME)
                     .fallbackToDestructiveMigration()
                     .addCallback(roomCallBack)
-                    .allowMainThreadQueries()
+                    //.allowMainThreadQueries() this allow room to run db process in main thread (UI Thread)
+                    //it is recommended to be disallowed
                     .build();
         }
         return instance;

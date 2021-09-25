@@ -27,7 +27,7 @@ public interface TodoDao {
     @Query("SELECT * FROM todos ORDER By id DESC;")
     List<Todo> getAllTodos();
 
-    @Query("SELECT * FROM todos WHERE id ==:todoID;")
+    @Query("SELECT * FROM todos WHERE id = :todoID;")
     Todo getTodo(long todoID);
 
     @Query("DELETE FROM todos;")
@@ -35,4 +35,7 @@ public interface TodoDao {
 
     @Query("SELECT COUNT(*) FROM todos;")
     long getTodosCount();
+
+    @Query("UPDATE todos SET is_done = not is_done WHERE id = :todoID")
+    void setDoneTodo(long todoID);
 }
