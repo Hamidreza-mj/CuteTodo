@@ -11,7 +11,8 @@ public class TextHelper {
     }
 
     public static void removeLineThrough(TextView textView) {
-        textView.setPaintFlags(Paint.HINTING_OFF);
+        //set all text paint flags, except of Paint.STRIKE_THRU_TEXT_FLAG
+        textView.setPaintFlags(textView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
     }
 
 }
