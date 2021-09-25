@@ -2,6 +2,7 @@ package viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import java.util.List;
@@ -14,9 +15,12 @@ public class TodoViewModel extends ViewModel {
     private final TodoDBRepository dbRepository;
     private final MutableLiveData<List<Todo>> todosLiveDate;
 
+    private final MutableLiveData<Boolean> goToTopLiveData;
+
     public TodoViewModel() {
         dbRepository = new TodoDBRepository();
         todosLiveDate = dbRepository.getTodosLiveDate();
+        goToTopLiveData = new MutableLiveData<>();
     }
 
     public void fetch() {
@@ -85,6 +89,16 @@ public class TodoViewModel extends ViewModel {
     }
 
     public LiveData<List<Todo>> getTodosLiveDate() {
-        return todosLiveDate;
+        //values will not be emitted unless they have changed.
+        return Transformations.distinctUntilChanged(todosLiveDate);
+    }
+
+    public void goToTop() {
+        if (goToTopLiveData != null)
+            goToTopLiveData.setValue(true);
+    }
+
+    public LiveData<Boolean> getGoToTopLiveData() {
+        return goToTopLiveData;
     }
 }

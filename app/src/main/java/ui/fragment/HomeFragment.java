@@ -230,16 +230,16 @@ public class HomeFragment extends BaseFragment {
                 todos -> rvTodo.post(() -> adapter.getDiffer().submitList(todos))
         );
 
-        getScrollToTopLive().observe(getViewLifecycleOwner(), scroll ->
-                nested.smoothScrollTo(0, 0)
+        getTodoViewModel().getGoToTopLiveData().observe(getViewLifecycleOwner(), scroll ->
+                goToTop(1000)
         );
     }
 
-    public void goToTop() {
+    public void goToTop(int duration) {
         if (nested == null || scrollBehavior == null || frameLytButton == null)
             return;
 
-        nested.smoothScrollTo(0, 0, 800);
+        nested.smoothScrollTo(0, 0, duration);
         new Handler().postDelayed(() -> scrollBehavior.slideUp(frameLytButton), 500);
     }
 

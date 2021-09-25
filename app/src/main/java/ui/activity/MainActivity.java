@@ -53,7 +53,7 @@ public class MainActivity extends BaseActivity {
             int scrollY = homeFragment.getScrollYPos();
 
             if (fragment.isVisible() && scrollY > 0 && backstackCount == 0) {
-                homeFragment.goToTop();
+                homeFragment.goToTop(800);
                 return;
             }
         } else if (fragment instanceof CategoriesFragment) {

@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.MutableLiveData;
 
 import ui.activity.MainActivity;
 import utils.KeyboardInputHelper;
@@ -16,12 +15,9 @@ import viewmodel.TodoViewModel;
 
 public class BaseFragment extends Fragment {
 
-    private MutableLiveData<Boolean> scrollToTopLive;
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        scrollToTopLive = new MutableLiveData<>();
     }
 
     protected void hideKeyboard() {
@@ -64,14 +60,6 @@ public class BaseFragment extends Fragment {
             return null;
 
         return ((MainActivity) getActivity()).getTodoViewModel();
-    }
-
-    protected MutableLiveData<Boolean> getScrollToTopLive() {
-        return scrollToTopLive;
-    }
-
-    protected void setScrollTop() {
-        scrollToTopLive.setValue(true);
     }
 
 }
