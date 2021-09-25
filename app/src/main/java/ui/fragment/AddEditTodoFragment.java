@@ -8,14 +8,18 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.widget.NestedScrollView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.FragmentAddEditTodoBinding;
 import model.Todo;
+import utils.DisplayUtils;
 import utils.ToastHelper;
 
 public class AddEditTodoFragment extends BaseFragment {
@@ -23,8 +27,11 @@ public class AddEditTodoFragment extends BaseFragment {
     private FragmentAddEditTodoBinding binding;
 
     private MaterialButton btnAdd;
+    private TextInputLayout inpLytTitle;
     private TextInputEditText edtTitle;
     private ChipGroup chipGP;
+    private ConstraintLayout toolbar;
+    private NestedScrollView nested;
 
     private Todo.Priority priority;
 
@@ -51,9 +58,31 @@ public class AddEditTodoFragment extends BaseFragment {
 
     private void initViews() {
         binding.aImgBack.setOnClickListener(view -> back());
+        inpLytTitle = binding.inpTitle;
         edtTitle = binding.inpEdtTitle;
         btnAdd = binding.mBtnAdd;
         chipGP = binding.chipGP;
+        toolbar = binding.toolbar;
+        nested = binding.nested;
+
+        handleShadowScroll();
+    }
+
+    private void handleShadowScroll() {
+        nested.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            final float dpShadow = DisplayUtils.getDisplay().dpToPx(nested.getContext(), 12);
+
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (scrollY == 0) {
+                    toolbar.animate().translationZ(0).setStartDelay(0).setDuration(200).start();
+                    //toolbar.setTranslationZ(0);
+                } else if (scrollY > 0) {
+                    toolbar.setTranslationZ(dpShadow);
+                    toolbar.animate().translationZ(dpShadow).setStartDelay(0).setDuration(90).start();
+                }
+            }
+        });
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -80,6 +109,7 @@ public class AddEditTodoFragment extends BaseFragment {
 
 
         btnAdd.setOnClickListener(view -> {
+            inpLytTitle.setError(null);
             Todo todo = new Todo();
             todo.setTitle(edtTitle.getText().toString().trim());
             todo.setPriority(priority);
@@ -94,7 +124,7 @@ public class AddEditTodoFragment extends BaseFragment {
                 return;
             }
 
-            ToastHelper.get().toast(res);
+            inpLytTitle.setError(res);
         });
     }
 }
