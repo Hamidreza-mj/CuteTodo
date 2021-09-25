@@ -2,10 +2,14 @@ package ui.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -20,7 +24,6 @@ import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.FragmentAddEditTodoBinding;
 import model.Todo;
 import utils.DisplayUtils;
-import utils.ToastHelper;
 
 public class AddEditTodoFragment extends BaseFragment {
 
@@ -32,14 +35,37 @@ public class AddEditTodoFragment extends BaseFragment {
     private ChipGroup chipGP;
     private ConstraintLayout toolbar;
     private NestedScrollView nested;
+    private TextView txtTitle;
 
     private Todo.Priority priority;
+
+    private static final String TODO_ARGS = "todo-args";
+
+    private Todo todo;
+
+    private boolean isEditMode = false;
 
     public AddEditTodoFragment() {
     }
 
-    public static AddEditTodoFragment newInstance() {
-        return new AddEditTodoFragment();
+    public static AddEditTodoFragment newInstance(Todo todo) {
+        AddEditTodoFragment fragment = new AddEditTodoFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(TODO_ARGS, todo);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null && !getArguments().isEmpty()) {
+            todo = (Todo) getArguments().getSerializable(TODO_ARGS);
+
+            if (todo != null)
+                isEditMode = true;
+        }
     }
 
     @Nullable
@@ -53,7 +79,8 @@ public class AddEditTodoFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews();
-        handleActions();
+        handleLogic();
+        handleAction();
     }
 
     private void initViews() {
@@ -64,6 +91,7 @@ public class AddEditTodoFragment extends BaseFragment {
         chipGP = binding.chipGP;
         toolbar = binding.toolbar;
         nested = binding.nested;
+        txtTitle = binding.txtTitle;
 
         handleShadowScroll();
     }
@@ -86,10 +114,43 @@ public class AddEditTodoFragment extends BaseFragment {
     }
 
     @SuppressLint("NonConstantResourceId")
-    private void handleActions() {
+    private void handleLogic() {
+        if (todo != null) {
+            txtTitle.setText(getString(R.string.edit_todo));
+            btnAdd.setText(getString(R.string.edit));
+            edtTitle.setText(todo.getTitle());
+
+            @IdRes int chipID;
+
+            switch (todo.getPriority()) {
+                case LOW:
+                default:
+                    chipID = R.id.chipLow;
+                    priority = Todo.Priority.LOW;
+                    break;
+
+                case NORMAL:
+                    chipID = R.id.chipNormal;
+                    priority = Todo.Priority.NORMAL;
+                    break;
+
+                case HIGH:
+                    chipID = R.id.chipHigh;
+                    priority = Todo.Priority.HIGH;
+                    break;
+            }
+
+            chipGP.check(chipID);
+            return;
+        }
+
+        txtTitle.setText(getString(R.string.add_new_todo));
+        btnAdd.setText(getString(R.string.save));
         chipGP.check(R.id.chipLow);
         priority = Todo.Priority.LOW; //set default priority
+    }
 
+    private void handleAction() {
         chipGP.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
                 case R.id.chipLow:
@@ -107,24 +168,66 @@ public class AddEditTodoFragment extends BaseFragment {
             }
         });
 
+        edtTitle.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() > 0) {
+                    inpLytTitle.setError(null);
+                }
+            }
+        });
 
         btnAdd.setOnClickListener(view -> {
             inpLytTitle.setError(null);
-            Todo todo = new Todo();
-            todo.setTitle(edtTitle.getText().toString().trim());
-            todo.setPriority(priority);
-            todo.setCategory(null);
 
-            String res = getTodoViewModel().validateTodo(todo);
+            if (isEditMode) {
+                Todo editedTodo = new Todo();
+                editedTodo.setId(todo.getId());
+                editedTodo.setTitle(edtTitle.getText().toString().trim());
+                editedTodo.setPriority(priority);
+                editedTodo.setCategory(null);
+                editedTodo.setDone(todo.isDone());
 
-            if (res == null) {
-                getTodoViewModel().goToTop();
-                getTodoViewModel().addTodo(todo);
-                back();
-                return;
+                String res = getTodoViewModel().validateTodo(editedTodo);
+
+                if (res == null) {
+                    getTodoViewModel().editTodo(editedTodo);
+                    back();
+                    return;
+                }
+
+                inpLytTitle.setError(res);
+            } else {
+                todo = new Todo();
+
+                todo.setTitle(edtTitle.getText().toString().trim());
+                todo.setPriority(priority);
+                todo.setCategory(null);
+
+                String res = getTodoViewModel().validateTodo(todo);
+
+                if (res == null) {
+                    getTodoViewModel().goToTop();
+                    getTodoViewModel().addTodo(todo);
+                    back();
+                    return;
+                }
+
+                inpLytTitle.setError(res);
             }
-
-            inpLytTitle.setError(res);
         });
+
+
     }
+
 }

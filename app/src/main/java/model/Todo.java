@@ -5,11 +5,12 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Keep
 @Entity(tableName = "todos")
-public class Todo implements Comparable<Todo> {
+public class Todo implements Comparable<Todo>, Serializable {
 
     @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true)
@@ -69,11 +70,13 @@ public class Todo implements Comparable<Todo> {
 
     @Override
     public int compareTo(Todo todo) {
-        if (id == todo.getId() &&
+        boolean isSame = id == todo.getId() &&
                 Objects.equals(title, todo.getTitle()) &&
                 Objects.equals(category, todo.category) &&
                 Objects.equals(priority, todo.priority) &&
-                isDone == todo.isDone())
+                isDone == todo.isDone();
+
+        if (isSame)
             return 0;
 
         return 1;

@@ -175,7 +175,7 @@ public class HomeFragment extends BaseFragment {
         });
 
         btnAdd.setOnClickListener(view -> {
-            Fragment fragment = AddEditTodoFragment.newInstance();
+            Fragment fragment = AddEditTodoFragment.newInstance(null);
             fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
             transaction.add(R.id.mainContainer, fragment, Tags.FragmentTag.ADD_EDIT_TODO);
@@ -196,6 +196,7 @@ public class HomeFragment extends BaseFragment {
                 todoMenu -> {
                     MoreDialog moreDialog = new MoreDialog(getActivity());
                     moreDialog.show();
+
                     moreDialog.setOnClickDelete(() -> {
                         moreDialog.dismiss();
 
@@ -214,12 +215,22 @@ public class HomeFragment extends BaseFragment {
                             deleteDialog.dismiss();
                         });
                     });
+
+                    moreDialog.setOnClickEdit(() -> {
+                        moreDialog.dismiss();
+
+                        Fragment fragment = AddEditTodoFragment.newInstance(todoMenu);
+                        fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
+                        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                        transaction.add(R.id.mainContainer, fragment, Tags.FragmentTag.ADD_EDIT_TODO);
+                        transaction.addToBackStack(Tags.BackStack.ADD_EDIT_TODO);
+                        transaction.commit();
+                    });
                 }
         );
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         rvTodo.setLayoutManager(layoutManager);
-//        rvTodo.setItemAnimator(new CustomItemAnimator());
         rvTodo.setAdapter(adapter);
     }
 

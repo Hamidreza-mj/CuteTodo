@@ -15,6 +15,7 @@ public class MoreDialog {
     private AlertDialog dialog;
 
     private OnClickDelete onClickDelete;
+    private OnClickEdit onClickEdit;
 
     public MoreDialog(Context context, boolean cancelable) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.TranslucentDialog);
@@ -32,6 +33,16 @@ public class MoreDialog {
             onClickDelete.onClick();
         });
 
+        TextView txtEdit = binding.txtEdit;
+        txtEdit.setOnClickListener(view -> {
+            if (onClickEdit == null) {
+                dismiss();
+                return;
+            }
+
+            onClickEdit.onClick();
+        });
+
         if (dialog == null)
             dialog = builder.create();
     }
@@ -42,6 +53,10 @@ public class MoreDialog {
 
     public void setOnClickDelete(OnClickDelete onClickDelete) {
         this.onClickDelete = onClickDelete;
+    }
+
+    public void setOnClickEdit(OnClickEdit onClickEdit) {
+        this.onClickEdit = onClickEdit;
     }
 
     public void dismiss() {
@@ -55,6 +70,10 @@ public class MoreDialog {
     }
 
     public interface OnClickDelete {
+        void onClick();
+    }
+
+    public interface OnClickEdit {
         void onClick();
     }
 
