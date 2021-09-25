@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel;
 import java.util.List;
 
 import model.Todo;
-import repo.TodoDBRepository;
+import repo.dbRepoController.TodoDBRepository;
 
 public class TodoViewModel extends ViewModel {
 
@@ -50,7 +50,7 @@ public class TodoViewModel extends ViewModel {
 
     public void deleteAllTodos() {
         try {
-            dbRepository.deleteAllTodo();
+            dbRepository.deleteAllTodos();
         } catch (InterruptedException ignored) {
         }
     }
@@ -83,7 +83,7 @@ public class TodoViewModel extends ViewModel {
         boolean isValidTodo = pureValidateTodo(todo);
 
         if (!isValidTodo)
-            return "عنوان کار نامعتبر است!";
+            return "عنوان کار نمی تواند خالی باشد!";
 
         return null;
     }

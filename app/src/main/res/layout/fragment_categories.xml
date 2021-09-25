@@ -34,7 +34,7 @@
                 android:gravity="right"
                 android:text="@string/categories"
                 app:layout_constraintEnd_toStartOf="@id/aImgBack"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@id/aImgDeleteAll"
                 app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -46,11 +46,31 @@
                 android:clickable="true"
                 android:contentDescription="@string/back"
                 android:focusable="true"
+                android:layout_marginEnd="10dp"
                 app:layout_constraintBottom_toBottomOf="@id/txtTitle"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/txtTitle"
                 app:layout_constraintTop_toTopOf="@id/txtTitle"
                 app:srcCompat="@drawable/ic_back_light" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/aImgDeleteAll"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="حذف همه دسته‌بندی‌ها"
+                android:focusable="true"
+                android:padding="10dp"
+                android:tint="@color/red"
+                android:layout_marginStart="11dp"
+                app:layout_constraintBottom_toBottomOf="@id/txtTitle"
+                app:layout_constraintEnd_toStartOf="@id/txtTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/txtTitle"
+                app:srcCompat="@drawable/ic_recycle_bin"
+                tools:ignore="HardcodedText" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

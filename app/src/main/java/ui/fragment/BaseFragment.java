@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import ui.activity.MainActivity;
 import utils.KeyboardInputHelper;
+import viewmodel.CategoryViewModel;
 import viewmodel.TodoViewModel;
 
 
@@ -60,6 +61,13 @@ public class BaseFragment extends Fragment {
             return null;
 
         return ((MainActivity) getActivity()).getTodoViewModel();
+    }
+
+    protected CategoryViewModel getCategoryViewModel() {
+        if (getActivity() == null)
+            return null;
+
+        return ((MainActivity) getActivity()).getCategoryViewModel();
     }
 
 }

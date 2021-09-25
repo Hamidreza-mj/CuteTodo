@@ -1,4 +1,4 @@
-package repo;
+package repo.dbRepoController;
 
 
 import androidx.lifecycle.MutableLiveData;
@@ -11,13 +11,13 @@ import repo.dao.TodoDao;
 
 public class TodoDBRepository {
 
-    private final TodoDao todoDao;
+    private final TodoDao dao;
     private final MutableLiveData<List<Todo>> todos;
 
     private long count = 0;
 
     public TodoDBRepository() {
-        todoDao = App.get().todoDatabase().getTodoDao();
+        dao = App.get().todoDatabase().getTodoDao();
         todos = new MutableLiveData<>();
     }
 
@@ -25,11 +25,11 @@ public class TodoDBRepository {
         //it must call be in another thread
         //use .postValue() instead of .setValue()
         // because the .postValue() run in the background thread (non-ui thread)
-        new Thread(() -> todos.postValue(todoDao.getAllTodos())).start();
+        new Thread(() -> todos.postValue(dao.getAllTodos())).start();
     }
 
     public void addTodo(Todo todo) throws InterruptedException {
-        Thread thread = new Thread(() -> todoDao.create(todo));
+        Thread thread = new Thread(() -> dao.create(todo));
         thread.start();
         thread.join();
 
@@ -37,7 +37,7 @@ public class TodoDBRepository {
     }
 
     public void editTodo(Todo todo) throws InterruptedException {
-        Thread thread = new Thread(() -> todoDao.update(todo));
+        Thread thread = new Thread(() -> dao.update(todo));
         thread.start();
         thread.join();
 
@@ -45,15 +45,15 @@ public class TodoDBRepository {
     }
 
     public void deleteTodo(Todo todo) throws InterruptedException {
-        Thread thread = new Thread(() -> todoDao.delete(todo));
+        Thread thread = new Thread(() -> dao.delete(todo));
         thread.start();
         thread.join();
 
         fetchAllTodos();
     }
 
-    public void deleteAllTodo() throws InterruptedException {
-        Thread thread = new Thread(todoDao::deleteAllTodos);
+    public void deleteAllTodos() throws InterruptedException {
+        Thread thread = new Thread(dao::deleteAllTodos);
         thread.start();
         thread.join();
 
@@ -61,14 +61,14 @@ public class TodoDBRepository {
     }
 
     public long todosCount() throws InterruptedException {
-        Thread thread = new Thread(() -> count = todoDao.getTodosCount());
+        Thread thread = new Thread(() -> count = dao.getTodosCount());
         thread.start();
         thread.join();
         return count;
     }
 
     public void setDoneTodo(long todoID) throws InterruptedException {
-        Thread thread = new Thread(() -> todoDao.setDoneTodo(todoID));
+        Thread thread = new Thread(() -> dao.setDoneTodo(todoID));
         thread.start();
         thread.join();
 

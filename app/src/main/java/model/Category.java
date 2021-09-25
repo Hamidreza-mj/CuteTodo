@@ -1,12 +1,23 @@
 package model;
 
 import androidx.annotation.Keep;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+import java.io.Serializable;
+import java.util.Objects;
 
 @Keep
-public class Category {
+@Entity(tableName = "categories")
+public class Category implements Comparable<Category>, Serializable {
 
+    @ColumnInfo(name = "id")
+    @PrimaryKey(autoGenerate = true)
     private int id;
-    private String category;
+
+    @ColumnInfo(name = "name")
+    private String name;
 
     public int getId() {
         return id;
@@ -16,11 +27,22 @@ public class Category {
         this.id = id;
     }
 
-    public String getCategory() {
-        return category;
+    public String getName() {
+        return name;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public int compareTo(Category category) {
+        boolean isSame = id == category.getId() &&
+                Objects.equals(name, category.getName());
+
+        if (isSame)
+            return 0;
+
+        return 1;
     }
 }

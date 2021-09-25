@@ -195,9 +195,8 @@ public class AddEditTodoFragment extends BaseFragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (editable.length() > 0) {
+                if (editable.length() > 0)
                     inpLytTitle.setError(null);
-                }
             }
         });
 
@@ -240,8 +239,6 @@ public class AddEditTodoFragment extends BaseFragment {
                 inpLytTitle.setError(res);
             }
         });
-
-
     }
 
 }

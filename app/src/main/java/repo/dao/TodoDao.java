@@ -31,7 +31,7 @@ public interface TodoDao {
     Todo getTodo(long todoID);
 
     @Query("DELETE FROM todos;")
-    int deleteAllTodos();
+    void deleteAllTodos();
 
     @Query("SELECT COUNT(*) FROM todos;")
     long getTodosCount();

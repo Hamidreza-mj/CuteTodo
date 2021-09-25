@@ -11,8 +11,6 @@ import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Objects;
-
 import hlv.cute.todo.databinding.ItemCategoryBinding;
 import model.Category;
 
@@ -21,7 +19,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     private final Context context;
     private final AsyncListDiffer<Category> differ;
 
-    private OnClickMenuListener onClickMenuListener;
+    private final OnClickMenuListener onClickMenuListener;
 
     public CategoryAdapter(Context context, OnClickMenuListener onClickMenuListener) {
         this.context = context;
@@ -35,7 +33,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
             @Override
             public boolean areContentsTheSame(@NonNull Category oldItem, @NonNull Category newItem) {
-                return Objects.equals(oldItem, newItem);
+                return oldItem.compareTo(newItem) == 0;
             }
         };
 
@@ -73,16 +71,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
         private void bind(Category category, OnClickMenuListener onClickMenuListener) {
             imgMenu.setOnClickListener(view -> onClickMenuListener.onClick(category));
-            txtCategory.setText(category.getCategory());
+            txtCategory.setText(category.getName());
         }
     }
 
     public AsyncListDiffer<Category> getDiffer() {
         return differ;
-    }
-
-    public interface OnCheckChangedListener {
-        void onChange(Category category);
     }
 
     public interface OnClickMenuListener {

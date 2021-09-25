@@ -23,19 +23,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior;
 import com.google.android.material.button.MaterialButton;
 
-import java.util.ArrayList;
-
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.FragmentCategoriesBinding;
-import hlv.cute.todo.databinding.FragmentHomeBinding;
-import model.Category;
-import model.Todo;
 import ui.adapter.CategoryAdapter;
-import ui.adapter.TodoAdapter;
-import ui.dialog.GlobalMenuDialog;
+import ui.dialog.DeleteDialog;
 import ui.dialog.MoreDialog;
 import utils.DisplayUtils;
 import utils.Tags;
+import utils.ToastHelper;
 
 public class CategoriesFragment extends BaseFragment {
 
@@ -46,6 +41,7 @@ public class CategoriesFragment extends BaseFragment {
     private RecyclerView rvCategory;
     private FrameLayout frameLytButton;
     private MaterialButton btnAdd;
+    private AppCompatImageView imgDeleteAll;
     private HideBottomViewOnScrollBehavior<FrameLayout> scrollBehavior;
 
     private CategoryAdapter adapter;
@@ -70,11 +66,12 @@ public class CategoriesFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         initViews();
         handleActions();
+        handleObserver();
     }
 
     private void initViews() {
         binding.aImgBack.setOnClickListener(view -> back());
-
+        imgDeleteAll = binding.aImgDeleteAll;
         toolbar = binding.toolbar;
         nested = binding.nested;
         rvCategory = binding.rvCategory;
@@ -111,8 +108,26 @@ public class CategoriesFragment extends BaseFragment {
     }
 
     private void handleActions() {
+        imgDeleteAll.setOnClickListener(view -> {
+            if (getCategoryViewModel().categoriesIsEmpty()) {
+                ToastHelper.get().toast(getString(R.string.categories_is_empty));
+                return;
+            }
+
+            DeleteDialog deleteDialog = new DeleteDialog(getActivity());
+            deleteDialog.show();
+
+            deleteDialog.setTitle(getString(R.string.delete_all_categories));
+            deleteDialog.setMessage(getString(R.string.delete_all_categories_message, getCategoryViewModel().getCategoriesCount()));
+            deleteDialog.setOnClickDelete(() -> {
+                getCategoryViewModel().deleteAllCategories();
+                scrollBehavior.slideUp(frameLytButton);
+                deleteDialog.dismiss();
+            });
+        });
+
         btnAdd.setOnClickListener(view -> {
-            Fragment fragment = AddEditCategoryFragment.newInstance();
+            Fragment fragment = AddEditCategoryFragment.newInstance(null);
             fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
             transaction.add(R.id.mainContainer, fragment, Tags.FragmentTag.ADD_EDIT_CATEGORY);
@@ -131,53 +146,61 @@ public class CategoriesFragment extends BaseFragment {
                 category -> {
                     MoreDialog moreDialog = new MoreDialog(getActivity());
                     moreDialog.show();
+
+                    moreDialog.setOnClickDelete(() -> {
+                        moreDialog.dismiss();
+
+                        DeleteDialog deleteDialog = new DeleteDialog(getActivity());
+                        deleteDialog.show();
+                        deleteDialog.setTitle(getString(R.string.delete_category));
+
+                        String categoryName = category.getName();
+                        if (categoryName != null && categoryName.trim().length() > 60)
+                            categoryName = categoryName.substring(0, 60).trim();
+
+                        deleteDialog.setMessage(getString(R.string.delete_category_message, categoryName));
+                        deleteDialog.setOnClickDelete(() -> {
+                            getCategoryViewModel().deleteCategory(category);
+                            scrollBehavior.slideUp(frameLytButton);
+                            deleteDialog.dismiss();
+                        });
+                    });
+
+                    moreDialog.setOnClickEdit(() -> {
+                        moreDialog.dismiss();
+
+                        Fragment fragment = AddEditCategoryFragment.newInstance(category);
+                        fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
+                        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                        transaction.add(R.id.mainContainer, fragment, Tags.FragmentTag.ADD_EDIT_CATEGORY);
+                        transaction.addToBackStack(Tags.BackStack.ADD_EDIT_CATEGORY);
+                        transaction.commit();
+                    });
                 }
         );
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         rvCategory.setLayoutManager(layoutManager);
         rvCategory.setAdapter(adapter);
-
-        ArrayList<Category> list = new ArrayList<>();
-
-        Category category1 = new Category();
-        category1.setId(1);
-        category1.setCategory("دانشگاه");
-
-        Category category2 = new Category();
-        category2.setId(2);
-        category2.setCategory("کاری");
-
-        Category category3 = new Category();
-        category3.setId(3);
-        category3.setCategory("منزل");
-
-        list.add(category1);
-        list.add(category3);
-        list.add(category3);
-        list.add(category3);
-        list.add(category3);
-        list.add(category3);
-        list.add(category3);
-        list.add(category3);
-        list.add(category3);
-        list.add(category3);
-        list.add(category3);
-        list.add(category3);
-        list.add(category3);
-        list.add(category3);
-        list.add(category3);
-        list.add(category3);
-
-
-        adapter.getDiffer().submitList(list);
     }
 
-    public void goToTop() {
+    private void handleObserver() {
+        getCategoryViewModel().fetch();
+
+        getCategoryViewModel().getCategoriesLiveDate().observe(getViewLifecycleOwner(), categories ->
+                rvCategory.post(() -> adapter.getDiffer().submitList(categories))
+        );
+
+        getCategoryViewModel().getGoToTopLiveData().observe(getViewLifecycleOwner(), scroll ->
+                goToTop(1000)
+        );
+    }
+
+    public void goToTop(int duration) {
         if (nested == null || scrollBehavior == null || frameLytButton == null)
             return;
 
-        nested.smoothScrollTo(0, 0, 800);
+        nested.smoothScrollTo(0, 0, duration);
         new Handler().postDelayed(() -> scrollBehavior.slideUp(frameLytButton), 500);
     }
 

@@ -16,6 +16,7 @@
 
     <string name="edit">ویرایش</string>
     <string name="edit_todo">ویرایش کار</string>
+    <string name="edit_category">ویرایش دسته بندی</string>
 
     <string name="add_new_category">اضافه کردن دسته جدید</string>
     <string name="enter_category_name">عنوان دسته را وارد کنید</string>
@@ -36,17 +37,23 @@
     <string name="high_priority">اولویت: زیاد</string>
     <string name="normal_priority">اولویت: عادی</string>
     <string name="low_priority">اولویت: کم</string>
-    
+
     <string name="delete_message">آیا از حذف این مورد اطمینان دارید؟</string>
     <string name="cancel">انصراف</string>
 
 
     <string name="todos_is_empty">لیست کارها خالی است!</string>
+    <string name="categories_is_empty">لیست دسته‌بندی‌ها خالی است!</string>
     <string name="delete_all_todos">حذف همه کارها</string>
     <string name="delete_all_todos_message">همه %1$d کار موجود حذف شود؟</string>
+    <string name="delete_all_categories">حذف همه دسته‌بندی‌ها</string>
+    <string name="delete_all_categories_message">همه %1$d دسته‌بندی موجود حذف شود؟</string>
 
     <string name="delete_todo">حذف کار</string>
     <string name="delete_todo_message"> کار \"%1$s\" حذف شود؟</string>
+
+    <string name="delete_category">حذف دسته بندی</string>
+    <string name="delete_category_message"> دسته \"%1$s\" حذف شود؟</string>
 
 
 </resources>

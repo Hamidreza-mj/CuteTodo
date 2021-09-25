@@ -11,21 +11,21 @@ import hlv.cute.todo.databinding.ActivityMainBinding;
 import ui.fragment.CategoriesFragment;
 import ui.fragment.HomeFragment;
 import utils.Tags;
+import viewmodel.CategoryViewModel;
 import viewmodel.TodoViewModel;
 
 public class MainActivity extends BaseActivity {
 
-    private ActivityMainBinding binding;
-
     private TodoViewModel todoViewModel;
+    private CategoryViewModel categoryViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        hlv.cute.todo.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         initViews();
-        handleTodoObserver();
+        provideViewModels();
     }
 
     private void initViews() {
@@ -35,12 +35,17 @@ public class MainActivity extends BaseActivity {
         transaction.commit();
     }
 
-    private void handleTodoObserver() {
+    private void provideViewModels() {
         todoViewModel = new ViewModelProvider(this).get(TodoViewModel.class);
+        categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
     }
 
     public TodoViewModel getTodoViewModel() {
         return todoViewModel;
+    }
+
+    public CategoryViewModel getCategoryViewModel() {
+        return categoryViewModel;
     }
 
     @Override
@@ -61,7 +66,7 @@ public class MainActivity extends BaseActivity {
             int scrollY = categoriesFragment.getScrollYPos();
 
             if (fragment.isVisible() && scrollY > 0) {
-                categoriesFragment.goToTop();
+                categoriesFragment.goToTop(800);
                 return;
             }
         }
