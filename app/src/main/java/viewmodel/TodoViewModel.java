@@ -63,9 +63,9 @@ public class TodoViewModel extends ViewModel {
         return getTodosCount() == 0;
     }
 
-    public void setDoneTodo(Todo todo) {
+    public void setDoneTodo(long todoID) {
         try {
-            dbRepository.setDoneTodo(todo.getId());
+            dbRepository.setDoneTodo(todoID);
         } catch (InterruptedException ignored) {
         }
     }

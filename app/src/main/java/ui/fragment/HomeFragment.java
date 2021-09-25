@@ -191,7 +191,7 @@ public class HomeFragment extends BaseFragment {
             return;
 
         adapter = new TodoAdapter(getActivity(),
-                todoCheck -> getTodoViewModel().setDoneTodo(todoCheck),
+                todoID -> getTodoViewModel().setDoneTodo(todoID),
 
                 todoMenu -> {
                     MoreDialog moreDialog = new MoreDialog(getActivity());

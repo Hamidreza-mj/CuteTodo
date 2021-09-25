@@ -83,7 +83,11 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
         }
 
         private void bind(Todo todo, OnCheckChangedListener onCheckChangedListener, OnClickMenuListener onClickMenuListener) {
+            //must be set null
+            //to avoid when recyclerview scroll, default implemented interface body called!
             checkBox.setOnCheckedChangeListener(null);
+
+            //for first run
             checkBox.setChecked(todo.isDone());
             checkBox.setText(todo.getTitle());
 
@@ -93,6 +97,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
                 TextHelper.removeLineThrough(checkBox);
 
             checkBox.setOnCheckedChangeListener((compoundButton, checked) -> {
+                //after checked
                 if (compoundButton.isPressed()) {
                     todo.setDone(checked);
 
@@ -101,7 +106,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
                     else
                         TextHelper.removeLineThrough(checkBox);
 
-                    onCheckChangedListener.onChange(todo);
+                    onCheckChangedListener.onChange(todo.getId());
                 }
             });
 
@@ -141,7 +146,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
     }
 
     public interface OnCheckChangedListener {
-        void onChange(Todo todo);
+        void onChange(int todoID);
     }
 
     public interface OnClickMenuListener {
