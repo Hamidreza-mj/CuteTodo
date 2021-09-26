@@ -42,6 +42,7 @@ public class CategoriesFragment extends BaseFragment {
     private FrameLayout frameLytButton;
     private MaterialButton btnAdd;
     private AppCompatImageView imgDeleteAll;
+    private ConstraintLayout lytEmpty;
     private HideBottomViewOnScrollBehavior<FrameLayout> scrollBehavior;
 
     private CategoryAdapter adapter;
@@ -77,6 +78,7 @@ public class CategoriesFragment extends BaseFragment {
         rvCategory = binding.rvCategory;
         frameLytButton = binding.frameLytButton;
         btnAdd = binding.mBtnAdd;
+        lytEmpty = binding.cLytEmpty;
 
         setScrollBehavior();
         handleShadowScroll();
@@ -187,8 +189,17 @@ public class CategoriesFragment extends BaseFragment {
     private void handleObserver() {
         getCategoryViewModel().fetch();
 
-        getCategoryViewModel().getCategoriesLiveDate().observe(getViewLifecycleOwner(), categories ->
-                rvCategory.post(() -> adapter.getDiffer().submitList(categories))
+        getCategoryViewModel().getCategoriesLiveDate().observe(getViewLifecycleOwner(),
+                categories -> {
+                    if (categories == null || categories.isEmpty()) {
+                        rvCategory.setVisibility(View.GONE);
+                        lytEmpty.setVisibility(View.VISIBLE);
+                    } else {
+                        lytEmpty.setVisibility(View.GONE);
+                        rvCategory.setVisibility(View.VISIBLE);
+                        rvCategory.post(() -> adapter.getDiffer().submitList(categories));
+                    }
+                }
         );
 
         getCategoryViewModel().getGoToTopLiveData().observe(getViewLifecycleOwner(), scroll ->
