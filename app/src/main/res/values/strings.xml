@@ -57,8 +57,7 @@
     <string name="close">بستن</string>
     <string name="select_one_category">یک دسته‌بندی انتخاب کنید.</string>
     <string name="empty_categories">دسته‌بندی وجود ندارد!</string>
-    <string name="manage_categories_notes">از طریق گزینه \"دسته‌بندی‌ها\" می توانید دسته جدید اضافه کنید.</string>
+    <string name="manage_categories_notes">از طریق گزینه <font color='#1F8EF3'>\"دسته‌بندی‌ها\"</font> می توانید دسته جدید اضافه کنید.</string>
     <string name="todos_empty">لیست کارها خالی است!</string>
     <string name="todos_empty_notes">از طریق دکمه <font color='#1F8EF3'>\"اضافه کردن\"</font> در پایین صفحه،\nبه سادگی می توانید یک کار جدید ایجاد کنید.</string>
-
 </resources>
