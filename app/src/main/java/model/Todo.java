@@ -19,6 +19,9 @@ public class Todo implements Comparable<Todo>, Serializable {
     @ColumnInfo(name = "title")
     private String title;
 
+    @ColumnInfo(name = "category_id")
+    private int categoryId;
+
     @ColumnInfo(name = "category")
     private String category;
 
@@ -42,6 +45,14 @@ public class Todo implements Comparable<Todo>, Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getCategory() {

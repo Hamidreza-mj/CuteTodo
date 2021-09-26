@@ -123,6 +123,7 @@ public class CategoriesFragment extends BaseFragment {
             deleteDialog.setMessage(getString(R.string.delete_all_categories_message, getCategoryViewModel().getCategoriesCount()));
             deleteDialog.setOnClickDelete(() -> {
                 getCategoryViewModel().deleteAllCategories();
+                getTodoViewModel().fetch(); //need to update todos if categories was deleted
                 scrollBehavior.slideUp(frameLytButton);
                 deleteDialog.dismiss();
             });
@@ -163,6 +164,7 @@ public class CategoriesFragment extends BaseFragment {
                         deleteDialog.setMessage(getString(R.string.delete_category_message, categoryName));
                         deleteDialog.setOnClickDelete(() -> {
                             getCategoryViewModel().deleteCategory(category);
+                            getTodoViewModel().fetch(); //need to update todos if category was deleted
                             scrollBehavior.slideUp(frameLytButton);
                             deleteDialog.dismiss();
                         });

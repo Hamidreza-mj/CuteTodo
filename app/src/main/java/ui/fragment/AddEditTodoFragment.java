@@ -51,11 +51,11 @@ public class AddEditTodoFragment extends BaseFragment {
     private MaterialCardView cardCategory;
     private TextView txtCategory;
 
+    private Todo todo;
     private Todo.Priority priority;
+    private Category category;
 
     private static final String TODO_ARGS = "todo-args";
-
-    private Todo todo;
 
     private boolean isEditMode = false;
 
@@ -149,6 +149,17 @@ public class AddEditTodoFragment extends BaseFragment {
             btnAdd.setText(getString(R.string.edit));
             edtTitle.setText(todo.getTitle());
 
+            if (todo.getCategoryId() != 0 && todo.getCategory() != null) {
+                category = new Category();
+                category.setId(todo.getCategoryId());
+                category.setName(todo.getCategory());
+
+                txtCategory.setText(todo.getCategory());
+
+                if (getActivity() != null)
+                    txtCategory.setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
+            }
+
             @IdRes int chipID;
 
             switch (todo.getPriority()) {
@@ -187,11 +198,30 @@ public class AddEditTodoFragment extends BaseFragment {
 
             dropDown.setOnClickCategory(category -> {
                 dropDown.dismiss();
+
+                if (category.getId() == 0 && category.getName() == null) {
+                    this.category = null;
+                    if (getActivity() != null)
+                        txtCategory.setTextColor(ContextCompat.getColor(getActivity(), R.color.gray));
+                    txtCategory.setText(R.string.enter_category_name);
+                    return;
+                }
+
+                this.category = category;
+
                 txtCategory.setText(category.getName());
-                txtCategory.setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
+
+                if (getActivity() != null)
+                    txtCategory.setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
             });
 
             dropDown.setOnclickManage(() -> {
+                this.category = null;
+
+                if (getActivity() != null)
+                    txtCategory.setTextColor(ContextCompat.getColor(getActivity(), R.color.gray));
+                txtCategory.setText(R.string.enter_category_name);
+
                 Fragment fragment = CategoriesFragment.newInstance();
                 fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
@@ -247,7 +277,15 @@ public class AddEditTodoFragment extends BaseFragment {
                 editedTodo.setId(todo.getId());
                 editedTodo.setTitle(edtTitle.getText().toString().trim());
                 editedTodo.setPriority(priority);
-                editedTodo.setCategory(null);
+
+                if (category != null) {
+                    editedTodo.setCategoryId(category.getId());
+                    editedTodo.setCategory(category.getName());
+                } else {
+                    editedTodo.setCategoryId(0);
+                    editedTodo.setCategory(null);
+                }
+
                 editedTodo.setDone(todo.isDone());
 
                 String res = getTodoViewModel().validateTodo(editedTodo);
@@ -264,7 +302,15 @@ public class AddEditTodoFragment extends BaseFragment {
 
                 todo.setTitle(edtTitle.getText().toString().trim());
                 todo.setPriority(priority);
-                todo.setCategory(null);
+
+                if (category != null) {
+                    todo.setCategoryId(category.getId());
+                    todo.setCategory(category.getName());
+                } else {
+                    todo.setCategoryId(0);
+                    todo.setCategory(null);
+                }
+
 
                 String res = getTodoViewModel().validateTodo(todo);
 

@@ -45,7 +45,11 @@ public class CategoryDBRepository {
     }
 
     public void editCategory(Category category) throws InterruptedException {
-        Thread thread = new Thread(() -> dao.update(category));
+        Thread thread = new Thread(() -> {
+            dao.update(category);
+            if (category.getId() != 0 && category.getName() != null) //maybe not needed!
+                dao.editTodoCategory(category.getId(), category.getName()); //also edit all used category in todos
+        });
         thread.start();
         thread.join();
 
@@ -53,7 +57,10 @@ public class CategoryDBRepository {
     }
 
     public void deleteCategory(Category category) throws InterruptedException {
-        Thread thread = new Thread(() -> dao.delete(category));
+        Thread thread = new Thread(() -> {
+            dao.delete(category);
+            dao.clearSingleCategory(category.getId()); //clear category from single todo
+        });
         thread.start();
         thread.join();
 
@@ -61,7 +68,10 @@ public class CategoryDBRepository {
     }
 
     public void deleteAllCategories() throws InterruptedException {
-        Thread thread = new Thread(dao::deleteAllCategories);
+        Thread thread = new Thread(() -> {
+            dao.deleteAllCategories();
+            dao.clearAllCategories(); //clear categories from all todos
+        });
         thread.start();
         thread.join();
 

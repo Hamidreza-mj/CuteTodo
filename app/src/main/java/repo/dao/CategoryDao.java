@@ -33,7 +33,16 @@ public interface CategoryDao {
     @Query("DELETE FROM categories;")
     void deleteAllCategories();
 
+    @Query("UPDATE todos SET category_id = 0, category = null;")
+    void clearAllCategories();
+
+    @Query("UPDATE todos SET category_id = 0, category = null WHERE category_id = :categoryID;")
+    void clearSingleCategory(long categoryID);
+
     @Query("SELECT COUNT(*) FROM categories;")
     long getCategoriesCount();
+
+    @Query("UPDATE todos SET category = :categoryName WHERE category_id = :categoryID;")
+    void editTodoCategory(long categoryID, String categoryName);
 
 }

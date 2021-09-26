@@ -115,6 +115,7 @@ public class AddEditCategoryFragment extends BaseFragment {
 
                 if (res == null) {
                     getCategoryViewModel().editCategory(editedCategory);
+                    getTodoViewModel().fetch(); //need to update todos if category was edited
                     back();
                     return;
                 }
