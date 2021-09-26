@@ -22,5 +22,8 @@
 
         <item name="android:colorControlHighlight">@color/HighlightBlue</item>
 
+        <item name="android:listDivider">@color/divider</item>
+
+
     </style>
 </resources>

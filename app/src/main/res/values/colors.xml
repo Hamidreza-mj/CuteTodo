@@ -28,4 +28,6 @@
     <color name="dialog_message">#818181</color>
     <color name="gray_text">#757575</color>
 
+    <color name="divider">#B3787878</color>
+
 </resources>
