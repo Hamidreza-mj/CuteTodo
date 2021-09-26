@@ -56,6 +56,8 @@
     <string name="delete_category_message"> دسته \"%1$s\" حذف شود؟</string>
     <string name="close">بستن</string>
     <string name="select_one_category">یک دسته‌بندی انتخاب کنید.</string>
+    <string name="empty_categories">دسته‌بندی وجود ندارد!</string>
+    <string name="manage_categories_notes">از طریق گزینه \"دسته‌بندی‌ها\" می توانید دسته جدید اضافه کنید.</string>
 
 
 </resources>

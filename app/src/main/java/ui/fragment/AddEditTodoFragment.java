@@ -4,11 +4,12 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.IdRes;
@@ -16,13 +17,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import hlv.cute.todo.R;
@@ -31,6 +33,7 @@ import model.Category;
 import model.Todo;
 import ui.dialog.DropDownCategoriesDialog;
 import utils.DisplayUtils;
+import utils.Tags;
 
 public class AddEditTodoFragment extends BaseFragment {
 
@@ -135,13 +138,25 @@ public class AddEditTodoFragment extends BaseFragment {
 
     @SuppressLint("NonConstantResourceId")
     private void handleLogic() {
-        List<Category> categories = null;
         btnAdd.setOnLongClickListener(view -> {
+            List<Category> categories = getCategoryViewModel().getAllCategories();
             DropDownCategoriesDialog dropDown = new DropDownCategoriesDialog(getActivity(), categories);
             dropDown.show();
+
             dropDown.setOnClickCategory(category -> {
                 dropDown.dismiss();
                 binding.menuCategory.setText(category.getName());
+            });
+
+            dropDown.setOnclickManage(() -> {
+                Fragment fragment = CategoriesFragment.newInstance();
+                fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.add(R.id.mainContainer, fragment, Tags.FragmentTag.CATEGORY);
+                transaction.addToBackStack(Tags.BackStack.CATEGORY);
+                transaction.commit();
+
+                dropDown.dismiss();
             });
 
             return false;
