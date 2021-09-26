@@ -153,7 +153,8 @@
                     android:textSize="15sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="HardcodedText" />
 
 
                 <TextView
@@ -167,7 +168,8 @@
                     android:text="مدیریت دسته‌بندی ها و سایر گزینه ها"
                     android:textColor="@color/gray"
                     app:layout_constraintEnd_toStartOf="@id/menu"
-                    app:layout_constraintTop_toBottomOf="@id/guide" />
+                    app:layout_constraintTop_toBottomOf="@id/guide"
+                    tools:ignore="HardcodedText" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/menu"
@@ -187,7 +189,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="10dp"
                     android:gravity="center"
-                    android:text="جستجو در لیست کارها"
+                    android:text="@string/search_in_todo_list"
                     android:textColor="@color/gray"
                     app:layout_constraintEnd_toStartOf="@id/menu"
                     app:layout_constraintTop_toBottomOf="@id/txtMenuGuide" />
