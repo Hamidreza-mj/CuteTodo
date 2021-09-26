@@ -44,6 +44,7 @@ public class HomeFragment extends BaseFragment {
     private RecyclerView rvTodo;
     private FrameLayout frameLytButton;
     private MaterialButton btnAdd;
+    private ConstraintLayout lytEmpty;
     private HideBottomViewOnScrollBehavior<FrameLayout> scrollBehavior;
 
     private TodoAdapter adapter;
@@ -79,6 +80,7 @@ public class HomeFragment extends BaseFragment {
         rvTodo = binding.rvTodo;
         frameLytButton = binding.frameLytButton;
         btnAdd = binding.mBtnAdd;
+        lytEmpty = binding.cLytEmpty;
 
         setScrollBehavior();
         handleShadowScroll();
@@ -238,7 +240,16 @@ public class HomeFragment extends BaseFragment {
         getTodoViewModel().fetch();
 
         getTodoViewModel().getTodosLiveDate().observe(getViewLifecycleOwner(),
-                todos -> rvTodo.post(() -> adapter.getDiffer().submitList(todos))
+                todos -> {
+                    if (todos == null || todos.isEmpty()) {
+                        rvTodo.setVisibility(View.GONE);
+                        lytEmpty.setVisibility(View.VISIBLE);
+                    } else {
+                        lytEmpty.setVisibility(View.GONE);
+                        rvTodo.setVisibility(View.VISIBLE);
+                        rvTodo.post(() -> adapter.getDiffer().submitList(todos));
+                    }
+                }
         );
 
         getTodoViewModel().getGoToTopLiveData().observe(getViewLifecycleOwner(), scroll ->

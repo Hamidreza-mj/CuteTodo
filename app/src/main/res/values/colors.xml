@@ -26,5 +26,6 @@
     <color name="card_color">#F9FCFF</color>
     <color name="line_color">#5C979797</color>
     <color name="dialog_message">#818181</color>
+    <color name="gray_text">#757575</color>
 
 </resources>
