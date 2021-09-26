@@ -84,6 +84,13 @@ public class DropDownCategoriesDialog {
 
         clytEmpty.setVisibility(View.GONE);
         rvCategory.setVisibility(View.VISIBLE);
+
+        //add first item for without category
+        Category firstCat = new Category();
+        firstCat.setId(0);
+        firstCat.setName(null);
+        categories.add(0, firstCat);
+
         adapter.getDiffer().submitList(categories);
     }
 

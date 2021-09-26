@@ -67,7 +67,7 @@ public class DropDownCategoryAdapter extends RecyclerView.Adapter<DropDownCatego
         }
 
         private void bind(Category category, OnClickCategoryListener onClickCategoryListener) {
-            txtCategory.setText(category.getName());
+            txtCategory.setText(category.getId() == 0 && category.getName() == null ? "-- بدون دسته‌بندی --" : category.getName());
 
             txtCategory.setOnClickListener(view -> onClickCategoryListener.onClick(category));
         }
