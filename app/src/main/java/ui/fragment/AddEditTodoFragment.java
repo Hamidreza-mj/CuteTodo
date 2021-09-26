@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.IdRes;
@@ -21,9 +22,14 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.FragmentAddEditTodoBinding;
+import model.Category;
 import model.Todo;
+import ui.dialog.DropDownCategoriesDialog;
 import utils.DisplayUtils;
 
 public class AddEditTodoFragment extends BaseFragment {
@@ -129,6 +135,19 @@ public class AddEditTodoFragment extends BaseFragment {
 
     @SuppressLint("NonConstantResourceId")
     private void handleLogic() {
+        List<Category> categories = null;
+        btnAdd.setOnLongClickListener(view -> {
+            DropDownCategoriesDialog dropDown = new DropDownCategoriesDialog(getActivity(), categories);
+            dropDown.show();
+            dropDown.setOnClickCategory(category -> {
+                dropDown.dismiss();
+                binding.menuCategory.setText(category.getName());
+            });
+
+            return false;
+        });
+
+
         if (todo != null) {
             txtTitle.setText(getString(R.string.edit_todo));
             btnAdd.setText(getString(R.string.edit));

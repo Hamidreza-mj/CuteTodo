@@ -54,6 +54,8 @@
 
     <string name="delete_category">حذف دسته بندی</string>
     <string name="delete_category_message"> دسته \"%1$s\" حذف شود؟</string>
+    <string name="close">بستن</string>
+    <string name="select_one_category">یک دسته‌بندی انتخاب کنید.</string>
 
 
 </resources>

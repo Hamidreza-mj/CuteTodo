@@ -60,7 +60,8 @@
                 android:padding="2dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/aChkBoxTitle"
-                app:srcCompat="@drawable/ic_more" />
+                app:srcCompat="@drawable/ic_more"
+                tools:ignore="TouchTargetSizeCheck" />
 
             <TextView
                 android:id="@+id/txtCategory"

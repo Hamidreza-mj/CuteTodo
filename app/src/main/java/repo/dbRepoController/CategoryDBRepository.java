@@ -15,6 +15,7 @@ public class CategoryDBRepository {
     private final MutableLiveData<List<Category>> categories;
 
     private long count = 0;
+    private List<Category> allCategories;
 
     public CategoryDBRepository() {
         dao = App.get().todoDatabase().getCategoryDao();
@@ -26,6 +27,13 @@ public class CategoryDBRepository {
         //use .postValue() instead of .setValue()
         // because the .postValue() run in the background thread (non-ui thread)
         new Thread(() -> categories.postValue(dao.getAllCategories())).start();
+    }
+
+    public List<Category> getAllCategories() throws InterruptedException {
+        Thread thread = new Thread(() -> allCategories = dao.getAllCategories());
+        thread.start();
+        thread.join();
+        return allCategories;
     }
 
     public void addCategory(Category category) throws InterruptedException {

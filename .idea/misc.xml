@@ -33,6 +33,7 @@
         <entry key="app/src/main/res/drawable/toolbar_shape.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/dialog_delete.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/dialog_dropdown_categories.xml" value="0.33" />
         <entry key="app/src/main/res/layout/dialog_global_menu.xml" value="0.30364583333333334" />
         <entry key="app/src/main/res/layout/dialog_more.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_add_edit_category.xml" value="0.25" />
@@ -42,6 +43,7 @@
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_search.xml" value="0.33" />
         <entry key="app/src/main/res/layout/item_category.xml" value="0.30364583333333334" />
+        <entry key="app/src/main/res/layout/item_dropdown.xml" value="0.30364583333333334" />
         <entry key="app/src/main/res/layout/item_todo.xml" value="0.3401677539608574" />
         <entry key="app/src/main/res/layout/item_todo2.xml" value="0.30364583333333334" />
         <entry key="app/src/main/res/layout/toast.xml" value="0.30364583333333334" />

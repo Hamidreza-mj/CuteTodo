@@ -27,6 +27,15 @@ public class CategoryViewModel extends ViewModel {
         dbRepository.fetchAllCategories();
     }
 
+    public List<Category> getAllCategories() {
+        try {
+            return dbRepository.getAllCategories();
+        } catch (InterruptedException e) {
+            return null;
+        }
+
+    }
+
     public void addCategory(Category category) {
         try {
             dbRepository.addCategory(category);
