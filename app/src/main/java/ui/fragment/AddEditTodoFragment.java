@@ -16,11 +16,13 @@ import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -46,6 +48,8 @@ public class AddEditTodoFragment extends BaseFragment {
     private ConstraintLayout toolbar;
     private NestedScrollView nested;
     private TextView txtTitle;
+    private MaterialCardView cardCategory;
+    private TextView txtCategory;
 
     private Todo.Priority priority;
 
@@ -102,6 +106,8 @@ public class AddEditTodoFragment extends BaseFragment {
         toolbar = binding.toolbar;
         nested = binding.nested;
         txtTitle = binding.txtTitle;
+        cardCategory = binding.mCardCategory;
+        txtCategory = binding.txtCategory;
 
         handleScroll();
     }
@@ -138,31 +144,6 @@ public class AddEditTodoFragment extends BaseFragment {
 
     @SuppressLint("NonConstantResourceId")
     private void handleLogic() {
-        btnAdd.setOnLongClickListener(view -> {
-            List<Category> categories = getCategoryViewModel().getAllCategories();
-            DropDownCategoriesDialog dropDown = new DropDownCategoriesDialog(getActivity(), categories);
-            dropDown.show();
-
-            dropDown.setOnClickCategory(category -> {
-                dropDown.dismiss();
-                binding.menuCategory.setText(category.getName());
-            });
-
-            dropDown.setOnclickManage(() -> {
-                Fragment fragment = CategoriesFragment.newInstance();
-                fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.add(R.id.mainContainer, fragment, Tags.FragmentTag.CATEGORY);
-                transaction.addToBackStack(Tags.BackStack.CATEGORY);
-                transaction.commit();
-
-                dropDown.dismiss();
-            });
-
-            return false;
-        });
-
-
         if (todo != null) {
             txtTitle.setText(getString(R.string.edit_todo));
             btnAdd.setText(getString(R.string.edit));
@@ -199,6 +180,30 @@ public class AddEditTodoFragment extends BaseFragment {
     }
 
     private void handleAction() {
+        cardCategory.setOnClickListener(view -> {
+            List<Category> categories = getCategoryViewModel().getAllCategories();
+            DropDownCategoriesDialog dropDown = new DropDownCategoriesDialog(getActivity(), categories);
+            dropDown.show();
+
+            dropDown.setOnClickCategory(category -> {
+                dropDown.dismiss();
+                txtCategory.setText(category.getName());
+                txtCategory.setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
+            });
+
+            dropDown.setOnclickManage(() -> {
+                Fragment fragment = CategoriesFragment.newInstance();
+                fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.add(R.id.mainContainer, fragment, Tags.FragmentTag.CATEGORY);
+                transaction.addToBackStack(Tags.BackStack.CATEGORY);
+                transaction.commit();
+
+                dropDown.dismiss();
+            });
+
+        });
+
         chipGP.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
                 case R.id.chipLow:
