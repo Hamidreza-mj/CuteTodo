@@ -2,12 +2,14 @@ package ui.fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
 import android.transition.Slide;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -48,6 +50,9 @@ public class HomeFragment extends BaseFragment {
     private FrameLayout frameLytButton;
     private MaterialButton btnAdd;
     private ConstraintLayout lytEmpty;
+    private ConstraintLayout lytGuide;
+    private TextView txtEmptyTitle;
+    private TextView txtEmptyNotes;
     private HideBottomViewOnScrollBehavior<FrameLayout> scrollBehavior;
 
     private TodoAdapter adapter;
@@ -85,6 +90,9 @@ public class HomeFragment extends BaseFragment {
         frameLytButton = binding.frameLytButton;
         btnAdd = binding.mBtnAdd;
         lytEmpty = binding.cLytEmpty;
+        lytGuide = binding.cLytGuide;
+        txtEmptyTitle = binding.txtEmpty;
+        txtEmptyNotes = binding.txtNotesEmpty;
 
         setScrollBehavior();
         handleShadowScroll();
@@ -178,7 +186,10 @@ public class HomeFragment extends BaseFragment {
             filterBottomSheet.setOnApplyClick(() -> {
                 filterBottomSheet.disableViews();
                 Filter filter = filterBottomSheet.getFilter();
-                getTodoViewModel().applyFilter(filter);
+
+                if (!filter.filterIsEmpty() || getTodoViewModel().getTodosCount() != 0) //if all filter is empty do nothing
+                    getTodoViewModel().applyFilter(filter);
+
                 filterBottomSheet.dismiss();
             });
 
@@ -259,6 +270,9 @@ public class HomeFragment extends BaseFragment {
     }
 
     private void handleObserver() {
+        AppCompatImageView box = binding.box;
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) box.getLayoutParams();
+
         getTodoViewModel().fetch();
 
         getTodoViewModel().getTodosLiveDate().observe(getViewLifecycleOwner(),
@@ -266,6 +280,21 @@ public class HomeFragment extends BaseFragment {
                     if (todos == null || todos.isEmpty()) {
                         rvTodo.setVisibility(View.GONE);
                         lytEmpty.setVisibility(View.VISIBLE);
+
+                        if (getTodoViewModel().getCurrentFilter() == null) {
+                            lytGuide.setVisibility(View.VISIBLE);
+                            txtEmptyTitle.setText(getString(R.string.todos_empty));
+                            txtEmptyNotes.setText(Html.fromHtml(getString(R.string.todos_empty_notes)));
+                            params.verticalBias = 0.25f;
+                        } else {
+                            lytGuide.setVisibility(View.GONE);
+                            txtEmptyTitle.setText(getString(R.string.empty_todos_with_filter));
+                            txtEmptyNotes.setText(getString(R.string.empty_todos_with_filter_notes));
+                            params.verticalBias = 0.35f;
+                        }
+
+                        box.setLayoutParams(params);
+
                     } else {
                         lytEmpty.setVisibility(View.GONE);
                         rvTodo.setVisibility(View.VISIBLE);

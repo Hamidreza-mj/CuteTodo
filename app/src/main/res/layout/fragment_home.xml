@@ -154,6 +154,7 @@
                 app:layout_constraintTop_toBottomOf="@id/txtEmpty" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cLytGuide"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"

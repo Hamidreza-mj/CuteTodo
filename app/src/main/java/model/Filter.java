@@ -80,4 +80,11 @@ public class Filter implements Serializable {
 
         return priorities;
     }
+
+    public boolean filterIsEmpty() {
+        boolean emptyFilter = !isDone && !isUndone &&
+                !isLow && !isNormal && !isHigh && priorities.isEmpty();
+
+        return emptyFilter;
+    }
 }

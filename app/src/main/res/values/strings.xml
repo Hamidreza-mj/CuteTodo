@@ -60,7 +60,8 @@
     <string name="manage_categories_notes">از طریق گزینه <font color='#1F8EF3'>دسته‌بندی‌ها</font> می توانید دسته‌ جدیدی اضافه کنید.</string>
     <string name="categories_empty_notes">از طریق گزینه <font color='#1F8EF3'>اضافه کردن</font> در پایین صفحه،\n می توانید دسته‌بندی جدیدی اضافه کنید.</string>
     <string name="todos_empty">لیست کارها خالی است!</string>
-    <string name="todos_empty_notes">از طریق دکمه <font color='#1F8EF3'>اضافه کردن</font> در پایین صفحه،\nبه سادگی می توانید یک کار جدید ایجاد کنید.</string>
+<!--    <string name="todos_empty_notes">از طریق دکمه <font color='#1F8EF3'>اضافه کردن</font> در پایین صفحه،\nبه سادگی می توانید یک کار جدید ایجاد کنید.</string>-->
+    <string name="todos_empty_notes">از طریق دکمه <![CDATA[<font color=#1F8EF3>اضافه کردن</font>]]> در پایین صفحه،<![CDATA[<br>]]>به سادگی می توانید یک کار جدید ایجاد کنید.</string>
 
     <string name="advanced_filter">فیلتر پیشرفته</string>
     <string name="sort_todos_by">مرتب کردن لیست کارها بر اساس:</string>
@@ -69,5 +70,8 @@
     <string name="low_priority_filter">اولویت کم</string>
     <string name="apply_filter">اعمال فیلتر</string>
     <string name="clear_filter">حذف فیلتر</string>
+
+    <string name="empty_todos_with_filter">کاری با فیلتر اعمال شده یافت نشد!</string>
+    <string name="empty_todos_with_filter_notes">لطفا فیلترها را بررسی کرده و مجددا تلاش کنید.</string>
 
 </resources>
