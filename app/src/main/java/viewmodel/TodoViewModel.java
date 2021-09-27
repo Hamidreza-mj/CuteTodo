@@ -2,7 +2,6 @@ package viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import java.util.List;
@@ -66,6 +65,7 @@ public class TodoViewModel extends ViewModel {
             dbRepository.deleteAllTodos();
         } catch (InterruptedException ignored) {
         }
+        applyFilter(null);
         fetch();
     }
 
@@ -114,8 +114,7 @@ public class TodoViewModel extends ViewModel {
     }
 
     public LiveData<List<Todo>> getTodosLiveDate() {
-        //values will not be emitted unless they have changed.
-        return Transformations.distinctUntilChanged(todosLiveDate);
+        return todosLiveDate;
     }
 
     public LiveData<Filter> getFilterLiveData() {
