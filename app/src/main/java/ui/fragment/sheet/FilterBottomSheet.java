@@ -7,8 +7,10 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatCheckBox;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 
 import hlv.cute.todo.databinding.SheetFilterBinding;
@@ -19,6 +21,11 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
     private SheetFilterBinding binding;
 
     private MaterialCardView cardClose;
+
+    private AppCompatCheckBox chkDoneTodo, chkUndoneTodo;
+    private AppCompatCheckBox chkLowPriority, chkNormalPriority, chkHighPriority;
+
+    private MaterialButton btnApplyFilter, btnClearFilter;
 
     public FilterBottomSheet() {
     }
@@ -60,9 +67,44 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
 
     private void initViews() {
         cardClose = binding.cardClose;
+
+        chkDoneTodo = binding.aChkBoxDone;
+        chkUndoneTodo = binding.aChkBoxUndone;
+
+        chkLowPriority = binding.aChkBoxLow;
+        chkNormalPriority = binding.aChkBoxNormal;
+        chkHighPriority = binding.aChkBoxHigh;
+
+        btnApplyFilter = binding.mBtnApplyFilter;
+        btnClearFilter = binding.mBtnClearFilter;
     }
 
     private void handleAction() {
         cardClose.setOnClickListener(view -> dismiss());
+
+        //checkbox
+        chkDoneTodo.setOnCheckedChangeListener((compoundButton, isCheck) -> {
+        });
+
+        chkUndoneTodo.setOnCheckedChangeListener((compoundButton, isCheck) -> {
+        });
+
+
+
+        chkLowPriority.setOnCheckedChangeListener((compoundButton, isCheck) -> {
+        });
+
+        chkNormalPriority.setOnCheckedChangeListener((compoundButton, isCheck) -> {
+        });
+
+        chkHighPriority.setOnCheckedChangeListener((compoundButton, isCheck) -> {
+        });
+
+        //button
+        btnApplyFilter.setOnClickListener(view -> {
+        });
+
+        btnClearFilter.setOnClickListener(view -> {
+        });
     }
 }
