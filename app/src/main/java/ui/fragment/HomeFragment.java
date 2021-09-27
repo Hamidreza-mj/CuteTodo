@@ -29,6 +29,7 @@ import ui.adapter.TodoAdapter;
 import ui.dialog.DeleteDialog;
 import ui.dialog.GlobalMenuDialog;
 import ui.dialog.MoreDialog;
+import ui.fragment.sheet.FilterBottomSheet;
 import utils.DisplayUtils;
 import utils.Tags;
 import utils.ToastHelper;
@@ -39,6 +40,7 @@ public class HomeFragment extends BaseFragment {
 
     private ConstraintLayout toolbar;
     private AppCompatImageView imgGlobalMenu;
+    private AppCompatImageView imgFilter;
     private AppCompatImageView imgSearch;
     private NestedScrollView nested;
     private RecyclerView rvTodo;
@@ -75,6 +77,7 @@ public class HomeFragment extends BaseFragment {
     private void initViews() {
         toolbar = binding.toolbar;
         imgGlobalMenu = binding.aImgGlobalMenu;
+        imgFilter = binding.aImgFilter;
         imgSearch = binding.aImgSearch;
         nested = binding.nested;
         rvTodo = binding.rvTodo;
@@ -165,6 +168,11 @@ public class HomeFragment extends BaseFragment {
                     deleteDialog.dismiss();
                 });
             });
+        });
+
+        imgFilter.setOnClickListener(view -> {
+            FilterBottomSheet filterBottomSheet = FilterBottomSheet.newInstance();
+            filterBottomSheet.show(getChildFragmentManager(), null);
         });
 
         imgSearch.setOnClickListener(view -> {

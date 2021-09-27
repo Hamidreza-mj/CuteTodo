@@ -72,6 +72,15 @@
         <item name="android:drawablePadding">10dp</item>
     </style>
 
+    <style name="CheckBoxFilter" parent="TextRG16">
+        <item name="android:button">@null</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:drawableEnd">@drawable/checkbox</item>
+        <item name="android:drawablePadding">10dp</item>
+        <item name="android:textColor">@color/checkbox_filter_text</item>
+    </style>
+
+
     <!-- Shadow Button -->
     <style name="ShadowButton">
         <item name="android:width">0dp</item>
