@@ -25,6 +25,7 @@ import com.google.android.material.button.MaterialButton;
 
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.FragmentHomeBinding;
+import model.Filter;
 import ui.adapter.TodoAdapter;
 import ui.dialog.DeleteDialog;
 import ui.dialog.GlobalMenuDialog;
@@ -171,8 +172,21 @@ public class HomeFragment extends BaseFragment {
         });
 
         imgFilter.setOnClickListener(view -> {
-            FilterBottomSheet filterBottomSheet = FilterBottomSheet.newInstance();
+            FilterBottomSheet filterBottomSheet = FilterBottomSheet.newInstance(getTodoViewModel().getCurrentFilter());
             filterBottomSheet.show(getChildFragmentManager(), null);
+
+            filterBottomSheet.setOnApplyClick(() -> {
+                filterBottomSheet.disableViews();
+                Filter filter = filterBottomSheet.getFilter();
+                getTodoViewModel().applyFilter(filter);
+                filterBottomSheet.dismiss();
+            });
+
+            filterBottomSheet.setOnClearClick(() -> {
+                filterBottomSheet.clearCheckBoxes();
+                getTodoViewModel().applyFilter(null);
+                filterBottomSheet.dismiss();
+            });
         });
 
         imgSearch.setOnClickListener(view -> {
@@ -259,6 +273,9 @@ public class HomeFragment extends BaseFragment {
                     }
                 }
         );
+
+        getTodoViewModel().getFilterLiveData().observe(getViewLifecycleOwner(),
+                filter -> getTodoViewModel().fetch(filter));
 
         getTodoViewModel().getGoToTopLiveData().observe(getViewLifecycleOwner(), scroll ->
                 goToTop(1000)

@@ -7,24 +7,34 @@ import androidx.lifecycle.ViewModel;
 
 import java.util.List;
 
+import model.Filter;
 import model.Todo;
 import repo.dbRepoController.TodoDBRepository;
 
 public class TodoViewModel extends ViewModel {
 
     private final TodoDBRepository dbRepository;
-    private final MutableLiveData<List<Todo>> todosLiveDate;
 
+    private final MutableLiveData<List<Todo>> todosLiveDate;
+    private final MutableLiveData<Filter> filterLiveData;
     private final MutableLiveData<Boolean> goToTopLiveData;
 
     public TodoViewModel() {
         dbRepository = new TodoDBRepository();
         todosLiveDate = dbRepository.getTodosLiveDate();
+        filterLiveData = new MutableLiveData<>();
         goToTopLiveData = new MutableLiveData<>();
     }
 
+    public void fetch(Filter filter) {
+        if (filter == null)
+            dbRepository.fetchAll();
+        else
+            dbRepository.fetchWithFilter(filter);
+    }
+
     public void fetch() {
-        dbRepository.fetchAllTodos();
+        fetch(getCurrentFilter());
     }
 
     public void addTodo(Todo todo) {
@@ -32,6 +42,7 @@ public class TodoViewModel extends ViewModel {
             dbRepository.addTodo(todo);
         } catch (InterruptedException ignored) {
         }
+        fetch();
     }
 
     public void editTodo(Todo todo) {
@@ -39,6 +50,7 @@ public class TodoViewModel extends ViewModel {
             dbRepository.editTodo(todo);
         } catch (InterruptedException ignored) {
         }
+        fetch();
     }
 
     public void deleteTodo(Todo todo) {
@@ -46,6 +58,7 @@ public class TodoViewModel extends ViewModel {
             dbRepository.deleteTodo(todo);
         } catch (InterruptedException ignored) {
         }
+        fetch();
     }
 
     public void deleteAllTodos() {
@@ -53,6 +66,7 @@ public class TodoViewModel extends ViewModel {
             dbRepository.deleteAllTodos();
         } catch (InterruptedException ignored) {
         }
+        fetch();
     }
 
     public long getTodosCount() {
@@ -72,6 +86,7 @@ public class TodoViewModel extends ViewModel {
             dbRepository.setDoneTodo(todoID);
         } catch (InterruptedException ignored) {
         }
+        fetch();
     }
 
     public boolean pureValidateTodo(Todo todo) {
@@ -88,14 +103,27 @@ public class TodoViewModel extends ViewModel {
         return null;
     }
 
-    public LiveData<List<Todo>> getTodosLiveDate() {
-        //values will not be emitted unless they have changed.
-        return Transformations.distinctUntilChanged(todosLiveDate);
+    public void applyFilter(Filter filter) {
+        if (filterLiveData != null)
+            filterLiveData.setValue(filter);
     }
 
     public void goToTop() {
         if (goToTopLiveData != null)
             goToTopLiveData.setValue(true);
+    }
+
+    public LiveData<List<Todo>> getTodosLiveDate() {
+        //values will not be emitted unless they have changed.
+        return Transformations.distinctUntilChanged(todosLiveDate);
+    }
+
+    public LiveData<Filter> getFilterLiveData() {
+        return filterLiveData;
+    }
+
+    public Filter getCurrentFilter() {
+        return getFilterLiveData().getValue();
     }
 
     public LiveData<Boolean> getGoToTopLiveData() {

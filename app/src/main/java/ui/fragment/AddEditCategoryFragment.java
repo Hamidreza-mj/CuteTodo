@@ -73,6 +73,9 @@ public class AddEditCategoryFragment extends BaseFragment {
     }
 
     private void handleLogic() {
+        edtName.requestFocus();
+        showKeyboard();
+
         if (category != null) {
             txtTitle.setText(getString(R.string.edit_category));
             btnAdd.setText(getString(R.string.edit));
