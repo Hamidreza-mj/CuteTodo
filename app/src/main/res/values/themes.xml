@@ -24,6 +24,7 @@
 
         <item name="android:listDivider">@color/divider</item>
 
+        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
 
     </style>
 </resources>
