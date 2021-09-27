@@ -34,33 +34,51 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/aImgGlobalMenu"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="20dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:contentDescription="@string/categories"
                 android:focusable="true"
-                android:padding="10dp"
+                android:padding="5dp"
                 app:layout_constraintBottom_toBottomOf="@id/txtTitle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/txtTitle"
-                app:srcCompat="@drawable/ic_category" />
+                app:srcCompat="@drawable/ic_category"
+                tools:ignore="TouchTargetSizeCheck" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/aImgFilter"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="12dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="@string/advanced_filter"
+                android:focusable="true"
+                android:padding="5dp"
+                app:layout_constraintBottom_toBottomOf="@id/txtTitle"
+                app:layout_constraintStart_toEndOf="@id/aImgGlobalMenu"
+                app:layout_constraintTop_toTopOf="@id/txtTitle"
+                app:srcCompat="@drawable/ic_filter"
+                tools:ignore="TouchTargetSizeCheck" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/aImgSearch"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginEnd="20dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="16dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:contentDescription="@string/search"
                 android:focusable="true"
-                android:padding="10dp"
+                android:padding="5dp"
                 app:layout_constraintBottom_toBottomOf="@id/txtTitle"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/txtTitle"
-                app:srcCompat="@drawable/ic_search" />
+                app:srcCompat="@drawable/ic_search"
+                tools:ignore="TouchTargetSizeCheck" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -182,6 +200,30 @@
                     app:srcCompat="@drawable/ic_category" />
 
                 <TextView
+                    android:id="@+id/txtFilter"
+                    style="@style/TextRG14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:text="@string/advanced_filter"
+                    android:textColor="@color/gray"
+                    app:layout_constraintEnd_toStartOf="@id/filter"
+                    app:layout_constraintTop_toBottomOf="@id/menu"
+                    tools:ignore="HardcodedText" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/filter"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:tint="@color/gray"
+                    app:layout_constraintBottom_toBottomOf="@id/txtFilter"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/txtFilter"
+                    app:srcCompat="@drawable/ic_filter" />
+
+                <TextView
                     android:id="@+id/txtSearchGuide"
                     style="@style/TextRG14"
                     android:layout_width="wrap_content"
@@ -192,7 +234,7 @@
                     android:text="@string/search_in_todo_list"
                     android:textColor="@color/gray"
                     app:layout_constraintEnd_toStartOf="@id/menu"
-                    app:layout_constraintTop_toBottomOf="@id/txtMenuGuide" />
+                    app:layout_constraintTop_toBottomOf="@id/txtFilter" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/search"
