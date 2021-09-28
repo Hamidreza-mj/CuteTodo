@@ -83,7 +83,8 @@ public class Filter implements Serializable {
 
     public boolean filterIsEmpty() {
         boolean emptyFilter = !isDone && !isUndone &&
-                !isLow && !isNormal && !isHigh && priorities.isEmpty();
+                !isLow && !isNormal && !isHigh && priorities.isEmpty() ||
+                !isDone && !isUndone && !isLow && !isNormal && !isHigh && priorities.size() == 3;
 
         return emptyFilter;
     }

@@ -64,6 +64,16 @@
                 app:srcCompat="@drawable/ic_filter"
                 tools:ignore="TouchTargetSizeCheck" />
 
+            <View
+                android:id="@+id/filterIndicator"
+                android:layout_width="6dp"
+                android:layout_height="6dp"
+                android:layout_margin="2dp"
+                android:alpha="0.8"
+                android:background="@drawable/filter_indicator"
+                app:layout_constraintEnd_toEndOf="@id/aImgFilter"
+                app:layout_constraintTop_toTopOf="@id/aImgFilter" />
+
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/aImgSearch"
                 android:layout_width="40dp"

@@ -22,8 +22,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.button.MaterialButton;
-
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.FragmentSearchBinding;
 import model.Search;
@@ -119,8 +117,19 @@ public class SearchFragment extends BaseFragment {
 
     private void handleActions() {
         imgFilter.setOnClickListener(view -> {
+            if (search.getTerm() == null || search.getSearchMode() == null) {
+                search.setTerm("");
+                search.setSearchMode(Search.SearchMode.TODO);
+            }
+
             SearchModeBottomSheet searchModeBottomSheet = SearchModeBottomSheet.newInstance(search);
             searchModeBottomSheet.show(getChildFragmentManager(), null);
+            searchModeBottomSheet.setOnCheckChanged(search -> {
+                searchModeBottomSheet.disableViews();
+                search.setTerm(getSearchViewModel().getCurrentTerm());
+                getSearchViewModel().search(search);
+                searchModeBottomSheet.dismiss();
+            });
         });
 
         imgClear.setOnClickListener(view -> {
@@ -152,7 +161,7 @@ public class SearchFragment extends BaseFragment {
                 }
 
                 search.setTerm(editable.toString().trim());
-                search.setSearchMode(Search.SearchMode.TODO);
+                search.setSearchMode(getSearchViewModel().getSearchMode());
                 getSearchViewModel().search(search);
             }
         });
@@ -226,15 +235,23 @@ public class SearchFragment extends BaseFragment {
 
                         if (getTodoViewModel().todosIsEmpty())
                             txtNotes.setText(getString(R.string.todos_empty));
-                        else
-                            txtNotes.setText(Html.fromHtml(getString(R.string.todo_not_found, getTitleTerm(), getSearchViewModel().getCurrentTerm())));
+                        else {
+                            String term = getSearchViewModel().getCurrentTerm();
+
+                            if (term.isEmpty()) {
+                                term = "موردی یافت نشد!";
+                                txtNotes.setText(term);
+                            } else {
+                                txtNotes.setText(Html.fromHtml(getString(R.string.todo_not_found, getSearchViewModel().getTitleTerm(), term)));
+                            }
+                        }
 
 
                         vectorImage.setVisibility(View.VISIBLE);
                     } else {
                         txtNotes.setVisibility(View.GONE);
                         vectorImage.setVisibility(View.GONE);
-                        txtResult.setText(getString(R.string.search_result, todos.size(), getTodoViewModel().getTodosCount()));
+                        txtResult.setText(Html.fromHtml(getString(R.string.search_result, todos.size(), getTodoViewModel().getTodosCount(), getSearchViewModel().getTitleTermResult())));
                         txtResult.setVisibility(afterTextChanged ? View.VISIBLE : View.GONE);
                         nested.setVisibility(View.VISIBLE);
                         rvSearch.setVisibility(View.VISIBLE);
@@ -244,24 +261,9 @@ public class SearchFragment extends BaseFragment {
         );
     }
 
-    private String getTitleTerm() {
-        String title;
-        switch (getSearchViewModel().getSearchMode()) {
-            case TODO:
-            default:
-                title = "عنوان";
-                break;
-
-            case CATEGORY:
-                title = "دسته‌بندی";
-                break;
-
-            case BOTH:
-                title = "عنوان و دسته‌بندی";
-                break;
-        }
-
-        return title;
+    @Override
+    public void onDestroyView() {
+        getSearchViewModel().release();
+        super.onDestroyView();
     }
-
 }

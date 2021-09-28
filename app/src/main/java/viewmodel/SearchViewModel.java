@@ -69,7 +69,7 @@ public class SearchViewModel extends ViewModel {
 
     public String getCurrentTerm() {
         if (getSearch() != null)
-            return getSearch().getTerm();
+            return getSearch().getTerm().trim();
 
         return "";
     }
@@ -80,4 +80,49 @@ public class SearchViewModel extends ViewModel {
 
         return Search.SearchMode.TODO;
     }
+
+    public void release() {
+        searchLiveData.setValue(null);
+    }
+
+    public String getTitleTerm() {
+        String title;
+        switch (getSearchMode()) {
+            case TODO:
+            default:
+                title = "عنوان";
+                break;
+
+            case CATEGORY:
+                title = "دسته‌بندی";
+                break;
+
+            case BOTH:
+                title = "عنوان و دسته‌بندی";
+                break;
+        }
+
+        return title;
+    }
+
+    public String getTitleTermResult() {
+        String title;
+        switch (getSearchMode()) {
+            case TODO:
+            default:
+                title = "عنوان کار";
+                break;
+
+            case CATEGORY:
+                title = "عنوان دسته‌بندی";
+                break;
+
+            case BOTH:
+                title = "عنوان کار و دسته‌بندی";
+                break;
+        }
+
+        return title;
+    }
+
 }

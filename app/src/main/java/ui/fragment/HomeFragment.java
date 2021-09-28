@@ -44,6 +44,7 @@ public class HomeFragment extends BaseFragment {
     private ConstraintLayout toolbar;
     private AppCompatImageView imgGlobalMenu;
     private AppCompatImageView imgFilter;
+    private View filterIndicator;
     private AppCompatImageView imgSearch;
     private NestedScrollView nested;
     private RecyclerView rvTodo;
@@ -83,6 +84,7 @@ public class HomeFragment extends BaseFragment {
     private void initViews() {
         toolbar = binding.toolbar;
         imgGlobalMenu = binding.aImgGlobalMenu;
+        filterIndicator = binding.filterIndicator;
         imgFilter = binding.aImgFilter;
         imgSearch = binding.aImgSearch;
         nested = binding.nested;
@@ -285,11 +287,13 @@ public class HomeFragment extends BaseFragment {
                         lytEmpty.setVisibility(View.VISIBLE);
 
                         if (getTodoViewModel().getCurrentFilter() == null || getTodoViewModel().getCurrentFilter().filterIsEmpty()) {
+                            filterIndicator.setVisibility(View.GONE);
                             lytGuide.setVisibility(View.VISIBLE);
                             txtEmptyTitle.setText(getString(R.string.todos_empty));
                             txtEmptyNotes.setText(Html.fromHtml(getString(R.string.todos_empty_notes)));
                             params.verticalBias = 0.25f;
                         } else {
+                            filterIndicator.setVisibility(View.VISIBLE);
                             lytGuide.setVisibility(View.GONE);
                             txtEmptyTitle.setText(getString(R.string.empty_todos_with_filter));
                             txtEmptyNotes.setText(getString(R.string.empty_todos_with_filter_notes));
@@ -299,6 +303,9 @@ public class HomeFragment extends BaseFragment {
                         box.setLayoutParams(params);
 
                     } else {
+                        filterIndicator.setVisibility(getTodoViewModel().getCurrentFilter() != null &&
+                                !getTodoViewModel().getCurrentFilter().filterIsEmpty() ? View.VISIBLE : View.GONE);
+
                         lytEmpty.setVisibility(View.GONE);
                         rvTodo.setVisibility(View.VISIBLE);
                         rvTodo.post(() -> adapter.getDiffer().submitList(todos));

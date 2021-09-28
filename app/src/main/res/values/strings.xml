@@ -27,8 +27,13 @@
     <string name="search">جستجو</string>
     <string name="search_in_todo_list">جستجو در لیست کارها</string>
     <string name="search_note">عنوان کار را وارد کرده و منتظر بمانید…</string>
-    <string name="search_result">%1$d نتیجه از مجموع %2$d کار یافت شد!</string>
+    <string name="search_result"><![CDATA[<font color=#8d8d8d>"نتایج بر اساس: %3$s</font><br>]]>%1$d نتیجه از مجموع %2$d کار یافت شد!</string>
+    <!--    %2$d-->
+    <!--    %1$d-->
+    <!--    %1$d نتیجه از مجموع %2$d کار یافت شد!-->
+    <!--    \n-->
 
+    <!--    <![CDATA[<font color=#1F8EF3>"نتایج بر اساس: %3$s</font><br>]]>%1$d نتیجه از مجموع %2$d کار یافت شد!-->
     <string name="done_todo">کارهای انجام شده</string>
     <string name="undone_todo">کارهای انجام نشده</string>
 
@@ -77,9 +82,9 @@
     <string name="min_chars_search">حداقل عبارت قابل جستجو ۳ حرف می باشد!</string>
     <string name="todo_not_found">کاری با %1$s <![CDATA[<font color=#1F8EF3>"%2$s</font>]]> پیدا نشد.</string>
 
-    <string name="search_by">جستجو بر اساس:</string>
+    <string name="search_by">جستجو بر اساس</string>
     <string name="search_by_todo">عنوان کار</string>
-    <string name="search_by_category">عنوان دسته بندی</string>
-    <string name="search_by_both">هر دو (کار و دسته بندی)</string>
+    <string name="search_by_category">عنوان دسته‌بندی</string>
+    <string name="search_by_both">هر دو عنوان با هم (کار و دسته‌بندی)</string>
     <string name="search_mode_notes">یکی از موارد زیر را انتخاب کنید.\nجستجو بر اساس مورد انتخاب شده انجام می شود.</string>
 </resources>

@@ -29,6 +29,8 @@ public class SearchModeBottomSheet extends BottomSheetDialogFragment {
 
     private static final String SEARCH_MODE_ARGS = "search-mode-args";
 
+    private OnCheckChanged onCheckChanged;
+
     public SearchModeBottomSheet() {
     }
 
@@ -76,51 +78,55 @@ public class SearchModeBottomSheet extends BottomSheetDialogFragment {
     @SuppressLint("NonConstantResourceId")
     private void initData() {
         if (search != null) {
-            switch (radioGP.getCheckedRadioButtonId()) {
-                case R.id.radioBtnTodo:
+            switch (search.getSearchMode()) {
+                case TODO:
                 default:
                     rdbTodo.setChecked(true);
                     break;
 
-                case R.id.radioBtnCategory:
+                case CATEGORY:
                     rdbCategory.setChecked(true);
                     break;
 
-                case R.id.radioBtnBoth:
+                case BOTH:
                     rdbBoth.setChecked(true);
                     break;
             }
         }
     }
 
+    @SuppressLint("NonConstantResourceId")
     private void handleAction() {
         binding.cardClose.setOnClickListener(view -> dismiss());
         binding.mBtnClose.setOnClickListener(view -> dismiss());
 
+        radioGP.setOnCheckedChangeListener((radioGroup, id) -> {
+            if (onCheckChanged == null) {
+                dismiss();
+                return;
+            }
 
+            switch (id) {
+                case R.id.radioBtnTodo:
+                default:
+                    search.setSearchMode(Search.SearchMode.TODO);
+                    break;
+
+                case R.id.radioBtnCategory:
+                    search.setSearchMode(Search.SearchMode.CATEGORY);
+                    break;
+
+                case R.id.radioBtnBoth:
+                    search.setSearchMode(Search.SearchMode.BOTH);
+                    break;
+            }
+
+            onCheckChanged.onChange(search);
+        });
     }
 
-    @SuppressLint("NonConstantResourceId")
-    public Search getSearch() {
-        if (radioGP == null || search == null) //check one checkbox that's enough
-            return null;
-
-        switch (radioGP.getCheckedRadioButtonId()) {
-            case R.id.radioBtnTodo:
-            default:
-                search.setSearchMode(Search.SearchMode.TODO);
-                break;
-
-            case R.id.radioBtnCategory:
-                search.setSearchMode(Search.SearchMode.CATEGORY);
-                break;
-
-            case R.id.radioBtnBoth:
-                search.setSearchMode(Search.SearchMode.BOTH);
-                break;
-        }
-
-        return search;
+    public void setOnCheckChanged(OnCheckChanged onCheckChanged) {
+        this.onCheckChanged = onCheckChanged;
     }
 
     public void disableViews() {
@@ -133,6 +139,10 @@ public class SearchModeBottomSheet extends BottomSheetDialogFragment {
         rdbTodo.setEnabled(false);
         rdbCategory.setEnabled(false);
         rdbBoth.setEnabled(false);
+    }
+
+    public interface OnCheckChanged {
+        void onChange(Search search);
     }
 
 }

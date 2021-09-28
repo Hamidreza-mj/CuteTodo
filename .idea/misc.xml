@@ -9,6 +9,7 @@
         <entry key="app/src/main/res/drawable/checkbox.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/chips_shape.xml" value="0.25" />
         <entry key="app/src/main/res/drawable/chips_text_color.xml" value="0.31979166666666664" />
+        <entry key="app/src/main/res/drawable/filter_indicator.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_back_light.xml" value="0.3148717948717949" />
         <entry key="app/src/main/res/drawable/ic_category.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_chbox_checked.xml" value="0.31979166666666664" />

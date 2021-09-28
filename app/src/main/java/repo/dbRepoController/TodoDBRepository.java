@@ -31,7 +31,7 @@ public class TodoDBRepository {
 
     public void fetchWithFilter(Filter filter) throws InterruptedException {
         List<Todo.Priority> priorities = filter.getPriorities();
-        if (priorities.isEmpty() && todosCount() != 0)
+        if (priorities.isEmpty()/* && todosCount() != 0*/)
             priorities = filter.addAllPriorities();
 
         List<Todo.Priority> finalPriorities = priorities;

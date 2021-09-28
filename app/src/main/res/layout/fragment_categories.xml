@@ -62,7 +62,7 @@
                 android:clickable="true"
                 android:contentDescription="حذف همه دسته‌بندی‌ها"
                 android:focusable="true"
-                android:padding="10dp"
+                android:padding="11dp"
                 android:tint="@color/red"
                 app:layout_constraintBottom_toBottomOf="@id/txtTitle"
                 app:layout_constraintEnd_toStartOf="@id/txtTitle"

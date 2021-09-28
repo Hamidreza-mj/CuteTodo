@@ -124,6 +124,7 @@ public class CategoriesFragment extends BaseFragment {
             deleteDialog.setOnClickDelete(() -> {
                 getCategoryViewModel().deleteAllCategories();
                 getTodoViewModel().fetch(); //need to update todos if categories was deleted
+                getSearchViewModel().fetch();
                 scrollBehavior.slideUp(frameLytButton);
                 deleteDialog.dismiss();
             });
