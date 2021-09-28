@@ -79,7 +79,10 @@ public class AddEditCategoryFragment extends BaseFragment {
         if (category != null) {
             txtTitle.setText(getString(R.string.edit_category));
             btnAdd.setText(getString(R.string.edit));
-            edtName.setText(category.getName());
+
+            //for moving cursor to end of line editText
+            edtName.setText("");
+            edtName.append(category.getName());
             return;
         }
 
