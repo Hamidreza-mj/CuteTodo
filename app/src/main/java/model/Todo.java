@@ -84,6 +84,7 @@ public class Todo implements Comparable<Todo>, Serializable {
         boolean isSame = id == todo.getId() &&
                 Objects.equals(title, todo.getTitle()) &&
                 Objects.equals(category, todo.category) &&
+                categoryId == todo.getCategoryId() &&
                 Objects.equals(priority, todo.priority) &&
                 isDone == todo.isDone();
 
