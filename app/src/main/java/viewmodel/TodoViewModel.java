@@ -28,8 +28,12 @@ public class TodoViewModel extends ViewModel {
     public void fetch(Filter filter) {
         if (filter == null)
             dbRepository.fetchAll();
-        else
-            dbRepository.fetchWithFilter(filter);
+        else {
+            try {
+                dbRepository.fetchWithFilter(filter);
+            } catch (InterruptedException ignored) {
+            }
+        }
     }
 
     public void fetch() {

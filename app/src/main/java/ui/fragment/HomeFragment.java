@@ -187,15 +187,18 @@ public class HomeFragment extends BaseFragment {
                 filterBottomSheet.disableViews();
                 Filter filter = filterBottomSheet.getFilter();
 
-                if (!filter.filterIsEmpty() || getTodoViewModel().getTodosCount() != 0) //if all filter is empty do nothing
-                    getTodoViewModel().applyFilter(filter);
-
+//              if (!filter.filterIsEmpty() || getTodoViewModel().getTodosCount() != 0) //if all filter is empty do nothing
+                getTodoViewModel().applyFilter(filter);
+                //goToTop(800);
+                scrollBehavior.slideUp(frameLytButton);
                 filterBottomSheet.dismiss();
             });
 
             filterBottomSheet.setOnClearClick(() -> {
                 filterBottomSheet.clearCheckBoxes();
                 getTodoViewModel().applyFilter(null);
+                //goToTop(800);
+                scrollBehavior.slideUp(frameLytButton);
                 filterBottomSheet.dismiss();
             });
         });
@@ -281,7 +284,7 @@ public class HomeFragment extends BaseFragment {
                         rvTodo.setVisibility(View.GONE);
                         lytEmpty.setVisibility(View.VISIBLE);
 
-                        if (getTodoViewModel().getCurrentFilter() == null) {
+                        if (getTodoViewModel().getCurrentFilter() == null || getTodoViewModel().getCurrentFilter().filterIsEmpty()) {
                             lytGuide.setVisibility(View.VISIBLE);
                             txtEmptyTitle.setText(getString(R.string.todos_empty));
                             txtEmptyNotes.setText(Html.fromHtml(getString(R.string.todos_empty_notes)));
