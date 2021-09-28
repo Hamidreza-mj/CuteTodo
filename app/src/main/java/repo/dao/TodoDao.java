@@ -24,7 +24,7 @@ public interface TodoDao {
     void delete(Todo todo);
 
 
-    @Query("SELECT * FROM todos ORDER By id DESC;")
+    @Query("SELECT * FROM todos ORDER BY id DESC;")
     List<Todo> getAllTodos();
 
     @Query("SELECT * FROM todos WHERE id = :todoID;")
@@ -39,9 +39,18 @@ public interface TodoDao {
     @Query("UPDATE todos SET is_done = not is_done WHERE id = :todoID")
     void setDoneTodo(long todoID);
 
-    @Query("SELECT * FROM todos WHERE is_done = :isDone AND priority IN (:priorities) ORDER By id DESC;")
+    @Query("SELECT * FROM todos WHERE is_done = :isDone AND priority IN (:priorities) ORDER BY id DESC;")
     List<Todo> filterByDoneTodos(boolean isDone, List<Todo.Priority> priorities);
 
-    @Query("SELECT * FROM todos WHERE priority IN (:priorities) ORDER By id DESC;")
+    @Query("SELECT * FROM todos WHERE priority IN (:priorities) ORDER BY id DESC;")
     List<Todo> filterByAllTodos(List<Todo.Priority> priorities);
+
+    @Query("SELECT * FROM todos WHERE title LIKE '%' || :term || '%' ORDER BY id DESC;")
+    List<Todo> searchTodo(String term);
+
+    @Query("SELECT * FROM todos WHERE category LIKE '%' || :term || '%' ORDER BY id DESC;")
+    List<Todo> searchCategory(String term);
+
+    @Query("SELECT * FROM todos WHERE title LIKE '%' || :term || '%' OR category LIKE '%' || :term || '%' ORDER BY id DESC;")
+    List<Todo> searchTodoWithCategory(String term);
 }

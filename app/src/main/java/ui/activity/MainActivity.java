@@ -12,12 +12,14 @@ import ui.fragment.CategoriesFragment;
 import ui.fragment.HomeFragment;
 import utils.Tags;
 import viewmodel.CategoryViewModel;
+import viewmodel.SearchViewModel;
 import viewmodel.TodoViewModel;
 
 public class MainActivity extends BaseActivity {
 
     private TodoViewModel todoViewModel;
     private CategoryViewModel categoryViewModel;
+    private SearchViewModel searchViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class MainActivity extends BaseActivity {
     private void provideViewModels() {
         todoViewModel = new ViewModelProvider(this).get(TodoViewModel.class);
         categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
+        searchViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
     }
 
     public TodoViewModel getTodoViewModel() {
@@ -46,6 +49,10 @@ public class MainActivity extends BaseActivity {
 
     public CategoryViewModel getCategoryViewModel() {
         return categoryViewModel;
+    }
+
+    public SearchViewModel getSearchViewModel() {
+        return searchViewModel;
     }
 
     @Override

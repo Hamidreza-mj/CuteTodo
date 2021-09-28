@@ -292,6 +292,7 @@ public class AddEditTodoFragment extends BaseFragment {
 
                 if (res == null) {
                     getTodoViewModel().editTodo(editedTodo);
+                    getSearchViewModel().fetch();
                     back();
                     return;
                 }

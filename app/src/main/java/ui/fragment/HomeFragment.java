@@ -278,7 +278,7 @@ public class HomeFragment extends BaseFragment {
 
         getTodoViewModel().fetch();
 
-        getTodoViewModel().getTodosLiveDate().observe(getViewLifecycleOwner(),
+        getTodoViewModel().getTodosLiveData().observe(getViewLifecycleOwner(),
                 todos -> {
                     if (todos == null || todos.isEmpty()) {
                         rvTodo.setVisibility(View.GONE);

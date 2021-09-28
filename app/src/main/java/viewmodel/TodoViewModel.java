@@ -14,7 +14,7 @@ public class TodoViewModel extends ViewModel {
 
     private final TodoDBRepository dbRepository;
 
-    private final MutableLiveData<List<Todo>> todosLiveDate;
+    private final LiveData<List<Todo>> todosLiveDate;
     private final MutableLiveData<Filter> filterLiveData;
     private final MutableLiveData<Boolean> goToTopLiveData;
 
@@ -117,7 +117,7 @@ public class TodoViewModel extends ViewModel {
             goToTopLiveData.setValue(true);
     }
 
-    public LiveData<List<Todo>> getTodosLiveDate() {
+    public LiveData<List<Todo>> getTodosLiveData() {
         return todosLiveDate;
     }
 

@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 import ui.activity.MainActivity;
 import utils.KeyboardInputHelper;
 import viewmodel.CategoryViewModel;
+import viewmodel.SearchViewModel;
 import viewmodel.TodoViewModel;
 
 
@@ -69,6 +70,13 @@ public class BaseFragment extends Fragment {
             return null;
 
         return ((MainActivity) getActivity()).getCategoryViewModel();
+    }
+
+    protected SearchViewModel getSearchViewModel() {
+        if (getActivity() == null)
+            return null;
+
+        return ((MainActivity) getActivity()).getSearchViewModel();
     }
 
 }

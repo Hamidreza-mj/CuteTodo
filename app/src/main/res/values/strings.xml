@@ -27,7 +27,7 @@
     <string name="search">جستجو</string>
     <string name="search_in_todo_list">جستجو در لیست کارها</string>
     <string name="search_note">عنوان کار را وارد کرده و منتظر بمانید…</string>
-    <string name="search_result">۲ نتیجه از مجموع ۱۵ کار یافت شد!</string>
+    <string name="search_result">%1$d نتیجه از مجموع %2$d کار یافت شد!</string>
 
     <string name="done_todo">کارهای انجام شده</string>
     <string name="undone_todo">کارهای انجام نشده</string>
@@ -60,7 +60,7 @@
     <string name="manage_categories_notes">از طریق گزینه <font color='#1F8EF3'>دسته‌بندی‌ها</font> می توانید دسته‌ جدیدی اضافه کنید.</string>
     <string name="categories_empty_notes">از طریق گزینه <font color='#1F8EF3'>اضافه کردن</font> در پایین صفحه،\n می توانید دسته‌بندی جدیدی اضافه کنید.</string>
     <string name="todos_empty">لیست کارها خالی است!</string>
-<!--    <string name="todos_empty_notes">از طریق دکمه <font color='#1F8EF3'>اضافه کردن</font> در پایین صفحه،\nبه سادگی می توانید یک کار جدید ایجاد کنید.</string>-->
+    <!--    <string name="todos_empty_notes">از طریق دکمه <font color='#1F8EF3'>اضافه کردن</font> در پایین صفحه،\nبه سادگی می توانید یک کار جدید ایجاد کنید.</string>-->
     <string name="todos_empty_notes">از طریق دکمه <![CDATA[<font color=#1F8EF3>اضافه کردن</font>]]> در پایین صفحه،<![CDATA[<br>]]>به سادگی می توانید یک کار جدید ایجاد کنید.</string>
 
     <string name="advanced_filter">فیلتر پیشرفته</string>
@@ -71,7 +71,15 @@
     <string name="apply_filter">اعمال فیلتر</string>
     <string name="clear_filter">حذف فیلتر</string>
 
-    <string name="empty_todos_with_filter">کاری با فیلتر اعمال شده یافت نشد!</string>
+    <string name="empty_todos_with_filter">کاری با فیلتر اعمال شده پیدا نشد!</string>
     <string name="empty_todos_with_filter_notes">لطفا فیلترها را بررسی کرده و مجددا تلاش کنید.</string>
 
+    <string name="min_chars_search">حداقل عبارت قابل جستجو ۳ حرف می باشد!</string>
+    <string name="todo_not_found">کاری با %1$s <![CDATA[<font color=#1F8EF3>"%2$s</font>]]> پیدا نشد.</string>
+
+    <string name="search_by">جستجو بر اساس:</string>
+    <string name="search_by_todo">عنوان کار</string>
+    <string name="search_by_category">عنوان دسته بندی</string>
+    <string name="search_by_both">هر دو (کار و دسته بندی)</string>
+    <string name="search_mode_notes">یکی از موارد زیر را انتخاب کنید.\nجستجو بر اساس مورد انتخاب شده انجام می شود.</string>
 </resources>
