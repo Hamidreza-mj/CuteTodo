@@ -1,6 +1,7 @@
 package ui.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -73,8 +74,10 @@ public class AddEditCategoryFragment extends BaseFragment {
     }
 
     private void handleLogic() {
-        edtName.requestFocus();
-        showKeyboard();
+        new Handler().postDelayed(() -> {
+            edtName.requestFocus();
+            showKeyboard();
+        }, 500);
 
         if (category != null) {
             txtTitle.setText(getString(R.string.edit_category));

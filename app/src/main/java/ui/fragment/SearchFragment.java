@@ -1,6 +1,7 @@
 package ui.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -93,8 +94,10 @@ public class SearchFragment extends BaseFragment {
         txtNotes = binding.txtNotes;
         txtResult = binding.txtResult;
 
-        edtSearch.requestFocus();
-        showKeyboard();
+        new Handler().postDelayed(() -> {
+            edtSearch.requestFocus();
+            showKeyboard();
+        }, 500);
 
         handleShadowScroll();
     }
