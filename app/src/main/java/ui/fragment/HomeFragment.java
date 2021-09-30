@@ -245,8 +245,8 @@ public class HomeFragment extends BaseFragment {
                         deleteDialog.setTitle(getString(R.string.delete_todo));
 
                         String todoTitle = todoMenu.getTitle();
-                        if (todoTitle != null && todoTitle.trim().length() > 60)
-                            todoTitle = todoTitle.substring(0, 60).trim();
+                        if (todoTitle != null && todoTitle.trim().length() > 30)
+                            todoTitle = todoTitle.substring(0, 30).trim() + getString(R.string.ellipsis);
 
                         deleteDialog.setMessage(getString(R.string.delete_todo_message, todoTitle));
                         deleteDialog.setOnClickDelete(() -> {
