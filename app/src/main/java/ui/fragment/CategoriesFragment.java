@@ -2,6 +2,7 @@ package ui.fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
 import android.transition.Slide;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -79,6 +80,7 @@ public class CategoriesFragment extends BaseFragment {
         frameLytButton = binding.frameLytButton;
         btnAdd = binding.mBtnAdd;
         lytEmpty = binding.cLytEmpty;
+        binding.txtNotesEmpty.setText(Html.fromHtml(getString(R.string.categories_empty_notes)));
 
         setScrollBehavior();
         handleShadowScroll();

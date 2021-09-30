@@ -2,6 +2,7 @@ package ui.dialog;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -37,6 +38,8 @@ public class DropDownCategoriesDialog {
         builder.setCancelable(cancelable);
         DialogDropdownCategoriesBinding binding = DialogDropdownCategoriesBinding.inflate(LayoutInflater.from(context), null, false);
         builder.setView(binding.getRoot());
+
+        binding.txtNotesEmpty.setText(Html.fromHtml(context.getString(R.string.manage_categories_notes)));
 
         clytEmpty = binding.cLytEmpty;
         rvCategory = binding.rvCategory;

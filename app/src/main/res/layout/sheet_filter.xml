@@ -166,6 +166,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:rippleColor="@color/rippleBlue"
             app:strokeWidth="0dp"
+            android:letterSpacing="0"
             tools:ignore="TextContrastCheck" />
 
         <com.google.android.material.button.MaterialButton
@@ -179,6 +180,7 @@
             android:stateListAnimator="@null"
             android:text="@string/clear_filter"
             android:textColor="@color/blue"
+            android:letterSpacing="0"
             app:cornerRadius="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/mBtnApplyFilter"

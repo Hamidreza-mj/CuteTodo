@@ -143,6 +143,7 @@
             android:paddingVertical="13dp"
             android:stateListAnimator="@null"
             android:text="@string/close"
+            android:letterSpacing="0"
             android:textColor="@color/white"
             app:cornerRadius="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
