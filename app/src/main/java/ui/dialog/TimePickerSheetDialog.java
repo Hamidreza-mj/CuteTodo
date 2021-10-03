@@ -43,7 +43,7 @@ public class TimePickerSheetDialog {
                 return;
             }
 
-            onClickApply.onClick();
+            onClickApply.onClick(hourPicker.getValue(), minutePicker.getValue());
         });
 
         binding.mBtnCancel.setOnClickListener(view -> dismiss());
@@ -118,7 +118,7 @@ public class TimePickerSheetDialog {
     }
 
     public interface OnClickApply {
-        void onClick();
+        void onClick(int hour, int minute);
     }
 
 }

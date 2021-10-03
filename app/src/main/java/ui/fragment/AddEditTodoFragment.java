@@ -47,6 +47,7 @@ import ui.dialog.DropDownCategoriesDialog;
 import ui.dialog.TimePickerSheetDialog;
 import utils.DisplayUtils;
 import utils.Tags;
+import utils.ToastHelper;
 
 public class AddEditTodoFragment extends BaseFragment {
 
@@ -371,8 +372,9 @@ public class AddEditTodoFragment extends BaseFragment {
                         Toast.makeText(context, persianPickerDate.getPersianYear() + "/" + persianPickerDate.getPersianMonth() + "/" + persianPickerDate.getPersianDay(), Toast.LENGTH_SHORT).show();
 
 
-                        TimePickerSheetDialog sheetDialog = new TimePickerSheetDialog(context, 0, 0);
-                        sheetDialog.show();
+                        TimePickerSheetDialog sheetTimer = new TimePickerSheetDialog(context, 0, 0);
+                        sheetTimer.setOnClickApply((hour, minute) -> ToastHelper.get().toast(hour + ":" + minute));
+                        sheetTimer.show();
                     }
 
                     @Override
