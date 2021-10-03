@@ -201,7 +201,7 @@
         <!-- text color -->
         <item name="android:textColorPrimary">@color/black</item>
         <!-- line divider color -->
-        <item name="android:colorControlNormal">@color/blue</item>
+        <item name="colorControlNormal">#5ECCCCCC</item>
         <item name="android:fontFamily">@font/vazir_medium</item>
     </style>
 

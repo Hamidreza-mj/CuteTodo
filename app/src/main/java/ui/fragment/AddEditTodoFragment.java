@@ -354,7 +354,7 @@ public class AddEditTodoFragment extends BaseFragment {
                 .setMinYear(1400)
                 .setMaxYear(1440)
                 .setInitDate(PersianDatePickerDialog.THIS_YEAR, PersianDatePickerDialog.THIS_MONTH, PersianDatePickerDialog.THIS_DAY)
-                .setActionTextColor(ContextCompat.getColor(context, R.color.blue))
+//                .setActionTextColor(ContextCompat.getColor(context, R.color.blue)
                 .setTypeFace(Typeface.createFromAsset(context.getAssets(), "font/vazir_medium.ttf"))
                 .setTitleColor(ContextCompat.getColor(context, R.color.blue))
                 .setAllButtonsTextSize(15)

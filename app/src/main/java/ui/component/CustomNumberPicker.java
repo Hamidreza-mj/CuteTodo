@@ -46,7 +46,7 @@ public class CustomNumberPicker extends NumberPicker {
         if (view instanceof TextView) {
             ((TextView) view).setTextColor(getResources().getColor(R.color.black));
             ((TextView) view).setTypeface(Typeface.createFromAsset(getResources().getAssets(), "font/vazir_medium.ttf"));
-            ((TextView) view).setTextSize(22);
+            ((TextView) view).setTextSize(20);
         }
     }
 
