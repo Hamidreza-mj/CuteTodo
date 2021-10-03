@@ -204,6 +204,7 @@ public class AddEditTodoFragment extends BaseFragment {
         priority = Todo.Priority.LOW; //set default priority
     }
 
+    @SuppressLint("NonConstantResourceId")
     private void handleAction() {
         cardCategory.setOnClickListener(view -> {
             List<Category> categories = getCategoryViewModel().getAllCategories();
@@ -284,7 +285,7 @@ public class AddEditTodoFragment extends BaseFragment {
         });
 
         cardReminder.setOnClickListener(view -> {
-            handlePickers(getActivity());
+            handlePickers(getActivity(), null);
         });
 
         btnAdd.setOnClickListener(view -> {
@@ -345,7 +346,7 @@ public class AddEditTodoFragment extends BaseFragment {
         });
     }
 
-    private void handlePickers(Context context) {
+    private void handlePickers(Context context, PersianPickerDate date) {
         PersianDatePickerDialog picker = new PersianDatePickerDialog(context)
                 .setPositiveButtonString("مرحله بعد")
                 .setNegativeButton("انصراف")
@@ -353,7 +354,6 @@ public class AddEditTodoFragment extends BaseFragment {
                 .setTodayButtonVisible(true)
                 .setMinYear(1400)
                 .setMaxYear(1440)
-                .setInitDate(PersianDatePickerDialog.THIS_YEAR, PersianDatePickerDialog.THIS_MONTH, PersianDatePickerDialog.THIS_DAY)
 //                .setActionTextColor(ContextCompat.getColor(context, R.color.blue)
                 .setTypeFace(Typeface.createFromAsset(context.getAssets(), "font/vazir_medium.ttf"))
                 .setTitleColor(ContextCompat.getColor(context, R.color.blue))
@@ -372,8 +372,9 @@ public class AddEditTodoFragment extends BaseFragment {
                         Toast.makeText(context, persianPickerDate.getPersianYear() + "/" + persianPickerDate.getPersianMonth() + "/" + persianPickerDate.getPersianDay(), Toast.LENGTH_SHORT).show();
 
 
-                        TimePickerSheetDialog sheetTimer = new TimePickerSheetDialog(context, 0, 0);
+                        TimePickerSheetDialog sheetTimer = new TimePickerSheetDialog(context, 0, 0, persianPickerDate);
                         sheetTimer.setOnClickApply((hour, minute) -> ToastHelper.get().toast(hour + ":" + minute));
+                        sheetTimer.setOnBackClick(date -> handlePickers(context, date));
                         sheetTimer.show();
                     }
 
@@ -382,6 +383,12 @@ public class AddEditTodoFragment extends BaseFragment {
 
                     }
                 });
+
+        if (date == null) {
+            picker.setInitDate(PersianDatePickerDialog.THIS_YEAR, PersianDatePickerDialog.THIS_MONTH, PersianDatePickerDialog.THIS_DAY);
+        } else {
+            picker.setInitDate(date.getPersianYear(), date.getPersianMonth(), date.getPersianDay());
+        }
 
         picker.show();
 
