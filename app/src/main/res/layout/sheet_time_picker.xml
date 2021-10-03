@@ -45,7 +45,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:contentDescription="@string/close"
-            android:tint="@color/gray"
+            android:tint="@color/black"
             app:srcCompat="@drawable/ic_back_light"
             tools:ignore="TouchTargetSizeCheck" />
 
@@ -57,7 +57,7 @@
         style="@style/TextRG14"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="5dp"
         android:text="@string/set_time_notes"
         android:textColor="@color/gray_text"
@@ -94,7 +94,7 @@
         android:id="@+id/dots"
         android:layout_width="15dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="60dp"
         android:minHeight="100dp"
         android:tint="@color/blue"
         app:layout_constraintEnd_toEndOf="parent"
