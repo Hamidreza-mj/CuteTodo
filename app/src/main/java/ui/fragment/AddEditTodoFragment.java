@@ -1,16 +1,20 @@
 package ui.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.transition.Slide;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
@@ -27,13 +31,20 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.FragmentAddEditTodoBinding;
+import ir.hamsaa.persiandatepicker.PersianDatePickerDialog;
+import ir.hamsaa.persiandatepicker.api.PersianPickerDate;
+import ir.hamsaa.persiandatepicker.api.PersianPickerListener;
+import ir.hamsaa.persiandatepicker.util.PersianCalendarUtils;
 import model.Category;
 import model.Todo;
 import ui.dialog.DropDownCategoriesDialog;
+import ui.dialog.TimePickerSheetDialog;
 import utils.DisplayUtils;
 import utils.Tags;
 
@@ -49,6 +60,7 @@ public class AddEditTodoFragment extends BaseFragment {
     private NestedScrollView nested;
     private TextView txtTitle;
     private MaterialCardView cardCategory;
+    private MaterialCardView cardReminder;
     private TextView txtCategory;
 
     private Todo todo;
@@ -107,6 +119,7 @@ public class AddEditTodoFragment extends BaseFragment {
         nested = binding.nested;
         txtTitle = binding.txtTitle;
         cardCategory = binding.mCardCategory;
+        cardReminder = binding.mCardReminder;
         txtCategory = binding.txtCategory;
 
         handleScroll();
@@ -269,6 +282,10 @@ public class AddEditTodoFragment extends BaseFragment {
             }
         });
 
+        cardReminder.setOnClickListener(view -> {
+            handlePickers(getActivity());
+        });
+
         btnAdd.setOnClickListener(view -> {
             inpLytTitle.setError(null);
 
@@ -325,6 +342,47 @@ public class AddEditTodoFragment extends BaseFragment {
                 inpLytTitle.setError(res);
             }
         });
+    }
+
+    private void handlePickers(Context context) {
+        PersianDatePickerDialog picker = new PersianDatePickerDialog(context)
+                .setPositiveButtonString("مرحله بعد")
+                .setNegativeButton("انصراف")
+                .setTodayButton("تاریخ امروز")
+                .setTodayButtonVisible(true)
+                .setMinYear(1400)
+                .setMaxYear(1440)
+                .setInitDate(PersianDatePickerDialog.THIS_YEAR, PersianDatePickerDialog.THIS_MONTH, PersianDatePickerDialog.THIS_DAY)
+                .setActionTextColor(ContextCompat.getColor(context, R.color.blue))
+                .setTypeFace(Typeface.createFromAsset(context.getAssets(), "font/vazir_medium.ttf"))
+                .setTitleColor(ContextCompat.getColor(context, R.color.blue))
+                .setAllButtonsTextSize(15)
+                .setPickerBackgroundColor(ContextCompat.getColor(context, R.color.white))
+                .setTitleType(PersianDatePickerDialog.WEEKDAY_DAY_MONTH_YEAR)
+                .setShowInBottomSheet(true)
+                .setListener(new PersianPickerListener() {
+                    @Override
+                    public void onDateSelected(@NotNull PersianPickerDate persianPickerDate) {
+                        Log.d("TAG", "onDateSelected: " + persianPickerDate.getTimestamp());//675930448000
+                        Log.d("TAG", "onDateSelected: " + persianPickerDate.getGregorianDate());//Mon Jun 03 10:57:28 GMT+04:30 1991
+                        Log.d("TAG", "onDateSelected: " + persianPickerDate.getPersianLongDate());// دوشنبه  13  خرداد  1370
+                        Log.d("TAG", "onDateSelected: " + persianPickerDate.getPersianMonthName());//خرداد
+                        Log.d("TAG", "onDateSelected: " + PersianCalendarUtils.isPersianLeapYear(persianPickerDate.getPersianYear()));//true
+                        Toast.makeText(context, persianPickerDate.getPersianYear() + "/" + persianPickerDate.getPersianMonth() + "/" + persianPickerDate.getPersianDay(), Toast.LENGTH_SHORT).show();
+
+
+                        TimePickerSheetDialog sheetDialog = new TimePickerSheetDialog(context, 0, 0);
+                        sheetDialog.show();
+                    }
+
+                    @Override
+                    public void onDismissed() {
+
+                    }
+                });
+
+        picker.show();
+
     }
 
 }

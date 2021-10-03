@@ -196,4 +196,13 @@
         <item name="android:background">@drawable/bottomsheet_shape</item>
     </style>
 
+    <!-- NumberPicker -->
+    <style name="NumberPicker">
+        <!-- text color -->
+        <item name="android:textColorPrimary">@color/black</item>
+        <!-- line divider color -->
+        <item name="android:colorControlNormal">@color/blue</item>
+        <item name="android:fontFamily">@font/vazir_medium</item>
+    </style>
+
 </resources>

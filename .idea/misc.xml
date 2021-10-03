@@ -10,7 +10,9 @@
         <entry key="app/src/main/res/drawable/chips_shape.xml" value="0.25" />
         <entry key="app/src/main/res/drawable/chips_text_color.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/filter_indicator.xml" value="0.31979166666666664" />
+        <entry key="app/src/main/res/drawable/ic_2_dots.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_back_light.xml" value="0.3148717948717949" />
+        <entry key="app/src/main/res/drawable/ic_calendar.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_category.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_chbox_checked.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_chbox_unchecked.xml" value="0.31979166666666664" />
@@ -20,6 +22,8 @@
         <entry key="app/src/main/res/drawable/ic_cute_todo_app_logo.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_expand.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_filter.xml" value="0.31979166666666664" />
+        <entry key="app/src/main/res/drawable/ic_help.xml" value="0.31979166666666664" />
+        <entry key="app/src/main/res/drawable/ic_help_outline.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_loading_square.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_more.xml" value="0.31979166666666664" />
@@ -29,6 +33,7 @@
         <entry key="app/src/main/res/drawable/ic_search_vector.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_tick_square.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_tick_square_blue_dark.xml" value="0.31979166666666664" />
+        <entry key="app/src/main/res/drawable/ic_time_square.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_unchecked_chbox.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/priority_high_shape.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/priority_low_shape.xml" value="0.31979166666666664" />
@@ -45,7 +50,7 @@
         <entry key="app/src/main/res/layout/dialog_global_menu.xml" value="0.33" />
         <entry key="app/src/main/res/layout/dialog_more.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_add_edit_category.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_add_edit_todo.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_add_edit_todo.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_add_todo.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_categories.xml" value="0.30364583333333334" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.33" />
@@ -56,6 +61,7 @@
         <entry key="app/src/main/res/layout/item_todo2.xml" value="0.30364583333333334" />
         <entry key="app/src/main/res/layout/sheet_filter.xml" value="0.33" />
         <entry key="app/src/main/res/layout/sheet_search_mode.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/sheet_time_picker.xml" value="0.25" />
         <entry key="app/src/main/res/layout/toast.xml" value="0.30364583333333334" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.31979166666666664" />
       </map>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:background="@drawable/bottomsheet_shape"
+    android:padding="15dp"
+    app:layout_behavior="@string/bottom_sheet_behavior">
+
+    <TextView
+        android:id="@+id/txtTitle"
+        style="@style/TextNormalMD18"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="تنظیم ساعت"
+        android:textColor="@color/blue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/txtNotes"
+        style="@style/TextRG14"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="5dp"
+        android:text="@string/set_time_notes"
+        android:textColor="@color/gray_text"
+        app:layout_constraintEnd_toStartOf="@id/clock"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtTitle"
+        tools:ignore="TextContrastCheck" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/clock"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="15dp"
+        android:tint="@color/gray_text"
+        app:layout_constraintBottom_toBottomOf="@id/txtNotes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/txtNotes"
+        app:srcCompat="@drawable/ic_time_square" />
+
+    <ui.component.CustomNumberPicker
+        android:id="@+id/nPickerHour"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="10dp"
+        android:theme="@style/NumberPicker"
+        app:layout_constraintBottom_toBottomOf="@id/dots"
+        app:layout_constraintEnd_toStartOf="@id/dots"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/dots" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/dots"
+        android:layout_width="15dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:minHeight="100dp"
+        android:tint="@color/blue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtNotes"
+        app:srcCompat="@drawable/ic_2_dots" />
+
+
+    <ui.component.CustomNumberPicker
+        android:id="@+id/nPickerMinute"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="50dp"
+        android:theme="@style/NumberPicker"
+        app:layout_constraintBottom_toBottomOf="@id/dots"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/dots"
+        app:layout_constraintTop_toTopOf="@id/dots" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dots"
+        app:layout_constraintVertical_bias="1">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/mBtnSet"
+            style="@style/TextNormalMD16"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:backgroundTint="@color/blue"
+            android:gravity="center"
+            android:letterSpacing="0"
+            android:paddingVertical="10dp"
+            android:stateListAnimator="@null"
+            android:text="ذخیره و تنظیم"
+            android:textColor="@color/white"
+            app:cornerRadius="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/mBtnCancel"
+            app:layout_constraintTop_toTopOf="parent"
+            app:rippleColor="@color/rippleBlue"
+            app:strokeWidth="0dp"
+            tools:ignore="HardcodedText,TextContrastCheck" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/mBtnCancel"
+            style="@style/TextNormalMD16"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:backgroundTint="@color/filter_clear_color"
+            android:gravity="center"
+            android:letterSpacing="0"
+            android:paddingVertical="10dp"
+            android:stateListAnimator="@null"
+            android:text="@string/cancel"
+            android:textColor="@color/blue"
+            app:cornerRadius="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/mBtnSet"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:rippleColor="@color/blue"
+            app:strokeWidth="0dp"
+            tools:ignore="HardcodedText,TextContrastCheck" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

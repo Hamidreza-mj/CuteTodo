@@ -89,4 +89,9 @@
     <string name="search_by_category">عنوان دسته‌بندی</string>
     <string name="search_by_both">هر دو عنوان با هم (کار و دسته‌بندی)</string>
     <string name="search_mode_notes">یکی از موارد زیر را انتخاب کنید.\nجستجو بر اساس مورد انتخاب شده انجام می شود.</string>
+    <string name="set_reminder">تنظیم یادآوری</string>
+    <string name="select_date">انتخاب تاریخ</string>
+    <string name="select_time">انتخاب ساعت</string>
+    <string name="set_date_time">انتخاب تاریخ و ساعت</string>
+    <string name="set_time_notes">ساعتی جهت دریافت هشدار یادآوری تنظیم کنید.</string>
 </resources>
