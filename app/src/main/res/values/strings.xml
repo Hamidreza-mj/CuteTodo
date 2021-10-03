@@ -93,5 +93,5 @@
     <string name="select_date">انتخاب تاریخ</string>
     <string name="select_time">انتخاب ساعت</string>
     <string name="set_date_time">انتخاب تاریخ و ساعت</string>
-    <string name="set_time_notes">ساعتی جهت دریافت هشدار یادآوری تنظیم کنید.</string>
+    <string name="set_time_notes">ساعتی جهت دریافت هشدار تنظیم کنید.</string>
 </resources>
