@@ -139,7 +139,7 @@ public class TimePickerSheetDialog {
     }
 
     private void updateValues(int hour, int minute) {
-        txtTitle.setText(MessageFormat.format("{0}\n ساعت {1}:{2}", getTitleDate(), normalizeClock(hour), normalizeClock(minute)));
+        txtTitle.setText(MessageFormat.format("{0}\n ساعت  {1}:{2}", getTitleDate(), normalizeClock(hour), normalizeClock(minute)));
     }
 
     private String getTitleDate() {
