@@ -3,10 +3,15 @@ package model;
 import androidx.annotation.Keep;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 import java.util.Objects;
+
+import ir.hamsaa.persiandatepicker.api.PersianPickerDate;
+import ir.hamsaa.persiandatepicker.date.PersianDateImpl;
+import utils.DateHelper;
 
 @Keep
 @Entity(tableName = "todos")
@@ -30,6 +35,12 @@ public class Todo implements Comparable<Todo>, Serializable {
 
     @ColumnInfo(name = "is_done")
     private boolean isDone;
+
+    @ColumnInfo(name = "arrive_date", defaultValue = "0")
+    private long arriveDate;
+
+    @Ignore
+    private DateTime dateTime;
 
     public int getId() {
         return id;
@@ -79,12 +90,58 @@ public class Todo implements Comparable<Todo>, Serializable {
         isDone = done;
     }
 
+    public long getArriveDate() {
+        return arriveDate;
+    }
+
+    public void setArriveDate(long arriveDate) {
+        this.arriveDate = arriveDate;
+    }
+
+    public DateTime getDateTime() {
+        dateTime = new DateTime();
+
+        if (arriveDate == 0)
+            return dateTime;
+
+        PersianPickerDate persianDate = new PersianDateImpl();
+        persianDate.setDate(arriveDate);
+
+        dateTime.setDate(persianDate);
+
+        DateHelper dateHelper = new DateHelper(arriveDate);
+
+        dateTime.setHour(dateHelper.getHour());
+        dateTime.setMinute(dateHelper.getMinute());
+
+        return dateTime;
+    }
+
+    public void setDateTime(DateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public String getPersianDate() {
+        if (arriveDate == 0)
+            return null;
+
+        PersianPickerDate persianDate = new PersianDateImpl();
+        persianDate.setDate(arriveDate);
+        return persianDate.getPersianLongDate();
+    }
+
+    public String getClock() {
+        DateHelper dateHelper = new DateHelper(arriveDate);
+        return dateHelper.getClock();
+    }
+
     @Override
     public int compareTo(Todo todo) {
         boolean isSame = id == todo.getId() &&
                 Objects.equals(title, todo.getTitle()) &&
                 Objects.equals(category, todo.category) &&
                 categoryId == todo.getCategoryId() &&
+                arriveDate == todo.getArriveDate() &&
                 Objects.equals(priority, todo.priority) &&
                 isDone == todo.isDone();
 
@@ -97,19 +154,5 @@ public class Todo implements Comparable<Todo>, Serializable {
     public enum Priority {
         LOW, NORMAL, HIGH
     }
-
-/*
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Todo)) return false;
-        Todo todo = (Todo) o;
-        return this.compareTo(todo) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-*/
 
 }

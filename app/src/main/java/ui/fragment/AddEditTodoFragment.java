@@ -1,20 +1,21 @@
 package ui.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.transition.Slide;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
@@ -24,6 +25,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -33,6 +35,8 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.MessageFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import hlv.cute.todo.R;
@@ -40,14 +44,16 @@ import hlv.cute.todo.databinding.FragmentAddEditTodoBinding;
 import ir.hamsaa.persiandatepicker.PersianDatePickerDialog;
 import ir.hamsaa.persiandatepicker.api.PersianPickerDate;
 import ir.hamsaa.persiandatepicker.api.PersianPickerListener;
-import ir.hamsaa.persiandatepicker.util.PersianCalendarUtils;
 import model.Category;
+import model.DateTime;
 import model.Todo;
+import scheduler.receiver.AlarmReceiver;
 import ui.dialog.DropDownCategoriesDialog;
 import ui.dialog.TimePickerSheetDialog;
+import utils.Constants;
+import utils.DateHelper;
 import utils.DisplayUtils;
 import utils.Tags;
-import utils.ToastHelper;
 
 public class AddEditTodoFragment extends BaseFragment {
 
@@ -63,10 +69,14 @@ public class AddEditTodoFragment extends BaseFragment {
     private MaterialCardView cardCategory;
     private MaterialCardView cardReminder;
     private TextView txtCategory;
+    private TextView txtDate;
 
     private Todo todo;
     private Todo.Priority priority;
     private Category category;
+    private DateTime dateTime;
+
+    private MutableLiveData<DateTime> dateTimeLiveData;
 
     private static final String TODO_ARGS = "todo-args";
 
@@ -87,6 +97,8 @@ public class AddEditTodoFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        dateTimeLiveData = new MutableLiveData<>();
+
         if (getArguments() != null && !getArguments().isEmpty()) {
             todo = (Todo) getArguments().getSerializable(TODO_ARGS);
 
@@ -106,8 +118,9 @@ public class AddEditTodoFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews();
-        handleLogic();
+        initLogic();
         handleAction();
+        handleObserver();
     }
 
     private void initViews() {
@@ -122,6 +135,7 @@ public class AddEditTodoFragment extends BaseFragment {
         cardCategory = binding.mCardCategory;
         cardReminder = binding.mCardReminder;
         txtCategory = binding.txtCategory;
+        txtDate = binding.txtDate;
 
         handleScroll();
     }
@@ -157,11 +171,13 @@ public class AddEditTodoFragment extends BaseFragment {
     }
 
     @SuppressLint("NonConstantResourceId")
-    private void handleLogic() {
-        if (todo != null) {
+    private void initLogic() {
+        if (isEditMode) {
             txtTitle.setText(getString(R.string.edit_todo));
             btnAdd.setText(getString(R.string.edit));
             edtTitle.setText(todo.getTitle());
+
+            dateTimeLiveData.setValue(todo.getDateTime());
 
             if (todo.getCategoryId() != 0 && todo.getCategory() != null) {
                 category = new Category();
@@ -198,6 +214,7 @@ public class AddEditTodoFragment extends BaseFragment {
             return;
         }
 
+        dateTimeLiveData.setValue(new DateTime()); //dateTime must be not null for using in DatePicker
         txtTitle.setText(getString(R.string.add_new_todo));
         btnAdd.setText(getString(R.string.save));
         chipGP.check(R.id.chipLow);
@@ -284,9 +301,7 @@ public class AddEditTodoFragment extends BaseFragment {
             }
         });
 
-        cardReminder.setOnClickListener(view -> {
-            handlePickers(getActivity(), null);
-        });
+        cardReminder.setOnClickListener(view -> handlePickers(getActivity(), dateTime.getDate()));
 
         btnAdd.setOnClickListener(view -> {
             inpLytTitle.setError(null);
@@ -323,6 +338,19 @@ public class AddEditTodoFragment extends BaseFragment {
                 todo.setTitle(edtTitle.getText().toString().trim());
                 todo.setPriority(priority);
 
+                if (dateTime != null && dateTime.getDate() != null) {
+                    todo.setDateTime(dateTime);
+                    Calendar calendar = Calendar.getInstance();
+
+                    calendar.setTimeInMillis(dateTime.getDate().getTimestamp());
+
+                    calendar.set(Calendar.HOUR_OF_DAY, dateTime.getHour()); //HOUR_OF_DAY is 24 hours format
+                    calendar.set(Calendar.MINUTE, dateTime.getMinute());
+                    calendar.set(Calendar.SECOND, 0);
+
+                    todo.setArriveDate(calendar.getTimeInMillis());
+                }
+
                 if (category != null) {
                     todo.setCategoryId(category.getId());
                     todo.setCategory(category.getName());
@@ -346,7 +374,7 @@ public class AddEditTodoFragment extends BaseFragment {
         });
     }
 
-    private void handlePickers(Context context, PersianPickerDate date) {
+    private void handlePickers(Context context, PersianPickerDate persianDate) {
         PersianDatePickerDialog picker = new PersianDatePickerDialog(context)
                 .setPositiveButtonString("مرحله بعد")
                 .setNegativeButton("انصراف")
@@ -354,7 +382,6 @@ public class AddEditTodoFragment extends BaseFragment {
                 .setTodayButtonVisible(true)
                 .setMinYear(1400)
                 .setMaxYear(1440)
-//                .setActionTextColor(ContextCompat.getColor(context, R.color.blue)
                 .setTypeFace(Typeface.createFromAsset(context.getAssets(), "font/vazir_medium.ttf"))
                 .setTitleColor(ContextCompat.getColor(context, R.color.blue))
                 .setAllButtonsTextSize(15)
@@ -364,34 +391,112 @@ public class AddEditTodoFragment extends BaseFragment {
                 .setListener(new PersianPickerListener() {
                     @Override
                     public void onDateSelected(@NotNull PersianPickerDate persianPickerDate) {
-                        Log.d("TAG", "onDateSelected: " + persianPickerDate.getTimestamp());//675930448000
+                        /*Log.d("TAG", "onDateSelected: " + persianPickerDate.getTimestamp());//675930448000
                         Log.d("TAG", "onDateSelected: " + persianPickerDate.getGregorianDate());//Mon Jun 03 10:57:28 GMT+04:30 1991
                         Log.d("TAG", "onDateSelected: " + persianPickerDate.getPersianLongDate());// دوشنبه  13  خرداد  1370
                         Log.d("TAG", "onDateSelected: " + persianPickerDate.getPersianMonthName());//خرداد
                         Log.d("TAG", "onDateSelected: " + PersianCalendarUtils.isPersianLeapYear(persianPickerDate.getPersianYear()));//true
-                        Toast.makeText(context, persianPickerDate.getPersianYear() + "/" + persianPickerDate.getPersianMonth() + "/" + persianPickerDate.getPersianDay(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, persianPickerDate.getPersianYear() + "/" + persianPickerDate.getPersianMonth() + "/" + persianPickerDate.getPersianDay(), Toast.LENGTH_SHORT).show();*/
 
+                        dateTime.setDate(persianPickerDate);
 
-                        TimePickerSheetDialog sheetTimer = new TimePickerSheetDialog(context, 0, 0, persianPickerDate);
-                        sheetTimer.setOnClickApply((hour, minute) -> ToastHelper.get().toast(hour + ":" + minute));
+                        //set default value for clock in TimePicker in add mode
+                        if (!isEditMode) {
+                            DateHelper dateHelper = new DateHelper(System.currentTimeMillis());
+                            dateTime.setHour(dateHelper.getHour());
+                            dateTime.setMinute(dateHelper.getMinute());
+                        }
+
+                        TimePickerSheetDialog sheetTimer = new TimePickerSheetDialog(context, dateTime);
+                        sheetTimer.setOnClickApply(pickedDateTime -> {
+                            dateTimeLiveData.setValue(pickedDateTime);
+                            sheetTimer.dismiss();
+                        });
+
                         sheetTimer.setOnBackClick(date -> handlePickers(context, date));
                         sheetTimer.show();
                     }
 
                     @Override
                     public void onDismissed() {
+                        /*PersianDateImpl currentDate = new PersianDateImpl();
+                        if (isEditMode) {
+                            if (todo.getArriveDate() != 0) {
+                                currentDate.setDate(todo.getArriveDate());
+                            } else {
+                                currentDate.setDate(
+                                        PersianDatePickerDialog.THIS_YEAR,
+                                        PersianDatePickerDialog.THIS_MONTH,
+                                        PersianDatePickerDialog.THIS_DAY
+                                );
+                            }
+                        } else {
+                            currentDate.setDate(
+                                    PersianDatePickerDialog.THIS_YEAR,
+                                    PersianDatePickerDialog.THIS_MONTH,
+                                    PersianDatePickerDialog.THIS_DAY
+                            );
 
+                        }
+                        dateTime.setDate(currentDate);*/
                     }
                 });
 
-        if (date == null) {
-            picker.setInitDate(PersianDatePickerDialog.THIS_YEAR, PersianDatePickerDialog.THIS_MONTH, PersianDatePickerDialog.THIS_DAY);
+        if (persianDate == null) {
+            picker.setInitDate(
+                    PersianDatePickerDialog.THIS_YEAR,
+                    PersianDatePickerDialog.THIS_MONTH,
+                    PersianDatePickerDialog.THIS_DAY
+            );
+
+            //set default value for clock in TimePicker in edit mode
+            if (isEditMode) {
+                DateHelper dateHelper = new DateHelper(System.currentTimeMillis());
+                dateTime.setHour(dateHelper.getHour());
+                dateTime.setMinute(dateHelper.getMinute());
+            }
         } else {
-            picker.setInitDate(date.getPersianYear(), date.getPersianMonth(), date.getPersianDay());
+            picker.setInitDate(
+                    persianDate.getPersianYear(),
+                    persianDate.getPersianMonth(),
+                    persianDate.getPersianDay()
+            );
         }
 
         picker.show();
 
+    }
+
+    private void handleObserver() {
+        dateTimeLiveData.observe(getViewLifecycleOwner(), changedDateTime -> {
+            dateTime = changedDateTime;
+
+            if (changedDateTime != null && changedDateTime.getDate() != null) {
+                txtDate.setTextColor(ContextCompat.getColor(txtDate.getContext(), R.color.black));
+                txtDate.setText(MessageFormat.format("{0}\nساعت  {1}",
+                        changedDateTime.getDate().getPersianLongDate(),
+                        changedDateTime.getClock())
+                );
+            } else {
+                txtDate.setTextColor(ContextCompat.getColor(txtDate.getContext(), R.color.gray));
+                txtDate.setText(getString(R.string.set_date_time));
+            }
+
+        });
+    }
+
+    private void setAlarm(Context context) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(context, Constants.REQUEST_CODE_ALARM_RECIEVER, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+                Calendar.getInstance().getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY,
+                pendingIntent);
+
+        alarmManager.cancel(pendingIntent);
     }
 
 }

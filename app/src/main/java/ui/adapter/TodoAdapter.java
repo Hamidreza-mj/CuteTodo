@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -68,6 +69,9 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
         private final AppCompatImageView imgMenu;
         private final TextView txtCategory;
 
+        private final ConstraintLayout lytDate;
+        private final TextView txtDate, txtClock;
+
         private final TextView txtLow, txtNormal, txtHigh;
 
         public ViewHolder(@NonNull ItemTodoBinding binding) {
@@ -76,6 +80,10 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
             checkBox = binding.aChkBoxTitle;
             imgMenu = binding.aImgMenu;
             txtCategory = binding.txtCategory;
+
+            lytDate = binding.lytDate;
+            txtDate = binding.txtDate;
+            txtClock = binding.txtClock;
 
             txtLow = binding.txtLowPriority;
             txtNormal = binding.txtNormalPriority;
@@ -118,6 +126,14 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
                 txtCategory.setText(todo.getCategory());
             } else {
                 txtCategory.setVisibility(View.GONE);
+            }
+
+            if (todo.getArriveDate() != 0) {
+                lytDate.setVisibility(View.VISIBLE);
+                txtDate.setText(todo.getPersianDate());
+                txtClock.setText(todo.getClock());
+            } else {
+                lytDate.setVisibility(View.GONE);
             }
 
             switch (todo.getPriority()) {

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.SheetTimePickerBinding;
 import ir.hamsaa.persiandatepicker.api.PersianPickerDate;
+import model.DateTime;
 import ui.component.CustomNumberPicker;
 
 public class TimePickerSheetDialog {
@@ -22,18 +23,14 @@ public class TimePickerSheetDialog {
     private final CustomNumberPicker hourPicker;
     private final CustomNumberPicker minutePicker;
     private final TextView txtTitle;
-    private final int hour;
-    private final int minute;
 
-    private final PersianPickerDate date;
+    private final DateTime dateTime;
 
     private OnClickApply onClickApply;
     private OnBackClick onBackClick;
 
-    public TimePickerSheetDialog(Context context, boolean cancelable, int hour, int minute, PersianPickerDate date) {
-        this.hour = hour;
-        this.minute = minute;
-        this.date = date;
+    public TimePickerSheetDialog(Context context, boolean cancelable, DateTime dateTime) {
+        this.dateTime = dateTime;
 
         sheetDialog = new BottomSheetDialog(context, R.style.TranslucentDialog);
         sheetDialog.setCancelable(cancelable);
@@ -52,7 +49,7 @@ public class TimePickerSheetDialog {
                 return;
             }
 
-            onClickApply.onClick(hourPicker.getValue(), minutePicker.getValue());
+            onClickApply.onClick(dateTime);
         });
 
         binding.cardBack.setOnClickListener(view -> {
@@ -61,7 +58,7 @@ public class TimePickerSheetDialog {
                 return;
             }
 
-            onBackClick.onBack(date);
+            onBackClick.onBack(dateTime.getDate());
             dismiss();
         });
 
@@ -71,16 +68,17 @@ public class TimePickerSheetDialog {
         hourPicker.postDelayed(this::handleHourNumPicker, 100);
         minutePicker.postDelayed(this::handleMinuteNumPicker, 100);
 
-        //set default
-        updateValues(hourPicker.getValue(), minutePicker.getValue());
+        updateValues(dateTime);
 
-        hourPicker.setOnValueChangedListener((numberPicker, oldHour, newHour) ->
-                updateValues(newHour, minutePicker.getValue())
-        );
+        hourPicker.setOnValueChangedListener((numberPicker, oldHour, newHour) -> {
+            dateTime.setHour(newHour);
+            updateValues(dateTime);
+        });
 
-        minutePicker.setOnValueChangedListener((numberPicker, oldMinute, newMinute) ->
-                updateValues(hourPicker.getValue(), newMinute)
-        );
+        minutePicker.setOnValueChangedListener((numberPicker, oldMinute, newMinute) -> {
+            dateTime.setMinute(newMinute);
+            updateValues(dateTime);
+        });
 
         sheetDialog.create();
     }
@@ -92,7 +90,7 @@ public class TimePickerSheetDialog {
 
         hourPicker.setMinValue(0);
         hourPicker.setMaxValue(23);
-        hourPicker.setValue(hour);
+        hourPicker.setValue(dateTime.getHour());
     }
 
     private void handleMinuteNumPicker() {
@@ -102,13 +100,13 @@ public class TimePickerSheetDialog {
 
         minutePicker.setMinValue(0);
         minutePicker.setMaxValue(59);
-        minutePicker.setValue(minute);
+        minutePicker.setValue(dateTime.getMinute());
     }
 
     private String[] getAllHours() {
         ArrayList<String> arrayList = new ArrayList<>();
         for (int i = 0; i < 24; i++)
-            arrayList.add(normalizeClock(i)); // i < 0 -> 00 01 02 03 04 05 ...
+            arrayList.add(dateTime.normalizeTime((i))); // i < 0 -> 00 01 02 03 04 05 ...
 
         String[] hours = new String[arrayList.size()];
         hours = arrayList.toArray(hours);
@@ -119,7 +117,7 @@ public class TimePickerSheetDialog {
     private String[] getAllMinutes() {
         ArrayList<String> arrayList = new ArrayList<>();
         for (int i = 0; i < 60; i++)
-            arrayList.add(normalizeClock(i)); // i < 0 -> 00 01 02 03 04 05 ...
+            arrayList.add(dateTime.normalizeTime(i)); // i < 0 -> 00 01 02 03 04 05 ...
 
         String[] minutes = new String[arrayList.size()];
         minutes = arrayList.toArray(minutes);
@@ -127,23 +125,21 @@ public class TimePickerSheetDialog {
         return minutes;
     }
 
-    public TimePickerSheetDialog(Context context, int hour, int minute, PersianPickerDate date) {
-        this(context, true, hour, minute, date);
+    public TimePickerSheetDialog(Context context, DateTime dateTime) {
+        this(context, true, dateTime);
     }
 
-    private String normalizeClock(int clock) {
-        if (clock < 10)
-            return "0" + clock;
-
-        return String.valueOf(clock);
-    }
-
-    private void updateValues(int hour, int minute) {
-        txtTitle.setText(MessageFormat.format("{0}\n ساعت  {1}:{2}", getTitleDate(), normalizeClock(hour), normalizeClock(minute)));
+    private void updateValues(DateTime dateTime) {
+        txtTitle.setText(
+                MessageFormat.format("{0}\n ساعت  {1}:{2}",
+                        getTitleDate(),
+                        dateTime.getHourString(),
+                        dateTime.getMinuteString())
+        );
     }
 
     private String getTitleDate() {
-        return date.getPersianLongDate().trim();
+        return dateTime.getDate().getPersianLongDate().trim();
     }
 
     public void setOnClickApply(OnClickApply onClickApply) {
@@ -157,17 +153,15 @@ public class TimePickerSheetDialog {
     public void dismiss() {
         if (sheetDialog != null)
             sheetDialog.dismiss();
-
     }
 
     public void show() {
         if (sheetDialog != null)
             sheetDialog.show();
-
     }
 
     public interface OnClickApply {
-        void onClick(int hour, int minute);
+        void onClick(DateTime dateTime);
     }
 
     public interface OnBackClick {
