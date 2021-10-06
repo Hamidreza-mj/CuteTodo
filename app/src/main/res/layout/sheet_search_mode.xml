@@ -11,7 +11,7 @@
 
     <TextView
         android:id="@+id/txtTitle"
-        style="@style/TextNormalMD18"
+        style="@style/TextNormalMD16"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -21,33 +21,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardClose"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/aImgClose"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginHorizontal="5dp"
-        android:background="@color/white"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
+        android:contentDescription="@string/close"
         android:focusable="true"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="24dp"
-        app:cardElevation="0dp"
+        android:padding="11dp"
         app:layout_constraintBottom_toBottomOf="@id/txtTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/txtTitle"
-        app:rippleColor="@color/HighlightBlue"
-        tools:ignore="TouchTargetSizeCheck">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:contentDescription="@string/close"
-            android:padding="15dp"
-            app:srcCompat="@drawable/ic_close_simple"
-            tools:ignore="TouchTargetSizeCheck" />
-
-    </com.google.android.material.card.MaterialCardView>
+        app:srcCompat="@drawable/ic_close_simple"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <TextView
         android:id="@+id/txtSortBy"
@@ -58,7 +47,7 @@
         android:layout_marginEnd="15dp"
         android:text="@string/search_mode_notes"
         android:textColor="@color/gray_text"
-        app:layout_constraintEnd_toEndOf="@id/cardClose"
+        app:layout_constraintEnd_toEndOf="@id/aImgClose"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtTitle"
         tools:ignore="TextContrastCheck" />
@@ -70,53 +59,32 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15sp"
         android:layout_marginEnd="15dp"
+        android:background="@color/white"
         android:gravity="end|right"
         android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="@id/cardClose"
+        app:layout_constraintEnd_toEndOf="@id/aImgClose"
         app:layout_constraintTop_toBottomOf="@id/txtSortBy">
 
         <RadioButton
             android:id="@+id/radioBtnTodo"
-            style="@style/TextRG16"
-            android:layout_width="wrap_content"
+            style="@style/RadioButtonClickable"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            android:button="@null"
             android:checked="true"
-            android:drawableRight="@drawable/radiobutton"
-            android:drawablePadding="10dp"
-            android:focusable="true"
-            android:paddingVertical="15dp"
-            android:stateListAnimator="@null"
             android:text="@string/search_by_todo" />
-
 
         <RadioButton
             android:id="@+id/radioBtnCategory"
-            style="@style/TextRG16"
-            android:layout_width="wrap_content"
+            style="@style/RadioButtonClickable"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            android:button="@null"
-            android:drawableRight="@drawable/radiobutton"
-            android:drawablePadding="10dp"
-            android:focusable="true"
-            android:paddingVertical="15dp"
-            android:stateListAnimator="@null"
             android:text="@string/search_by_category" />
-
 
         <RadioButton
             android:id="@+id/radioBtnBoth"
-            style="@style/TextRG16"
-            android:layout_width="wrap_content"
+            style="@style/RadioButtonClickable"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            android:button="@null"
-            android:drawableRight="@drawable/radiobutton"
-            android:drawablePadding="10dp"
-            android:paddingVertical="15dp"
-            android:stateListAnimator="@null"
             android:text="@string/search_by_both" />
 
     </RadioGroup>
@@ -140,10 +108,10 @@
             android:layout_marginHorizontal="12dp"
             android:backgroundTint="@color/blue"
             android:gravity="center"
-            android:paddingVertical="13dp"
+            android:letterSpacing="0"
+            android:paddingVertical="11dp"
             android:stateListAnimator="@null"
             android:text="@string/close"
-            android:letterSpacing="0"
             android:textColor="@color/white"
             app:cornerRadius="12dp"
             app:layout_constraintBottom_toBottomOf="parent"

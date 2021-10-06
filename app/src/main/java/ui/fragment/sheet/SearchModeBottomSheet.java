@@ -97,7 +97,7 @@ public class SearchModeBottomSheet extends BottomSheetDialogFragment {
 
     @SuppressLint("NonConstantResourceId")
     private void handleAction() {
-        binding.cardClose.setOnClickListener(view -> dismiss());
+        binding.aImgClose.setOnClickListener(view -> dismiss());
         binding.mBtnClose.setOnClickListener(view -> dismiss());
 
         radioGP.setOnCheckedChangeListener((radioGroup, id) -> {

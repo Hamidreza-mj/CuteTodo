@@ -11,7 +11,6 @@ import androidx.appcompat.widget.AppCompatCheckBox;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.card.MaterialCardView;
 
 import hlv.cute.todo.databinding.SheetFilterBinding;
 import model.Filter;
@@ -20,8 +19,6 @@ import utils.KeyboardInputHelper;
 public class FilterBottomSheet extends BottomSheetDialogFragment {
 
     private SheetFilterBinding binding;
-
-    private MaterialCardView cardClose;
 
     private AppCompatCheckBox chkDoneTodo, chkUndoneTodo;
     private AppCompatCheckBox chkLowPriority, chkNormalPriority, chkHighPriority;
@@ -73,8 +70,6 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
     }
 
     private void initViews() {
-        cardClose = binding.cardClose;
-
         chkDoneTodo = binding.aChkBoxDone;
         chkUndoneTodo = binding.aChkBoxUndone;
 
@@ -98,7 +93,7 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
     }
 
     private void handleAction() {
-        cardClose.setOnClickListener(view -> dismiss());
+        binding.aImgClose.setOnClickListener(view -> dismiss());
 
         //button
         btnApplyFilter.setOnClickListener(view -> {

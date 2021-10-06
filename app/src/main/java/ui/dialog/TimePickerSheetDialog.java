@@ -52,7 +52,7 @@ public class TimePickerSheetDialog {
             onClickApply.onClick(dateTime);
         });
 
-        binding.cardBack.setOnClickListener(view -> {
+        binding.aImgBack.setOnClickListener(view -> {
             if (onBackClick == null) {
                 dismiss();
                 return;

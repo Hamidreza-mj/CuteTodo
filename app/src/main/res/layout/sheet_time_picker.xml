@@ -23,33 +23,23 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText" />
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardBack"
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/aImgBack"
         android:layout_width="44dp"
         android:layout_height="44dp"
-        android:layout_marginHorizontal="5dp"
-        android:background="@color/white"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="10dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
+        android:contentDescription="@string/close"
         android:focusable="true"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="24dp"
-        app:cardElevation="0dp"
+        android:tint="@color/black"
         app:layout_constraintBottom_toBottomOf="@id/txtTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/txtTitle"
-        app:rippleColor="@color/HighlightBlue"
-        tools:ignore="TouchTargetSizeCheck">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:contentDescription="@string/close"
-            android:tint="@color/black"
-            app:srcCompat="@drawable/ic_back_light"
-            tools:ignore="TouchTargetSizeCheck" />
-
-    </com.google.android.material.card.MaterialCardView>
+        app:srcCompat="@drawable/ic_back_light"
+        tools:ignore="TouchTargetSizeCheck" />
 
 
     <TextView
@@ -136,7 +126,7 @@
             android:backgroundTint="@color/blue"
             android:gravity="center"
             android:letterSpacing="0"
-            android:paddingVertical="10dp"
+            android:paddingVertical="11dp"
             android:stateListAnimator="@null"
             android:text="ذخیره و تنظیم"
             android:textColor="@color/white"
@@ -158,7 +148,7 @@
             android:backgroundTint="@color/filter_clear_color"
             android:gravity="center"
             android:letterSpacing="0"
-            android:paddingVertical="10dp"
+            android:paddingVertical="11dp"
             android:stateListAnimator="@null"
             android:text="@string/cancel"
             android:textColor="@color/blue"
