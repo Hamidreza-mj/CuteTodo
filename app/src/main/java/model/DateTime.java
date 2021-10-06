@@ -53,4 +53,10 @@ public class DateTime implements Serializable {
         return getHourString() + ":" + getMinuteString();
     }
 
+    public String getPersianDate() {
+        return date.getPersianDayOfWeekName() +
+                "، " + date.getPersianDay() +
+                " " + date.getPersianMonthName() +
+                " " + date.getPersianYear();
+    }
 }

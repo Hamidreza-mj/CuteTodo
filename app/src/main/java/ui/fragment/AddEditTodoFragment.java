@@ -20,6 +20,7 @@ import android.widget.TextView;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
@@ -68,6 +69,7 @@ public class AddEditTodoFragment extends BaseFragment {
     private TextView txtTitle;
     private MaterialCardView cardCategory;
     private MaterialCardView cardReminder;
+    private AppCompatImageView imgClear;
     private TextView txtCategory;
     private TextView txtDate;
 
@@ -134,6 +136,7 @@ public class AddEditTodoFragment extends BaseFragment {
         txtTitle = binding.txtTitle;
         cardCategory = binding.mCardCategory;
         cardReminder = binding.mCardReminder;
+        imgClear = binding.aImgClear;
         txtCategory = binding.txtCategory;
         txtDate = binding.txtDate;
 
@@ -303,6 +306,8 @@ public class AddEditTodoFragment extends BaseFragment {
 
         cardReminder.setOnClickListener(view -> handlePickers(getActivity(), dateTime.getDate()));
 
+        imgClear.setOnClickListener(view -> dateTimeLiveData.setValue(new DateTime()));
+
         btnAdd.setOnClickListener(view -> {
             inpLytTitle.setError(null);
 
@@ -311,6 +316,21 @@ public class AddEditTodoFragment extends BaseFragment {
                 editedTodo.setId(todo.getId());
                 editedTodo.setTitle(edtTitle.getText().toString().trim());
                 editedTodo.setPriority(priority);
+
+                if (dateTime != null && dateTime.getDate() != null) {
+                    editedTodo.setDateTime(dateTime);
+                    Calendar calendar = Calendar.getInstance();
+
+                    calendar.setTimeInMillis(dateTime.getDate().getTimestamp());
+
+                    calendar.set(Calendar.HOUR_OF_DAY, dateTime.getHour()); //HOUR_OF_DAY is 24 hours format
+                    calendar.set(Calendar.MINUTE, dateTime.getMinute());
+                    calendar.set(Calendar.SECOND, 0);
+
+                    editedTodo.setArriveDate(calendar.getTimeInMillis());
+                } else {
+                    editedTodo.setArriveDate(0);
+                }
 
                 if (category != null) {
                     editedTodo.setCategoryId(category.getId());
@@ -473,13 +493,15 @@ public class AddEditTodoFragment extends BaseFragment {
 
             if (changedDateTime != null && changedDateTime.getDate() != null) {
                 txtDate.setTextColor(ContextCompat.getColor(txtDate.getContext(), R.color.black));
-                txtDate.setText(MessageFormat.format("{0}\nساعت  {1}",
-                        changedDateTime.getDate().getPersianLongDate(),
+                txtDate.setText(MessageFormat.format("{0}\nساعت {1}",
+                        changedDateTime.getPersianDate(),
                         changedDateTime.getClock())
                 );
+                imgClear.setVisibility(View.VISIBLE);
             } else {
                 txtDate.setTextColor(ContextCompat.getColor(txtDate.getContext(), R.color.gray));
                 txtDate.setText(getString(R.string.set_date_time));
+                imgClear.setVisibility(View.GONE);
             }
 
         });

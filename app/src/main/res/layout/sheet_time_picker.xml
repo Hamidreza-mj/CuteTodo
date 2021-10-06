@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="center"
+        android:lineSpacingMultiplier="1.3"
         android:text="تنظیم ساعت"
         android:textColor="@color/blue"
         app:layout_constraintEnd_toEndOf="parent"

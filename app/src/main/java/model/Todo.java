@@ -121,6 +121,7 @@ public class Todo implements Comparable<Todo>, Serializable {
         this.dateTime = dateTime;
     }
 
+    @Deprecated
     public String getPersianDate() {
         if (arriveDate == 0)
             return null;

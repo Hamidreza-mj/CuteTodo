@@ -130,7 +130,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
 
             if (todo.getArriveDate() != 0) {
                 lytDate.setVisibility(View.VISIBLE);
-                txtDate.setText(todo.getPersianDate());
+                txtDate.setText(todo.getDateTime().getPersianDate());
                 txtClock.setText(todo.getClock());
             } else {
                 lytDate.setVisibility(View.GONE);

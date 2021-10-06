@@ -131,15 +131,11 @@ public class TimePickerSheetDialog {
 
     private void updateValues(DateTime dateTime) {
         txtTitle.setText(
-                MessageFormat.format("{0}\n ساعت  {1}:{2}",
-                        getTitleDate(),
+                MessageFormat.format("{0}\n ساعت {1}:{2}",
+                        dateTime.getPersianDate(),
                         dateTime.getHourString(),
                         dateTime.getMinuteString())
         );
-    }
-
-    private String getTitleDate() {
-        return dateTime.getDate().getPersianLongDate().trim();
     }
 
     public void setOnClickApply(OnClickApply onClickApply) {

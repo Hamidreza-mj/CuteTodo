@@ -8,6 +8,7 @@
     <color name="blue">#1F8EF3</color>
     <color name="HighlightBlue">#401F8EF3</color>
     <color name="rippleBlue">#0C3860</color>
+    <color name="ripple_color_drawable">#721F8EF3</color>
     <color name="red">#FF2E2E</color>
     <color name="whiteBlue">#E9F3FA</color>
     <color name="orange">#FF7A00</color>

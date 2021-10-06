@@ -316,12 +316,13 @@
                         style="@style/TextNormalMD16"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="8dp"
+                        android:layout_marginHorizontal="2dp"
+                        android:lineSpacingMultiplier="1.2"
                         android:text="@string/set_date_time"
                         android:textColor="@color/gray"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/calender"
+                        app:layout_constraintEnd_toStartOf="@id/calender"
+                        app:layout_constraintStart_toEndOf="@id/aImgClear"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.appcompat.widget.AppCompatImageView
@@ -331,9 +332,25 @@
                         android:padding="5dp"
                         android:tint="#808080"
                         app:layout_constraintBottom_toBottomOf="@id/txtDate"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@id/txtDate"
                         app:srcCompat="@drawable/ic_calendar" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/aImgClear"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:contentDescription="حذف یادآوری"
+                        android:focusable="true"
+                        android:padding="6dp"
+                        android:tint="@color/gray"
+                        app:layout_constraintBottom_toBottomOf="@id/txtDate"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/txtDate"
+                        app:srcCompat="@drawable/ic_close_square"
+                        tools:ignore="HardcodedText" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
