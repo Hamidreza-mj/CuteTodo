@@ -1,0 +1,194 @@
+package viewmodel;
+
+import androidx.annotation.StringRes;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+
+import java.util.Calendar;
+
+import hlv.cute.todo.R;
+import model.Category;
+import model.DateTime;
+import model.Todo;
+import utils.ResourceUtils;
+
+public class AddEditTodoViewModel extends ViewModel {
+
+    private final MutableLiveData<Category> categoryLiveData;
+    private final MutableLiveData<DateTime> dateTimeLiveData;
+
+    private Todo todo;
+    private Todo.Priority priority;
+
+    private boolean isEditMode = false;
+
+    public AddEditTodoViewModel() {
+        categoryLiveData = new MutableLiveData<>();
+        dateTimeLiveData = new MutableLiveData<>();
+    }
+
+    public void setTodo(Todo todo) {
+        this.todo = todo;
+        handleCategory();
+    }
+
+    public Todo getTodo() {
+        return todo;
+    }
+
+    public void setEditMode(boolean editMode) {
+        isEditMode = editMode;
+    }
+
+    public boolean isEditMode() {
+        return isEditMode;
+    }
+
+    public String getTitleFragment() {
+        return getString(isEditMode ? R.string.edit_todo : R.string.add_new_todo);
+    }
+
+    public String getButtonPrimaryText() {
+        return getString(isEditMode ? R.string.edit : R.string.save);
+    }
+
+    public String getEditTextTitle() {
+        return isEditMode ? todo.getTitle() : "";
+    }
+
+    public void commitDateTime(DateTime dateTime) {
+        if (dateTime == null)
+            dateTime = new DateTime();
+
+        dateTimeLiveData.setValue(dateTime);
+    }
+
+    public void firstInitDateTime() {
+        DateTime firstDateTime;
+
+        if (todo != null && todo.getDateTime() != null)
+            firstDateTime = todo.getDateTime();
+        else
+            firstDateTime = new DateTime();
+
+        dateTimeLiveData.setValue(firstDateTime);
+    }
+
+    public void releaseDateTime() {
+        commitDateTime(null);
+    }
+
+    public void commitCategory(Category category) {
+        categoryLiveData.setValue(category);
+    }
+
+    public boolean categoryIsValid() {
+        return getCategory() != null && getCategory().getId() != 0 && getCategory().getName() != null;
+    }
+
+    public String getCategoryTitleText() {
+        return categoryIsValid() ? getCategory().getName() : getString(R.string.enter_category_name);
+    }
+
+    public void setPriority(Todo.Priority priority) {
+        this.priority = priority;
+    }
+
+    public LiveData<Category> getCategoryLiveData() {
+        return categoryLiveData;
+    }
+
+    public LiveData<DateTime> getDateTimeLiveData() {
+        return dateTimeLiveData;
+    }
+
+    public Category getCategory() {
+        return categoryLiveData.getValue();
+    }
+
+    public DateTime getDateTime() {
+        return dateTimeLiveData.getValue();
+    }
+
+    public DateTime getTodoDateTime() {
+        return todo.getDateTime();
+    }
+
+    public Todo addTodo(String title) {
+        todo = new Todo();
+
+        todo.setTitle(title);
+        todo.setPriority(priority);
+
+        if (getDateTime() != null && getDateTime().getDate() != null) {
+            todo.setDateTime(getDateTime());
+            Calendar calendar = Calendar.getInstance();
+
+            calendar.setTimeInMillis(getDateTime().getDate().getTimestamp());
+
+            calendar.set(Calendar.HOUR_OF_DAY, getDateTime().getHour()); //HOUR_OF_DAY is 24 hours format
+            calendar.set(Calendar.MINUTE, getDateTime().getMinute());
+            calendar.set(Calendar.SECOND, 0);
+
+            todo.setArriveDate(calendar.getTimeInMillis());
+        }
+
+        if (getCategory() != null) {
+            todo.setCategoryId(getCategory().getId());
+            todo.setCategory(getCategory().getName());
+        } else {
+            todo.setCategoryId(0);
+            todo.setCategory(null);
+        }
+
+        return todo;
+    }
+
+    public Todo editTodo(String newTitle) {
+        Todo mustBeEditTodo = new Todo();
+        mustBeEditTodo.setId(todo.getId());
+        mustBeEditTodo.setTitle(newTitle);
+        mustBeEditTodo.setPriority(priority);
+        mustBeEditTodo.setDone(todo.isDone());
+
+        if (getDateTime() != null && getDateTime().getDate() != null) {
+            mustBeEditTodo.setDateTime(getDateTime());
+            Calendar calendar = Calendar.getInstance();
+
+            calendar.setTimeInMillis(getDateTime().getDate().getTimestamp());
+
+            calendar.set(Calendar.HOUR_OF_DAY, getDateTime().getHour()); //HOUR_OF_DAY is 24 hours format
+            calendar.set(Calendar.MINUTE, getDateTime().getMinute());
+            calendar.set(Calendar.SECOND, 0);
+
+            mustBeEditTodo.setArriveDate(calendar.getTimeInMillis());
+        } else {
+            mustBeEditTodo.setArriveDate(0);
+        }
+
+        if (getCategory() != null) {
+            mustBeEditTodo.setCategoryId(getCategory().getId());
+            mustBeEditTodo.setCategory(getCategory().getName());
+        } else {
+            mustBeEditTodo.setCategoryId(0);
+            mustBeEditTodo.setCategory(null);
+        }
+
+        return mustBeEditTodo;
+    }
+
+    private String getString(@StringRes int stringRes) {
+        return ResourceUtils.get().getString(stringRes);
+    }
+
+    private void handleCategory() {
+        if (todo.getCategoryId() != 0 && todo.getCategory() != null) {
+            Category category = new Category();
+            category.setId(todo.getCategoryId());
+            category.setName(todo.getCategory());
+            commitCategory(category);
+        }
+    }
+
+}

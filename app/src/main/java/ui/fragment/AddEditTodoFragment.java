@@ -26,7 +26,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -39,6 +39,7 @@ import org.jetbrains.annotations.NotNull;
 import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.FragmentAddEditTodoBinding;
@@ -46,7 +47,6 @@ import ir.hamsaa.persiandatepicker.PersianDatePickerDialog;
 import ir.hamsaa.persiandatepicker.api.PersianPickerDate;
 import ir.hamsaa.persiandatepicker.api.PersianPickerListener;
 import model.Category;
-import model.DateTime;
 import model.Todo;
 import scheduler.receiver.AlarmReceiver;
 import ui.dialog.DropDownCategoriesDialog;
@@ -54,7 +54,9 @@ import ui.dialog.TimePickerSheetDialog;
 import utils.Constants;
 import utils.DateHelper;
 import utils.DisplayUtils;
+import utils.ResourceUtils;
 import utils.Tags;
+import viewmodel.AddEditTodoViewModel;
 
 public class AddEditTodoFragment extends BaseFragment {
 
@@ -73,16 +75,9 @@ public class AddEditTodoFragment extends BaseFragment {
     private TextView txtCategory;
     private TextView txtDate;
 
-    private Todo todo;
-    private Todo.Priority priority;
-    private Category category;
-    private DateTime dateTime;
-
-    private MutableLiveData<DateTime> dateTimeLiveData;
+    private AddEditTodoViewModel viewModel;
 
     private static final String TODO_ARGS = "todo-args";
-
-    private boolean isEditMode = false;
 
     public AddEditTodoFragment() {
     }
@@ -99,13 +94,17 @@ public class AddEditTodoFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        dateTimeLiveData = new MutableLiveData<>();
+        viewModel = new ViewModelProvider(this).get(AddEditTodoViewModel.class);
 
         if (getArguments() != null && !getArguments().isEmpty()) {
-            todo = (Todo) getArguments().getSerializable(TODO_ARGS);
+            Todo todo = (Todo) getArguments().getSerializable(TODO_ARGS);
 
-            if (todo != null)
-                isEditMode = true;
+            if (todo != null) {
+                viewModel.setTodo(todo);
+                viewModel.setEditMode(true);
+            } else {
+                viewModel.setEditMode(false);
+            }
         }
     }
 
@@ -175,41 +174,30 @@ public class AddEditTodoFragment extends BaseFragment {
 
     @SuppressLint("NonConstantResourceId")
     private void initLogic() {
-        if (isEditMode) {
-            txtTitle.setText(getString(R.string.edit_todo));
-            btnAdd.setText(getString(R.string.edit));
-            edtTitle.setText(todo.getTitle());
+        txtTitle.setText(viewModel.getTitleFragment());
+        edtTitle.setText(viewModel.getEditTextTitle());
 
-            dateTimeLiveData.setValue(todo.getDateTime());
+        btnAdd.setText(viewModel.getButtonPrimaryText());
 
-            if (todo.getCategoryId() != 0 && todo.getCategory() != null) {
-                category = new Category();
-                category.setId(todo.getCategoryId());
-                category.setName(todo.getCategory());
+        viewModel.firstInitDateTime();
 
-                txtCategory.setText(todo.getCategory());
-
-                if (getActivity() != null)
-                    txtCategory.setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
-            }
-
+        if (viewModel.isEditMode()) {
             @IdRes int chipID;
-
-            switch (todo.getPriority()) {
+            switch (viewModel.getTodo().getPriority()) {
                 case LOW:
                 default:
                     chipID = R.id.chipLow;
-                    priority = Todo.Priority.LOW;
+                    viewModel.setPriority(Todo.Priority.LOW);
                     break;
 
                 case NORMAL:
                     chipID = R.id.chipNormal;
-                    priority = Todo.Priority.NORMAL;
+                    viewModel.setPriority(Todo.Priority.NORMAL);
                     break;
 
                 case HIGH:
                     chipID = R.id.chipHigh;
-                    priority = Todo.Priority.HIGH;
+                    viewModel.setPriority(Todo.Priority.HIGH);
                     break;
             }
 
@@ -217,45 +205,25 @@ public class AddEditTodoFragment extends BaseFragment {
             return;
         }
 
-        dateTimeLiveData.setValue(new DateTime()); //dateTime must be not null for using in DatePicker
-        txtTitle.setText(getString(R.string.add_new_todo));
-        btnAdd.setText(getString(R.string.save));
         chipGP.check(R.id.chipLow);
-        priority = Todo.Priority.LOW; //set default priority
+        viewModel.setPriority(Todo.Priority.LOW); //set default priority
     }
 
     @SuppressLint("NonConstantResourceId")
     private void handleAction() {
         cardCategory.setOnClickListener(view -> {
             List<Category> categories = getCategoryViewModel().getAllCategories();
+
             DropDownCategoriesDialog dropDown = new DropDownCategoriesDialog(getActivity(), categories);
             dropDown.show();
 
             dropDown.setOnClickCategory(category -> {
                 dropDown.dismiss();
-
-                if (category.getId() == 0 && category.getName() == null) {
-                    this.category = null;
-                    if (getActivity() != null)
-                        txtCategory.setTextColor(ContextCompat.getColor(getActivity(), R.color.gray));
-                    txtCategory.setText(R.string.enter_category_name);
-                    return;
-                }
-
-                this.category = category;
-
-                txtCategory.setText(category.getName());
-
-                if (getActivity() != null)
-                    txtCategory.setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
+                viewModel.commitCategory(category);
             });
 
             dropDown.setOnclickManage(() -> {
-                this.category = null;
-
-                if (getActivity() != null)
-                    txtCategory.setTextColor(ContextCompat.getColor(getActivity(), R.color.gray));
-                txtCategory.setText(R.string.enter_category_name);
+                viewModel.commitCategory(null);
 
                 Fragment fragment = CategoriesFragment.newInstance();
                 fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
@@ -273,15 +241,15 @@ public class AddEditTodoFragment extends BaseFragment {
             switch (checkedId) {
                 case R.id.chipLow:
                 default:
-                    priority = Todo.Priority.LOW;
+                    viewModel.setPriority(Todo.Priority.LOW);
                     break;
 
                 case R.id.chipNormal:
-                    priority = Todo.Priority.NORMAL;
+                    viewModel.setPriority(Todo.Priority.NORMAL);
                     break;
 
                 case R.id.chipHigh:
-                    priority = Todo.Priority.HIGH;
+                    viewModel.setPriority(Todo.Priority.HIGH);
                     break;
             }
         });
@@ -304,46 +272,17 @@ public class AddEditTodoFragment extends BaseFragment {
             }
         });
 
-        cardReminder.setOnClickListener(view -> handlePickers(getActivity(), dateTime.getDate()));
+        cardReminder.setOnClickListener(view -> handlePickers(getActivity(), viewModel.getDateTime().getDate()));
 
-        imgClear.setOnClickListener(view -> dateTimeLiveData.setValue(new DateTime()));
+        imgClear.setOnClickListener(view -> viewModel.releaseDateTime());
 
         btnAdd.setOnClickListener(view -> {
             inpLytTitle.setError(null);
 
-            if (isEditMode) {
-                Todo editedTodo = new Todo();
-                editedTodo.setId(todo.getId());
-                editedTodo.setTitle(edtTitle.getText().toString().trim());
-                editedTodo.setPriority(priority);
-
-                if (dateTime != null && dateTime.getDate() != null) {
-                    editedTodo.setDateTime(dateTime);
-                    Calendar calendar = Calendar.getInstance();
-
-                    calendar.setTimeInMillis(dateTime.getDate().getTimestamp());
-
-                    calendar.set(Calendar.HOUR_OF_DAY, dateTime.getHour()); //HOUR_OF_DAY is 24 hours format
-                    calendar.set(Calendar.MINUTE, dateTime.getMinute());
-                    calendar.set(Calendar.SECOND, 0);
-
-                    editedTodo.setArriveDate(calendar.getTimeInMillis());
-                } else {
-                    editedTodo.setArriveDate(0);
-                }
-
-                if (category != null) {
-                    editedTodo.setCategoryId(category.getId());
-                    editedTodo.setCategory(category.getName());
-                } else {
-                    editedTodo.setCategoryId(0);
-                    editedTodo.setCategory(null);
-                }
-
-                editedTodo.setDone(todo.isDone());
+            if (viewModel.isEditMode()) {
+                Todo editedTodo = viewModel.editTodo(Objects.requireNonNull(edtTitle.getText()).toString().trim());
 
                 String res = getTodoViewModel().validateTodo(editedTodo);
-
                 if (res == null) {
                     getTodoViewModel().editTodo(editedTodo);
                     getSearchViewModel().fetch();
@@ -353,38 +292,12 @@ public class AddEditTodoFragment extends BaseFragment {
 
                 inpLytTitle.setError(res);
             } else {
-                todo = new Todo();
+                Todo newTodo = viewModel.addTodo(Objects.requireNonNull(edtTitle.getText()).toString().trim());
 
-                todo.setTitle(edtTitle.getText().toString().trim());
-                todo.setPriority(priority);
-
-                if (dateTime != null && dateTime.getDate() != null) {
-                    todo.setDateTime(dateTime);
-                    Calendar calendar = Calendar.getInstance();
-
-                    calendar.setTimeInMillis(dateTime.getDate().getTimestamp());
-
-                    calendar.set(Calendar.HOUR_OF_DAY, dateTime.getHour()); //HOUR_OF_DAY is 24 hours format
-                    calendar.set(Calendar.MINUTE, dateTime.getMinute());
-                    calendar.set(Calendar.SECOND, 0);
-
-                    todo.setArriveDate(calendar.getTimeInMillis());
-                }
-
-                if (category != null) {
-                    todo.setCategoryId(category.getId());
-                    todo.setCategory(category.getName());
-                } else {
-                    todo.setCategoryId(0);
-                    todo.setCategory(null);
-                }
-
-
-                String res = getTodoViewModel().validateTodo(todo);
-
+                String res = getTodoViewModel().validateTodo(newTodo);
                 if (res == null) {
                     getTodoViewModel().goToTop();
-                    getTodoViewModel().addTodo(todo);
+                    getTodoViewModel().addTodo(newTodo);
                     back();
                     return;
                 }
@@ -411,25 +324,18 @@ public class AddEditTodoFragment extends BaseFragment {
                 .setListener(new PersianPickerListener() {
                     @Override
                     public void onDateSelected(@NotNull PersianPickerDate persianPickerDate) {
-                        /*Log.d("TAG", "onDateSelected: " + persianPickerDate.getTimestamp());//675930448000
-                        Log.d("TAG", "onDateSelected: " + persianPickerDate.getGregorianDate());//Mon Jun 03 10:57:28 GMT+04:30 1991
-                        Log.d("TAG", "onDateSelected: " + persianPickerDate.getPersianLongDate());// دوشنبه  13  خرداد  1370
-                        Log.d("TAG", "onDateSelected: " + persianPickerDate.getPersianMonthName());//خرداد
-                        Log.d("TAG", "onDateSelected: " + PersianCalendarUtils.isPersianLeapYear(persianPickerDate.getPersianYear()));//true
-                        Toast.makeText(context, persianPickerDate.getPersianYear() + "/" + persianPickerDate.getPersianMonth() + "/" + persianPickerDate.getPersianDay(), Toast.LENGTH_SHORT).show();*/
-
-                        dateTime.setDate(persianPickerDate);
+                        viewModel.getDateTime().setDate(persianPickerDate);
 
                         //set default value for clock in TimePicker in add mode
-                        if (!isEditMode) {
+                        if (!viewModel.isEditMode()) {
                             DateHelper dateHelper = new DateHelper(System.currentTimeMillis());
-                            dateTime.setHour(dateHelper.getHour());
-                            dateTime.setMinute(dateHelper.getMinute());
+                            viewModel.getDateTime().setHour(dateHelper.getHour());
+                            viewModel.getDateTime().setMinute(dateHelper.getMinute());
                         }
 
-                        TimePickerSheetDialog sheetTimer = new TimePickerSheetDialog(context, dateTime);
+                        TimePickerSheetDialog sheetTimer = new TimePickerSheetDialog(context, viewModel.getDateTime());///////
                         sheetTimer.setOnClickApply(pickedDateTime -> {
-                            dateTimeLiveData.setValue(pickedDateTime);
+                            viewModel.commitDateTime(pickedDateTime);
                             sheetTimer.dismiss();
                         });
 
@@ -470,10 +376,10 @@ public class AddEditTodoFragment extends BaseFragment {
             );
 
             //set default value for clock in TimePicker in edit mode
-            if (isEditMode) {
+            if (viewModel.isEditMode()) {
                 DateHelper dateHelper = new DateHelper(System.currentTimeMillis());
-                dateTime.setHour(dateHelper.getHour());
-                dateTime.setMinute(dateHelper.getMinute());
+                viewModel.getDateTime().setHour(dateHelper.getHour());
+                viewModel.getDateTime().setMinute(dateHelper.getMinute());
             }
         } else {
             picker.setInitDate(
@@ -488,9 +394,7 @@ public class AddEditTodoFragment extends BaseFragment {
     }
 
     private void handleObserver() {
-        dateTimeLiveData.observe(getViewLifecycleOwner(), changedDateTime -> {
-            dateTime = changedDateTime;
-
+        viewModel.getDateTimeLiveData().observe(getViewLifecycleOwner(), changedDateTime -> {
             if (changedDateTime != null && changedDateTime.getDate() != null) {
                 txtDate.setTextColor(ContextCompat.getColor(txtDate.getContext(), R.color.black));
                 txtDate.setText(MessageFormat.format("{0}\nساعت {1}",
@@ -503,13 +407,23 @@ public class AddEditTodoFragment extends BaseFragment {
                 txtDate.setText(getString(R.string.set_date_time));
                 imgClear.setVisibility(View.GONE);
             }
+        });
 
+        viewModel.getCategoryLiveData().observe(getViewLifecycleOwner(), category -> {
+            txtCategory.setText(viewModel.getCategoryTitleText());
+
+            if (viewModel.categoryIsValid())
+                txtCategory.setTextColor(ResourceUtils.get().getColor(R.color.black));
+            else
+                txtCategory.setTextColor(ResourceUtils.get().getColor(R.color.gray));
         });
     }
 
     private void setAlarm(Context context) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
+
+        @SuppressLint("UnspecifiedImmutableFlag")
         PendingIntent pendingIntent =
                 PendingIntent.getBroadcast(context, Constants.REQUEST_CODE_ALARM_RECIEVER, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 

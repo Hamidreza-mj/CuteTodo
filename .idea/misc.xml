@@ -40,6 +40,8 @@
         <entry key="app/src/main/res/drawable/priority_normal_shape.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/radiobutton.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/rec.xml" value="0.31979166666666664" />
+        <entry key="app/src/main/res/drawable/ripple_radius.xml" value="0.31979166666666664" />
+        <entry key="app/src/main/res/drawable/ripple_shape.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/scrollbar.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/search_shape.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/shadow.xml" value="0.31979166666666664" />
@@ -61,11 +63,16 @@
         <entry key="app/src/main/res/layout/item_todo2.xml" value="0.30364583333333334" />
         <entry key="app/src/main/res/layout/sheet_filter.xml" value="0.33" />
         <entry key="app/src/main/res/layout/sheet_search_mode.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/sheet_time_picker.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/sheet_time_picker.xml" value="0.33" />
         <entry key="app/src/main/res/layout/toast.xml" value="0.30364583333333334" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.31979166666666664" />
       </map>
     </option>
+  </component>
+  <component name="EntryPointsManager">
+    <list size="1">
+      <item index="0" class="java.lang.String" itemvalue="android.annotation.SuppressLint" />
+    </list>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />

@@ -2,7 +2,6 @@ package viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import java.util.List;
@@ -91,8 +90,7 @@ public class CategoryViewModel extends ViewModel {
     }
 
     public LiveData<List<Category>> getCategoriesLiveDate() {
-        //values will not be emitted unless they have changed.
-        return Transformations.distinctUntilChanged(categoriesLiveDate);
+        return categoriesLiveDate;
     }
 
     public void goToTop() {
