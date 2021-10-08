@@ -47,13 +47,11 @@ import ir.hamsaa.persiandatepicker.PersianDatePickerDialog;
 import ir.hamsaa.persiandatepicker.api.PersianPickerDate;
 import ir.hamsaa.persiandatepicker.api.PersianPickerListener;
 import model.Category;
-import model.DateTime;
 import model.Todo;
 import scheduler.receiver.AlarmReceiver;
 import ui.dialog.DropDownCategoriesDialog;
 import ui.dialog.TimePickerSheetDialog;
 import utils.Constants;
-import utils.DateHelper;
 import utils.DisplayUtils;
 import utils.ResourceUtils;
 import utils.Tags;
@@ -61,7 +59,11 @@ import viewmodel.AddEditTodoViewModel;
 
 public class AddEditTodoFragment extends BaseFragment {
 
+    private static final String TODO_ARGS = "todo-args";
+
     private FragmentAddEditTodoBinding binding;
+
+    private AddEditTodoViewModel viewModel;
 
     private MaterialButton btnAdd;
     private TextInputLayout inpLytTitle;
@@ -75,12 +77,6 @@ public class AddEditTodoFragment extends BaseFragment {
     private AppCompatImageView imgClear;
     private TextView txtCategory;
     private TextView txtDate;
-
-    private AddEditTodoViewModel viewModel;
-
-    private DateTime tempDateTime = new DateTime();
-
-    private static final String TODO_ARGS = "todo-args";
 
     public AddEditTodoFragment() {
     }
@@ -312,7 +308,6 @@ public class AddEditTodoFragment extends BaseFragment {
     }
 
     private void handlePickers(Context context, PersianPickerDate persianDate) {
-        tempDateTime = new DateTime();
         PersianDatePickerDialog picker = new PersianDatePickerDialog(context)
                 .setPositiveButtonString("مرحله بعد")
                 .setNegativeButton("انصراف")
@@ -329,39 +324,10 @@ public class AddEditTodoFragment extends BaseFragment {
                 .setListener(new PersianPickerListener() {
                     @Override
                     public void onDateSelected(@NotNull PersianPickerDate persianPickerDate) {
-                        DateHelper dateHelper;
-                        if (viewModel.isEditMode() && viewModel.getTodo().getArriveDate() != 0) {
-                            //edit mode & has date
-                            if (viewModel.oldDateTimeIsValid()) {
-                                //old date is valid (set before)
-                                tempDateTime.setHour(viewModel.getOldDateTime().getHour());
-                                tempDateTime.setMinute(viewModel.getOldDateTime().getMinute());
-                            } else {
-                                //old date invalid
-                                if (viewModel.isCleared()) //if clear old date
-                                    dateHelper = new DateHelper(System.currentTimeMillis());
-                                else //if old date not found and it exists without any change (normal edit mode)
-                                    dateHelper = new DateHelper(viewModel.getTodo().getArriveDate());
+                        viewModel.configTempDateTime();
+                        viewModel.setDateTemp(persianPickerDate);
 
-                                tempDateTime.setHour(dateHelper.getHour());
-                                tempDateTime.setMinute(dateHelper.getMinute());
-                            }
-                        } else {
-                            //add mode or hasn't date (in edit only)
-                            if (viewModel.oldDateTimeIsValid()) { //old is valid, set with old datas
-                                tempDateTime.setHour(viewModel.getOldDateTime().getHour());
-                                tempDateTime.setMinute(viewModel.getOldDateTime().getMinute());
-                            } else { //old date is invalid set now current time (edit mode or add [add without date])
-                                dateHelper = new DateHelper(System.currentTimeMillis());
-                                tempDateTime.setHour(dateHelper.getHour());
-                                tempDateTime.setMinute(dateHelper.getMinute());
-                            }
-                        }
-
-
-                        tempDateTime.setDate(persianPickerDate);
-
-                        TimePickerSheetDialog sheetTimer = new TimePickerSheetDialog(context, tempDateTime);
+                        TimePickerSheetDialog sheetTimer = new TimePickerSheetDialog(context, viewModel.getTempDateTime());
                         sheetTimer.show();
 
                         sheetTimer.setOnClickApply(pickedDateTime -> {
@@ -378,25 +344,13 @@ public class AddEditTodoFragment extends BaseFragment {
                     }
                 });
 
-        if (persianDate == null) {
-            picker.setInitDate(
-                    PersianDatePickerDialog.THIS_YEAR,
-                    PersianDatePickerDialog.THIS_MONTH,
-                    PersianDatePickerDialog.THIS_DAY
-            );
+        //init default values
+        int[] date = viewModel.setInitDateValue(persianDate);
+        int year = date[0];
+        int month = date[1];
+        int day = date[2];
 
-            if (viewModel.isEditMode()) {
-                DateHelper dateHelper = new DateHelper(System.currentTimeMillis());
-                tempDateTime.setHour(dateHelper.getHour());
-                tempDateTime.setMinute(dateHelper.getMinute());
-            }
-        } else {
-            picker.setInitDate(
-                    persianDate.getPersianYear(),
-                    persianDate.getPersianMonth(),
-                    persianDate.getPersianDay()
-            );
-        }
+        picker.setInitDate(year, month, day);
 
         picker.show();
 

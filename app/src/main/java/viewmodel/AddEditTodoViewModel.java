@@ -9,10 +9,12 @@ import java.util.Calendar;
 
 import hlv.cute.todo.R;
 import ir.hamsaa.persiandatepicker.PersianDatePickerDialog;
+import ir.hamsaa.persiandatepicker.api.PersianPickerDate;
 import ir.hamsaa.persiandatepicker.date.PersianDateImpl;
 import model.Category;
 import model.DateTime;
 import model.Todo;
+import utils.DateHelper;
 import utils.ResourceUtils;
 
 public class AddEditTodoViewModel extends ViewModel {
@@ -23,6 +25,8 @@ public class AddEditTodoViewModel extends ViewModel {
 
     private Todo todo;
     private Todo.Priority priority;
+
+    private DateTime tempDateTime = new DateTime();
 
     private boolean isEditMode = false;
     private boolean isCleared = false;
@@ -97,6 +101,91 @@ public class AddEditTodoViewModel extends ViewModel {
         isCleared = true;
         commitDateTime(null);
         commitOldDateTime(null);
+    }
+
+    public DateTime getTempDateTime() {
+        return tempDateTime;
+    }
+
+    public void configTempDateTime() {
+        tempDateTime = new DateTime(); //release temp for reseting values
+        DateHelper dateHelper;
+
+        if (isEditMode && todo.getArriveDate() != 0) {
+            //edit mode & has date
+            if (oldDateTimeIsValid()) {
+                //old date is valid (set before)
+                tempDateTime.setHour(getOldDateTime().getHour());
+                tempDateTime.setMinute(getOldDateTime().getMinute());
+            } else {
+                //old date invalid
+                if (isCleared) //if clear old date
+                    dateHelper = new DateHelper(System.currentTimeMillis());
+                else //if old date not found and it exists without any change (normal edit mode)
+                    dateHelper = new DateHelper(todo.getArriveDate());
+
+                tempDateTime.setHour(dateHelper.getHour());
+                tempDateTime.setMinute(dateHelper.getMinute());
+            }
+        } else {
+            //add mode or hasn't date (in edit only)
+            if (oldDateTimeIsValid()) { //old is valid, set with old datas
+                tempDateTime.setHour(getOldDateTime().getHour());
+                tempDateTime.setMinute(getOldDateTime().getMinute());
+            } else { //old date is invalid set now current time (edit mode or add [add without date])
+                dateHelper = new DateHelper(System.currentTimeMillis());
+                tempDateTime.setHour(dateHelper.getHour());
+                tempDateTime.setMinute(dateHelper.getMinute());
+            }
+        }
+    }
+
+    public void setDateTemp(PersianPickerDate date) {
+        tempDateTime.setDate(date);
+    }
+
+    private void setHourTemp(int hour) {
+        tempDateTime.setHour(hour);
+    }
+
+    private void setMinuteTemp(int minute) {
+        tempDateTime.setMinute(minute);
+    }
+
+    /**
+     * set init date value for DatePicker & TimePicker
+     *
+     * @param persianDate PersianPickerDate
+     * @return int[] of date: <br> index[0] -> year <br> index[1] -> month <br> index[2] -> day
+     */
+    public int[] setInitDateValue(PersianPickerDate persianDate) {
+        int[] initValues;
+        if (persianDate == null) {
+            initValues = new int[]{
+                    PersianDatePickerDialog.THIS_YEAR,
+                    PersianDatePickerDialog.THIS_MONTH,
+                    PersianDatePickerDialog.THIS_DAY
+            };
+
+            initTimeEditModeWithUnsetDate();
+        } else {
+            initValues = new int[]{
+                    persianDate.getPersianYear(),
+                    persianDate.getPersianMonth(),
+                    persianDate.getPersianDay()
+            };
+        }
+
+        return initValues;
+    }
+
+    private void initTimeEditModeWithUnsetDate() {
+        //if is edit mode and date not set (hasn't date)
+        if (isEditMode) {
+            DateHelper dateHelper = new DateHelper(System.currentTimeMillis());
+            setHourTemp(dateHelper.getHour());
+            setMinuteTemp(dateHelper.getMinute());
+        }
     }
 
     public boolean categoryIsValid() {
@@ -199,10 +288,6 @@ public class AddEditTodoViewModel extends ViewModel {
         return categoryIsValid() ? getCategory().getName() : getString(R.string.enter_category_name);
     }
     //endregion
-
-    public boolean isCleared() {
-        return isCleared;
-    }
 
     public LiveData<Category> getCategoryLiveData() {
         return categoryLiveData;
