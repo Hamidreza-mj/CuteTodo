@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel;
 import java.util.Calendar;
 
 import hlv.cute.todo.R;
+import ir.hamsaa.persiandatepicker.PersianDatePickerDialog;
+import ir.hamsaa.persiandatepicker.date.PersianDateImpl;
 import model.Category;
 import model.DateTime;
 import model.Todo;
@@ -17,15 +19,18 @@ public class AddEditTodoViewModel extends ViewModel {
 
     private final MutableLiveData<Category> categoryLiveData;
     private final MutableLiveData<DateTime> dateTimeLiveData;
+    private final MutableLiveData<DateTime> oldDateTimeLiveData;
 
     private Todo todo;
     private Todo.Priority priority;
 
     private boolean isEditMode = false;
+    private boolean isCleared = false;
 
     public AddEditTodoViewModel() {
         categoryLiveData = new MutableLiveData<>();
         dateTimeLiveData = new MutableLiveData<>();
+        oldDateTimeLiveData = new MutableLiveData<>();
     }
 
     public void setTodo(Todo todo) {
@@ -45,16 +50,33 @@ public class AddEditTodoViewModel extends ViewModel {
         return isEditMode;
     }
 
-    public String getTitleFragment() {
-        return getString(isEditMode ? R.string.edit_todo : R.string.add_new_todo);
+    public void firstInitDateTime() {
+        DateTime firstDateTime;
+
+        if (isEditMode) {
+            firstDateTime = todo.getDateTime();
+            if (todo.getDateTime() == null) {
+                PersianDateImpl persianDate = new PersianDateImpl();
+                persianDate.setDate(PersianDatePickerDialog.THIS_YEAR,
+                        PersianDatePickerDialog.THIS_MONTH,
+                        PersianDatePickerDialog.THIS_DAY);
+
+                firstDateTime.setDate(persianDate);
+            }
+        } else {
+            firstDateTime = new DateTime();
+        }
+
+        oldDateTimeLiveData.setValue(firstDateTime);
+        dateTimeLiveData.setValue(firstDateTime);
     }
 
-    public String getButtonPrimaryText() {
-        return getString(isEditMode ? R.string.edit : R.string.save);
+    public boolean oldDateTimeIsValid() {
+        return getOldDateTime() != null && getOldDateTime().getDate() != null;
     }
 
-    public String getEditTextTitle() {
-        return isEditMode ? todo.getTitle() : "";
+    public void commitCategory(Category category) {
+        categoryLiveData.setValue(category);
     }
 
     public void commitDateTime(DateTime dateTime) {
@@ -64,43 +86,25 @@ public class AddEditTodoViewModel extends ViewModel {
         dateTimeLiveData.setValue(dateTime);
     }
 
-    public void firstInitDateTime() {
-        DateTime firstDateTime;
+    public void commitOldDateTime(DateTime dateTime) {
+        if (dateTime == null)
+            dateTime = new DateTime();
 
-        if (todo != null && todo.getDateTime() != null)
-            firstDateTime = todo.getDateTime();
-        else
-            firstDateTime = new DateTime();
-
-        dateTimeLiveData.setValue(firstDateTime);
+        oldDateTimeLiveData.setValue(dateTime);
     }
 
-    public void releaseDateTime() {
+    public void releaseAll() {
+        isCleared = true;
         commitDateTime(null);
-    }
-
-    public void commitCategory(Category category) {
-        categoryLiveData.setValue(category);
+        commitOldDateTime(null);
     }
 
     public boolean categoryIsValid() {
         return getCategory() != null && getCategory().getId() != 0 && getCategory().getName() != null;
     }
 
-    public String getCategoryTitleText() {
-        return categoryIsValid() ? getCategory().getName() : getString(R.string.enter_category_name);
-    }
-
     public void setPriority(Todo.Priority priority) {
         this.priority = priority;
-    }
-
-    public LiveData<Category> getCategoryLiveData() {
-        return categoryLiveData;
-    }
-
-    public LiveData<DateTime> getDateTimeLiveData() {
-        return dateTimeLiveData;
     }
 
     public Category getCategory() {
@@ -111,8 +115,8 @@ public class AddEditTodoViewModel extends ViewModel {
         return dateTimeLiveData.getValue();
     }
 
-    public DateTime getTodoDateTime() {
-        return todo.getDateTime();
+    public DateTime getOldDateTime() {
+        return oldDateTimeLiveData.getValue();
     }
 
     public Todo addTodo(String title) {
@@ -176,6 +180,36 @@ public class AddEditTodoViewModel extends ViewModel {
         }
 
         return mustBeEditTodo;
+    }
+
+    //region: get text and strings
+    public String getTitleFragment() {
+        return getString(isEditMode ? R.string.edit_todo : R.string.add_new_todo);
+    }
+
+    public String getButtonPrimaryText() {
+        return getString(isEditMode ? R.string.edit : R.string.save);
+    }
+
+    public String getEditTextTitle() {
+        return isEditMode ? todo.getTitle() : "";
+    }
+
+    public String getCategoryTitleText() {
+        return categoryIsValid() ? getCategory().getName() : getString(R.string.enter_category_name);
+    }
+    //endregion
+
+    public boolean isCleared() {
+        return isCleared;
+    }
+
+    public LiveData<Category> getCategoryLiveData() {
+        return categoryLiveData;
+    }
+
+    public LiveData<DateTime> getDateTimeLiveData() {
+        return dateTimeLiveData;
     }
 
     private String getString(@StringRes int stringRes) {

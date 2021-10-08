@@ -47,6 +47,7 @@ import ir.hamsaa.persiandatepicker.PersianDatePickerDialog;
 import ir.hamsaa.persiandatepicker.api.PersianPickerDate;
 import ir.hamsaa.persiandatepicker.api.PersianPickerListener;
 import model.Category;
+import model.DateTime;
 import model.Todo;
 import scheduler.receiver.AlarmReceiver;
 import ui.dialog.DropDownCategoriesDialog;
@@ -77,6 +78,8 @@ public class AddEditTodoFragment extends BaseFragment {
 
     private AddEditTodoViewModel viewModel;
 
+    private DateTime tempDateTime = new DateTime();
+
     private static final String TODO_ARGS = "todo-args";
 
     public AddEditTodoFragment() {
@@ -100,8 +103,8 @@ public class AddEditTodoFragment extends BaseFragment {
             Todo todo = (Todo) getArguments().getSerializable(TODO_ARGS);
 
             if (todo != null) {
-                viewModel.setTodo(todo);
                 viewModel.setEditMode(true);
+                viewModel.setTodo(todo);
             } else {
                 viewModel.setEditMode(false);
             }
@@ -205,8 +208,9 @@ public class AddEditTodoFragment extends BaseFragment {
             return;
         }
 
+        //set default priority
         chipGP.check(R.id.chipLow);
-        viewModel.setPriority(Todo.Priority.LOW); //set default priority
+        viewModel.setPriority(Todo.Priority.LOW);
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -272,9 +276,9 @@ public class AddEditTodoFragment extends BaseFragment {
             }
         });
 
-        cardReminder.setOnClickListener(view -> handlePickers(getActivity(), viewModel.getDateTime().getDate()));
+        cardReminder.setOnClickListener(view -> handlePickers(getActivity(), viewModel.getOldDateTime().getDate()));
 
-        imgClear.setOnClickListener(view -> viewModel.releaseDateTime());
+        imgClear.setOnClickListener(view -> viewModel.releaseAll());
 
         btnAdd.setOnClickListener(view -> {
             inpLytTitle.setError(null);
@@ -308,6 +312,7 @@ public class AddEditTodoFragment extends BaseFragment {
     }
 
     private void handlePickers(Context context, PersianPickerDate persianDate) {
+        tempDateTime = new DateTime();
         PersianDatePickerDialog picker = new PersianDatePickerDialog(context)
                 .setPositiveButtonString("مرحله بعد")
                 .setNegativeButton("انصراف")
@@ -324,47 +329,52 @@ public class AddEditTodoFragment extends BaseFragment {
                 .setListener(new PersianPickerListener() {
                     @Override
                     public void onDateSelected(@NotNull PersianPickerDate persianPickerDate) {
-                        viewModel.getDateTime().setDate(persianPickerDate);
+                        DateHelper dateHelper;
+                        if (viewModel.isEditMode() && viewModel.getTodo().getArriveDate() != 0) {
+                            //edit mode & has date
+                            if (viewModel.oldDateTimeIsValid()) {
+                                //old date is valid (set before)
+                                tempDateTime.setHour(viewModel.getOldDateTime().getHour());
+                                tempDateTime.setMinute(viewModel.getOldDateTime().getMinute());
+                            } else {
+                                //old date invalid
+                                if (viewModel.isCleared()) //if clear old date
+                                    dateHelper = new DateHelper(System.currentTimeMillis());
+                                else //if old date not found and it exists without any change (normal edit mode)
+                                    dateHelper = new DateHelper(viewModel.getTodo().getArriveDate());
 
-                        //set default value for clock in TimePicker in add mode
-                        if (!viewModel.isEditMode()) {
-                            DateHelper dateHelper = new DateHelper(System.currentTimeMillis());
-                            viewModel.getDateTime().setHour(dateHelper.getHour());
-                            viewModel.getDateTime().setMinute(dateHelper.getMinute());
+                                tempDateTime.setHour(dateHelper.getHour());
+                                tempDateTime.setMinute(dateHelper.getMinute());
+                            }
+                        } else {
+                            //add mode or hasn't date (in edit only)
+                            if (viewModel.oldDateTimeIsValid()) { //old is valid, set with old datas
+                                tempDateTime.setHour(viewModel.getOldDateTime().getHour());
+                                tempDateTime.setMinute(viewModel.getOldDateTime().getMinute());
+                            } else { //old date is invalid set now current time (edit mode or add [add without date])
+                                dateHelper = new DateHelper(System.currentTimeMillis());
+                                tempDateTime.setHour(dateHelper.getHour());
+                                tempDateTime.setMinute(dateHelper.getMinute());
+                            }
                         }
 
-                        TimePickerSheetDialog sheetTimer = new TimePickerSheetDialog(context, viewModel.getDateTime());///////
+
+                        tempDateTime.setDate(persianPickerDate);
+
+                        TimePickerSheetDialog sheetTimer = new TimePickerSheetDialog(context, tempDateTime);
+                        sheetTimer.show();
+
                         sheetTimer.setOnClickApply(pickedDateTime -> {
                             viewModel.commitDateTime(pickedDateTime);
+                            viewModel.commitOldDateTime(pickedDateTime);
                             sheetTimer.dismiss();
                         });
 
                         sheetTimer.setOnBackClick(date -> handlePickers(context, date));
-                        sheetTimer.show();
                     }
 
                     @Override
                     public void onDismissed() {
-                        /*PersianDateImpl currentDate = new PersianDateImpl();
-                        if (isEditMode) {
-                            if (todo.getArriveDate() != 0) {
-                                currentDate.setDate(todo.getArriveDate());
-                            } else {
-                                currentDate.setDate(
-                                        PersianDatePickerDialog.THIS_YEAR,
-                                        PersianDatePickerDialog.THIS_MONTH,
-                                        PersianDatePickerDialog.THIS_DAY
-                                );
-                            }
-                        } else {
-                            currentDate.setDate(
-                                    PersianDatePickerDialog.THIS_YEAR,
-                                    PersianDatePickerDialog.THIS_MONTH,
-                                    PersianDatePickerDialog.THIS_DAY
-                            );
-
-                        }
-                        dateTime.setDate(currentDate);*/
                     }
                 });
 
@@ -375,11 +385,10 @@ public class AddEditTodoFragment extends BaseFragment {
                     PersianDatePickerDialog.THIS_DAY
             );
 
-            //set default value for clock in TimePicker in edit mode
             if (viewModel.isEditMode()) {
                 DateHelper dateHelper = new DateHelper(System.currentTimeMillis());
-                viewModel.getDateTime().setHour(dateHelper.getHour());
-                viewModel.getDateTime().setMinute(dateHelper.getMinute());
+                tempDateTime.setHour(dateHelper.getHour());
+                tempDateTime.setMinute(dateHelper.getMinute());
             }
         } else {
             picker.setInitDate(
