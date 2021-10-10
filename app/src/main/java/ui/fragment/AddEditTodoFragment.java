@@ -37,10 +37,10 @@ import com.google.android.material.textfield.TextInputLayout;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.MessageFormat;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
+import hlv.cute.todo.App;
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.FragmentAddEditTodoBinding;
 import ir.hamsaa.persiandatepicker.PersianDatePickerDialog;
@@ -48,7 +48,7 @@ import ir.hamsaa.persiandatepicker.api.PersianPickerDate;
 import ir.hamsaa.persiandatepicker.api.PersianPickerListener;
 import model.Category;
 import model.Todo;
-import scheduler.receiver.AlarmReceiver;
+import scheduler.receiver.NotificationReceiver;
 import ui.dialog.DropDownCategoriesDialog;
 import ui.dialog.TimePickerSheetDialog;
 import utils.Constants;
@@ -284,6 +284,11 @@ public class AddEditTodoFragment extends BaseFragment {
 
                 String res = getTodoViewModel().validateTodo(editedTodo);
                 if (res == null) {
+                    if (editedTodo.getArriveDate() != 0) {
+                        cancelOldAlarm(editedTodo.getId());
+                        setAlarm(editedTodo.getId(), editedTodo.getTitle(), editedTodo.getArriveDate());
+                    }
+
                     getTodoViewModel().editTodo(editedTodo);
                     getSearchViewModel().fetch();
                     back();
@@ -296,6 +301,9 @@ public class AddEditTodoFragment extends BaseFragment {
 
                 String res = getTodoViewModel().validateTodo(newTodo);
                 if (res == null) {
+                    if (newTodo.getArriveDate() != 0)
+                        setAlarm(newTodo.getId(), newTodo.getTitle(), newTodo.getArriveDate());
+
                     getTodoViewModel().goToTop();
                     getTodoViewModel().addTodo(newTodo);
                     back();
@@ -382,18 +390,32 @@ public class AddEditTodoFragment extends BaseFragment {
         });
     }
 
-    private void setAlarm(Context context) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AlarmReceiver.class);
+    private void setAlarm(int notificationID, String content, long timeAt) {
+        AlarmManager alarmManager = (AlarmManager) App.get().applicationContext.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(App.get().applicationContext, NotificationReceiver.class);
+
+        intent.putExtra(Constants.Keys.NOTIF_ID_KEY, notificationID);
+        intent.putExtra(Constants.Keys.NOTIF_CONTENT_KEY, getString(R.string.notification_content, content));
 
         @SuppressLint("UnspecifiedImmutableFlag")
         PendingIntent pendingIntent =
-                PendingIntent.getBroadcast(context, Constants.REQUEST_CODE_ALARM_RECIEVER, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent.getBroadcast(App.get().applicationContext, notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
-                Calendar.getInstance().getTimeInMillis(),
+                timeAt,
                 AlarmManager.INTERVAL_DAY,
                 pendingIntent);
+    }
+
+    private void cancelOldAlarm(int notificationID) {
+        AlarmManager alarmManager = (AlarmManager) App.get().applicationContext.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(App.get().applicationContext, NotificationReceiver.class);
+
+        intent.putExtra(Constants.Keys.NOTIF_ID_KEY, notificationID);
+
+        @SuppressLint("UnspecifiedImmutableFlag")
+        PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(App.get().applicationContext, notificationID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         alarmManager.cancel(pendingIntent);
     }

@@ -94,4 +94,9 @@
     <string name="select_time">انتخاب ساعت</string>
     <string name="set_date_time">انتخاب تاریخ و ساعت</string>
     <string name="set_time_notes">ساعتی جهت دریافت هشدار تنظیم کنید.</string>
+
+    <string name="notification_header">🔔 یادآوری انجام کار 🔔</string>
+    <string name="notification_content">کاری با عنوان \"%1$s\"، برای الان زمان بندی شده است.\n\nپس از انجام دادن کار، گزینه انجام شد را لمس کنید تا اطلاعات ذخیره شود.</string>
+    <string name="notification_done_button">✅ انجام شد ✅</string>
+
 </resources>

@@ -28,6 +28,7 @@ public class MainActivity extends BaseActivity {
         setContentView(binding.getRoot());
         initViews();
         provideViewModels();
+        handleNotification();
     }
 
     private void initViews() {
@@ -41,6 +42,28 @@ public class MainActivity extends BaseActivity {
         todoViewModel = new ViewModelProvider(this).get(TodoViewModel.class);
         categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
         searchViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
+    }
+
+    private void handleNotification() {
+        /*alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), );
+        new NotificationUtil(App.get().applicationContext).makeNotification("سلام چطوری", "این هست متن!");
+        Data inputData = new Data.Builder()
+                .putString("title", "hello")
+                .putString("message", "this is message!").build();
+
+        OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(TodoWorker.class)
+                .setInitialDelay(30, TimeUnit.SECONDS)
+                .setInputData(inputData)
+                .addTag("worktag")
+                .build();
+
+        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(TodoWorker.class, 3, TimeUnit.SECONDS)
+                .setInitialDelay(0, TimeUnit.SECONDS)
+                .setInputData(inputData)
+                .addTag("worktag")
+                .build();
+
+        WorkManager.getInstance(this).enqueue(workRequest);*/
     }
 
     public TodoViewModel getTodoViewModel() {

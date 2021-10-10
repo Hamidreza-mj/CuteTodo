@@ -2,9 +2,12 @@ package hlv.cute.todo;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.PackageManager;
 
 import repo.database.TodoDatabase;
+import scheduler.receiver.BootCompleteReceiver;
 
 public class App extends Application {
 
@@ -24,6 +27,14 @@ public class App extends Application {
         app = this;
 
         todoDatabase = TodoDatabase.get(applicationContext);
+
+        //when boot
+        ComponentName receiver = new ComponentName(getApplicationContext(), BootCompleteReceiver.class);
+        getApplicationContext().getPackageManager().setComponentEnabledSetting(
+                receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP
+        );
     }
 
     public TodoDatabase todoDatabase() {
