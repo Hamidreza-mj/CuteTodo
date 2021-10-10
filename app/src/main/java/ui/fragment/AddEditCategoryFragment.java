@@ -11,29 +11,30 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import hlv.cute.todo.R;
+import java.util.Objects;
+
 import hlv.cute.todo.databinding.FragmentAddEditCategoryBinding;
 import model.Category;
+import viewmodel.AddEditCategoryViewModel;
 
 public class AddEditCategoryFragment extends BaseFragment {
 
+    private static final String CATEGORY_ARGS = "category-args";
+
     private FragmentAddEditCategoryBinding binding;
+
+    private AddEditCategoryViewModel viewModel;
 
     private TextInputLayout inpLytName;
     private TextInputEditText edtName;
     private TextView txtTitle;
     private MaterialButton btnAdd;
-
-    private static final String CATEGORY_ARGS = "category-args";
-
-    private Category category;
-
-    private boolean isEditMode = false;
 
     public AddEditCategoryFragment() {
     }
@@ -50,11 +51,18 @@ public class AddEditCategoryFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null && !getArguments().isEmpty()) {
-            category = (Category) getArguments().getSerializable(CATEGORY_ARGS);
+        viewModel = new ViewModelProvider(this).get(AddEditCategoryViewModel.class);
 
-            if (category != null)
-                isEditMode = true;
+        if (getArguments() != null && !getArguments().isEmpty()) {
+            Category category = (Category) getArguments().getSerializable(CATEGORY_ARGS);
+
+            if (category != null) {
+                viewModel.setEditMode(true);
+                viewModel.setCategory(category);
+            } else {
+                viewModel.setEditMode(false);
+            }
+
         }
     }
 
@@ -69,28 +77,31 @@ public class AddEditCategoryFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews();
-        handleLogic();
+        initLogic();
         handleAction();
     }
 
-    private void handleLogic() {
+    private void initViews() {
+        binding.aImgBack.setOnClickListener(view -> back());
+
+        inpLytName = binding.inpName;
+        edtName = binding.inpEdtName;
+        txtTitle = binding.txtTitle;
+        btnAdd = binding.mBtnSave;
+    }
+
+    private void initLogic() {
         new Handler().postDelayed(() -> {
             edtName.requestFocus();
             showKeyboard();
         }, 500);
 
-        if (category != null) {
-            txtTitle.setText(getString(R.string.edit_category));
-            btnAdd.setText(getString(R.string.edit));
+        txtTitle.setText(viewModel.getTitleFragment());
+        btnAdd.setText(viewModel.getButtonPrimaryText());
 
-            //for moving cursor to end of line editText
-            edtName.setText("");
-            edtName.append(category.getName());
-            return;
-        }
-
-        txtTitle.setText(getString(R.string.add_new_category));
-        btnAdd.setText(getString(R.string.save));
+        //for moving cursor to end of line editText
+        edtName.setText("");
+        edtName.append(viewModel.getEditTextTitle());
     }
 
     private void handleAction() {
@@ -115,10 +126,8 @@ public class AddEditCategoryFragment extends BaseFragment {
         btnAdd.setOnClickListener(view -> {
             inpLytName.setError(null);
 
-            if (isEditMode) {
-                Category editedCategory = new Category();
-                editedCategory.setId(category.getId());
-                editedCategory.setName(edtName.getText().toString().trim());
+            if (viewModel.isEditMode()) {
+                Category editedCategory = viewModel.editCategory(Objects.requireNonNull(edtName.getText()).toString().trim());
 
                 String res = getCategoryViewModel().validateCategory(editedCategory);
 
@@ -132,9 +141,7 @@ public class AddEditCategoryFragment extends BaseFragment {
 
                 inpLytName.setError(res);
             } else {
-                category = new Category();
-
-                category.setName(edtName.getText().toString().trim());
+                Category category = viewModel.addCategory(Objects.requireNonNull(edtName.getText()).toString().trim());
 
                 String res = getCategoryViewModel().validateCategory(category);
 
@@ -150,12 +157,4 @@ public class AddEditCategoryFragment extends BaseFragment {
         });
     }
 
-    private void initViews() {
-        binding.aImgBack.setOnClickListener(view -> back());
-
-        inpLytName = binding.inpName;
-        edtName = binding.inpEdtName;
-        txtTitle = binding.txtTitle;
-        btnAdd = binding.mBtnSave;
-    }
 }
