@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import java.util.Objects;
-
 import hlv.cute.todo.R;
 import utils.Constants;
 import utils.NotificationUtil;

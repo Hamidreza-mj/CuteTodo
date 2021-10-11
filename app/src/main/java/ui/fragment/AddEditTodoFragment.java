@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -401,10 +402,10 @@ public class AddEditTodoFragment extends BaseFragment {
         PendingIntent pendingIntent =
                 PendingIntent.getBroadcast(App.get().applicationContext, notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
-                timeAt,
-                AlarmManager.INTERVAL_DAY,
-                pendingIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeAt, pendingIntent);
+        else
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeAt, pendingIntent);
     }
 
     private void cancelOldAlarm(int notificationID) {

@@ -4,6 +4,9 @@
     android:installLocation="auto">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
 
     <application
         android:name=".App"
@@ -25,7 +28,7 @@
 
         <receiver
             android:name="scheduler.receiver.BootCompleteReceiver"
-            android:enabled="true"
+            android:enabled="false"
             android:exported="true">
 
             <intent-filter>
