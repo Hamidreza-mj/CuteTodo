@@ -392,6 +392,9 @@ public class AddEditTodoFragment extends BaseFragment {
     }
 
     private void setAlarm(int notificationID, String content, long timeAt) {
+        if (timeAt < System.currentTimeMillis()) //if the time to be set has passed, don't need to set alarm
+            return;
+
         AlarmManager alarmManager = (AlarmManager) App.get().applicationContext.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(App.get().applicationContext, NotificationReceiver.class);
 
