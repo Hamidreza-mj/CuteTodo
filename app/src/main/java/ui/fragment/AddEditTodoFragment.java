@@ -405,6 +405,7 @@ public class AddEditTodoFragment extends BaseFragment {
         PendingIntent pendingIntent =
                 PendingIntent.getBroadcast(App.get().applicationContext, notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        //alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(timeAt, pendingIntent), pendingIntent);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeAt, pendingIntent);
         else
