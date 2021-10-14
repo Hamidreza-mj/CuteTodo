@@ -1,12 +1,8 @@
 package ui.fragment;
 
 import android.annotation.SuppressLint;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -41,7 +37,6 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Objects;
 
-import hlv.cute.todo.App;
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.FragmentAddEditTodoBinding;
 import ir.hamsaa.persiandatepicker.PersianDatePickerDialog;
@@ -49,7 +44,7 @@ import ir.hamsaa.persiandatepicker.api.PersianPickerDate;
 import ir.hamsaa.persiandatepicker.api.PersianPickerListener;
 import model.Category;
 import model.Todo;
-import scheduler.receiver.NotificationReceiver;
+import scheduler.alarm.AlarmUtil;
 import ui.dialog.DropDownCategoriesDialog;
 import ui.dialog.TimePickerSheetDialog;
 import utils.Constants;
@@ -285,8 +280,8 @@ public class AddEditTodoFragment extends BaseFragment {
                 String res = getTodoViewModel().validateTodo(editedTodo);
                 if (res == null) {
                     if (editedTodo.getArriveDate() != 0) {
-                        cancelOldAlarm(editedTodo.getId());
-                        setAlarm(editedTodo.getId(), editedTodo.getTitle(), editedTodo.getArriveDate());
+                        AlarmUtil.get().cancelAlarm(editedTodo.getId());
+                        AlarmUtil.get().setAlarm(editedTodo.getId(), editedTodo.getTitle(), editedTodo.getArriveDate());
                     }
 
                     getTodoViewModel().editTodo(editedTodo);
@@ -303,7 +298,7 @@ public class AddEditTodoFragment extends BaseFragment {
                 String res = getTodoViewModel().validateTodo(newTodo);
                 if (res == null) {
                     if (newTodo.getArriveDate() != 0)
-                        setAlarm(newTodo.getId(), newTodo.getTitle(), newTodo.getArriveDate());
+                        AlarmUtil.get().setAlarm(newTodo.getId(), newTodo.getTitle(), newTodo.getArriveDate());
 
                     getTodoViewModel().goToTop();
                     getTodoViewModel().addTodo(newTodo);
@@ -389,40 +384,6 @@ public class AddEditTodoFragment extends BaseFragment {
             else
                 txtCategory.setTextColor(ResourceUtils.get().getColor(R.color.gray));
         });
-    }
-
-    private void setAlarm(int notificationID, String content, long timeAt) {
-        if (timeAt < System.currentTimeMillis()) //if the time to be set has passed, don't need to set alarm
-            return;
-
-        AlarmManager alarmManager = (AlarmManager) App.get().applicationContext.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(App.get().applicationContext, NotificationReceiver.class);
-
-        intent.putExtra(Constants.Keys.NOTIF_ID_KEY, notificationID);
-        intent.putExtra(Constants.Keys.NOTIF_CONTENT_KEY, getString(R.string.notification_content, content));
-
-        @SuppressLint("UnspecifiedImmutableFlag")
-        PendingIntent pendingIntent =
-                PendingIntent.getBroadcast(App.get().applicationContext, notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        //alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(timeAt, pendingIntent), pendingIntent);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeAt, pendingIntent);
-        else
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeAt, pendingIntent);
-    }
-
-    private void cancelOldAlarm(int notificationID) {
-        AlarmManager alarmManager = (AlarmManager) App.get().applicationContext.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(App.get().applicationContext, NotificationReceiver.class);
-
-        intent.putExtra(Constants.Keys.NOTIF_ID_KEY, notificationID);
-
-        @SuppressLint("UnspecifiedImmutableFlag")
-        PendingIntent pendingIntent =
-                PendingIntent.getBroadcast(App.get().applicationContext, notificationID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-        alarmManager.cancel(pendingIntent);
     }
 
     private void updateDetail(Todo todo) {
