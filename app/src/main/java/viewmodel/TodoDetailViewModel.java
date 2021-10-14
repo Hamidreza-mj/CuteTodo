@@ -141,8 +141,8 @@ public class TodoDetailViewModel extends ViewModel {
 
     private String getCompleteDate(long timeMillis) {
         DateHelper dateHelper = new DateHelper(timeMillis);
-        int hour = dateHelper.getHour();
-        int minute = dateHelper.getMinute();
+        String hour = dateHelper.getHourString();
+        String minute = dateHelper.getMinuteString();
 
         PersianDateImpl persianDate = new PersianDateImpl();
         persianDate.setDate(timeMillis);

@@ -246,7 +246,6 @@ public class AddEditTodoViewModel extends ViewModel {
         mustBeEditTodo.setPriority(priority);
         mustBeEditTodo.setDone(todo.isDone());
         mustBeEditTodo.setCreatedAt(todo.getCreatedAt());
-        mustBeEditTodo.setUpdatedAt(System.currentTimeMillis());
 
         if (getDateTime() != null && getDateTime().getDate() != null) {
             mustBeEditTodo.setDateTime(getDateTime());
@@ -270,6 +269,11 @@ public class AddEditTodoViewModel extends ViewModel {
             mustBeEditTodo.setCategoryId(0);
             mustBeEditTodo.setCategory(null);
         }
+
+        if (mustBeEditTodo.compareTo(todo) != 0) //if is not same, update the value of updated_at in db
+            mustBeEditTodo.setUpdatedAt(System.currentTimeMillis());
+        else //keep current
+            mustBeEditTodo.setUpdatedAt(todo.getUpdatedAt());
 
         return mustBeEditTodo;
     }

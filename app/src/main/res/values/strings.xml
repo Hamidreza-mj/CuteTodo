@@ -110,4 +110,8 @@
 
     <string name="detail">جزییات</string>
 
+    <string name="reminder_guide">با تنظیم یادآوری می توانید در تاریخ و ساعت زمان بندی شده، پیغامی جهت یادآوری انجام کار، در تلفن همراه خود دریافت کنید.</string>
+
+    <string name="reminer_title">یادآوری انجام کار</string>
+    <string name="set_done">انجام شد</string>
 </resources>
