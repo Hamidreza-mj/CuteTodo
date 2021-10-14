@@ -20,6 +20,8 @@
         <entry key="app/src/main/res/drawable/ic_close_simple.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_close_square.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_cute_todo_app_logo.xml" value="0.31979166666666664" />
+        <entry key="app/src/main/res/drawable/ic_delete.xml" value="0.31979166666666664" />
+        <entry key="app/src/main/res/drawable/ic_edit.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_expand.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_filter.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_help.xml" value="0.31979166666666664" />
@@ -29,8 +31,10 @@
         <entry key="app/src/main/res/drawable/ic_more.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_radio_checked.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_radio_unchecked.xml" value="0.31979166666666664" />
+        <entry key="app/src/main/res/drawable/ic_recycle_bin.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_search.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_search_vector.xml" value="0.31979166666666664" />
+        <entry key="app/src/main/res/drawable/ic_send.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_tick_square.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_tick_square_blue_dark.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_time_square.xml" value="0.31979166666666664" />
@@ -47,6 +51,7 @@
         <entry key="app/src/main/res/drawable/shadow.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/toolbar_shape.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_show_notification.xml" value="0.30364583333333334" />
         <entry key="app/src/main/res/layout/dialog_delete.xml" value="0.47876447876447875" />
         <entry key="app/src/main/res/layout/dialog_dropdown_categories.xml" value="0.33" />
         <entry key="app/src/main/res/layout/dialog_global_menu.xml" value="0.33" />
@@ -57,6 +62,7 @@
         <entry key="app/src/main/res/layout/fragment_categories.xml" value="0.30364583333333334" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_search.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/fragment_todo_detail.xml" value="0.33" />
         <entry key="app/src/main/res/layout/item_category.xml" value="0.30364583333333334" />
         <entry key="app/src/main/res/layout/item_dropdown.xml" value="0.30364583333333334" />
         <entry key="app/src/main/res/layout/item_todo.xml" value="0.3401677539608574" />
@@ -64,7 +70,7 @@
         <entry key="app/src/main/res/layout/sheet_filter.xml" value="0.33" />
         <entry key="app/src/main/res/layout/sheet_search_mode.xml" value="0.33" />
         <entry key="app/src/main/res/layout/sheet_time_picker.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/toast.xml" value="0.30364583333333334" />
+        <entry key="app/src/main/res/layout/toast.xml" value="0.33" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.31979166666666664" />
       </map>
     </option>

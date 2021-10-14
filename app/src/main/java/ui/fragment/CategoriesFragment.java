@@ -29,8 +29,8 @@ import hlv.cute.todo.databinding.FragmentCategoriesBinding;
 import ui.adapter.CategoryAdapter;
 import ui.dialog.DeleteDialog;
 import ui.dialog.MoreDialog;
+import utils.Constants;
 import utils.DisplayUtils;
-import utils.Tags;
 import utils.ToastHelper;
 
 public class CategoriesFragment extends BaseFragment {
@@ -136,8 +136,8 @@ public class CategoriesFragment extends BaseFragment {
             Fragment fragment = AddEditCategoryFragment.newInstance(null);
             fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-            transaction.add(R.id.mainContainer, fragment, Tags.FragmentTag.ADD_EDIT_CATEGORY);
-            transaction.addToBackStack(Tags.BackStack.ADD_EDIT_CATEGORY);
+            transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_CATEGORY);
+            transaction.addToBackStack(Constants.BackStack.ADD_EDIT_CATEGORY);
             transaction.commit();
         });
 
@@ -179,8 +179,8 @@ public class CategoriesFragment extends BaseFragment {
                         Fragment fragment = AddEditCategoryFragment.newInstance(category);
                         fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
                         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                        transaction.add(R.id.mainContainer, fragment, Tags.FragmentTag.ADD_EDIT_CATEGORY);
-                        transaction.addToBackStack(Tags.BackStack.ADD_EDIT_CATEGORY);
+                        transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_CATEGORY);
+                        transaction.addToBackStack(Constants.BackStack.ADD_EDIT_CATEGORY);
                         transaction.commit();
                     });
                 }

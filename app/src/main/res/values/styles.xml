@@ -217,4 +217,16 @@
         <item name="android:fontFamily">@font/vazir_medium</item>
     </style>
 
+    <style name="RippleRed">
+        <item name="android:colorControlHighlight">@color/red20</item>
+    </style>
+
+    <style name="RippleOrange">
+        <item name="android:colorControlHighlight">@color/orange20</item>
+    </style>
+
+    <style name="RippleBlue">
+        <item name="android:colorControlHighlight">@color/blue20</item>
+    </style>
+
 </resources>

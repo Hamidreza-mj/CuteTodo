@@ -3,19 +3,17 @@ package ui.dialog;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.TextView;
 
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.DialogMoreBinding;
-import model.Todo;
 
 public class MoreDialog {
 
     private AlertDialog dialog;
 
-    private OnClickDelete onClickDelete;
     private OnClickEdit onClickEdit;
+    private OnClickDetail onClickDetail;
+    private OnClickDelete onClickDelete;
 
     public MoreDialog(Context context, boolean cancelable) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.TranslucentDialog);
@@ -23,8 +21,16 @@ public class MoreDialog {
         DialogMoreBinding binding = DialogMoreBinding.inflate(LayoutInflater.from(context), null, false);
         builder.setView(binding.getRoot());
 
-        TextView txtDelete = binding.txtDelete;
-        txtDelete.setOnClickListener(view -> {
+        binding.txtEdit.setOnClickListener(view -> {
+            if (onClickEdit == null) {
+                dismiss();
+                return;
+            }
+
+            onClickEdit.onClick();
+        });
+
+        binding.txtDelete.setOnClickListener(view -> {
             if (onClickDelete == null) {
                 dismiss();
                 return;
@@ -33,15 +39,15 @@ public class MoreDialog {
             onClickDelete.onClick();
         });
 
-        TextView txtEdit = binding.txtEdit;
-        txtEdit.setOnClickListener(view -> {
-            if (onClickEdit == null) {
+        binding.txtDetail.setOnClickListener(v -> {
+            if (onClickDetail == null) {
                 dismiss();
                 return;
             }
 
-            onClickEdit.onClick();
+            onClickDetail.onClick();
         });
+
 
         if (dialog == null)
             dialog = builder.create();
@@ -51,12 +57,16 @@ public class MoreDialog {
         this(context, true);
     }
 
-    public void setOnClickDelete(OnClickDelete onClickDelete) {
-        this.onClickDelete = onClickDelete;
-    }
-
     public void setOnClickEdit(OnClickEdit onClickEdit) {
         this.onClickEdit = onClickEdit;
+    }
+
+    public void setOnClickDetail(OnClickDetail onClickDetail) {
+        this.onClickDetail = onClickDetail;
+    }
+
+    public void setOnClickDelete(OnClickDelete onClickDelete) {
+        this.onClickDelete = onClickDelete;
     }
 
     public void dismiss() {
@@ -69,12 +79,17 @@ public class MoreDialog {
             dialog.show();
     }
 
-    public interface OnClickDelete {
+    public interface OnClickEdit {
         void onClick();
     }
 
-    public interface OnClickEdit {
+    public interface OnClickDetail {
         void onClick();
+    }
+
+    public interface OnClickDelete {
+        void onClick();
+
     }
 
 }

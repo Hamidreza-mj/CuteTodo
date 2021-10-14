@@ -213,6 +213,7 @@ public class AddEditTodoViewModel extends ViewModel {
 
         todo.setTitle(title);
         todo.setPriority(priority);
+        todo.setCreatedAt(System.currentTimeMillis());
 
         if (getDateTime() != null && getDateTime().getDate() != null) {
             todo.setDateTime(getDateTime());
@@ -244,6 +245,8 @@ public class AddEditTodoViewModel extends ViewModel {
         mustBeEditTodo.setTitle(newTitle);
         mustBeEditTodo.setPriority(priority);
         mustBeEditTodo.setDone(todo.isDone());
+        mustBeEditTodo.setCreatedAt(todo.getCreatedAt());
+        mustBeEditTodo.setUpdatedAt(System.currentTimeMillis());
 
         if (getDateTime() != null && getDateTime().getDate() != null) {
             mustBeEditTodo.setDateTime(getDateTime());

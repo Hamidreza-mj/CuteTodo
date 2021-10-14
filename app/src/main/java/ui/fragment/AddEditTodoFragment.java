@@ -55,7 +55,6 @@ import ui.dialog.TimePickerSheetDialog;
 import utils.Constants;
 import utils.DisplayUtils;
 import utils.ResourceUtils;
-import utils.Tags;
 import viewmodel.AddEditTodoViewModel;
 
 public class AddEditTodoFragment extends BaseFragment {
@@ -229,8 +228,8 @@ public class AddEditTodoFragment extends BaseFragment {
                 Fragment fragment = CategoriesFragment.newInstance();
                 fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.add(R.id.mainContainer, fragment, Tags.FragmentTag.CATEGORY);
-                transaction.addToBackStack(Tags.BackStack.CATEGORY);
+                transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.CATEGORY);
+                transaction.addToBackStack(Constants.BackStack.CATEGORY);
                 transaction.commit();
 
                 dropDown.dismiss();
@@ -292,6 +291,7 @@ public class AddEditTodoFragment extends BaseFragment {
 
                     getTodoViewModel().editTodo(editedTodo);
                     getSearchViewModel().fetch();
+                    updateDetail(editedTodo);
                     back();
                     return;
                 }
@@ -423,6 +423,16 @@ public class AddEditTodoFragment extends BaseFragment {
                 PendingIntent.getBroadcast(App.get().applicationContext, notificationID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         alarmManager.cancel(pendingIntent);
+    }
+
+    private void updateDetail(Todo todo) {
+        TodoDetailFragment fragment =
+                (TodoDetailFragment) getParentFragmentManager().findFragmentByTag(Constants.FragmentTag.TODO_DETAIL);
+
+        if (fragment != null) {
+            if (fragment.getViewModel() != null)
+                fragment.getViewModel().setTodo(todo);
+        }
     }
 
 }

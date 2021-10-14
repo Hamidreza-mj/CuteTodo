@@ -10,7 +10,7 @@ import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.ActivityMainBinding;
 import ui.fragment.CategoriesFragment;
 import ui.fragment.HomeFragment;
-import utils.Tags;
+import utils.Constants;
 import viewmodel.CategoryViewModel;
 import viewmodel.SearchViewModel;
 import viewmodel.TodoViewModel;
@@ -34,7 +34,7 @@ public class MainActivity extends BaseActivity {
     private void initViews() {
         Fragment homeFragment = HomeFragment.newInstance();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.mainContainer, homeFragment, Tags.FragmentTag.HOME);
+        transaction.add(R.id.mainContainer, homeFragment, Constants.FragmentTag.HOME);
         transaction.commit();
     }
 

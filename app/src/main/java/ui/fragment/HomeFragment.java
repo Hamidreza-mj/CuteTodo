@@ -33,8 +33,8 @@ import ui.dialog.DeleteDialog;
 import ui.dialog.GlobalMenuDialog;
 import ui.dialog.MoreDialog;
 import ui.fragment.sheet.FilterBottomSheet;
+import utils.Constants;
 import utils.DisplayUtils;
-import utils.Tags;
 import utils.ToastHelper;
 
 public class HomeFragment extends BaseFragment {
@@ -153,8 +153,8 @@ public class HomeFragment extends BaseFragment {
                 Fragment fragment = CategoriesFragment.newInstance();
                 fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.add(R.id.mainContainer, fragment, Tags.FragmentTag.CATEGORY);
-                transaction.addToBackStack(Tags.BackStack.CATEGORY);
+                transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.CATEGORY);
+                transaction.addToBackStack(Constants.BackStack.CATEGORY);
                 transaction.commit();
 
                 globalMenu.dismiss();
@@ -209,8 +209,8 @@ public class HomeFragment extends BaseFragment {
             Fragment fragment = SearchFragment.newInstance();
             fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-            transaction.add(R.id.mainContainer, fragment, Tags.FragmentTag.SEARCH);
-            transaction.addToBackStack(Tags.BackStack.SEARCH);
+            transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.SEARCH);
+            transaction.addToBackStack(Constants.BackStack.SEARCH);
             transaction.commit();
         });
 
@@ -218,8 +218,8 @@ public class HomeFragment extends BaseFragment {
             Fragment fragment = AddEditTodoFragment.newInstance(null);
             fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-            transaction.add(R.id.mainContainer, fragment, Tags.FragmentTag.ADD_EDIT_TODO);
-            transaction.addToBackStack(Tags.BackStack.ADD_EDIT_TODO);
+            transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO);
+            transaction.addToBackStack(Constants.BackStack.ADD_EDIT_TODO);
             transaction.commit();
         });
 
@@ -236,6 +236,28 @@ public class HomeFragment extends BaseFragment {
                 todoMenu -> {
                     MoreDialog moreDialog = new MoreDialog(getActivity());
                     moreDialog.show();
+
+                    moreDialog.setOnClickEdit(() -> {
+                        moreDialog.dismiss();
+
+                        Fragment fragment = AddEditTodoFragment.newInstance(todoMenu);
+                        fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
+                        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                        transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO);
+                        transaction.addToBackStack(Constants.BackStack.ADD_EDIT_TODO);
+                        transaction.commit();
+                    });
+
+                    moreDialog.setOnClickDetail(() -> {
+                        moreDialog.dismiss();
+
+                        Fragment fragment = TodoDetailFragment.newInstance(todoMenu);
+                        fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
+                        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                        transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.TODO_DETAIL);
+                        transaction.addToBackStack(Constants.BackStack.TODO_DETAIL);
+                        transaction.commit();
+                    });
 
                     moreDialog.setOnClickDelete(() -> {
                         moreDialog.dismiss();
@@ -256,16 +278,7 @@ public class HomeFragment extends BaseFragment {
                         });
                     });
 
-                    moreDialog.setOnClickEdit(() -> {
-                        moreDialog.dismiss();
 
-                        Fragment fragment = AddEditTodoFragment.newInstance(todoMenu);
-                        fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
-                        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                        transaction.add(R.id.mainContainer, fragment, Tags.FragmentTag.ADD_EDIT_TODO);
-                        transaction.addToBackStack(Tags.BackStack.ADD_EDIT_TODO);
-                        transaction.commit();
-                    });
                 }
         );
 
@@ -291,7 +304,7 @@ public class HomeFragment extends BaseFragment {
                             lytGuide.setVisibility(View.VISIBLE);
                             txtEmptyTitle.setText(getString(R.string.todos_empty));
                             txtEmptyNotes.setText(Html.fromHtml(getString(R.string.todos_empty_notes)));
-                            params.verticalBias = 0.25f;
+                            params.verticalBias = 0.2f;
                         } else {
                             filterIndicator.setVisibility(View.VISIBLE);
                             lytGuide.setVisibility(View.GONE);

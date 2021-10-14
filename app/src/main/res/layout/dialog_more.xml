@@ -57,10 +57,38 @@
                 android:layout_height="1dp"
                 android:layout_marginVertical="0dp"
                 android:background="@color/line_color"
-                app:layout_constraintBottom_toTopOf="@id/txtDelete"
+                app:layout_constraintBottom_toTopOf="@id/txtDetail"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtEdit" />
+
+            <TextView
+                android:id="@+id/txtDetail"
+                style="@style/TextRG16"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:padding="13dp"
+                android:text="@string/detail"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/line"
+                tools:ignore="TextContrastCheck" />
+
+
+            <View
+                android:id="@+id/line2"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginVertical="0dp"
+                android:background="@color/line_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txtDetail" />
 
             <TextView
                 android:id="@+id/txtDelete"
@@ -77,7 +105,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/line"
+                app:layout_constraintTop_toBottomOf="@id/line2"
                 tools:ignore="TextContrastCheck" />
 
 

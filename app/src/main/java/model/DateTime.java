@@ -9,7 +9,9 @@ import ir.hamsaa.persiandatepicker.api.PersianPickerDate;
 @Keep
 public class DateTime implements Serializable {
 
-    private PersianPickerDate date;
+    //if field of serializable class not implement Serializable,
+    // must be add `transient` keyword to that
+    private transient PersianPickerDate date;
     private int hour;
     private int minute;
 

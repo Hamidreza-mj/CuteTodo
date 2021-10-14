@@ -30,8 +30,8 @@ import ui.adapter.TodoAdapter;
 import ui.dialog.DeleteDialog;
 import ui.dialog.MoreDialog;
 import ui.fragment.sheet.SearchModeBottomSheet;
+import utils.Constants;
 import utils.DisplayUtils;
-import utils.Tags;
 
 public class SearchFragment extends BaseFragment {
 
@@ -186,6 +186,28 @@ public class SearchFragment extends BaseFragment {
                     MoreDialog moreDialog = new MoreDialog(getActivity());
                     moreDialog.show();
 
+                    moreDialog.setOnClickEdit(() -> {
+                        moreDialog.dismiss();
+
+                        Fragment fragment = AddEditTodoFragment.newInstance(todoMenu);
+                        fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
+                        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                        transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO);
+                        transaction.addToBackStack(Constants.BackStack.ADD_EDIT_TODO);
+                        transaction.commit();
+                    });
+
+                    moreDialog.setOnClickDetail(() -> {
+                        moreDialog.dismiss();
+
+                        Fragment fragment = TodoDetailFragment.newInstance(todoMenu);
+                        fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
+                        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                        transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.TODO_DETAIL);
+                        transaction.addToBackStack(Constants.BackStack.TODO_DETAIL);
+                        transaction.commit();
+                    });
+
                     moreDialog.setOnClickDelete(() -> {
                         moreDialog.dismiss();
 
@@ -205,16 +227,6 @@ public class SearchFragment extends BaseFragment {
                         });
                     });
 
-                    moreDialog.setOnClickEdit(() -> {
-                        moreDialog.dismiss();
-
-                        Fragment fragment = AddEditTodoFragment.newInstance(todoMenu);
-                        fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
-                        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                        transaction.add(R.id.mainContainer, fragment, Tags.FragmentTag.ADD_EDIT_TODO);
-                        transaction.addToBackStack(Tags.BackStack.ADD_EDIT_TODO);
-                        transaction.commit();
-                    });
                 }
         );
 

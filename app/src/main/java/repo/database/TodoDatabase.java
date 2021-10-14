@@ -11,7 +11,7 @@ import model.Todo;
 import repo.dao.CategoryDao;
 import repo.dao.TodoDao;
 
-@Database(entities = {Todo.class, Category.class}, version = 1)
+@Database(entities = {Todo.class, Category.class}, version = 1, exportSchema = false)
 public abstract class TodoDatabase extends RoomDatabase {
 
     private static final String DB_NAME = "TodoDB";

@@ -39,6 +39,12 @@ public class Todo implements Comparable<Todo>, Serializable {
     @ColumnInfo(name = "arrive_date", defaultValue = "0")
     private long arriveDate;
 
+    @ColumnInfo(name = "created_at", defaultValue = "0")
+    private long createdAt;
+
+    @ColumnInfo(name = "updated_at", defaultValue = "0")
+    private long updatedAt;
+
     @Ignore
     private DateTime dateTime;
 
@@ -98,6 +104,22 @@ public class Todo implements Comparable<Todo>, Serializable {
         this.arriveDate = arriveDate;
     }
 
+    public long getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(long createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public long getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(long updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     public DateTime getDateTime() {
         dateTime = new DateTime();
 
@@ -119,16 +141,6 @@ public class Todo implements Comparable<Todo>, Serializable {
 
     public void setDateTime(DateTime dateTime) {
         this.dateTime = dateTime;
-    }
-
-    @Deprecated
-    public String getPersianDate() {
-        if (arriveDate == 0)
-            return null;
-
-        PersianPickerDate persianDate = new PersianDateImpl();
-        persianDate.setDate(arriveDate);
-        return persianDate.getPersianLongDate();
     }
 
     public String getClock() {
