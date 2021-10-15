@@ -32,7 +32,7 @@ public class TodoDetailViewModel extends ViewModel {
 
     public String shareContent() {
         if (getTodo() != null) {
-            String content = getString(R.string.todo_title) + " " + getTodo().getTitle() + "\n\n";
+            String content = getString(R.string.todo_title) + "\n" + getTodo().getTitle() + "\n\n";
 
             if (getTodo().getCategory() != null)
                 content += getString(R.string.todo_category) + " " + getTodo().getCategory() + "\n\n";
@@ -43,9 +43,9 @@ public class TodoDetailViewModel extends ViewModel {
             content += "\n\n";
 
             if (getTodo().getArriveDate() != 0)
-                content += "🔔" + getString(R.string.todo_reminder) + " " + getCompleteDate(getTodo().getArriveDate()) + "\n\n";
+                content += "🔔" + getString(R.string.todo_reminder) + "\n" + getCompleteDate(getTodo().getArriveDate()) + "\n\n";
 
-            content += "\n" + "اپلیکیشن مدیریت کارهای روزانه" + " " + getString(R.string.app_name);
+            content += "\n" + getString(R.string.app_name) + "\n" + "اپلیکیشن مدیریت کارهای روزانه";
 
             return content;
         }
