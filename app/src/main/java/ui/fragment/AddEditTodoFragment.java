@@ -50,11 +50,13 @@ import ui.dialog.TimePickerSheetDialog;
 import utils.Constants;
 import utils.DisplayUtils;
 import utils.ResourceUtils;
+import utils.ToastHelper;
 import viewmodel.AddEditTodoViewModel;
 
 public class AddEditTodoFragment extends BaseFragment {
 
     private static final String TODO_ARGS = "todo-args";
+    private static final String SHARE_MODE_ARGS = "share-mode-args";
 
     private FragmentAddEditTodoBinding binding;
 
@@ -84,6 +86,14 @@ public class AddEditTodoFragment extends BaseFragment {
         return fragment;
     }
 
+    public static AddEditTodoFragment newInstanceShare(String title) {
+        AddEditTodoFragment fragment = new AddEditTodoFragment();
+        Bundle args = new Bundle();
+        args.putString(SHARE_MODE_ARGS, title);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,10 +104,21 @@ public class AddEditTodoFragment extends BaseFragment {
             Todo todo = (Todo) getArguments().getSerializable(TODO_ARGS);
 
             if (todo != null) {
+                //edit mode
                 viewModel.setEditMode(true);
+                viewModel.setShareMode(false);
                 viewModel.setTodo(todo);
             } else {
+                //add mode (share or normal)
                 viewModel.setEditMode(false);
+
+                String shareTitle = getArguments().getString(SHARE_MODE_ARGS);
+                if (shareTitle != null && !shareTitle.isEmpty()) {
+                    viewModel.setShareMode(true);
+                    viewModel.setShareTitle(shareTitle);
+                } else {
+                    viewModel.setShareMode(false);
+                }
             }
         }
     }
@@ -119,7 +140,19 @@ public class AddEditTodoFragment extends BaseFragment {
     }
 
     private void initViews() {
-        binding.aImgBack.setOnClickListener(view -> back());
+        binding.aImgBack.setOnClickListener(view -> {
+            if (viewModel.isShareMode()) {
+                back();
+                Fragment homeFragment = HomeFragment.newInstance();
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.add(R.id.mainContainer, homeFragment, Constants.FragmentTag.HOME);
+                transaction.commit();
+                return;
+            }
+
+            back();
+        });
+
         inpLytTitle = binding.inpTitle;
         edtTitle = binding.inpEdtTitle;
         btnAdd = binding.mBtnAdd;
@@ -302,7 +335,22 @@ public class AddEditTodoFragment extends BaseFragment {
 
                     getTodoViewModel().goToTop();
                     getTodoViewModel().addTodo(newTodo);
+                    ToastHelper.get().toast(getString(R.string.todo_added_successfully));
                     back();
+
+                    if (viewModel.isShareMode()) {
+                        btnAdd.setEnabled(false);
+                       /* new Handler().postDelayed(() -> {
+                            back();
+                            requireActivity().finish();
+                        }, 500);*/
+
+                        Fragment homeFragment = HomeFragment.newInstance();
+                        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                        transaction.add(R.id.mainContainer, homeFragment, Constants.FragmentTag.HOME);
+                        transaction.commit();
+                    }
+
                     return;
                 }
 
@@ -396,4 +444,7 @@ public class AddEditTodoFragment extends BaseFragment {
         }
     }
 
+    public AddEditTodoViewModel getViewModel() {
+        return viewModel;
+    }
 }

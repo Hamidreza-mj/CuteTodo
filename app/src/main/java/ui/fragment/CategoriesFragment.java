@@ -224,4 +224,9 @@ public class CategoriesFragment extends BaseFragment {
         return scrollYPos;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getCategoryViewModel().fetch();
+    }
 }

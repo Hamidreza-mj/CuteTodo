@@ -281,4 +281,10 @@ public class SearchFragment extends BaseFragment {
         getSearchViewModel().release();
         super.onDestroyView();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getSearchViewModel().fetch();
+    }
 }

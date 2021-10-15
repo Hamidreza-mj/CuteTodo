@@ -29,7 +29,9 @@ public class AddEditTodoViewModel extends ViewModel {
     private DateTime tempDateTime = new DateTime();
 
     private boolean isEditMode = false;
+    private boolean shareMode = false;
     private boolean isCleared = false;
+    private String shareTitle = null;
 
     public AddEditTodoViewModel() {
         categoryLiveData = new MutableLiveData<>();
@@ -52,6 +54,18 @@ public class AddEditTodoViewModel extends ViewModel {
 
     public boolean isEditMode() {
         return isEditMode;
+    }
+
+    public void setShareMode(boolean shareMode) {
+        this.shareMode = shareMode;
+    }
+
+    public boolean isShareMode() {
+        return shareMode;
+    }
+
+    public void setShareTitle(String shareTitle) {
+        this.shareTitle = shareTitle;
     }
 
     public void firstInitDateTime() {
@@ -288,7 +302,15 @@ public class AddEditTodoViewModel extends ViewModel {
     }
 
     public String getEditTextTitle() {
-        return isEditMode ? todo.getTitle() : "";
+        if (isEditMode) {
+            return todo.getTitle();
+        } else {
+            //add mode or share mode
+            if (shareMode && shareTitle != null)
+                return shareTitle;
+            else
+                return "";
+        }
     }
 
     public String getCategoryTitleText() {

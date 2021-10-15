@@ -97,7 +97,7 @@
 
     <string name="notification_header">🔔 یادآوری انجام کار 🔔</string>
     <string name="notification_content">کاری با عنوان \"%1$s\"، برای اکنون زمان بندی شده است.\n\n</string>
-    <string name="notification_done_todo">کار با موفقیت انجام شد.🚀</string>
+    <string name="notification_done_todo">کار با موفقیت انجام شد. 🎉</string>
 
     <string name="todo_detail">جزییات کار</string>
     <string name="todo_title">عنوان کار:</string>
@@ -114,4 +114,9 @@
 
     <string name="reminer_title">یادآوری انجام کار</string>
     <string name="set_done">انجام شد</string>
+    
+    <string name="label_share_menu">ذخیره در کارها</string>
+
+    <string name="todo_added_successfully">کار با موفقیت اضافه شد. 🚀</string>
+
 </resources>

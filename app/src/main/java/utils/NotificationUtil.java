@@ -19,7 +19,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import hlv.cute.todo.R;
-import ui.activity.MainActivity;
+import ui.activity.ShowNotificationActivity;
 
 public class NotificationUtil {
 
@@ -58,7 +58,7 @@ public class NotificationUtil {
     public void makeNotification(String title, String message, int notificationID) {
         createNotificationChannel();
 
-        Intent intent = new Intent(context, MainActivity.class);
+        Intent intent = new Intent(context, ShowNotificationActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         @SuppressLint("UnspecifiedImmutableFlag")

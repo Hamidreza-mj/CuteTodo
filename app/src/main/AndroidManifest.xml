@@ -5,8 +5,7 @@
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
     <application
         android:name=".App"
@@ -16,14 +15,30 @@
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="false"
         android:theme="@style/Theme.CuteTodo">
+
+        <activity
+            android:name="ui.activity.ShowNotificationActivity"
+            android:theme="@style/Theme.CuteTodo" />
+
         <activity
             android:name="ui.activity.MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.CuteTodo">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <intent-filter
+                android:icon="@mipmap/logo_share_menu"
+                android:label="@string/label_share_menu"
+                android:roundIcon="@mipmap/logo_share_menu">
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+
         </activity>
 
         <receiver
@@ -40,9 +55,11 @@
         <receiver
             android:name="scheduler.receiver.TimeChangeReceiver"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.TIME_SET" />
             </intent-filter>
+
         </receiver>
 
         <receiver android:name="scheduler.receiver.NotificationReceiver" />
