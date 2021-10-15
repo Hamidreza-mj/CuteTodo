@@ -340,10 +340,6 @@ public class AddEditTodoFragment extends BaseFragment {
 
                     if (viewModel.isShareMode()) {
                         btnAdd.setEnabled(false);
-                       /* new Handler().postDelayed(() -> {
-                            back();
-                            requireActivity().finish();
-                        }, 500);*/
 
                         Fragment homeFragment = HomeFragment.newInstance();
                         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
