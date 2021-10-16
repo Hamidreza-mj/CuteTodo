@@ -3,6 +3,7 @@ package ui.dialog;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.DialogMoreBinding;
@@ -11,6 +12,8 @@ public class MoreDialog {
 
     private AlertDialog dialog;
 
+    private final DialogMoreBinding binding;
+
     private OnClickEdit onClickEdit;
     private OnClickDetail onClickDetail;
     private OnClickDelete onClickDelete;
@@ -18,7 +21,7 @@ public class MoreDialog {
     public MoreDialog(Context context, boolean cancelable) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.TranslucentDialog);
         builder.setCancelable(cancelable);
-        DialogMoreBinding binding = DialogMoreBinding.inflate(LayoutInflater.from(context), null, false);
+        binding = DialogMoreBinding.inflate(LayoutInflater.from(context), null, false);
         builder.setView(binding.getRoot());
 
         binding.txtEdit.setOnClickListener(view -> {
@@ -67,6 +70,19 @@ public class MoreDialog {
 
     public void setOnClickDelete(OnClickDelete onClickDelete) {
         this.onClickDelete = onClickDelete;
+    }
+
+    public void setWithDetail(boolean withDetail) {
+        if (binding == null)
+            return;
+
+        if (withDetail) {
+            binding.txtDetail.setVisibility(View.VISIBLE);
+            binding.line2.setVisibility(View.VISIBLE);
+        } else {
+            binding.txtDetail.setVisibility(View.GONE);
+            binding.line2.setVisibility(View.GONE);
+        }
     }
 
     public void dismiss() {

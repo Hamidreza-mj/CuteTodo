@@ -184,6 +184,7 @@ public class SearchFragment extends BaseFragment {
 
                 todoMenu -> {
                     MoreDialog moreDialog = new MoreDialog(getActivity());
+                    moreDialog.setWithDetail(true);
                     moreDialog.show();
 
                     moreDialog.setOnClickEdit(() -> {

@@ -67,8 +67,7 @@
             android:id="@+id/searchToolbar"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="8dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="4dp"
             android:background="@drawable/search_shape"
             app:layout_constraintEnd_toStartOf="@id/aImgBack"
             app:layout_constraintStart_toEndOf="@id/aImgFilter"
@@ -79,7 +78,7 @@
                 style="@style/TextNormalMD16"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginVertical="8dp"
+                android:layout_marginVertical="5dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="5dp"
                 android:background="@color/transparent"
@@ -159,12 +158,12 @@
                     android:id="@+id/txtResult"
                     style="@style/TextRG14"
                     android:layout_width="0dp"
-                    android:textSize="15sp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
                     android:text="@string/search_result"
                     android:textColor="@color/blue"
+                    android:textSize="15sp"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -215,32 +214,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/vector" />
-
-        <View
-            android:id="@+id/shadow"
-            style="@style/ShadowButton"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/mBtnSearch"
-            app:layout_constraintEnd_toEndOf="@id/mBtnSearch"
-            app:layout_constraintStart_toStartOf="@id/mBtnSearch"
-            app:layout_constraintTop_toTopOf="@id/mBtnSearch" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/mBtnSearch"
-            style="@style/MaterialButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginBottom="@dimen/mb_button"
-            android:text="@string/search"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/nested"
-            tools:ignore="TextContrastCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

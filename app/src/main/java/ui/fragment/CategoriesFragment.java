@@ -151,6 +151,7 @@ public class CategoriesFragment extends BaseFragment {
         adapter = new CategoryAdapter(getActivity(),
                 category -> {
                     MoreDialog moreDialog = new MoreDialog(getActivity());
+                    moreDialog.setWithDetail(false);
                     moreDialog.show();
 
                     moreDialog.setOnClickDelete(() -> {
