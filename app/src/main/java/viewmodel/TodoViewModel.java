@@ -73,6 +73,15 @@ public class TodoViewModel extends ViewModel {
         fetch();
     }
 
+    public void deleteAllDoneTodos() {
+        try {
+            dbRepository.deleteAllDoneTodos();
+        } catch (InterruptedException ignored) {
+        }
+        applyFilter(null);
+        fetch();
+    }
+
     public long getTodosCount() {
         try {
             return dbRepository.todosCount();
@@ -81,8 +90,20 @@ public class TodoViewModel extends ViewModel {
         }
     }
 
+    public long getDoneTodosCount() {
+        try {
+            return dbRepository.doneTodosCount();
+        } catch (InterruptedException e) {
+            return 0;
+        }
+    }
+
     public boolean todosIsEmpty() {
         return getTodosCount() == 0;
+    }
+
+    public boolean todosDoneIsEmpty() {
+        return getDoneTodosCount() == 0;
     }
 
     public void setDoneTodo(long todoID) {

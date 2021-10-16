@@ -33,8 +33,14 @@ public interface TodoDao {
     @Query("DELETE FROM todos;")
     void deleteAllTodos();
 
+    @Query("DELETE FROM todos WHERE is_done = 1;")
+    void deleteAllDoneTodo();
+
     @Query("SELECT COUNT(*) FROM todos;")
     long getTodosCount();
+
+    @Query("SELECT COUNT(*) FROM todos WHERE is_done = 1;")
+    long getDoneTodosCount();
 
     @Query("UPDATE todos SET is_done = not is_done WHERE id = :todoID")
     void setDoneTodo(long todoID);

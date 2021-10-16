@@ -34,7 +34,6 @@ import ui.dialog.GlobalMenuDialog;
 import ui.dialog.MoreDialog;
 import ui.fragment.sheet.FilterBottomSheet;
 import utils.Constants;
-import utils.DisplayUtils;
 import utils.ToastHelper;
 
 public class HomeFragment extends BaseFragment {
@@ -176,6 +175,30 @@ public class HomeFragment extends BaseFragment {
                 deleteDialog.setOnClickDelete(() -> {
                     getTodoViewModel().deleteAllTodos();
                     scrollBehavior.slideUp(frameLytButton);
+                    deleteDialog.dismiss();
+                });
+            });
+
+            globalMenu.setOnClickDeleteAllDoneTodos(() -> {
+                globalMenu.dismiss();
+
+                if (getTodoViewModel().todosIsEmpty()) {
+                    ToastHelper.get().toast(getString(R.string.todos_is_empty));
+                    return;
+                }
+
+                if (getTodoViewModel().todosDoneIsEmpty()) {
+                    ToastHelper.get().toast(getString(R.string.todos_done_is_empty));
+                    return;
+                }
+
+                DeleteDialog deleteDialog = new DeleteDialog(getActivity());
+                deleteDialog.show();
+
+                deleteDialog.setTitle(getString(R.string.delete_all_done_todos));
+                deleteDialog.setMessage(getString(R.string.delete_all_done_todos_message, getTodoViewModel().getDoneTodosCount()));
+                deleteDialog.setOnClickDelete(() -> {
+                    getTodoViewModel().deleteAllDoneTodos();
                     deleteDialog.dismiss();
                 });
             });

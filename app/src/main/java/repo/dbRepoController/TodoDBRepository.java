@@ -16,6 +16,7 @@ public class TodoDBRepository {
     private final MutableLiveData<List<Todo>> todos;
 
     private long count = 0;
+    private long doneCount = 0;
 
     public TodoDBRepository() {
         dao = App.get().todoDatabase().getTodoDao();
@@ -74,11 +75,24 @@ public class TodoDBRepository {
         thread.join();
     }
 
+    public void deleteAllDoneTodos() throws InterruptedException {
+        Thread thread = new Thread(dao::deleteAllDoneTodo);
+        thread.start();
+        thread.join();
+    }
+
     public long todosCount() throws InterruptedException {
         Thread thread = new Thread(() -> count = dao.getTodosCount());
         thread.start();
         thread.join();
         return count;
+    }
+
+    public long doneTodosCount() throws InterruptedException {
+        Thread thread = new Thread(() -> doneCount = dao.getDoneTodosCount());
+        thread.start();
+        thread.join();
+        return doneCount;
     }
 
     public void setDoneTodo(long todoID) throws InterruptedException {
