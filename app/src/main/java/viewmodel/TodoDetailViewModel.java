@@ -53,19 +53,35 @@ public class TodoDetailViewModel extends ViewModel {
     }
 
     public int getLytDateVisibility() {
-        return getTodo().getArriveDate() != 0 ? View.VISIBLE : View.GONE;
+        return hasArriveDate() ? View.VISIBLE : View.GONE;
+    }
+
+    public int getLytCategoryVisibility() {
+        return hasCategory() ? View.VISIBLE : View.GONE;
     }
 
     public int getCreatedAtVisibility() {
-        return getTodo().getCreatedAt() != 0 ? View.VISIBLE : View.GONE;
+        return hasCreatedAt() ? View.VISIBLE : View.GONE;
     }
 
     public int getUpdatedAtVisibility() {
-        return getTodo().getUpdatedAt() != 0 ? View.VISIBLE : View.GONE;
+        return hasUpdatedAt() ? View.VISIBLE : View.GONE;
     }
 
     public boolean hasArriveDate() {
         return getTodo().getArriveDate() != 0;
+    }
+
+    public boolean hasCategory() {
+        return getTodo().getCategoryId() != 0 && getTodo().getCategory() != null;
+    }
+
+    public String getDoneText() {
+        return getTodo().isDone() ? getString(R.string.is_done) : getString(R.string.is_undone);
+    }
+
+    public int getImgDoneResource() {
+        return getTodo().isDone() ? R.drawable.checked_normal : R.drawable.unchecked_error;
     }
 
     public boolean hasCreatedAt() {

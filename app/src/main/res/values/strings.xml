@@ -114,9 +114,12 @@
 
     <string name="reminer_title">یادآوری انجام کار</string>
     <string name="set_done">انجام شد</string>
-    
+
     <string name="label_share_menu">ذخیره در کارها</string>
 
     <string name="todo_added_successfully">کار با موفقیت اضافه شد. 🚀</string>
+
+    <string name="is_done">انجام شده</string>
+    <string name="is_undone">انجام نشده</string>
 
 </resources>

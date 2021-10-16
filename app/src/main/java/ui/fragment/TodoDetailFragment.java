@@ -46,7 +46,9 @@ public class TodoDetailFragment extends BaseFragment {
     private TextView txtTitle;
     private TextView txtCategory;
     private TextView txtLowPriority, txtNormalPriority, txtHighPriority;
-    private ConstraintLayout lytDate;
+    private TextView txtDone;
+    private AppCompatImageView imgDone;
+    private ConstraintLayout lytDate, lytCategory;
     private TextView txtDateReminder, txtClockReminder;
     private TextView txtCreatedAt, txtUpdatedAt;
 
@@ -105,7 +107,11 @@ public class TodoDetailFragment extends BaseFragment {
         txtNormalPriority = binding.txtNormalPriority;
         txtHighPriority = binding.txtHighPriority;
 
+        txtDone = binding.txtDone;
+        imgDone = binding.imgDone;
+
         lytDate = binding.lytDate;
+        lytCategory = binding.lytCategory;
 
         txtDateReminder = binding.txtDate;
         txtClockReminder = binding.txtClock;
@@ -181,7 +187,6 @@ public class TodoDetailFragment extends BaseFragment {
         viewModel.getTodoLiveDate().observe(getViewLifecycleOwner(), todo -> {
             if (todo != null) {
                 txtTitle.setText(todo.getTitle());
-                txtCategory.setText(todo.getCategory());
 
                 switch (todo.getPriority()) {
                     case LOW:
@@ -204,9 +209,16 @@ public class TodoDetailFragment extends BaseFragment {
                         break;
                 }
 
+                txtDone.setText(viewModel.getDoneText());
+                imgDone.setImageResource(viewModel.getImgDoneResource());
+
                 lytDate.setVisibility(viewModel.getLytDateVisibility());
+                lytCategory.setVisibility(viewModel.getLytCategoryVisibility());
                 txtCreatedAt.setVisibility(viewModel.getCreatedAtVisibility());
                 txtUpdatedAt.setVisibility(viewModel.getUpdatedAtVisibility());
+
+                if (viewModel.hasCategory())
+                    txtCategory.setText(todo.getCategory());
 
                 if (viewModel.hasArriveDate()) {
                     txtDateReminder.setText(viewModel.getDateReminder());
