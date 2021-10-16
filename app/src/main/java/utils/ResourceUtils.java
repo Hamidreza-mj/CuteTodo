@@ -22,7 +22,7 @@ public class ResourceUtils {
     }
 
     public String getString(@StringRes int stringRes) {
-        return App.get().getString(stringRes);
+        return App.get().getResources().getString(stringRes);
     }
 
     public int getColor(@ColorRes int colorRes) {

@@ -94,7 +94,7 @@ public class CategoriesFragment extends BaseFragment {
 
     private void handleShadowScroll() {
         nested.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            final float dpShadow = DisplayUtils.getDisplay().dpToPx(nested.getContext(), 12);
+            final float dpShadow = getResources().getDimension(R.dimen.toolbar_shadow);
 
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {

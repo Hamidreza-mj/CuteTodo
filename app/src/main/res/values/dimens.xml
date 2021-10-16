@@ -5,4 +5,5 @@
     <dimen name="paddingChild">10dp</dimen>
     <dimen name="cornersInput">15dp</dimen>
     <dimen name="mb_button">20dp</dimen>
+    <dimen name="toolbar_shadow">8dp</dimen>
 </resources>
