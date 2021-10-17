@@ -29,15 +29,15 @@ public class AlarmUtil {
         if (timeAt < System.currentTimeMillis()) //if the time to be set has passed, don't need to set alarm
             return;
 
-        AlarmManager alarmManager = (AlarmManager) App.get().applicationContext.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(App.get().applicationContext, NotificationReceiver.class);
+        AlarmManager alarmManager = (AlarmManager) App.get().getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(App.get().getApplicationContext(), NotificationReceiver.class);
 
         intent.putExtra(Constants.Keys.NOTIF_ID_KEY, notificationID);
-        intent.putExtra(Constants.Keys.NOTIF_CONTENT_KEY, App.get().applicationContext.getString(R.string.notification_content, content));
+        intent.putExtra(Constants.Keys.NOTIF_CONTENT_KEY, App.get().getApplicationContext().getString(R.string.notification_content, content));
 
         @SuppressLint("UnspecifiedImmutableFlag")
         PendingIntent pendingIntent =
-                PendingIntent.getBroadcast(App.get().applicationContext, notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent.getBroadcast(App.get().getApplicationContext(), notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         //alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(timeAt, pendingIntent), pendingIntent);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
@@ -47,16 +47,18 @@ public class AlarmUtil {
     }
 
     public void cancelAlarm(int notificationID) {
-        AlarmManager alarmManager = (AlarmManager) App.get().applicationContext.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(App.get().applicationContext, NotificationReceiver.class);
+        setAlarm(notificationID, "", 0);
+        AlarmManager alarmManager = (AlarmManager) App.get().getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(App.get().getApplicationContext(), NotificationReceiver.class);
 
-        intent.putExtra(Constants.Keys.NOTIF_ID_KEY, notificationID);
+//        intent.putExtra(Constants.Keys.NOTIF_ID_KEY, notificationID);
 
         @SuppressLint("UnspecifiedImmutableFlag")
         PendingIntent pendingIntent =
-                PendingIntent.getBroadcast(App.get().applicationContext, notificationID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                PendingIntent.getBroadcast(App.get().getApplicationContext(), notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         alarmManager.cancel(pendingIntent);
+        pendingIntent.cancel();
     }
 
 }

@@ -25,9 +25,9 @@ import java.text.MessageFormat;
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.FragmentTodoDetailBinding;
 import model.Todo;
+import scheduler.alarm.AlarmUtil;
 import ui.dialog.DeleteDialog;
 import utils.Constants;
-import utils.DisplayUtils;
 import viewmodel.TodoDetailViewModel;
 
 public class TodoDetailFragment extends BaseFragment {
@@ -152,9 +152,16 @@ public class TodoDetailFragment extends BaseFragment {
 
             deleteDialog.setMessage(getString(R.string.delete_todo_message, todoTitle));
             deleteDialog.setOnClickDelete(() -> {
+                if (viewModel.hasArriveDate())
+                    AlarmUtil.get().cancelAlarm(viewModel.getTodo().getId());
+
                 getTodoViewModel().deleteTodo(viewModel.getTodo());
                 getTodoViewModel().fetch(); //need to update todos if categories was deleted
                 getSearchViewModel().fetch();
+
+                if (getTodoViewModel().todosIsEmpty())
+                    getTodoViewModel().goToTop();
+
                 deleteDialog.dismiss();
                 back();
             });

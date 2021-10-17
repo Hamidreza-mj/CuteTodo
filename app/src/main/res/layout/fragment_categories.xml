@@ -190,7 +190,7 @@
                     app:layout_constraintBottom_toBottomOf="@id/txtMenuGuide"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/txtMenuGuide"
-                    app:srcCompat="@drawable/ic_recycle_bin" />
+                    app:srcCompat="@drawable/ic_delete" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

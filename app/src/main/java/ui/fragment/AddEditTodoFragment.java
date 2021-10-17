@@ -48,7 +48,6 @@ import scheduler.alarm.AlarmUtil;
 import ui.dialog.DropDownCategoriesDialog;
 import ui.dialog.TimePickerSheetDialog;
 import utils.Constants;
-import utils.DisplayUtils;
 import utils.ResourceUtils;
 import utils.ToastHelper;
 import viewmodel.AddEditTodoViewModel;

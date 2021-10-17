@@ -124,5 +124,6 @@
 
     <string name="is_done">انجام شده</string>
     <string name="is_undone">انجام نشده</string>
+    <string name="status">وضعیت:</string>
 
 </resources>

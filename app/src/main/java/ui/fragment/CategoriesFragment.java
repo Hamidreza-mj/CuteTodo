@@ -30,7 +30,6 @@ import ui.adapter.CategoryAdapter;
 import ui.dialog.DeleteDialog;
 import ui.dialog.MoreDialog;
 import utils.Constants;
-import utils.DisplayUtils;
 import utils.ToastHelper;
 
 public class CategoriesFragment extends BaseFragment {

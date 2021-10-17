@@ -26,12 +26,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.FragmentSearchBinding;
 import model.Search;
+import scheduler.alarm.AlarmUtil;
 import ui.adapter.TodoAdapter;
 import ui.dialog.DeleteDialog;
 import ui.dialog.MoreDialog;
 import ui.fragment.sheet.SearchModeBottomSheet;
 import utils.Constants;
-import utils.DisplayUtils;
 
 public class SearchFragment extends BaseFragment {
 
@@ -222,6 +222,9 @@ public class SearchFragment extends BaseFragment {
 
                         deleteDialog.setMessage(getString(R.string.delete_todo_message, todoTitle));
                         deleteDialog.setOnClickDelete(() -> {
+                            if (todoMenu.getArriveDate() != 0)
+                                AlarmUtil.get().cancelAlarm(todoMenu.getId());
+
                             getTodoViewModel().deleteTodo(todoMenu);
                             getSearchViewModel().fetch();
                             deleteDialog.dismiss();
