@@ -135,8 +135,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="8dp"
-                        android:text="@string/select_category"
                         android:paddingVertical="6dp"
+                        android:text="@string/select_category"
                         android:textColor="@color/gray"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -281,9 +281,14 @@
                 app:layout_constraintTop_toBottomOf="@id/horizontal" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:id="@+id/aImgReminderGuide"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:layout_marginEnd="10dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingVertical="5dp"
                 android:tint="@color/gray_text"
                 app:layout_constraintBottom_toBottomOf="@id/reminder"
                 app:layout_constraintEnd_toStartOf="@id/reminder"

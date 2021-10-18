@@ -58,6 +58,7 @@
         <entry key="app/src/main/res/layout/dialog_dropdown_categories.xml" value="0.33" />
         <entry key="app/src/main/res/layout/dialog_global_menu.xml" value="0.33" />
         <entry key="app/src/main/res/layout/dialog_more.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/dialog_reminder_guide.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_add_edit_category.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_add_edit_todo.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_add_todo.xml" value="0.25" />

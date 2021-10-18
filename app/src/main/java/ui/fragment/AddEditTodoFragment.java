@@ -46,6 +46,7 @@ import model.Category;
 import model.Todo;
 import scheduler.alarm.AlarmUtil;
 import ui.dialog.DropDownCategoriesDialog;
+import ui.dialog.ReminderGuideDialog;
 import ui.dialog.TimePickerSheetDialog;
 import utils.Constants;
 import utils.ResourceUtils;
@@ -150,6 +151,13 @@ public class AddEditTodoFragment extends BaseFragment {
             }
 
             back();
+        });
+
+        binding.aImgReminderGuide.setOnClickListener(v -> {
+            ReminderGuideDialog reminderDialog = new ReminderGuideDialog(getContext());
+            reminderDialog.setTitle(getString(R.string.set_reminder));
+            reminderDialog.setMessage(getString(R.string.reminder_guide));
+            reminderDialog.show();
         });
 
         inpLytTitle = binding.inpTitle;

@@ -126,4 +126,6 @@
     <string name="is_undone">انجام نشده</string>
     <string name="status">وضعیت:</string>
 
+    <string name="accept">تایید</string>
+
 </resources>
