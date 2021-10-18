@@ -223,7 +223,7 @@ public class SearchFragment extends BaseFragment {
                         deleteDialog.setMessage(getString(R.string.delete_todo_message, todoTitle));
                         deleteDialog.setOnClickDelete(() -> {
                             if (todoMenu.getArriveDate() != 0)
-                                AlarmUtil.get().cancelAlarm(todoMenu.getId());
+                                AlarmUtil.with(requireContext().getApplicationContext()).cancelAlarm(todoMenu.getId());
 
                             getTodoViewModel().deleteTodo(todoMenu);
                             getSearchViewModel().fetch();

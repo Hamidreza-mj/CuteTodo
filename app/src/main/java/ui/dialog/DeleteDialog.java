@@ -53,25 +53,21 @@ public class DeleteDialog {
     public void dismiss() {
         if (dialog != null)
             dialog.dismiss();
-
     }
 
     public void show() {
         if (dialog != null)
             dialog.show();
-
     }
 
     public void setTitle(String title) {
         if (dialog != null)
             txtTitle.setText(title);
-
     }
 
     public void setMessage(String message) {
         if (dialog != null)
             txtMessage.setText(message);
-
     }
 
     public interface OnClickDelete {

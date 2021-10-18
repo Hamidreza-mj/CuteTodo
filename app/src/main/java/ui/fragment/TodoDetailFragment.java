@@ -153,7 +153,7 @@ public class TodoDetailFragment extends BaseFragment {
             deleteDialog.setMessage(getString(R.string.delete_todo_message, todoTitle));
             deleteDialog.setOnClickDelete(() -> {
                 if (viewModel.hasArriveDate())
-                    AlarmUtil.get().cancelAlarm(viewModel.getTodo().getId());
+                    AlarmUtil.with(requireContext().getApplicationContext()).cancelAlarm(viewModel.getTodo().getId());
 
                 getTodoViewModel().deleteTodo(viewModel.getTodo());
                 getTodoViewModel().fetch(); //need to update todos if categories was deleted

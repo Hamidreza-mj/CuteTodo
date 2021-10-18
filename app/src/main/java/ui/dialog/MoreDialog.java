@@ -105,7 +105,6 @@ public class MoreDialog {
 
     public interface OnClickDelete {
         void onClick();
-
     }
 
 }

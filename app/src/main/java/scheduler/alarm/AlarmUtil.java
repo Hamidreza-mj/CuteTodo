@@ -7,37 +7,42 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
-import hlv.cute.todo.App;
 import hlv.cute.todo.R;
 import scheduler.receiver.NotificationReceiver;
 import utils.Constants;
 
 public class AlarmUtil {
+    @SuppressLint("StaticFieldLeak")
     private static AlarmUtil alarmUtil;
+    private static AlarmManager alarmManager;
+    private final Context context;
 
-    private AlarmUtil() {
+    private AlarmUtil(Context context) {
+        this.context = context;
+        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     }
 
-    public static AlarmUtil get() {
+    public static AlarmUtil with(Context context) {
         if (alarmUtil == null)
-            alarmUtil = new AlarmUtil();
+            alarmUtil = new AlarmUtil(context);
 
         return alarmUtil;
     }
 
     public void setAlarm(int notificationID, String content, long timeAt) {
-        if (timeAt < System.currentTimeMillis()) //if the time to be set has passed, don't need to set alarm
+        //if the time to be set has passed, don't need to set alarm
+        //if timeAt = 0, set alarm (for canceling)
+        if (timeAt < System.currentTimeMillis() && timeAt != 0)
             return;
 
-        AlarmManager alarmManager = (AlarmManager) App.get().getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(App.get().getApplicationContext(), NotificationReceiver.class);
+        Intent intent = new Intent(context, NotificationReceiver.class);
 
         intent.putExtra(Constants.Keys.NOTIF_ID_KEY, notificationID);
-        intent.putExtra(Constants.Keys.NOTIF_CONTENT_KEY, App.get().getApplicationContext().getString(R.string.notification_content, content));
+        intent.putExtra(Constants.Keys.NOTIF_CONTENT_KEY, context.getString(R.string.notification_content, content));
 
         @SuppressLint("UnspecifiedImmutableFlag")
         PendingIntent pendingIntent =
-                PendingIntent.getBroadcast(App.get().getApplicationContext(), notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent.getBroadcast(context, notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         //alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(timeAt, pendingIntent), pendingIntent);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
@@ -46,19 +51,21 @@ public class AlarmUtil {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeAt, pendingIntent);
     }
 
+    /**
+     * for canceling alarm the context and id must be same.
+     * better idea use application context
+     *
+     * @param notificationID id of pending intent
+     */
     public void cancelAlarm(int notificationID) {
         setAlarm(notificationID, "", 0);
-        AlarmManager alarmManager = (AlarmManager) App.get().getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(App.get().getApplicationContext(), NotificationReceiver.class);
-
-//        intent.putExtra(Constants.Keys.NOTIF_ID_KEY, notificationID);
+        Intent intent = new Intent(context, NotificationReceiver.class);
 
         @SuppressLint("UnspecifiedImmutableFlag")
         PendingIntent pendingIntent =
-                PendingIntent.getBroadcast(App.get().getApplicationContext(), notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent.getBroadcast(context, notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         alarmManager.cancel(pendingIntent);
-        pendingIntent.cancel();
     }
 
 }

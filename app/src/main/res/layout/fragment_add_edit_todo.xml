@@ -24,7 +24,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="8dp"
             android:gravity="right"
             android:text="@string/add_new_todo"
             app:layout_constraintEnd_toStartOf="@id/aImgBack"
@@ -34,18 +34,19 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/aImgBack"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_marginEnd="10dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:contentDescription="@string/back"
             android:focusable="true"
+            android:padding="8dp"
             app:layout_constraintBottom_toBottomOf="@id/txtTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/txtTitle"
             app:layout_constraintTop_toTopOf="@id/txtTitle"
-            app:srcCompat="@drawable/ic_back_light" />
+            app:srcCompat="@drawable/ic_back_light2" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -135,6 +136,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="8dp"
                         android:text="@string/select_category"
+                        android:paddingVertical="6dp"
                         android:textColor="@color/gray"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -143,8 +145,8 @@
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/arrow"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:padding="4dp"
                         android:tint="#808080"
                         app:layout_constraintBottom_toBottomOf="@id/txtCategory"
@@ -192,7 +194,7 @@
 
             <TextView
                 android:id="@+id/priority"
-                style="@style/TextNormalMD18"
+                style="@style/TextNormalMD16"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
@@ -267,7 +269,7 @@
 
             <TextView
                 android:id="@+id/reminder"
-                style="@style/TextNormalMD18"
+                style="@style/TextNormalMD16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
@@ -330,9 +332,9 @@
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/calender"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:padding="5dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:padding="4dp"
                         android:tint="#808080"
                         app:layout_constraintBottom_toBottomOf="@id/txtDate"
                         app:layout_constraintEnd_toEndOf="parent"

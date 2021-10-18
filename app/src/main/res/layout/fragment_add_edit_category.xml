@@ -15,7 +15,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="8dp"
         android:gravity="right"
         android:text="@string/add_new_category"
         app:layout_constraintEnd_toStartOf="@id/aImgBack"
@@ -25,18 +25,19 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/aImgBack"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:layout_marginEnd="10dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
         android:contentDescription="@string/back"
         android:focusable="true"
+        android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="@id/txtTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/txtTitle"
         app:layout_constraintTop_toTopOf="@id/txtTitle"
-        app:srcCompat="@drawable/ic_back_light" />
+        app:srcCompat="@drawable/ic_back_light2" />
 
     <ScrollView
         android:layout_width="0dp"
