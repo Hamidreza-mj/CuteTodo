@@ -7,11 +7,13 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import model.Category;
+import model.Notification;
 import model.Todo;
 import repo.dao.CategoryDao;
+import repo.dao.NotificationDao;
 import repo.dao.TodoDao;
 
-@Database(entities = {Todo.class, Category.class}, version = 1, exportSchema = false)
+@Database(entities = {Todo.class, Category.class, Notification.class}, version = 1, exportSchema = false)
 public abstract class TodoDatabase extends RoomDatabase {
 
     private static final String DB_NAME = "TodoDB";
@@ -20,6 +22,8 @@ public abstract class TodoDatabase extends RoomDatabase {
     public abstract TodoDao getTodoDao();
 
     public abstract CategoryDao getCategoryDao();
+
+    public abstract NotificationDao getNotificationDao();
 
     public static synchronized TodoDatabase get(Context context) {
         if (instance == null) {
