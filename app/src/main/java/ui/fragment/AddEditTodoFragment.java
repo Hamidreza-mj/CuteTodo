@@ -43,6 +43,7 @@ import ir.hamsaa.persiandatepicker.PersianDatePickerDialog;
 import ir.hamsaa.persiandatepicker.api.PersianPickerDate;
 import ir.hamsaa.persiandatepicker.api.PersianPickerListener;
 import model.Category;
+import model.Priority;
 import model.Todo;
 import scheduler.alarm.AlarmUtil;
 import ui.dialog.DropDownCategoriesDialog;
@@ -221,17 +222,17 @@ public class AddEditTodoFragment extends BaseFragment {
                 case LOW:
                 default:
                     chipID = R.id.chipLow;
-                    viewModel.setPriority(Todo.Priority.LOW);
+                    viewModel.setPriority(Priority.LOW);
                     break;
 
                 case NORMAL:
                     chipID = R.id.chipNormal;
-                    viewModel.setPriority(Todo.Priority.NORMAL);
+                    viewModel.setPriority(Priority.NORMAL);
                     break;
 
                 case HIGH:
                     chipID = R.id.chipHigh;
-                    viewModel.setPriority(Todo.Priority.HIGH);
+                    viewModel.setPriority(Priority.HIGH);
                     break;
             }
 
@@ -241,7 +242,7 @@ public class AddEditTodoFragment extends BaseFragment {
 
         //set default priority
         chipGP.check(R.id.chipLow);
-        viewModel.setPriority(Todo.Priority.LOW);
+        viewModel.setPriority(Priority.LOW);
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -276,15 +277,15 @@ public class AddEditTodoFragment extends BaseFragment {
             switch (checkedId) {
                 case R.id.chipLow:
                 default:
-                    viewModel.setPriority(Todo.Priority.LOW);
+                    viewModel.setPriority(Priority.LOW);
                     break;
 
                 case R.id.chipNormal:
-                    viewModel.setPriority(Todo.Priority.NORMAL);
+                    viewModel.setPriority(Priority.NORMAL);
                     break;
 
                 case R.id.chipHigh:
-                    viewModel.setPriority(Todo.Priority.HIGH);
+                    viewModel.setPriority(Priority.HIGH);
                     break;
             }
         });

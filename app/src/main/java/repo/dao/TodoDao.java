@@ -9,6 +9,7 @@ import androidx.room.Update;
 
 import java.util.List;
 
+import model.Priority;
 import model.Todo;
 
 @Dao
@@ -46,10 +47,10 @@ public interface TodoDao {
     void setDoneTodo(long todoID);
 
     @Query("SELECT * FROM todos WHERE is_done = :isDone AND priority IN (:priorities) ORDER BY is_done, id DESC;")
-    List<Todo> filterByDoneTodos(boolean isDone, List<Todo.Priority> priorities);
+    List<Todo> filterByDoneTodos(boolean isDone, List<Priority> priorities);
 
     @Query("SELECT * FROM todos WHERE priority IN (:priorities) ORDER BY is_done, id DESC;")
-    List<Todo> filterByAllTodos(List<Todo.Priority> priorities);
+    List<Todo> filterByAllTodos(List<Priority> priorities);
 
     @Query("SELECT * FROM todos WHERE title LIKE '%' || :term || '%' ORDER BY is_done, id DESC;")
     List<Todo> searchTodo(String term);

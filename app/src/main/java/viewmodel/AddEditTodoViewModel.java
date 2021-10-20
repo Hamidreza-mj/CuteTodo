@@ -13,6 +13,7 @@ import ir.hamsaa.persiandatepicker.api.PersianPickerDate;
 import ir.hamsaa.persiandatepicker.date.PersianDateImpl;
 import model.Category;
 import model.DateTime;
+import model.Priority;
 import model.Todo;
 import utils.DateHelper;
 import utils.ResourceUtils;
@@ -24,7 +25,7 @@ public class AddEditTodoViewModel extends ViewModel {
     private final MutableLiveData<DateTime> oldDateTimeLiveData;
 
     private Todo todo;
-    private Todo.Priority priority;
+    private Priority priority;
 
     private DateTime tempDateTime = new DateTime();
 
@@ -206,7 +207,7 @@ public class AddEditTodoViewModel extends ViewModel {
         return getCategory() != null && getCategory().getId() != 0 && getCategory().getName() != null;
     }
 
-    public void setPriority(Todo.Priority priority) {
+    public void setPriority(Priority priority) {
         this.priority = priority;
     }
 

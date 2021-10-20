@@ -164,8 +164,4 @@ public class Todo implements Comparable<Todo>, Serializable {
         return 1;
     }
 
-    public enum Priority {
-        LOW, NORMAL, HIGH
-    }
-
 }

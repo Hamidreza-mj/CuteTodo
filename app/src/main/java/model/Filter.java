@@ -15,7 +15,7 @@ public class Filter implements Serializable {
     private boolean isNormal;
     private boolean isHigh;
 
-    private final List<Todo.Priority> priorities;
+    private final List<Priority> priorities;
 
     public Filter() {
         priorities = new ArrayList<>();
@@ -42,7 +42,7 @@ public class Filter implements Serializable {
     }
 
     public void setLow(boolean low) {
-        if (low) priorities.add(Todo.Priority.LOW);
+        if (low) priorities.add(Priority.LOW);
         isLow = low;
     }
 
@@ -51,7 +51,7 @@ public class Filter implements Serializable {
     }
 
     public void setNormal(boolean normal) {
-        if (normal) priorities.add(Todo.Priority.NORMAL);
+        if (normal) priorities.add(Priority.NORMAL);
         isNormal = normal;
     }
 
@@ -60,11 +60,11 @@ public class Filter implements Serializable {
     }
 
     public void setHigh(boolean high) {
-        if (high) priorities.add(Todo.Priority.HIGH);
+        if (high) priorities.add(Priority.HIGH);
         isHigh = high;
     }
 
-    public List<Todo.Priority> getPriorities() {
+    public List<Priority> getPriorities() {
         return priorities;
     }
 
@@ -73,10 +73,10 @@ public class Filter implements Serializable {
      *
      * @return list of priorities
      */
-    public List<Todo.Priority> addAllPriorities() {
-        priorities.add(Todo.Priority.LOW);
-        priorities.add(Todo.Priority.NORMAL);
-        priorities.add(Todo.Priority.HIGH);
+    public List<Priority> addAllPriorities() {
+        priorities.add(Priority.LOW);
+        priorities.add(Priority.NORMAL);
+        priorities.add(Priority.HIGH);
 
         return priorities;
     }

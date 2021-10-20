@@ -7,6 +7,7 @@ import java.util.List;
 
 import hlv.cute.todo.App;
 import model.Filter;
+import model.Priority;
 import model.Todo;
 import repo.dao.TodoDao;
 
@@ -31,11 +32,11 @@ public class TodoDBRepository {
     }
 
     public void fetchWithFilter(Filter filter) throws InterruptedException {
-        List<Todo.Priority> priorities = filter.getPriorities();
+        List<Priority> priorities = filter.getPriorities();
         if (priorities.isEmpty()/* && todosCount() != 0*/)
             priorities = filter.addAllPriorities();
 
-        List<Todo.Priority> finalPriorities = priorities;
+        List<Priority> finalPriorities = priorities;
 
         if (filter.isDone() && filter.isUndone() || !filter.isDone() && !filter.isUndone()) {//not need check isDone
             new Thread(() ->
