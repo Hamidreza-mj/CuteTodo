@@ -73,8 +73,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="30dp"
-            android:paddingHorizontal="@dimen/paddingChild">
+            android:paddingHorizontal="@dimen/paddingChild"
+            android:paddingBottom="30dp">
 
             <TextView
                 android:id="@+id/title"
@@ -329,94 +329,6 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/lytDone"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/lytDate">
-
-                <TextView
-                    android:id="@+id/statusDone"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/status"
-                    android:textColor="@color/gray"
-                    android:textSize="15sp"
-                    android:theme="@style/TextMD14"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="TextContrastCheck,TextContrastCheck" />
-
-                <TextView
-                    android:id="@+id/txtDone"
-                    style="@style/TextRG14"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="5dp"
-                    android:gravity="right"
-                    android:text="انجام شده"
-                    android:textColor="@color/black"
-                    android:textSize="15sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/statusDone"
-                    tools:ignore="HardcodedText" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/imgDone"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:paddingVertical="9dp"
-                    app:layout_constraintBottom_toBottomOf="@id/txtDone"
-                    app:layout_constraintEnd_toStartOf="@id/txtDone"
-                    app:layout_constraintTop_toTopOf="@id/txtDone"
-                    app:srcCompat="@drawable/checked_normal" />
-
-
-                <View
-                    android:id="@+id/line5"
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_marginHorizontal="20dp"
-                    android:layout_marginTop="20dp"
-                    android:background="@color/lineColor"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/txtDone" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <TextView
-                android:id="@+id/txtCreatedAt"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text=""
-                android:textColor="@color/gray"
-                android:textSize="13sp"
-                android:theme="@style/TextRG14"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/lytDone" />
-
-            <TextView
-                android:id="@+id/txtUpdatedAt"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text=""
-                android:textColor="@color/gray"
-                android:textSize="13sp"
-                android:theme="@style/TextRG14"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txtCreatedAt" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
@@ -460,7 +372,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
-            android:backgroundTint="@color/filter_clear_color"
+            android:backgroundTint="#CFE8FF"
             android:letterSpacing="0"
             android:paddingVertical="11dp"
             android:stateListAnimator="@null"

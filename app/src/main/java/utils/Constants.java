@@ -5,6 +5,7 @@ public class Constants {
     public static class Keys {
         public static final String NOTIF_ID_KEY = "notif-id";
         public static final String NOTIF_CONTENT_KEY = "notif-content";
+        public static final String NOTIF_ID_DETAIL = "notif-id-detail";
     }
 
     public static class Tags {

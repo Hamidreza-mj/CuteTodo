@@ -251,4 +251,10 @@ public class TodoDetailFragment extends BaseFragment {
     public TodoDetailViewModel getViewModel() {
         return viewModel;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        viewModel.fetchOnResume();
+    }
 }

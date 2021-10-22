@@ -32,7 +32,7 @@ public class AlarmUtil {
     public void setAlarm(int notificationID, String content, long timeAt) {
         //if the time to be set has passed, don't need to set alarm
         //if timeAt = 0, set alarm (for canceling)
-        if (timeAt < System.currentTimeMillis() && timeAt != 0)
+        if (timeAt < System.currentTimeMillis())
             return;
 
         Intent intent = new Intent(context, NotificationReceiver.class);
@@ -58,7 +58,7 @@ public class AlarmUtil {
      * @param notificationID id of pending intent
      */
     public void cancelAlarm(int notificationID) {
-        setAlarm(notificationID, "", 0);
+//        setAlarm(notificationID, "", 0);
         Intent intent = new Intent(context, NotificationReceiver.class);
 
         @SuppressLint("UnspecifiedImmutableFlag")

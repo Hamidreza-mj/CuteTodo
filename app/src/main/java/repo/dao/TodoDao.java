@@ -46,6 +46,9 @@ public interface TodoDao {
     @Query("UPDATE todos SET is_done = not is_done WHERE id = :todoID")
     void setDoneTodo(long todoID);
 
+    @Query("UPDATE todos SET is_done = 1 WHERE id = :todoID")
+    void setTodoIsDone(long todoID);
+
     @Query("SELECT * FROM todos WHERE is_done = :isDone AND priority IN (:priorities) ORDER BY is_done, id DESC;")
     List<Todo> filterByDoneTodos(boolean isDone, List<Priority> priorities);
 

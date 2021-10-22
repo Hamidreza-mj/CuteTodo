@@ -18,6 +18,7 @@
 
         <activity
             android:name="ui.activity.ShowNotificationActivity"
+            android:taskAffinity="ui.activity.ShowNotificationActivity"
             android:theme="@style/Theme.CuteTodo" />
 
         <activity

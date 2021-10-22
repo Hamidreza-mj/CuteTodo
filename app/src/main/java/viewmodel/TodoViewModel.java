@@ -115,7 +115,7 @@ public class TodoViewModel extends ViewModel {
     public void setDoneTodo(long todoID) {
         try {
             dbRepository.setDoneTodo(todoID);
-            notifRepo.setDoneTodo(todoID);
+            notifRepo.setDoneTodo(todoID); //set done todo for notifications
         } catch (InterruptedException ignored) {
         }
         fetch();

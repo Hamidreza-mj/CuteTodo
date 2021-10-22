@@ -11,6 +11,7 @@ import hlv.cute.todo.R;
 import ir.hamsaa.persiandatepicker.date.PersianDateImpl;
 import model.DateTime;
 import model.Todo;
+import repo.dbRepoController.TodoDBRepository;
 import utils.DateHelper;
 import utils.ResourceUtils;
 
@@ -18,8 +19,11 @@ public class TodoDetailViewModel extends ViewModel {
 
     private final MutableLiveData<Todo> todoLiveDate;
 
+    private final TodoDBRepository todoRepo;
+
     public TodoDetailViewModel() {
         todoLiveDate = new MutableLiveData<>();
+        todoRepo = new TodoDBRepository();
     }
 
     public void setTodo(Todo todo) {
@@ -170,4 +174,14 @@ public class TodoDetailViewModel extends ViewModel {
                 "، ساعت " + hour + ":" + minute;
     }
 
+    public void fetchOnResume() {
+        Todo updatedTodo = null;
+        try {
+            updatedTodo = todoRepo.getTodo(getTodo().getId());
+        } catch (InterruptedException ignored) {
+        }
+
+        if (updatedTodo != null)
+            setTodo(updatedTodo);
+    }
 }

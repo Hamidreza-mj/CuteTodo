@@ -59,7 +59,9 @@ public class NotificationUtil {
         createNotificationChannel();
 
         Intent intent = new Intent(context, ShowNotificationActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        //use with android:taskAffinity="ui.activity.ShowNotificationActivity"
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constants.Keys.NOTIF_ID_DETAIL, notificationID);
 
         @SuppressLint("UnspecifiedImmutableFlag")
         PendingIntent pendingIntent =
