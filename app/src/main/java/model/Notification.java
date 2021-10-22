@@ -136,4 +136,17 @@ public class Notification implements Serializable {
         return dateHelper.getClock();
     }
 
+    public void initWith(Todo initTodo) {
+        if (initTodo == null)
+            return;
+
+        id = initTodo.getId();
+        content = initTodo.getTitle();
+        isDone = initTodo.isDone();
+        isShown = false;
+        arriveDate = initTodo.getArriveDate();
+        priority = initTodo.getPriority();
+        category = initTodo.getCategory();
+        categoryId = initTodo.getCategoryId();
+    }
 }
