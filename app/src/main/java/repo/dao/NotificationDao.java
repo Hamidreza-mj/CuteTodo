@@ -24,12 +24,20 @@ public interface NotificationDao {
     void delete(Notification notification);
 
 
+    @Query("SELECT * FROM notifications;")
+    List<Notification> getAllNotifications();
+
+    @Query("SELECT * FROM notifications WHERE is_done = 1;")
+    List<Notification> getAllDoneNotifications();
 
     @Query("SELECT * FROM notifications WHERE id = :id;")
     Notification getNotification(int id);
 
     @Query("DELETE FROM notifications;")
     void deleteAllNotifications();
+
+    @Query("DELETE FROM notifications WHERE is_done = 1;")
+    void deleteAllDoneNotifications();
 
     @Query("SELECT COUNT(*) FROM notifications;")
     long getNotificationsCount();
