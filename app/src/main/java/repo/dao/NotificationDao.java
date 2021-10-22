@@ -30,11 +30,17 @@ public interface NotificationDao {
     @Query("SELECT * FROM notifications WHERE is_done = 1;")
     List<Notification> getAllDoneNotifications();
 
+    @Query("DELETE FROM notifications WHERE is_shown = 1;")
+    void deleteShownNotifications();
+
     @Query("SELECT * FROM notifications WHERE id = :id;")
     Notification getNotification(long id);
 
     @Query("UPDATE notifications SET is_done = not is_done WHERE id = :id")
     void setDoneTodo(long id);
+
+    @Query("UPDATE notifications SET is_shown = 1 WHERE id = :id;")
+    void setShownTodo(long id);
 
     @Query("DELETE FROM notifications;")
     void deleteAllNotifications();

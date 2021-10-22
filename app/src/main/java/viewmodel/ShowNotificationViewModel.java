@@ -18,11 +18,13 @@ import utils.DateHelper;
 public class ShowNotificationViewModel extends ViewModel {
 
     private final MutableLiveData<Boolean> closeLive;
+    private final NotificationDBRepository dbRepository;
 
     private Notification notification;
 
     public ShowNotificationViewModel() {
         closeLive = new MutableLiveData<>();
+        dbRepository = new NotificationDBRepository();
     }
 
     public void setIntent(Intent intent) {
@@ -80,7 +82,7 @@ public class ShowNotificationViewModel extends ViewModel {
             return;
         }
 
-        NotificationDBRepository dbRepository = new NotificationDBRepository();
+
         Notification notification = null;
         try {
             notification = dbRepository.getNotification(notifId);
@@ -99,9 +101,8 @@ public class ShowNotificationViewModel extends ViewModel {
         if (notification == null)
             return;
 
-        NotificationDBRepository notifRepo = new NotificationDBRepository();
         try {
-            notifRepo.deleteNotification(notification);
+            dbRepository.deleteNotification(notification);
         } catch (InterruptedException ignored) {
         }
     }
@@ -117,6 +118,12 @@ public class ShowNotificationViewModel extends ViewModel {
         }
     }
 
+    public void setShown() {
+        try {
+            dbRepository.setShownTodo(notification.getId());
+        } catch (InterruptedException ignored) {
+        }
+    }
 
     public Notification getNotification() {
         return notification;

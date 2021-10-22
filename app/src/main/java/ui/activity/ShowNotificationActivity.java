@@ -103,7 +103,8 @@ public class ShowNotificationActivity extends BaseActivity {
             return;
         }
 
-        //todo: set shown true in startup get all is shown and delete it
+        //set shown true in startup get all is shown and delete it
+        viewModel.setShown();
 
         txtTitle.setText(notif.getContent());
 

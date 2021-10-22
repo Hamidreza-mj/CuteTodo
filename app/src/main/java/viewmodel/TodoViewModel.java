@@ -26,6 +26,16 @@ public class TodoViewModel extends ViewModel {
         todosLiveDate = dbRepository.getTodosLiveDate();
         filterLiveData = new MutableLiveData<>();
         goToTopLiveData = new MutableLiveData<>();
+        deleteShownNotification();
+    }
+
+    private void deleteShownNotification() {
+        //in startup get all is shown and delete it
+        NotificationDBRepository repository = new NotificationDBRepository();
+        try {
+            repository.deleteShownNotifications();
+        } catch (InterruptedException ignored) {
+        }
     }
 
     public void fetch(Filter filter) {

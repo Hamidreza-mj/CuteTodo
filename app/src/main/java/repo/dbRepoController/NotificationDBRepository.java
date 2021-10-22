@@ -43,6 +43,12 @@ public class NotificationDBRepository {
         return notificationList;
     }
 
+    public void deleteShownNotifications() throws InterruptedException {
+        Thread thread = new Thread(dao::deleteShownNotifications);
+        thread.start();
+        thread.join();
+    }
+
     public List<Notification> getAllDoneNotifications() throws InterruptedException {
         Thread thread = new Thread(() -> notificationDoneList = dao.getAllDoneNotifications());
         thread.start();
@@ -78,6 +84,12 @@ public class NotificationDBRepository {
 
     public void setDoneTodo(long id) throws InterruptedException {
         Thread thread = new Thread(() -> dao.setDoneTodo(id));
+        thread.start();
+        thread.join();
+    }
+
+    public void setShownTodo(long id) throws InterruptedException {
+        Thread thread = new Thread(() -> dao.setShownTodo(id));
         thread.start();
         thread.join();
     }
