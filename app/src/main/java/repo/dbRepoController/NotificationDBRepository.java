@@ -62,7 +62,7 @@ public class NotificationDBRepository {
         thread.join();
     }
 
-    public Notification getNotification(int id) throws InterruptedException {
+    public Notification getNotification(long id) throws InterruptedException {
         Thread thread = new Thread(() -> notification = dao.getNotification(id));
         thread.start();
         thread.join();
@@ -75,4 +75,11 @@ public class NotificationDBRepository {
         thread.join();
         return count;
     }
+
+    public void setDoneTodo(long id) throws InterruptedException {
+        Thread thread = new Thread(() -> dao.setDoneTodo(id));
+        thread.start();
+        thread.join();
+    }
+
 }

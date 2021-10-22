@@ -52,10 +52,12 @@ public class TodoDBRepository {
         }
     }
 
-    public void addTodo(Todo todo) throws InterruptedException {
-        Thread thread = new Thread(() -> dao.create(todo));
+    public long addTodo(Todo todo) throws InterruptedException {
+        final long[] insertedRow = {0};
+        Thread thread = new Thread(() -> insertedRow[0] = dao.create(todo));
         thread.start();
         thread.join();
+        return insertedRow[0];
     }
 
     public void editTodo(Todo todo) throws InterruptedException {

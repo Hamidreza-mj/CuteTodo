@@ -20,22 +20,25 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.FragmentSearchBinding;
 import model.Search;
-import scheduler.alarm.AlarmUtil;
 import ui.adapter.TodoAdapter;
 import ui.dialog.DeleteDialog;
 import ui.dialog.MoreDialog;
 import ui.fragment.sheet.SearchModeBottomSheet;
 import utils.Constants;
+import viewmodel.NotificationViewModel;
 
 public class SearchFragment extends BaseFragment {
 
     private FragmentSearchBinding binding;
+
+    private NotificationViewModel notificationViewModel;
 
     private ConstraintLayout toolbar;
     private NestedScrollView nested;
@@ -64,6 +67,7 @@ public class SearchFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         search = new Search();
+        notificationViewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
     }
 
     @Nullable
@@ -223,7 +227,7 @@ public class SearchFragment extends BaseFragment {
                         deleteDialog.setMessage(getString(R.string.delete_todo_message, todoTitle));
                         deleteDialog.setOnClickDelete(() -> {
                             if (todoMenu.getArriveDate() != 0)
-                                AlarmUtil.with(requireContext().getApplicationContext()).cancelAlarm(todoMenu.getId());
+                                notificationViewModel.cancelAlarm(todoMenu);
 
                             getTodoViewModel().deleteTodo(todoMenu);
                             getSearchViewModel().fetch();

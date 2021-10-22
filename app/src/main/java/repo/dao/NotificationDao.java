@@ -31,7 +31,10 @@ public interface NotificationDao {
     List<Notification> getAllDoneNotifications();
 
     @Query("SELECT * FROM notifications WHERE id = :id;")
-    Notification getNotification(int id);
+    Notification getNotification(long id);
+
+    @Query("UPDATE notifications SET is_done = not is_done WHERE id = :id")
+    void setDoneTodo(long id);
 
     @Query("DELETE FROM notifications;")
     void deleteAllNotifications();

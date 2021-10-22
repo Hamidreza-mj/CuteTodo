@@ -19,6 +19,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,7 +29,6 @@ import com.google.android.material.button.MaterialButton;
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.FragmentHomeBinding;
 import model.Filter;
-import scheduler.alarm.AlarmUtil;
 import ui.adapter.TodoAdapter;
 import ui.dialog.DeleteDialog;
 import ui.dialog.GlobalMenuDialog;
@@ -36,10 +36,13 @@ import ui.dialog.MoreDialog;
 import ui.fragment.sheet.FilterBottomSheet;
 import utils.Constants;
 import utils.ToastHelper;
+import viewmodel.NotificationViewModel;
 
 public class HomeFragment extends BaseFragment {
 
     private FragmentHomeBinding binding;
+
+    private NotificationViewModel notificationViewModel;
 
     private ConstraintLayout toolbar;
     private AppCompatImageView imgGlobalMenu;
@@ -64,6 +67,12 @@ public class HomeFragment extends BaseFragment {
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        notificationViewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
     }
 
     @Nullable
@@ -174,8 +183,7 @@ public class HomeFragment extends BaseFragment {
                 deleteDialog.setTitle(getString(R.string.delete_all_todos));
                 deleteDialog.setMessage(getString(R.string.delete_all_todos_message, getTodoViewModel().getTodosCount()));
                 deleteDialog.setOnClickDelete(() -> {
-                    //todo: cancel all alarms
-
+                    notificationViewModel.cancelAllAlarm();
                     getTodoViewModel().deleteAllTodos();
                     scrollBehavior.slideUp(frameLytButton);
                     deleteDialog.dismiss();
@@ -201,7 +209,7 @@ public class HomeFragment extends BaseFragment {
                 deleteDialog.setTitle(getString(R.string.delete_all_done_todos));
                 deleteDialog.setMessage(getString(R.string.delete_all_done_todos_message, getTodoViewModel().getDoneTodosCount()));
                 deleteDialog.setOnClickDelete(() -> {
-                    //todo: cancel all done alarms
+                    notificationViewModel.cancelAllDoneAlarm();
                     getTodoViewModel().deleteAllDoneTodos();
                     deleteDialog.dismiss();
                 });
@@ -301,7 +309,7 @@ public class HomeFragment extends BaseFragment {
                         deleteDialog.setMessage(getString(R.string.delete_todo_message, todoTitle));
                         deleteDialog.setOnClickDelete(() -> {
                             if (todoMenu.getArriveDate() != 0)
-                                AlarmUtil.with(requireContext().getApplicationContext()).cancelAlarm(todoMenu.getId());
+                                notificationViewModel.cancelAlarm(todoMenu);
 
                             getTodoViewModel().deleteTodo(todoMenu);
                             scrollBehavior.slideUp(frameLytButton);

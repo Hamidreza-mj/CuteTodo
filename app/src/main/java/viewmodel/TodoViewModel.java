@@ -8,11 +8,13 @@ import java.util.List;
 
 import model.Filter;
 import model.Todo;
+import repo.dbRepoController.NotificationDBRepository;
 import repo.dbRepoController.TodoDBRepository;
 
 public class TodoViewModel extends ViewModel {
 
     private final TodoDBRepository dbRepository;
+    private final NotificationDBRepository notifRepo;
 
     private final LiveData<List<Todo>> todosLiveDate;
     private final MutableLiveData<Filter> filterLiveData;
@@ -20,6 +22,7 @@ public class TodoViewModel extends ViewModel {
 
     public TodoViewModel() {
         dbRepository = new TodoDBRepository();
+        notifRepo = new NotificationDBRepository();
         todosLiveDate = dbRepository.getTodosLiveDate();
         filterLiveData = new MutableLiveData<>();
         goToTopLiveData = new MutableLiveData<>();
@@ -40,12 +43,15 @@ public class TodoViewModel extends ViewModel {
         fetch(getCurrentFilter());
     }
 
-    public void addTodo(Todo todo) {
+    public long addTodo(Todo todo) {
+        long insertedRow = 0;
         try {
-            dbRepository.addTodo(todo);
+            insertedRow = dbRepository.addTodo(todo);
         } catch (InterruptedException ignored) {
         }
+
         fetch();
+        return insertedRow;
     }
 
     public void editTodo(Todo todo) {
@@ -109,6 +115,7 @@ public class TodoViewModel extends ViewModel {
     public void setDoneTodo(long todoID) {
         try {
             dbRepository.setDoneTodo(todoID);
+            notifRepo.setDoneTodo(todoID);
         } catch (InterruptedException ignored) {
         }
         fetch();

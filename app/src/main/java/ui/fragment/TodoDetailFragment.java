@@ -25,9 +25,9 @@ import java.text.MessageFormat;
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.FragmentTodoDetailBinding;
 import model.Todo;
-import scheduler.alarm.AlarmUtil;
 import ui.dialog.DeleteDialog;
 import utils.Constants;
+import viewmodel.NotificationViewModel;
 import viewmodel.TodoDetailViewModel;
 
 public class TodoDetailFragment extends BaseFragment {
@@ -37,6 +37,7 @@ public class TodoDetailFragment extends BaseFragment {
     private FragmentTodoDetailBinding binding;
 
     private TodoDetailViewModel viewModel;
+    private NotificationViewModel notificationViewModel;
 
     private ConstraintLayout toolbar;
     private NestedScrollView nested;
@@ -68,6 +69,7 @@ public class TodoDetailFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
 
         viewModel = new ViewModelProvider(this).get(TodoDetailViewModel.class);
+        notificationViewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
 
         if (getArguments() != null && !getArguments().isEmpty()) {
             Todo todo = (Todo) getArguments().getSerializable(TODO_DETAIL_ARGS);
@@ -153,7 +155,7 @@ public class TodoDetailFragment extends BaseFragment {
             deleteDialog.setMessage(getString(R.string.delete_todo_message, todoTitle));
             deleteDialog.setOnClickDelete(() -> {
                 if (viewModel.hasArriveDate())
-                    AlarmUtil.with(requireContext().getApplicationContext()).cancelAlarm(viewModel.getTodo().getId());
+                    notificationViewModel.cancelAlarm(viewModel.getTodo());
 
                 getTodoViewModel().deleteTodo(viewModel.getTodo());
                 getTodoViewModel().fetch(); //need to update todos if categories was deleted

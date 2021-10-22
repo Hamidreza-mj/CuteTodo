@@ -45,7 +45,6 @@ import ir.hamsaa.persiandatepicker.api.PersianPickerListener;
 import model.Category;
 import model.Priority;
 import model.Todo;
-import scheduler.alarm.AlarmUtil;
 import ui.dialog.DropDownCategoriesDialog;
 import ui.dialog.ReminderGuideDialog;
 import ui.dialog.TimePickerSheetDialog;
@@ -53,6 +52,7 @@ import utils.Constants;
 import utils.ResourceUtils;
 import utils.ToastHelper;
 import viewmodel.AddEditTodoViewModel;
+import viewmodel.NotificationViewModel;
 
 public class AddEditTodoFragment extends BaseFragment {
 
@@ -62,6 +62,7 @@ public class AddEditTodoFragment extends BaseFragment {
     private FragmentAddEditTodoBinding binding;
 
     private AddEditTodoViewModel viewModel;
+    private NotificationViewModel notificationViewModel;
 
     private MaterialButton btnAdd;
     private TextInputLayout inpLytTitle;
@@ -100,6 +101,7 @@ public class AddEditTodoFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
 
         viewModel = new ViewModelProvider(this).get(AddEditTodoViewModel.class);
+        notificationViewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
 
         if (getArguments() != null && !getArguments().isEmpty()) {
             Todo todo = (Todo) getArguments().getSerializable(TODO_ARGS);
@@ -316,14 +318,16 @@ public class AddEditTodoFragment extends BaseFragment {
             inpLytTitle.setError(null);
 
             if (viewModel.isEditMode()) {
+                //edit mode
                 Todo editedTodo = viewModel.editTodo(Objects.requireNonNull(edtTitle.getText()).toString().trim());
 
                 String res = getTodoViewModel().validateTodo(editedTodo);
                 if (res == null) {
-                    if (editedTodo.getArriveDate() != 0) {
-                        AlarmUtil.with(requireContext().getApplicationContext()).cancelAlarm(editedTodo.getId());
-                        AlarmUtil.with(requireContext().getApplicationContext()).setAlarm(editedTodo.getId(), editedTodo.getTitle(), editedTodo.getArriveDate());
-                    }
+                    if (editedTodo.getArriveDate() != 0)
+                        notificationViewModel.setNotificationEditMode(editedTodo);
+                    else //if date not set or date cleared with imgClear
+                        notificationViewModel.cancelAlarm(editedTodo);
+
 
                     getTodoViewModel().editTodo(editedTodo);
                     getSearchViewModel().fetch();
@@ -334,15 +338,19 @@ public class AddEditTodoFragment extends BaseFragment {
 
                 inpLytTitle.setError(res);
             } else {
+                //add mode
                 Todo newTodo = viewModel.addTodo(Objects.requireNonNull(edtTitle.getText()).toString().trim());
 
                 String res = getTodoViewModel().validateTodo(newTodo);
                 if (res == null) {
-                    if (newTodo.getArriveDate() != 0)
-                        AlarmUtil.with(requireContext().getApplicationContext()).setAlarm(newTodo.getId(), newTodo.getTitle(), newTodo.getArriveDate());
-
                     getTodoViewModel().goToTop();
-                    getTodoViewModel().addTodo(newTodo);
+                    long insertedId = getTodoViewModel().addTodo(newTodo);
+                    if (newTodo.getArriveDate() != 0) {
+                        newTodo.setId(((int) insertedId));
+                        notificationViewModel.addNotification(newTodo);
+                    }
+
+
                     ToastHelper.get().toast(getString(R.string.todo_added_successfully));
                     back();
 

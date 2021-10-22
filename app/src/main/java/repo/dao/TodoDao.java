@@ -16,7 +16,7 @@ import model.Todo;
 public interface TodoDao {
 
     @Insert(entity = Todo.class, onConflict = OnConflictStrategy.REPLACE)
-    void create(Todo todo);
+    long create(Todo todo);
 
     @Update(entity = Todo.class, onConflict = OnConflictStrategy.REPLACE)
     void update(Todo todo);
