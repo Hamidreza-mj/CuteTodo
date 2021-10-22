@@ -31,6 +31,7 @@
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_loading_square.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_more.xml" value="0.31979166666666664" />
+        <entry key="app/src/main/res/drawable/ic_open_new.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_radio_checked.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_radio_unchecked.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_recycle_bin.xml" value="0.31979166666666664" />
@@ -46,6 +47,9 @@
         <entry key="app/src/main/res/drawable/priority_normal_shape.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/radiobutton.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/rec.xml" value="0.31979166666666664" />
+        <entry key="app/src/main/res/drawable/ripple_icon_blue.xml" value="0.31979166666666664" />
+        <entry key="app/src/main/res/drawable/ripple_icon_orange.xml" value="0.31979166666666664" />
+        <entry key="app/src/main/res/drawable/ripple_icon_red.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ripple_radius.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ripple_shape.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/scrollbar.xml" value="0.31979166666666664" />
@@ -68,8 +72,9 @@
         <entry key="app/src/main/res/layout/fragment_todo_detail.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_category.xml" value="0.30364583333333334" />
         <entry key="app/src/main/res/layout/item_dropdown.xml" value="0.30364583333333334" />
-        <entry key="app/src/main/res/layout/item_todo.xml" value="0.3401677539608574" />
+        <entry key="app/src/main/res/layout/item_todo.xml" value="0.33" />
         <entry key="app/src/main/res/layout/item_todo2.xml" value="0.30364583333333334" />
+        <entry key="app/src/main/res/layout/item_todo_action.xml" value="0.30364583333333334" />
         <entry key="app/src/main/res/layout/sheet_filter.xml" value="0.33" />
         <entry key="app/src/main/res/layout/sheet_search_mode.xml" value="0.33" />
         <entry key="app/src/main/res/layout/sheet_time_picker.xml" value="0.33" />

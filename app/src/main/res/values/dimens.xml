@@ -6,4 +6,5 @@
     <dimen name="cornersInput">15dp</dimen>
     <dimen name="mb_button">20dp</dimen>
     <dimen name="toolbar_shadow">8dp</dimen>
+    <dimen name="corner_icon_ripple">14dp</dimen>
 </resources>

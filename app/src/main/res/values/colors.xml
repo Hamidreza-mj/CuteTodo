@@ -18,6 +18,11 @@
     <color name="red20">#33FF2E2E</color>
     <color name="gray20">#338D8D8D</color>
 
+    <!-- Ripple Icon-->
+    <color name="ripple_blue_icon">#801F8EF3</color>
+    <color name="ripple_red_icon">#80FF2E2E</color>
+    <color name="ripple_orange_icon">#80FF7A00</color>
+
     <!-- Light -->
     <!-- Dark -->
 
