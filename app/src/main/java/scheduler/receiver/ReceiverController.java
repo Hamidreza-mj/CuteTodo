@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import java.util.List;
 import java.util.Objects;
 
 import hlv.cute.todo.R;
 import model.Notification;
 import repo.dbRepoController.NotificationDBRepository;
+import scheduler.alarm.AlarmUtil;
 import utils.Constants;
 import utils.NotificationUtil;
 
@@ -16,6 +18,8 @@ public class ReceiverController {
 
     private final Context context;
     private final Intent intent;
+
+    private boolean mustBeSetAgain = false;
 
     public ReceiverController(Context context, Intent intent) {
         this.context = context;
@@ -32,20 +36,38 @@ public class ReceiverController {
         if (Objects.equals(intent.getAction(), "android.intent.action.BOOT_COMPLETED")) {
             received = "Alarm received after boot completed.";
             succeed = "BootComplete mode notification send successfully.";
+            mustBeSetAgain = true;
         }
 
         if (Objects.equals(intent.getAction(), "android.intent.action.TIME_SET")) {
             received = "Alarm received after time & date changed.";
             succeed = "Date Time mode notification send successfully.";
+            mustBeSetAgain = true;
         }
 
         normalLog(received);
+
+        NotificationDBRepository repository = new NotificationDBRepository();
+
+        if (mustBeSetAgain) {
+            try {
+                List<Notification> notifications = repository.getAllNotifications();
+                if (notifications != null) {
+                    for (Notification notification : notifications) {
+                        //AlarmUtil.with(context.getApplicationContext()).cancelAlarm(notification.getId());
+                        AlarmUtil.with(context.getApplicationContext()).setAlarm(notification.getId(), notification.getArriveDate());
+                    }
+                }
+            } catch (InterruptedException ignored) {
+            }
+
+            mustBeSetAgain = false;
+        }
 
         int notifID = intent.getIntExtra(Constants.Keys.NOTIF_ID_KEY, 0);
         if (notifID == 0)
             return;
 
-        NotificationDBRepository repository = new NotificationDBRepository();
 
         Notification notification = null;
         try {

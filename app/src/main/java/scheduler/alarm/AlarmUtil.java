@@ -29,7 +29,7 @@ public class AlarmUtil {
         return alarmUtil;
     }
 
-    public void setAlarm(int notificationID, String content, long timeAt) {
+    public void setAlarm(int notificationID, long timeAt) {
         //if the time to be set has passed, don't need to set alarm
         //if timeAt = 0, set alarm (for canceling)
         if (timeAt < System.currentTimeMillis())

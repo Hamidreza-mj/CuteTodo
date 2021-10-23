@@ -32,7 +32,7 @@ public class NotificationViewModel extends ViewModel {
             notification.initWith(todo);
             dbRepository.addNotification(notification);
 
-            AlarmUtil.with(context.get()).setAlarm(todo.getId(), todo.getTitle(), todo.getArriveDate());
+            AlarmUtil.with(context.get()).setAlarm(todo.getId(), todo.getArriveDate());
         } catch (InterruptedException ignored) {
         }
     }
@@ -51,7 +51,7 @@ public class NotificationViewModel extends ViewModel {
 
             dbRepository.editNotification(notification);
 
-            AlarmUtil.with(context.get()).setAlarm(todo.getId(), todo.getTitle(), todo.getArriveDate());
+            AlarmUtil.with(context.get()).setAlarm(todo.getId(), todo.getArriveDate());
         } catch (InterruptedException ignored) {
         }
     }

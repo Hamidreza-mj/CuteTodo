@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="hlv.cute.todo"
     android:installLocation="auto">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-<!--    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />-->
+    <!--    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />-->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
     <application
@@ -44,10 +45,12 @@
 
         <receiver
             android:name="scheduler.receiver.BootCompleteReceiver"
-            android:enabled="false"
-            android:exported="true">
+            android:directBootAware="true"
+            android:enabled="true"
+            android:exported="true"
+            tools:targetApi="n">
 
-            <intent-filter>
+            <intent-filter android:priority="1000">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
 
