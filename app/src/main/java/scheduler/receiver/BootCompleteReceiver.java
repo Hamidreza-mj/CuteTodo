@@ -28,7 +28,7 @@ public class BootCompleteReceiver extends BroadcastReceiver {
             Log.i(Constants.Tags.ALARM_TAG, "Alarm received after boot completed.");
 
             NotificationUtil notificationUtil = new NotificationUtil(context);
-            notificationUtil.makeNotification(title, content, notifID);
+            notificationUtil.makeNotification(title, content, content, notifID);
         }
     }
 

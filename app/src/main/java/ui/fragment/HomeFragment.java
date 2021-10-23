@@ -211,6 +211,7 @@ public class HomeFragment extends BaseFragment {
                 deleteDialog.setOnClickDelete(() -> {
                     notificationViewModel.cancelAllDoneAlarm();
                     getTodoViewModel().deleteAllDoneTodos();
+                    scrollBehavior.slideUp(frameLytButton);
                     deleteDialog.dismiss();
                 });
             });

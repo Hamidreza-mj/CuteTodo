@@ -26,7 +26,7 @@ public class TimeChangeReceiver extends BroadcastReceiver {
             Log.i(Constants.Tags.ALARM_TAG, "Alarm received after time & date changed.");
 
             NotificationUtil notificationUtil = new NotificationUtil(context);
-            notificationUtil.makeNotification(title, content, notifID);
+            notificationUtil.makeNotification(title, content, content, notifID);
         }
     }
 

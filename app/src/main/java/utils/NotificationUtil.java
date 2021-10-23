@@ -55,7 +55,7 @@ public class NotificationUtil {
         }
     }
 
-    public void makeNotification(String title, String message, int notificationID) {
+    public void makeNotification(String title, String summary, String content, int notificationID) {
         createNotificationChannel();
 
         Intent intent = new Intent(context, ShowNotificationActivity.class);
@@ -74,8 +74,8 @@ public class NotificationUtil {
                 .setAutoCancel(true)
                 .setLargeIcon(icon)
                 .setContentTitle(title)
-                .setContentText(message)
-                .setStyle(new NotificationCompat.BigTextStyle().setBigContentTitle(title))
+                .setContentText(summary)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(content))
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 //.setSound(Settings.System.DEFAULT_NOTIFICATION_URI)

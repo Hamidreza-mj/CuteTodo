@@ -31,6 +31,7 @@ public class TodoViewModel extends ViewModel {
 
     private void deleteShownNotification() {
         //in startup get all is shown and delete it
+        //for in notifs if arrive date < current time millis delete this
         NotificationDBRepository repository = new NotificationDBRepository();
         try {
             repository.deleteShownNotifications();

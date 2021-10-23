@@ -37,13 +37,14 @@ public class NotificationReceiver extends BroadcastReceiver {
         if (notification != null) {
             String title = context.getString(R.string.notification_header);
             String content = notification.getContent();
+            String summary = content;
 
-            if (content != null && content.trim().length() > 20)
-                content = content.substring(0, 20).trim() + context.getString(R.string.ellipsis);
+            if (content != null && content.trim().length() > 100)
+                content = content.substring(0, 100).trim() + context.getString(R.string.ellipsis);
 
 
             NotificationUtil notificationUtil = new NotificationUtil(context);
-            notificationUtil.makeNotification(title, context.getString(R.string.notification_content, content), notifID);
+            notificationUtil.makeNotification(title, summary, context.getString(R.string.notification_content, content), notifID);
 
             Log.i(Constants.Tags.SUCCESS_ALARM, "Alarm received in normal mode successfully.");
         }

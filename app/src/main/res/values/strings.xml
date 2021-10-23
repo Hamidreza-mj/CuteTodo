@@ -99,8 +99,7 @@
     <string name="set_time_notes">ساعتی جهت دریافت هشدار تنظیم کنید.</string>
 
     <string name="notification_header">🔔 یادآوری انجام کار 🔔</string>
-    <string name="notification_content">کاری با عنوان \"%1$s\"، برای اکنون زمان بندی شده است.\n\n</string>
-    <string name="notification_done_todo">کار با موفقیت انجام شد. 🎉</string>
+    <string name="notification_content">کاری با عنوان \"%1$s\"، برای اکنون زمان بندی شده است.\nجهت مشاهده جزییات لمس کنید.</string>
 
     <string name="todo_detail">جزییات کار</string>
     <string name="todo_title">عنوان کار:</string>
