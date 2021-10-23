@@ -25,6 +25,9 @@ public class NotificationViewModel extends ViewModel {
 
     public void addNotification(Todo todo) {
         try {
+            if (todo.getArriveDate() < System.currentTimeMillis())
+                return;
+
             Notification notification = new Notification();
             notification.initWith(todo);
             dbRepository.addNotification(notification);
@@ -36,11 +39,18 @@ public class NotificationViewModel extends ViewModel {
 
     public void editNotification(Todo todo) {
         try {
+            //cancel and delete old alarm
             Notification notification = new Notification();
             notification.initWith(todo);
+            AlarmUtil.with(context.get()).cancelAlarm(notification.getId());
+
+            if (todo.getArriveDate() < System.currentTimeMillis()) {
+                deleteNotification(notification);
+                return;
+            }
+
             dbRepository.editNotification(notification);
 
-            AlarmUtil.with(context.get()).cancelAlarm(todo.getId());
             AlarmUtil.with(context.get()).setAlarm(todo.getId(), todo.getTitle(), todo.getArriveDate());
         } catch (InterruptedException ignored) {
         }

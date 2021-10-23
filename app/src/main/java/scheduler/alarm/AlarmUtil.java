@@ -38,7 +38,6 @@ public class AlarmUtil {
         Intent intent = new Intent(context, NotificationReceiver.class);
 
         intent.putExtra(Constants.Keys.NOTIF_ID_KEY, notificationID);
-        intent.putExtra(Constants.Keys.NOTIF_CONTENT_KEY, context.getString(R.string.notification_content, content));
 
         @SuppressLint("UnspecifiedImmutableFlag")
         PendingIntent pendingIntent =
