@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import java.util.List;
 
 import model.Filter;
+import model.Notification;
 import model.Todo;
 import repo.dbRepoController.NotificationDBRepository;
 import repo.dbRepoController.TodoDBRepository;
@@ -31,10 +32,16 @@ public class TodoViewModel extends ViewModel {
 
     private void deleteShownNotification() {
         //in startup get all is shown and delete it
-        //for in notifs if arrive date < current time millis delete this
         NotificationDBRepository repository = new NotificationDBRepository();
         try {
             repository.deleteShownNotifications();
+
+            //for in notifs if arrive date < current time millis delete this
+            List<Notification> allNotifications = repository.getAllNotifications();
+            for (Notification notification : allNotifications) {
+                if (notification.getArriveDate() < System.currentTimeMillis()) //arrive date is passed
+                    repository.deleteNotification(notification);
+            }
         } catch (InterruptedException ignored) {
         }
     }
