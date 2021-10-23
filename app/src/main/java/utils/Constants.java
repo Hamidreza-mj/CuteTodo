@@ -10,7 +10,7 @@ public class Constants {
 
     public static class Tags {
         public static final String ALARM_TAG = "=== AlarmReceived ===";
-        public static final String SUCCESS_ALARM = "=== Alarm Successed ===";
+        public static final String SUCCESS_NOTIF_ALARM = "=== Notif Successed ===";
         public static final String DEBUG = "DEBUG";
     }
 
