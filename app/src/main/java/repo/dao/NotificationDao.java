@@ -48,6 +48,4 @@ public interface NotificationDao {
     @Query("DELETE FROM notifications WHERE is_done = 1;")
     void deleteAllDoneNotifications();
 
-    @Query("SELECT COUNT(*) FROM notifications;")
-    long getNotificationsCount();
 }

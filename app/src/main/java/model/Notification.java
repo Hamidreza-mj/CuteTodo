@@ -3,14 +3,9 @@ package model;
 import androidx.annotation.Keep;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
-
-import ir.hamsaa.persiandatepicker.api.PersianPickerDate;
-import ir.hamsaa.persiandatepicker.date.PersianDateImpl;
-import utils.DateHelper;
 
 @Keep
 @Entity(tableName = "notifications")
@@ -40,9 +35,6 @@ public class Notification implements Serializable {
 
     @ColumnInfo(name = "category_id", defaultValue = "0")
     private int categoryId;
-
-    @Ignore
-    private DateTime dateTime;
 
     public int getId() {
         return id;
@@ -106,34 +98,6 @@ public class Notification implements Serializable {
 
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
-    }
-
-    public DateTime getDateTime() {
-        dateTime = new DateTime();
-
-        if (arriveDate == 0)
-            return dateTime;
-
-        PersianPickerDate persianDate = new PersianDateImpl();
-        persianDate.setDate(arriveDate);
-
-        dateTime.setDate(persianDate);
-
-        DateHelper dateHelper = new DateHelper(arriveDate);
-
-        dateTime.setHour(dateHelper.getHour());
-        dateTime.setMinute(dateHelper.getMinute());
-
-        return dateTime;
-    }
-
-    public void setDateTime(DateTime dateTime) {
-        this.dateTime = dateTime;
-    }
-
-    public String getClock() {
-        DateHelper dateHelper = new DateHelper(arriveDate);
-        return dateHelper.getClock();
     }
 
     public void initWith(Todo initTodo) {

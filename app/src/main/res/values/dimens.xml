@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="corners">18dp</dimen>
+    <dimen name="corners">16dp</dimen>
     <dimen name="paddingHome">20dp</dimen>
     <dimen name="paddingChild">10dp</dimen>
     <dimen name="cornersInput">15dp</dimen>
     <dimen name="mb_button">20dp</dimen>
     <dimen name="toolbar_shadow">8dp</dimen>
     <dimen name="corner_icon_ripple">14dp</dimen>
+    <dimen name="mergin_end_for_detail_button">10dp</dimen>
 </resources>

@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel;
 import ir.hamsaa.persiandatepicker.date.PersianDateImpl;
 import model.DateTime;
 import model.Notification;
+import model.Todo;
 import repo.dbRepoController.NotificationDBRepository;
 import repo.dbRepoController.TodoDBRepository;
 import utils.Constants;
@@ -17,14 +18,18 @@ import utils.DateHelper;
 
 public class ShowNotificationViewModel extends ViewModel {
 
+    private final MutableLiveData<Notification> notificationLiveData;
     private final MutableLiveData<Boolean> closeLive;
+    private final MutableLiveData<Boolean> runMainLive;
     private final NotificationDBRepository dbRepository;
-
-    private Notification notification;
+    private final TodoDBRepository todoRepository;
 
     public ShowNotificationViewModel() {
+        notificationLiveData = new MutableLiveData<>();
         closeLive = new MutableLiveData<>();
+        runMainLive = new MutableLiveData<>();
         dbRepository = new NotificationDBRepository();
+        todoRepository = new TodoDBRepository();
     }
 
     public void setIntent(Intent intent) {
@@ -40,19 +45,31 @@ public class ShowNotificationViewModel extends ViewModel {
     }
 
     public boolean hasArriveDate() {
-        return notification.getArriveDate() != 0;
+        if (getNotification() == null)
+            return false;
+
+        return getNotification().getArriveDate() != 0;
     }
 
     public boolean hasCategory() {
-        return notification.getCategoryId() != 0 && notification.getCategory() != null;
+        if (getNotification() == null)
+            return false;
+
+        return getNotification().getCategoryId() != 0 && getNotification().getCategory() != null;
     }
 
     public String getDateReminder() {
-        return getDate(notification.getArriveDate()).getPersianDate();
+        if (getNotification() == null)
+            return "";
+
+        return getDate(getNotification().getArriveDate()).getPersianDate();
     }
 
     public String getClockReminder() {
-        return getDate(notification.getArriveDate()).getClock();
+        if (getNotification() == null)
+            return "";
+
+        return getDate(getNotification().getArriveDate()).getClock();
     }
 
     private DateTime getDate(long timeMillis) {
@@ -90,47 +107,68 @@ public class ShowNotificationViewModel extends ViewModel {
         }
 
         if (notification == null) {
-            mustClose();
+            try {
+                Todo todo = todoRepository.getTodo(notifId);
+                if (todo != null) {
+                    Notification newNotification = new Notification();
+                    newNotification.initWith(todo);
+                    notificationLiveData.setValue(newNotification);
+                    return;
+                }
+            } catch (InterruptedException ignored) {
+            }
+
+            runMainLive.setValue(true); //run main if notification or todo == null
             return;
         }
 
-        this.notification = notification;
+        notificationLiveData.setValue(notification);
     }
 
     public void deleteNotification() {
-        if (notification == null)
+        if (getNotification() == null)
             return;
 
         try {
-            dbRepository.deleteNotification(notification);
+            dbRepository.deleteNotification(getNotification());
         } catch (InterruptedException ignored) {
         }
     }
 
     public void done() {
-        if (notification == null)
+        if (getNotification() == null)
             return;
 
-        TodoDBRepository todoRepo = new TodoDBRepository();
         try {
-            todoRepo.setTodoIsDone(notification.getId());
+            todoRepository.setTodoIsDone(getNotification().getId());
         } catch (InterruptedException ignored) {
         }
     }
 
     public void setShown() {
+        if (getNotification() == null)
+            return;
+
         try {
-            dbRepository.setShownTodo(notification.getId());
+            dbRepository.setShownTodo(getNotification().getId());
         } catch (InterruptedException ignored) {
         }
     }
 
     public Notification getNotification() {
-        return notification;
+        return notificationLiveData.getValue();
+    }
+
+    public LiveData<Notification> getNotificationLive() {
+        return notificationLiveData;
     }
 
     public LiveData<Boolean> getCloseLive() {
         return closeLive;
+    }
+
+    public LiveData<Boolean> getRunMainLive() {
+        return runMainLive;
     }
 
     private void mustClose() {

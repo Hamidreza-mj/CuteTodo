@@ -13,7 +13,6 @@ import com.google.android.material.button.MaterialButton;
 
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.ActivityShowNotificationBinding;
-import model.Notification;
 import utils.ToastHelper;
 import viewmodel.ShowNotificationViewModel;
 
@@ -25,7 +24,6 @@ public class ShowNotificationActivity extends BaseActivity {
 
     private ConstraintLayout toolbar;
     private NestedScrollView nested;
-    private MaterialButton btnDone;
 
     private TextView txtTitle;
     private TextView txtCategory;
@@ -39,9 +37,8 @@ public class ShowNotificationActivity extends BaseActivity {
         binding = ActivityShowNotificationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         initViewModel();
-        handleObserver();
         initViews();
-        handleLogic();
+        handleObserver();
     }
 
     private void initViewModel() {
@@ -49,16 +46,11 @@ public class ShowNotificationActivity extends BaseActivity {
         viewModel.setIntent(getIntent());
     }
 
-    private void handleObserver() {
-        viewModel.getCloseLive().observe(this, mustClose -> {
-            if (mustClose != null && mustClose)
-                close();
-        });
-    }
-
     private void initViews() {
         binding.aImgBack.setOnClickListener(v -> close());
-        binding.mBtnClose.setOnClickListener(v -> close());
+
+        MaterialButton btnClose = binding.mBtnClose;
+        MaterialButton btnDone = binding.mBtnDone;
 
         toolbar = binding.toolbar;
         nested = binding.nested;
@@ -76,7 +68,13 @@ public class ShowNotificationActivity extends BaseActivity {
         txtDateReminder = binding.txtDate;
         txtClockReminder = binding.txtClock;
 
-        btnDone = binding.mBtnDone;
+        btnClose.setOnClickListener(v -> close());
+        btnDone.setOnClickListener(v -> {
+            viewModel.done();
+            ToastHelper.get().toast(getString(R.string.todo_done_successfully));
+            new Handler().postDelayed(this::close, 500);
+        });
+
         handleShadowScroll();
     }
 
@@ -96,55 +94,59 @@ public class ShowNotificationActivity extends BaseActivity {
         });
     }
 
-    private void handleLogic() {
-        Notification notif = viewModel.getNotification();
-        if (notif == null) { //when manual close and open with home
-            runActivity(MainActivity.class, true);
-            return;
-        }
+    private void handleObserver() {
+        viewModel.getCloseLive().observe(this, mustClose -> {
+            if (mustClose != null && mustClose)
+                close();
+        });
 
-        //set shown true in startup get all is shown and delete it
-        viewModel.setShown();
+        viewModel.getRunMainLive().observe(this, runMain -> {
+            if (runMain != null && runMain)
+                runActivity(MainActivity.class, true);
+        });
 
-        txtTitle.setText(notif.getContent());
+        viewModel.getNotificationLive().observe(this, notif -> {
+            if (notif == null) { //when manual close and open with home
+                runActivity(MainActivity.class, true);
+                return;
+            }
 
-        switch (notif.getPriority()) {
-            case LOW:
-            default:
-                txtLowPriority.setVisibility(View.VISIBLE);
-                txtNormalPriority.setVisibility(View.GONE);
-                txtHighPriority.setVisibility(View.GONE);
-                break;
+            //set shown true in startup get all is shown and delete it
+            viewModel.setShown();
 
-            case NORMAL:
-                txtLowPriority.setVisibility(View.GONE);
-                txtNormalPriority.setVisibility(View.VISIBLE);
-                txtHighPriority.setVisibility(View.GONE);
-                break;
+            txtTitle.setText(notif.getContent());
 
-            case HIGH:
-                txtLowPriority.setVisibility(View.GONE);
-                txtNormalPriority.setVisibility(View.GONE);
-                txtHighPriority.setVisibility(View.VISIBLE);
-                break;
-        }
+            switch (notif.getPriority()) {
+                case LOW:
+                default:
+                    txtLowPriority.setVisibility(View.VISIBLE);
+                    txtNormalPriority.setVisibility(View.GONE);
+                    txtHighPriority.setVisibility(View.GONE);
+                    break;
 
-        lytDate.setVisibility(viewModel.getLytDateVisibility());
-        lytCategory.setVisibility(viewModel.getLytCategoryVisibility());
+                case NORMAL:
+                    txtLowPriority.setVisibility(View.GONE);
+                    txtNormalPriority.setVisibility(View.VISIBLE);
+                    txtHighPriority.setVisibility(View.GONE);
+                    break;
 
-        if (viewModel.hasCategory())
-            txtCategory.setText(notif.getCategory());
+                case HIGH:
+                    txtLowPriority.setVisibility(View.GONE);
+                    txtNormalPriority.setVisibility(View.GONE);
+                    txtHighPriority.setVisibility(View.VISIBLE);
+                    break;
+            }
 
-        if (viewModel.hasArriveDate()) {
-            txtDateReminder.setText(viewModel.getDateReminder());
-            txtClockReminder.setText(viewModel.getClockReminder());
-        }
+            lytDate.setVisibility(viewModel.getLytDateVisibility());
+            lytCategory.setVisibility(viewModel.getLytCategoryVisibility());
 
+            if (viewModel.hasCategory())
+                txtCategory.setText(notif.getCategory());
 
-        btnDone.setOnClickListener(v -> {
-            viewModel.done();
-            ToastHelper.get().toast(getString(R.string.todo_done_successfully));
-            new Handler().postDelayed(this::close, 500);
+            if (viewModel.hasArriveDate()) {
+                txtDateReminder.setText(viewModel.getDateReminder());
+                txtClockReminder.setText(viewModel.getClockReminder());
+            }
         });
     }
 

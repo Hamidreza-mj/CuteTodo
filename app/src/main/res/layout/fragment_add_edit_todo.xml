@@ -54,8 +54,11 @@
         android:id="@+id/nested"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:fadingEdge="vertical"
+        android:fadingEdgeLength="20dp"
         android:overScrollMode="never"
         android:paddingHorizontal="@dimen/paddingChild"
+        android:requiresFadingEdge="vertical"
         android:scrollbarThumbVertical="@drawable/scrollbar"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toTopOf="@id/shadow"
@@ -293,7 +296,8 @@
                 app:layout_constraintBottom_toBottomOf="@id/reminder"
                 app:layout_constraintEnd_toStartOf="@id/reminder"
                 app:layout_constraintTop_toTopOf="@id/reminder"
-                app:srcCompat="@drawable/ic_help" />
+                app:srcCompat="@drawable/ic_help"
+                tools:ignore="SpeakableTextPresentCheck" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/mCardReminder"

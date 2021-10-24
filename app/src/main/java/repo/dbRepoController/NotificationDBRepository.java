@@ -10,7 +10,6 @@ public class NotificationDBRepository {
 
     private final NotificationDao dao;
     private Notification notification;
-    private long count = 0;
     private List<Notification> notificationList;
     private List<Notification> notificationDoneList;
 
@@ -73,13 +72,6 @@ public class NotificationDBRepository {
         thread.start();
         thread.join();
         return notification;
-    }
-
-    public long getNotificationsCount() throws InterruptedException {
-        Thread thread = new Thread(() -> count = dao.getNotificationsCount());
-        thread.start();
-        thread.join();
-        return count;
     }
 
     public void setDoneTodo(long id) throws InterruptedException {
