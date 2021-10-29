@@ -269,7 +269,7 @@ public class HomeFragment extends BaseFragment {
         adapter = new TodoAdapter(getActivity(),
                 todoID -> getTodoViewModel().setDoneTodo(todoID),
 
-                todoMenu -> {
+                (todoMenu, sharedElement) -> {
                     MoreDialog moreDialog = new MoreDialog(getActivity());
                     moreDialog.setWithDetail(true);
                     moreDialog.show();
@@ -290,8 +290,23 @@ public class HomeFragment extends BaseFragment {
 
                         Fragment fragment = TodoDetailFragment.newInstance(todoMenu);
                         fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
+//                        MaterialContainerTransform t = new MaterialContainerTransform();
+//                        t.setDuration(400);
+//                        t.setScrimColor(Color.TRANSPARENT);
+//                        t.setPathMotion(new MaterialArcMotion());
+//                        t.setStartElevation(0);
+//                        t.setEndElevation(0);
+//
+//                        fragment.setSharedElementEnterTransition(t);
+//                        fragment.setSharedElementReturnTransition(t);
+
+//                        fragment.setAllowEnterTransitionOverlap(true);
                         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+//                        transaction.setReorderingAllowed(true);
+//                        scheduleStartPostponedTransition(sharedElement);
+//                        transaction.addSharedElement(sharedElement, sharedElement.getTransitionName());
                         transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.TODO_DETAIL);
+//                        transaction.hide(this);
                         transaction.addToBackStack(Constants.BackStack.TODO_DETAIL);
                         transaction.commit();
                     });

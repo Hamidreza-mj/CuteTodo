@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
+
 import java.util.ArrayList;
 
 import hlv.cute.todo.App;
@@ -57,6 +59,29 @@ public class ToastHelper {
         });
     }
 
+    public void successToast(final String message, final boolean isLongDuration) {
+        new Handler().post(() -> {
+            for (Toast toast : TOASTS) {
+                toast.cancel();
+            }
+            TOASTS.clear();
+
+            Toast toast = new Toast(App.get().applicationContext);
+            @SuppressLint("InflateParams")
+            View view = LayoutInflater.from(App.get().applicationContext).inflate(R.layout.toast_lottie, null, false);
+            TextView txtToast = view.findViewById(R.id.toast_txt);
+            txtToast.setText(message);
+            txtToast.setTypeface(Typeface.createFromAsset(App.get().applicationContext.getAssets(), "font/vazir_regular.ttf"));
+            toast.setDuration(isLongDuration ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.BOTTOM, 0, 100);
+            toast.setView(view);
+            toast.show();
+            LottieAnimationView animationView = view.findViewById(R.id.success);
+            animationView.playAnimation();
+            TOASTS.add(toast);
+        });
+    }
+
     /**
      * show toast with normal duration
      *
@@ -64,6 +89,10 @@ public class ToastHelper {
      */
     public void toast(String message) {
         toast(message, false);
+    }
+
+    public void successToast(String message) {
+        successToast(message, false);
     }
 
 }

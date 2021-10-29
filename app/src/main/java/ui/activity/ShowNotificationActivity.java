@@ -1,5 +1,6 @@
 package ui.activity;
 
+import android.animation.Animator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -70,9 +71,31 @@ public class ShowNotificationActivity extends BaseActivity {
 
         btnClose.setOnClickListener(v -> close());
         btnDone.setOnClickListener(v -> {
+            btnDone.setEnabled(false);
             viewModel.done();
-            ToastHelper.get().toast(getString(R.string.todo_done_successfully));
-            new Handler().postDelayed(this::close, 500);
+            ToastHelper.get().successToast(getString(R.string.todo_done_successfully_simple));
+            binding.confetti.setVisibility(View.VISIBLE);
+            binding.confetti.playAnimation();
+            binding.confetti.addAnimatorListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    close();
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
         });
 
         handleShadowScroll();

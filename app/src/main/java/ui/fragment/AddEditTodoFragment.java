@@ -351,7 +351,7 @@ public class AddEditTodoFragment extends BaseFragment {
                     }
 
 
-                    ToastHelper.get().toast(getString(R.string.todo_added_successfully));
+                    ToastHelper.get().successToast(getString(R.string.todo_added_successfully_simple));
                     back();
 
                     if (viewModel.isShareMode()) {

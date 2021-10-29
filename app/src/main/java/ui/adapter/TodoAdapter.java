@@ -65,6 +65,8 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
+        private final View root;
+
         private final AppCompatCheckBox checkBox;
         private final AppCompatImageView imgMenu;
         private final TextView txtCategory;
@@ -76,7 +78,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
 
         public ViewHolder(@NonNull ItemTodoBinding binding) {
             super(binding.getRoot());
-
+            root = binding.getRoot();
             checkBox = binding.aChkBoxTitle;
             imgMenu = binding.aImgMenu;
             txtCategory = binding.txtCategory;
@@ -94,6 +96,8 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
             //must be set null
             //to avoid when recyclerview scroll, default implemented interface body called!
             checkBox.setOnCheckedChangeListener(null);
+
+//            root.setTransitionName("t-" + todo.getId());
 
             //for first run
             checkBox.setChecked(todo.isDone());
@@ -119,7 +123,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
             });
 
 
-            imgMenu.setOnClickListener(view -> onClickMenuListener.onClick(todo));
+            imgMenu.setOnClickListener(view -> onClickMenuListener.onClick(todo, root));
 
             if (todo.getCategory() != null) {
                 txtCategory.setVisibility(View.VISIBLE);
@@ -166,6 +170,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
     }
 
     public interface OnClickMenuListener {
-        void onClick(Todo todo);
+        void onClick(Todo todo, View view);
     }
 }

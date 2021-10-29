@@ -186,7 +186,7 @@ public class SearchFragment extends BaseFragment {
                     getSearchViewModel().fetch();
                 },
 
-                todoMenu -> {
+                (todoMenu, sharedEl) -> {
                     MoreDialog moreDialog = new MoreDialog(getActivity());
                     moreDialog.setWithDetail(true);
                     moreDialog.show();

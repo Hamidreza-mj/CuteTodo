@@ -56,7 +56,7 @@ dependencies {
 
 //    implementation 'com.github.aliab:Persian-Date-Picker-Dialog:1.7.1'
     implementation 'com.github.Hamidreza-mj:Persian-Date-Picker-Dialog:cute1'
-
+    implementation 'com.airbnb.android:lottie:4.1.0'
 
     //test libs
     testImplementation 'junit:junit:4.13.2'

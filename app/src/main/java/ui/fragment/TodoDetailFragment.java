@@ -195,6 +195,8 @@ public class TodoDetailFragment extends BaseFragment {
     private void handleObserver() {
         viewModel.getTodoLiveDate().observe(getViewLifecycleOwner(), todo -> {
             if (todo != null) {
+//                binding.getRoot().setTransitionName("t-" + todo.getId());
+
                 txtTitle.setText(todo.getTitle());
 
                 switch (todo.getPriority()) {
