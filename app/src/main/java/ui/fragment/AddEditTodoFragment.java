@@ -332,6 +332,7 @@ public class AddEditTodoFragment extends BaseFragment {
                     getTodoViewModel().editTodo(editedTodo);
                     getSearchViewModel().fetch();
                     updateDetail(editedTodo);
+                    ToastHelper.get().successToast(getString(R.string.todo_edited_successfully_simple));
                     back();
                     return;
                 }

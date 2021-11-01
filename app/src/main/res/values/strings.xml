@@ -122,6 +122,7 @@
     <string name="todo_added_successfully">کار با موفقیت اضافه شد. 🚀</string>
     <string name="todo_done_successfully">🎉 کار با موفقیت انجام شد. 🎉</string>
     <string name="todo_added_successfully_simple">کار با موفقیت اضافه شد.</string>
+    <string name="todo_edited_successfully_simple">کار با موفقیت ویرایش شد.</string>
     <string name="todo_done_successfully_simple">کار با موفقیت انجام شد.</string>
 
     <string name="is_done">انجام شده</string>
