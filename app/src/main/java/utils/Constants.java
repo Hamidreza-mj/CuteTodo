@@ -33,8 +33,4 @@ public class Constants {
         public static final String TODO_DETAIL = "todo-detail-backstack";
     }
 
-   /* public static class ViewConstants {
-        public static int TOOLBAR_SHADOW = 8;
-    }*/
-
 }
