@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
-import hlv.cute.todo.R;
 import scheduler.receiver.NotificationReceiver;
 import utils.Constants;
 
