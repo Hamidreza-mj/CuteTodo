@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@mipmap/logo_share_menu"
+        android:shortcutDisabledMessage="@string/add_new_todo"
+        android:shortcutId="compose"
+        android:shortcutLongLabel="@string/add_new_todo"
+        android:shortcutShortLabel="@string/add_new_todo">
+        <!-- android:action in intent must be unique for handling getIntent().getAction()... -->
+        <intent
+            android:action="cute.todo.from.shortcut.add"
+            android:targetClass="ui.activity.MainActivity"
+            android:targetPackage="hlv.cute.todo" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+</shortcuts>

@@ -45,6 +45,9 @@ public class MainActivity extends BaseActivity {
                 sendToNewTodo(externalIntent);
                 return;
             }
+        } else if (Objects.equals("cute.todo.from.shortcut.add", action)) {
+            openAddEditTodo("");
+            return;
         }
 
         initViews();
@@ -53,13 +56,18 @@ public class MainActivity extends BaseActivity {
     private void sendToNewTodo(Intent intent) {
         String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
         if (sharedText != null) {
-            Fragment fragment = AddEditTodoFragment.newInstanceShare(sharedText);
-            fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO);
-            transaction.addToBackStack(Constants.BackStack.ADD_EDIT_TODO);
-            transaction.commit();
-        }
+            openAddEditTodo(sharedText);
+        } else
+            finish();
+    }
+
+    private void openAddEditTodo(String todoTitle) {
+        Fragment fragment = AddEditTodoFragment.newInstanceShare(todoTitle);
+        fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO);
+        transaction.addToBackStack(Constants.BackStack.ADD_EDIT_TODO);
+        transaction.commit();
     }
 
     private void initViews() {

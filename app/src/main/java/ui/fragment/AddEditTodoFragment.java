@@ -116,7 +116,7 @@ public class AddEditTodoFragment extends BaseFragment {
                 viewModel.setEditMode(false);
 
                 String shareTitle = getArguments().getString(SHARE_MODE_ARGS);
-                if (shareTitle != null && !shareTitle.isEmpty()) {
+                if (shareTitle != null) {
                     viewModel.setShareMode(true);
                     viewModel.setShareTitle(shareTitle);
                 } else {
