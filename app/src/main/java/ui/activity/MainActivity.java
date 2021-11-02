@@ -1,6 +1,7 @@
 package ui.activity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.transition.Slide;
 import android.view.Gravity;
@@ -31,7 +32,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        hlv.cute.todo.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         provideViewModels();
@@ -40,23 +41,28 @@ public class MainActivity extends BaseActivity {
         String action = externalIntent.getAction();
         String type = externalIntent.getType();
 
-        if (Objects.equals(Intent.ACTION_SEND, action)) {
+        if (Objects.equals(Intent.ACTION_SEND, action)) { //share mednu
             if (Objects.equals(type, "text/plain")) {
-                sendToNewTodo(externalIntent);
+                configIntentTodo(externalIntent.getStringExtra(Intent.EXTRA_TEXT));
                 return;
             }
-        } else if (Objects.equals("cute.todo.from.shortcut.add", action)) {
+        } else if (Objects.equals("cute.todo.from.shortcut.add", action)) { //shortcut menu
             openAddEditTodo("");
             return;
+        } else if (Objects.equals(Intent.ACTION_PROCESS_TEXT, action)) { //pop up text selection
+            if (Objects.equals(type, "text/plain")) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                    configIntentTodo(externalIntent.getStringExtra(Intent.EXTRA_PROCESS_TEXT));
+                return;
+            }
         }
 
         initViews();
     }
 
-    private void sendToNewTodo(Intent intent) {
-        String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-        if (sharedText != null) {
-            openAddEditTodo(sharedText);
+    private void configIntentTodo(String intentString) {
+        if (intentString != null) {
+            openAddEditTodo(intentString);
         } else
             finish();
     }

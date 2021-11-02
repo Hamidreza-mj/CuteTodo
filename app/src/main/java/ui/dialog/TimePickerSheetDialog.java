@@ -32,7 +32,7 @@ public class TimePickerSheetDialog {
     public TimePickerSheetDialog(Context context, boolean cancelable, DateTime dateTime) {
         this.dateTime = dateTime;
 
-        sheetDialog = new BottomSheetDialog(context, R.style.TranslucentDialog);
+        sheetDialog = new BottomSheetDialog(context, R.style.AppBottomSheetDialogTheme);
         sheetDialog.setCancelable(cancelable);
         SheetTimePickerBinding binding = SheetTimePickerBinding.inflate(LayoutInflater.from(context), null, false);
         sheetDialog.setContentView(binding.getRoot());
