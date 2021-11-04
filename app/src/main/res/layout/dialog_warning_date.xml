@@ -41,7 +41,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:paddingTop="20dp"
-                android:text="تیتر"
+                android:text="@string/passedDateTitle"
                 android:textColor="@color/black"
                 android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -59,7 +59,7 @@
                 android:lineSpacingMultiplier="1.2"
                 android:paddingHorizontal="13dp"
                 android:paddingBottom="30dp"
-                android:text="@string/reminder_guide"
+                android:text="@string/passedDateMessage"
                 android:textColor="@color/dialog_message"
                 android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -72,13 +72,40 @@
                 android:layout_height="1dp"
                 android:layout_marginVertical="0dp"
                 android:background="@color/line_color"
-                app:layout_constraintBottom_toTopOf="@id/txtOk"
+                app:layout_constraintBottom_toTopOf="@id/txtBack"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtMessage" />
 
             <TextView
-                android:id="@+id/txtOk"
+                android:id="@+id/txtBack"
+                style="@style/TextMD14"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:padding="13dp"
+                android:text="@string/editDate"
+                android:textColor="@color/blue"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/line1" />
+
+            <View
+                android:id="@+id/line2"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginVertical="0dp"
+                android:background="@color/line_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txtBack" />
+
+            <TextView
+                android:id="@+id/txtContinue"
                 style="@style/TextRG16"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -87,12 +114,12 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:padding="13dp"
-                android:text="@string/accept"
-                android:textColor="@color/blue"
+                android:text="@string/keep_continue"
+                android:textColor="@color/gray_text"
                 android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txtMessage" />
+                app:layout_constraintTop_toBottomOf="@id/line2" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

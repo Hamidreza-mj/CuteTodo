@@ -112,7 +112,7 @@
 
     <string name="detail">جزییات</string>
 
-    <string name="reminder_guide">با تنظیم یادآوری می توانید در تاریخ و ساعت زمان بندی شده، پیغامی جهت یادآوری انجام کار، در تلفن همراه خود دریافت کنید.</string>
+    <string name="reminder_guide">با تنظیم یادآوری می توانید در تاریخ و ساعت زمان بندی شده، پیامی جهت یادآوری انجام کار، در تلفن همراه خود دریافت کنید.</string>
 
     <string name="reminer_title">یادآوری انجام کار</string>
     <string name="set_done">انجام شد</string>
@@ -130,5 +130,10 @@
     <string name="status">وضعیت:</string>
 
     <string name="accept">تایید</string>
+
+    <string name="passedDateTitle">یادآوری بدون پیام</string>
+    <string name="passedDateMessage">تاریخ انتخاب شده گذشته است، در نتیجه پیام یادآوری را دریافت نخواهید کرد و تنظیم این یادآوری صرفا نمایشی می باشد!\nبا این حال ادامه می دهید؟</string>
+    <string name="keep_continue">ادامه</string>
+    <string name="editDate">ویرایش تاریخ</string>
 
 </resources>

@@ -48,6 +48,7 @@ import model.Todo;
 import ui.dialog.DropDownCategoriesDialog;
 import ui.dialog.ReminderGuideDialog;
 import ui.dialog.TimePickerSheetDialog;
+import ui.dialog.WarningDateDialog;
 import utils.Constants;
 import utils.ResourceUtils;
 import utils.ToastHelper;
@@ -373,8 +374,9 @@ public class AddEditTodoFragment extends BaseFragment {
     }
 
     private void handlePickers(Context context, PersianPickerDate persianDate) {
-        PersianDatePickerDialog picker = new PersianDatePickerDialog(context)
-                .setPositiveButtonString("مرحله بعد")
+        PersianDatePickerDialog picker = new PersianDatePickerDialog(context);
+
+        picker.setPositiveButtonString("مرحله بعد")
                 .setNegativeButton("انصراف")
                 .setTodayButton("تاریخ امروز")
                 .setTodayButtonVisible(true)
@@ -386,22 +388,29 @@ public class AddEditTodoFragment extends BaseFragment {
                 .setPickerBackgroundColor(ContextCompat.getColor(context, R.color.white))
                 .setTitleType(PersianDatePickerDialog.WEEKDAY_DAY_MONTH_YEAR)
                 .setShowInBottomSheet(true)
+                .setEnableBellView(false)
+                .setNotificationNoteClick(isPassed -> {
+                })
                 .setListener(new PersianPickerListener() {
                     @Override
-                    public void onDateSelected(@NotNull PersianPickerDate persianPickerDate) {
-                        viewModel.configTempDateTime();
-                        viewModel.setDateTemp(persianPickerDate);
+                    public void onDateSelected(@NotNull PersianPickerDate persianPickerDate, boolean isPassed) {
+                        if (isPassed) {
+                            WarningDateDialog dialog = new WarningDateDialog(context);
+                            dialog.setTitle(getString(R.string.passedDateTitle));
+                            dialog.setMessage(getString(R.string.passedDateMessage));
 
-                        TimePickerSheetDialog sheetTimer = new TimePickerSheetDialog(context, viewModel.getTempDateTime());
-                        sheetTimer.show();
+                            dialog.setContinueClicked(() -> {
+                                dialog.dismiss();
+                                picker.dismiss();
+                                dateSelectedAction(context, persianPickerDate);
+                            });
 
-                        sheetTimer.setOnClickApply(pickedDateTime -> {
-                            viewModel.commitDateTime(pickedDateTime);
-                            viewModel.commitOldDateTime(pickedDateTime);
-                            sheetTimer.dismiss();
-                        });
+                            dialog.show();
+                            return;
+                        }
 
-                        sheetTimer.setOnBackClick(date -> handlePickers(context, date));
+                        picker.dismiss();
+                        dateSelectedAction(context, persianPickerDate);
                     }
 
                     @Override
@@ -419,6 +428,25 @@ public class AddEditTodoFragment extends BaseFragment {
 
         picker.show();
 
+    }
+
+    private void dateSelectedAction(Context context, PersianPickerDate persianPickerDate) {
+        if (persianPickerDate == null)
+            return;
+
+        viewModel.configTempDateTime();
+        viewModel.setDateTemp(persianPickerDate);
+
+        TimePickerSheetDialog sheetTimer = new TimePickerSheetDialog(context, viewModel.getTempDateTime());
+        sheetTimer.show();
+
+        sheetTimer.setOnClickApply(pickedDateTime -> {
+            viewModel.commitDateTime(pickedDateTime);
+            viewModel.commitOldDateTime(pickedDateTime);
+            sheetTimer.dismiss();
+        });
+
+        sheetTimer.setOnBackClick(date -> handlePickers(context, date));
     }
 
     private void handleObserver() {
