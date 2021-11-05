@@ -398,6 +398,7 @@ public class AddEditTodoFragment extends BaseFragment {
                             WarningDateDialog dialog = new WarningDateDialog(context);
                             dialog.setTitle(getString(R.string.passedDateTitle));
                             dialog.setMessage(getString(R.string.passedDateMessage));
+                            dialog.setEditText(getString(R.string.editDate));
 
                             dialog.setContinueClicked(() -> {
                                 dialog.dismiss();
@@ -441,6 +442,23 @@ public class AddEditTodoFragment extends BaseFragment {
         sheetTimer.show();
 
         sheetTimer.setOnClickApply(pickedDateTime -> {
+            if (viewModel.todayTtimePassed(pickedDateTime)) {
+                WarningDateDialog dialog = new WarningDateDialog(context);
+                dialog.setTitle(getString(R.string.passedDateTitle));
+                dialog.setMessage(getString(R.string.passedTimeMessage));
+                dialog.setEditText(getString(R.string.editTime));
+
+                dialog.setContinueClicked(() -> {
+                    dialog.dismiss();
+                    sheetTimer.dismiss();
+                    viewModel.commitDateTime(pickedDateTime);
+                    viewModel.commitOldDateTime(pickedDateTime);
+                });
+
+                dialog.show();
+                return;
+            }
+
             viewModel.commitDateTime(pickedDateTime);
             viewModel.commitOldDateTime(pickedDateTime);
             sheetTimer.dismiss();

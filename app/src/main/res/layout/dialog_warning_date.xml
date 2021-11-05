@@ -72,13 +72,13 @@
                 android:layout_height="1dp"
                 android:layout_marginVertical="0dp"
                 android:background="@color/line_color"
-                app:layout_constraintBottom_toTopOf="@id/txtBack"
+                app:layout_constraintBottom_toTopOf="@id/txtEdit"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtMessage" />
 
             <TextView
-                android:id="@+id/txtBack"
+                android:id="@+id/txtEdit"
                 style="@style/TextMD14"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -102,7 +102,7 @@
                 android:background="@color/line_color"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txtBack" />
+                app:layout_constraintTop_toBottomOf="@id/txtEdit" />
 
             <TextView
                 android:id="@+id/txtContinue"

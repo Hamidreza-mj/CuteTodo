@@ -293,6 +293,50 @@ public class AddEditTodoViewModel extends ViewModel {
         return mustBeEditTodo;
     }
 
+    public boolean todayTtimePassed(DateTime dateTime) {
+        if (dateTime == null)
+            return false;
+
+        int pickedYear = dateTime.getDate().getPersianYear();
+        int pickedMonth = dateTime.getDate().getPersianMonth();
+        int pickedDay = dateTime.getDate().getPersianDay();
+
+        int pickedHour = dateTime.getHour();
+        int pickedMinute = dateTime.getMinute();
+
+        //##################################################
+
+        PersianPickerDate persianDate = new PersianDateImpl();
+        persianDate.setDate(System.currentTimeMillis());
+        DateHelper dateHelper = new DateHelper(System.currentTimeMillis());
+
+
+        int nowYear = persianDate.getPersianYear();
+        int nowMonth = persianDate.getPersianMonth();
+        int nowDay = persianDate.getPersianDay();
+
+        int nowHour = dateHelper.getHour();
+        int nowMinute = dateHelper.getMinute();
+
+        if (pickedYear == nowYear && pickedMonth == nowMonth && pickedDay == nowDay) {
+
+            if (pickedHour < nowHour) {
+                return true;
+            } else if (pickedHour == nowHour) {
+
+                if (pickedMinute < nowMinute)
+                    return true;
+                else
+                    return pickedMinute == nowMinute;
+
+            } else {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
     //region: get text and strings
     public String getTitleFragment() {
         return getString(isEditMode ? R.string.edit_todo : R.string.add_new_todo);

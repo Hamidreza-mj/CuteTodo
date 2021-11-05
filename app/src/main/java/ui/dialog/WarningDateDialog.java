@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.widget.TextView;
 
 import hlv.cute.todo.R;
-import hlv.cute.todo.databinding.DialogReminderGuideBinding;
 import hlv.cute.todo.databinding.DialogWarningDateBinding;
 
 public class WarningDateDialog {
@@ -15,6 +14,8 @@ public class WarningDateDialog {
 
     private final TextView txtTitle;
     private final TextView txtMessage;
+
+    private final TextView txtEditDate;
 
     private ContinueClicked continueClicked;
 
@@ -26,8 +27,9 @@ public class WarningDateDialog {
 
         txtTitle = binding.txtTitle;
         txtMessage = binding.txtMessage;
+        txtEditDate = binding.txtEdit;
 
-        binding.txtBack.setOnClickListener(view -> dismiss());
+        txtEditDate.setOnClickListener(view -> dismiss());
         binding.txtContinue.setOnClickListener(v -> {
             if (continueClicked == null) {
                 dismiss();
@@ -63,6 +65,11 @@ public class WarningDateDialog {
     public void setMessage(String message) {
         if (dialog != null)
             txtMessage.setText(message);
+    }
+
+    public void setEditText(String text) {
+        if (dialog != null && txtEditDate != null)
+            txtEditDate.setText(text);
     }
 
     public void setContinueClicked(ContinueClicked continueClicked) {
