@@ -350,20 +350,29 @@
         android:id="@+id/bottombar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingVertical="10dp"
-        android:paddingHorizontal="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:background="@color/whiteBlue"
+        android:paddingHorizontal="10dp"
         android:translationZ="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintVertical_bias="1">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="#198E8E8E"
+            android:translationZ="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/mBtnDone"
             style="@style/TextNormalMD16"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
             android:layout_marginStart="10dp"
             android:backgroundTint="@color/blue"
             android:gravity="center"
@@ -391,6 +400,7 @@
             style="@style/TextNormalMD16"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
             android:layout_marginEnd="10dp"
             android:backgroundTint="#CFE8FF"
             android:letterSpacing="0"
