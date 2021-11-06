@@ -17,6 +17,7 @@ import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 
 import hlv.cute.todo.R;
 import ui.activity.ShowNotificationActivity;
@@ -67,14 +68,15 @@ public class NotificationUtil {
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(context, notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.notification_icon);
+        Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.notification_logo);
 
         Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.notification_icon)
+                .setSmallIcon(R.drawable.notification_logo)
                 .setAutoCancel(true)
                 .setLargeIcon(icon)
                 .setContentTitle(title)
                 .setContentText(summary)
+                .setColor(ContextCompat.getColor(context, R.color.blue))
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(content))
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)

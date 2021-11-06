@@ -92,6 +92,30 @@
         app:layout_constraintTop_toBottomOf="@id/aChkBoxDone"
         tools:ignore="TextContrastCheck" />
 
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/aChkBoxScheduled"
+        style="@style/CheckBoxFilter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:text="@string/scheduled_todos"
+        app:layout_constraintEnd_toEndOf="@id/aImgClose"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/aChkBoxUndone"
+        tools:ignore="TextContrastCheck" />
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/aChkBoxToday"
+        style="@style/CheckBoxFilter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:text="@string/today_todos"
+        app:layout_constraintEnd_toEndOf="@id/aImgClose"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/aChkBoxScheduled"
+        tools:ignore="TextContrastCheck" />
+
     <View
         android:id="@+id/line"
         android:layout_width="0dp"
@@ -102,7 +126,7 @@
         android:background="@color/line_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/aChkBoxUndone" />
+        app:layout_constraintTop_toBottomOf="@id/aChkBoxToday" />
 
     <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@+id/aChkBoxLow"

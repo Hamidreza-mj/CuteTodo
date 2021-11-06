@@ -137,5 +137,7 @@
     <string name="keep_continue">ادامه</string>
     <string name="editDate">ویرایش تاریخ</string>
     <string name="editTime">ویرایش ساعت</string>
+    <string name="scheduled_todos">کارهای زمانبندی شده</string>
+    <string name="today_todos">کارهای امروز</string>
 
 </resources>

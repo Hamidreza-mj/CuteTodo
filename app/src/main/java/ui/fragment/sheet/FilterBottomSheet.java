@@ -21,6 +21,8 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
     private SheetFilterBinding binding;
 
     private AppCompatCheckBox chkDoneTodo, chkUndoneTodo;
+    private AppCompatCheckBox chkScheduled;
+    private AppCompatCheckBox chkToday;
     private AppCompatCheckBox chkLowPriority, chkNormalPriority, chkHighPriority;
 
     private MaterialButton btnApplyFilter, btnClearFilter;
@@ -73,6 +75,9 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
         chkDoneTodo = binding.aChkBoxDone;
         chkUndoneTodo = binding.aChkBoxUndone;
 
+        chkScheduled = binding.aChkBoxScheduled;
+        chkToday = binding.aChkBoxToday;
+
         chkLowPriority = binding.aChkBoxLow;
         chkNormalPriority = binding.aChkBoxNormal;
         chkHighPriority = binding.aChkBoxHigh;
@@ -85,6 +90,9 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
         if (filter != null) {
             chkDoneTodo.setChecked(filter.isDone());
             chkUndoneTodo.setChecked(filter.isUndone());
+
+            chkScheduled.setChecked(filter.isScheduled());
+            chkToday.setChecked(filter.isToday());
 
             chkLowPriority.setChecked(filter.isLow());
             chkNormalPriority.setChecked(filter.isNormal());
@@ -140,6 +148,9 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
         filter.setDone(chkDoneTodo.isChecked());
         filter.setUndone(chkUndoneTodo.isChecked());
 
+        filter.setScheduled(chkScheduled.isChecked());
+        filter.setToday(chkToday.isChecked());
+
         filter.setLow(chkLowPriority.isChecked());
         filter.setNormal(chkNormalPriority.isChecked());
         filter.setHigh(chkHighPriority.isChecked());
@@ -157,6 +168,9 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
         chkDoneTodo.setChecked(false);
         chkUndoneTodo.setChecked(false);
 
+        chkScheduled.setChecked(false);
+        chkToday.setChecked(false);
+
         chkLowPriority.setChecked(false);
         chkNormalPriority.setChecked(false);
         chkHighPriority.setChecked(false);
@@ -172,6 +186,9 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
 
         chkDoneTodo.setEnabled(false);
         chkUndoneTodo.setEnabled(false);
+
+        chkScheduled.setEnabled(false);
+        chkToday.setEnabled(false);
 
         chkLowPriority.setEnabled(false);
         chkNormalPriority.setEnabled(false);

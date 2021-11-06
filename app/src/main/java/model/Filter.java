@@ -11,6 +11,10 @@ public class Filter implements Serializable {
 
     private boolean isDone;
     private boolean isUndone;
+
+    private boolean isScheduled;
+    private boolean isToday;
+
     private boolean isLow;
     private boolean isNormal;
     private boolean isHigh;
@@ -27,6 +31,22 @@ public class Filter implements Serializable {
 
     public void setDone(boolean done) {
         isDone = done;
+    }
+
+    public boolean isScheduled() {
+        return isScheduled;
+    }
+
+    public void setScheduled(boolean scheduled) {
+        isScheduled = scheduled;
+    }
+
+    public boolean isToday() {
+        return isToday;
+    }
+
+    public void setToday(boolean today) {
+        isToday = today;
     }
 
     public boolean isUndone() {
@@ -83,8 +103,9 @@ public class Filter implements Serializable {
 
     public boolean filterIsEmpty() {
         boolean emptyFilter = !isDone && !isUndone &&
+                !isScheduled && !isToday &&
                 !isLow && !isNormal && !isHigh && priorities.isEmpty() ||
-                !isDone && !isUndone && !isLow && !isNormal && !isHigh && priorities.size() == 3;
+                !isDone && !isUndone && !isScheduled && !isToday && !isLow && !isNormal && !isHigh && priorities.size() == 3;
 
         return emptyFilter;
     }
