@@ -20,6 +20,7 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import hlv.cute.todo.R;
+import model.Priority;
 import ui.activity.ShowNotificationActivity;
 
 public class NotificationUtil {
@@ -56,7 +57,7 @@ public class NotificationUtil {
         }
     }
 
-    public void makeNotification(String title, String summary, String content, int notificationID) {
+    public void makeNotification(String title, String summary, String content, Priority priority, int notificationID) {
         createNotificationChannel();
 
         Intent intent = new Intent(context, ShowNotificationActivity.class);
@@ -68,6 +69,24 @@ public class NotificationUtil {
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(context, notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        int priorityColor = ContextCompat.getColor(context, R.color.blue);
+        if (priority != null) {
+            switch (priority) {
+                case LOW:
+                default:
+                    priorityColor = ContextCompat.getColor(context, R.color.blue);
+                    break;
+
+                case NORMAL:
+                    priorityColor = ContextCompat.getColor(context, R.color.orange);
+                    break;
+
+                case HIGH:
+                    priorityColor = ContextCompat.getColor(context, R.color.red);
+                    break;
+            }
+        }
+
         Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.notification_logo);
 
         Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
@@ -76,7 +95,7 @@ public class NotificationUtil {
                 .setLargeIcon(icon)
                 .setContentTitle(title)
                 .setContentText(summary)
-                .setColor(ContextCompat.getColor(context, R.color.blue))
+                .setColor(priorityColor)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(content))
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)

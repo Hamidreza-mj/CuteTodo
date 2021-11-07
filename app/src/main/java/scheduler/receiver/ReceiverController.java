@@ -85,7 +85,13 @@ public class ReceiverController {
 
 
             NotificationUtil notificationUtil = new NotificationUtil(context);
-            notificationUtil.makeNotification(title, summary, context.getString(R.string.notification_content, content), notifID);
+            notificationUtil.makeNotification(
+                    title,
+                    summary,
+                    context.getString(R.string.notification_content, content),
+                    notification.getPriority(),
+                    notifID
+            );
 
             successLog(succeed);
         }
