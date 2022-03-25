@@ -97,7 +97,7 @@
                     android:hint="@string/enter_todo_name"
                     android:inputType="textMultiLine"
                     android:maxLength="1000"
-                    android:maxLines="5"
+                    android:maxLines="10"
                     android:overScrollMode="always"
                     android:paddingVertical="16dp"
                     android:requiresFadingEdge="vertical"
