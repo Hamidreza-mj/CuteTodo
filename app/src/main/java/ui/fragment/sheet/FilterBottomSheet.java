@@ -223,31 +223,32 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
 
         ViewGroup.LayoutParams layoutParams;
 
-        if (bottomSheet != null) {
-            layoutParams = bottomSheet.getLayoutParams();
+        if (bottomSheet == null)
+            return;
 
-            int windowHeight = getWindowHeight();
-            if (layoutParams != null)
-                layoutParams.height = windowHeight;
+        layoutParams = bottomSheet.getLayoutParams();
 
-            bottomSheet.setLayoutParams(layoutParams);
+        int windowHeight = getWindowHeight();
+        if (layoutParams != null)
+            layoutParams.height = windowHeight;
 
-            final BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(bottomSheet);
-            behavior.setPeekHeight(getWindowHeight(), true);
+        bottomSheet.setLayoutParams(layoutParams);
 
-            behavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-                @Override
-                public void onStateChanged(@NonNull View bottomSheet, int newState) {
+        final BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(bottomSheet);
+        behavior.setPeekHeight(getWindowHeight(), true);
+
+        behavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
                     /*if (newState == BottomSheetBehavior.STATE_DRAGGING) {
                         behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                     }*/
-                }
+            }
 
-                @Override
-                public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                }
-            });
-        }
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        });
     }
 
     private int getWindowHeight() {
