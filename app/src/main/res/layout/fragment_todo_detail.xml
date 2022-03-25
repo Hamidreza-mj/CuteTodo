@@ -158,6 +158,7 @@
                 android:linksClickable="true"
                 android:text="@string/large_lorem"
                 android:textColorLink="@color/blue"
+                android:textIsSelectable="true"
                 android:textSize="15sp"
                 android:theme="@style/TextRG14"
                 app:layout_constraintEnd_toEndOf="parent"
