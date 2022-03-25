@@ -1,17 +1,22 @@
 package ui.fragment.sheet;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatCheckBox;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 
+import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.SheetFilterBinding;
 import model.Filter;
 import utils.KeyboardInputHelper;
@@ -195,6 +200,62 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
         chkHighPriority.setEnabled(false);
         btnApplyFilter.setEnabled(false);
         btnClearFilter.setEnabled(false);
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        try {
+            Dialog dialog = super.onCreateDialog(savedInstanceState);
+            dialog.setOnShowListener(dialogInterface -> {
+                BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) dialogInterface;
+                setupFullHeight(bottomSheetDialog);
+            });
+
+            return dialog;
+        } catch (Exception e) {
+            return requireDialog();
+        }
+    }
+
+    private void setupFullHeight(BottomSheetDialog bottomSheetDialog) {
+        FrameLayout bottomSheet = bottomSheetDialog.findViewById(R.id.design_bottom_sheet);
+
+        ViewGroup.LayoutParams layoutParams;
+
+        if (bottomSheet != null) {
+            layoutParams = bottomSheet.getLayoutParams();
+
+            int windowHeight = getWindowHeight();
+            if (layoutParams != null)
+                layoutParams.height = windowHeight;
+
+            bottomSheet.setLayoutParams(layoutParams);
+
+            final BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(bottomSheet);
+            behavior.setPeekHeight(getWindowHeight(), true);
+
+            behavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                @Override
+                public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                    /*if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    }*/
+                }
+
+                @Override
+                public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                }
+            });
+        }
+    }
+
+    private int getWindowHeight() {
+        try {
+            return requireContext().getResources().getDisplayMetrics().heightPixels;
+        } catch (Exception e) {
+            return 1000;
+        }
     }
 
 }
