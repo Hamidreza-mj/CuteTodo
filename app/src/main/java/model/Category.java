@@ -3,6 +3,7 @@ package model;
 import androidx.annotation.Keep;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
@@ -19,6 +20,9 @@ public class Category implements Comparable<Category>, Serializable {
     @ColumnInfo(name = "name")
     private String name;
 
+    @Ignore
+    private boolean selectedForFilter = false;
+
     public int getId() {
         return id;
     }
@@ -33,6 +37,14 @@ public class Category implements Comparable<Category>, Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isSelectedForFilter() {
+        return selectedForFilter;
+    }
+
+    public void setSelectedForFilter(boolean selectedForFilter) {
+        this.selectedForFilter = selectedForFilter;
     }
 
     @Override

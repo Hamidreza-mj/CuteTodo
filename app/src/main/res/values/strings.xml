@@ -79,6 +79,7 @@
     <string name="normal_priority_filter">اولویت عادی</string>
     <string name="low_priority_filter">اولویت کم</string>
     <string name="apply_filter">اعمال فیلتر</string>
+    <string name="show_filter_result">نمایش نتایج</string>
     <string name="clear_filter">حذف فیلتر</string>
 
     <string name="empty_todos_with_filter">کاری با فیلتر اعمال شده پیدا نشد!</string>

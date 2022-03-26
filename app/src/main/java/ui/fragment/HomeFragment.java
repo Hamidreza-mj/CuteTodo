@@ -26,6 +26,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior;
 import com.google.android.material.button.MaterialButton;
 
+import java.util.ArrayList;
+
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.FragmentHomeBinding;
 import model.Filter;
@@ -218,7 +220,7 @@ public class HomeFragment extends BaseFragment {
         });
 
         imgFilter.setOnClickListener(view -> {
-            FilterBottomSheet filterBottomSheet = FilterBottomSheet.newInstance(getTodoViewModel().getCurrentFilter());
+            FilterBottomSheet filterBottomSheet = FilterBottomSheet.newInstance(getTodoViewModel().getCurrentFilter(), new ArrayList<>(getCategoryViewModel().getAllCategories()));
             filterBottomSheet.show(getChildFragmentManager(), null);
 
             filterBottomSheet.setOnApplyClick(() -> {

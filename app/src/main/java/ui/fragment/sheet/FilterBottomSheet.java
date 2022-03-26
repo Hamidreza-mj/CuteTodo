@@ -16,9 +16,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 
+import java.util.ArrayList;
+
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.SheetFilterBinding;
+import model.Category;
 import model.Filter;
+import ui.adapter.FilterCategoryAdapter;
+import ui.component.AutofitGridLayoutManager;
 import utils.KeyboardInputHelper;
 
 public class FilterBottomSheet extends BottomSheetDialogFragment {
@@ -35,17 +40,20 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
     private Filter filter;
 
     private static final String FILTER_ARGS = "filter-args";
+    private static final String CATEGORY_ARGS = "categories-args";
 
     private OnApplyClick onApplyClick;
     private OnClearClick onClearClick;
+    private ArrayList<Category> categories;
 
     public FilterBottomSheet() {
     }
 
-    public static FilterBottomSheet newInstance(Filter filter) {
+    public static FilterBottomSheet newInstance(Filter filter, ArrayList<Category> categories) {
         FilterBottomSheet filterBottomSheet = new FilterBottomSheet();
         Bundle args = new Bundle();
         args.putSerializable(FILTER_ARGS, filter);
+        args.putSerializable(CATEGORY_ARGS, categories);
         filterBottomSheet.setArguments(args);
         return filterBottomSheet;
     }
@@ -54,8 +62,10 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null && !getArguments().isEmpty())
+        if (getArguments() != null && !getArguments().isEmpty()) {
             filter = (Filter) getArguments().getSerializable(FILTER_ARGS);
+            categories = (ArrayList<Category>) getArguments().getSerializable(CATEGORY_ARGS);
+        }
 
         if (getContext() != null)
             KeyboardInputHelper.getKeyboardInput().hideKeyboard(getContext());
@@ -126,6 +136,12 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
 
             onClearClick.onClick();
         });
+
+        FilterCategoryAdapter adapter = new FilterCategoryAdapter(requireContext());
+        AutofitGridLayoutManager layoutManager = new AutofitGridLayoutManager(requireContext(), 300);
+        binding.rvCategory.setLayoutManager(layoutManager);
+        binding.rvCategory.setAdapter(adapter);
+        adapter.getDiffer().submitList(categories);
     }
 
     public void setOnApplyClick(OnApplyClick onApplyClick) {
@@ -235,7 +251,8 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
         bottomSheet.setLayoutParams(layoutParams);
 
         final BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(bottomSheet);
-        behavior.setPeekHeight(getWindowHeight(), true);
+        behavior.setPeekHeight(windowHeight, true);
+        behavior.setSkipCollapsed(true); //use it for ignore setting snap to new state
 
         behavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override

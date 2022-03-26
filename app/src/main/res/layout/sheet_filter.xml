@@ -58,7 +58,7 @@
         style="@style/TextMD14"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="15dp"
         android:text="@string/sort_todos_by"
         android:textColor="@color/blue"
@@ -67,113 +67,155 @@
         app:layout_constraintTop_toBottomOf="@id/txtTitle"
         tools:ignore="TextContrastCheck" />
 
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:id="@+id/aChkBoxDone"
-        style="@style/CheckBoxFilter"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="15dp"
-        android:text="@string/done_todo"
-        app:layout_constraintEnd_toEndOf="@id/aImgClose"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtSortBy"
-        tools:ignore="TextContrastCheck" />
-
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:id="@+id/aChkBoxUndone"
-        style="@style/CheckBoxFilter"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="15dp"
-        android:text="@string/undone_todo"
-        app:layout_constraintEnd_toEndOf="@id/aImgClose"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/aChkBoxDone"
-        tools:ignore="TextContrastCheck" />
-
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:id="@+id/aChkBoxScheduled"
-        style="@style/CheckBoxFilter"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="15dp"
-        android:text="@string/scheduled_todos"
-        app:layout_constraintEnd_toEndOf="@id/aImgClose"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/aChkBoxUndone"
-        tools:ignore="TextContrastCheck" />
-
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:id="@+id/aChkBoxToday"
-        style="@style/CheckBoxFilter"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="15dp"
-        android:text="@string/today_todos"
-        app:layout_constraintEnd_toEndOf="@id/aImgClose"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/aChkBoxScheduled"
-        tools:ignore="TextContrastCheck" />
-
-    <View
-        android:id="@+id/line"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_marginHorizontal="30dp"
-        android:layout_marginTop="10dp"
-        android:alpha="0.8"
-        android:background="@color/line_color"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:fadingEdge="vertical"
+        android:fadingEdgeLength="20dp"
+        android:overScrollMode="never"
+        android:requiresFadingEdge="vertical"
+        app:layout_constraintBottom_toTopOf="@id/lytButtons"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/aChkBoxToday" />
+        app:layout_constraintTop_toBottomOf="@id/txtSortBy">
 
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:id="@+id/aChkBoxLow"
-        style="@style/CheckBoxFilter"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="15dp"
-        android:text="@string/low_priority_filter"
-        app:layout_constraintEnd_toEndOf="@id/aImgClose"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/line"
-        tools:ignore="TextContrastCheck,TextContrastCheck" />
 
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:id="@+id/aChkBoxNormal"
-        style="@style/CheckBoxFilter"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="15dp"
-        android:text="@string/normal_priority_filter"
-        app:layout_constraintEnd_toEndOf="@id/aImgClose"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/aChkBoxLow"
-        tools:ignore="TextContrastCheck" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:id="@+id/aChkBoxHigh"
-        style="@style/CheckBoxFilter"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="15dp"
-        android:text="@string/high_priority_filter"
-        app:layout_constraintEnd_toEndOf="@id/aImgClose"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/aChkBoxNormal"
-        tools:ignore="TextContrastCheck" />
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/aChkBoxDone"
+                style="@style/CheckBoxFilter"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:text="@string/done_todo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="TextContrastCheck" />
 
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/aChkBoxUndone"
+                style="@style/CheckBoxFilter"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:text="@string/undone_todo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/aChkBoxDone"
+                tools:ignore="TextContrastCheck" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/aChkBoxScheduled"
+                style="@style/CheckBoxFilter"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:text="@string/scheduled_todos"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/aChkBoxUndone"
+                tools:ignore="TextContrastCheck" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/aChkBoxToday"
+                style="@style/CheckBoxFilter"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:text="@string/today_todos"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/aChkBoxScheduled"
+                tools:ignore="TextContrastCheck" />
+
+            <View
+                android:id="@+id/line"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginTop="10dp"
+                android:alpha="0.8"
+                android:background="@color/line_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/aChkBoxToday" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/aChkBoxLow"
+                style="@style/CheckBoxFilter"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="15dp"
+                android:text="@string/low_priority_filter"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/line"
+                tools:ignore="TextContrastCheck,TextContrastCheck" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/aChkBoxNormal"
+                style="@style/CheckBoxFilter"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:text="@string/normal_priority_filter"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/aChkBoxLow"
+                tools:ignore="TextContrastCheck" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/aChkBoxHigh"
+                style="@style/CheckBoxFilter"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:text="@string/high_priority_filter"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/aChkBoxNormal"
+                tools:ignore="TextContrastCheck" />
+
+            <View
+                android:id="@+id/line2"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginTop="10dp"
+                android:alpha="0.8"
+                android:background="@color/line_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/aChkBoxHigh" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvCategory"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/line2" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/lytButtons"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/aChkBoxHigh"
         app:layout_constraintVertical_bias="1">
 
         <com.google.android.material.button.MaterialButton
@@ -181,10 +223,10 @@
             style="@style/TextNormalMD16"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="5dp"
             android:backgroundTint="@color/blue"
             android:letterSpacing="0"
-            android:paddingVertical="11dp"
+            android:paddingVertical="13dp"
             android:stateListAnimator="@null"
             android:text="@string/apply_filter"
             android:textColor="@color/white"
@@ -192,31 +234,39 @@
             app:cornerRadius="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/mBtnClearFilter"
+            app:layout_constraintStart_toEndOf="@id/gl"
             app:layout_constraintTop_toTopOf="parent"
             app:rippleColor="@color/rippleBlue"
             app:strokeWidth="0dp"
             tools:ignore="TextContrastCheck" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.35" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/mBtnClearFilter"
             style="@style/TextNormalMD16"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:backgroundTint="@color/filter_clear_color"
+            android:layout_marginEnd="5dp"
+            android:backgroundTint="@color/white"
             android:letterSpacing="0"
-            android:paddingVertical="11dp"
+            android:paddingVertical="13dp"
             android:stateListAnimator="@null"
             android:text="@string/clear_filter"
-            android:textColor="@color/blue"
+            android:textColor="@color/gray_text"
             android:textSize="15sp"
             app:cornerRadius="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/mBtnApplyFilter"
+            app:layout_constraintEnd_toStartOf="@id/gl"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:rippleColor="@color/blue"
+            app:strokeColor="@color/filter_clear_color"
             app:strokeWidth="0dp"
             tools:ignore="TextContrastCheck" />
 

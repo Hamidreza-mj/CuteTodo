@@ -199,6 +199,17 @@
         <item name="chipStrokeWidth">1dp</item>
     </style>
 
+    <!-- Chip RV -->
+    <style name="ChipItem" parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="android:checkable">true</item>
+        <item name="android:textAppearance">@style/TextRG14</item>
+        <item name="checkedIcon">@null</item>
+        <item name="chipMinHeight">40dp</item>
+        <item name="chipStartPadding">22dp</item>
+        <item name="chipEndPadding">22dp</item>
+        <item name="chipStrokeWidth">1dp</item>
+    </style>
+
     <!-- BottomSheet -->
     <style name="AppBottomSheetDialogTheme" parent="Theme.Design.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/AppModalStyle</item>
