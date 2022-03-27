@@ -49,6 +49,8 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
     private OnClearClick onClearClick;
     private ArrayList<Category> categories;
 
+    private FilterCategoryAdapter adapter;
+
     public FilterBottomSheet() {
     }
 
@@ -140,7 +142,7 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
             onClearClick.onClick();
         });
 
-        FilterCategoryAdapter adapter = new FilterCategoryAdapter(requireContext());
+        adapter = new FilterCategoryAdapter(requireContext());
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(requireContext());
         layoutManager.setFlexDirection(FlexDirection.ROW_REVERSE);
         layoutManager.setJustifyContent(JustifyContent.FLEX_START);
