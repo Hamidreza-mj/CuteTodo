@@ -11,6 +11,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatCheckBox;
 
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexWrap;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -23,7 +27,6 @@ import hlv.cute.todo.databinding.SheetFilterBinding;
 import model.Category;
 import model.Filter;
 import ui.adapter.FilterCategoryAdapter;
-import ui.component.AutofitGridLayoutManager;
 import utils.KeyboardInputHelper;
 
 public class FilterBottomSheet extends BottomSheetDialogFragment {
@@ -138,7 +141,11 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
         });
 
         FilterCategoryAdapter adapter = new FilterCategoryAdapter(requireContext());
-        AutofitGridLayoutManager layoutManager = new AutofitGridLayoutManager(requireContext(), 300);
+        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(requireContext());
+        layoutManager.setFlexDirection(FlexDirection.ROW_REVERSE);
+        layoutManager.setJustifyContent(JustifyContent.FLEX_START);
+        layoutManager.setFlexWrap(FlexWrap.WRAP);
+
         binding.rvCategory.setLayoutManager(layoutManager);
         binding.rvCategory.setAdapter(adapter);
         adapter.getDiffer().submitList(categories);

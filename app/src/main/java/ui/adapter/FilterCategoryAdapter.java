@@ -80,6 +80,8 @@ public class FilterCategoryAdapter extends RecyclerView.Adapter<FilterCategoryAd
         private void bind(Category category) {
             if (category == null)
                 return;
+            binding.getRoot().requestLayout();
+            binding.chip.requestLayout();
 
             binding.chip.setText(category.getName());
 
