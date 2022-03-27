@@ -158,10 +158,12 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
 
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                if (scrollY == 0)
+                if (scrollY == 0) {
                     binding.toolbar.animate().translationZ(0).setStartDelay(0).setDuration(200).start();
-                else if (scrollY > 50)
+                } else if (scrollY > 50) {
+                    binding.toolbar.setTranslationZ(dpShadow);
                     binding.toolbar.animate().translationZ(dpShadow).setStartDelay(0).setDuration(90).start();
+                }
             }
         });
     }
