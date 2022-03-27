@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.core.widget.NestedScrollView;
 
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
@@ -151,6 +152,18 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
         binding.rvCategory.setLayoutManager(layoutManager);
         binding.rvCategory.setAdapter(adapter);
         adapter.getDiffer().submitList(categories);
+
+        binding.nested.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            final float dpShadow = getResources().getDimension(R.dimen.toolbar_sheet_shadow);
+
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (scrollY == 0)
+                    binding.toolbar.animate().translationZ(0).setStartDelay(0).setDuration(200).start();
+                else if (scrollY > 50)
+                    binding.toolbar.animate().translationZ(dpShadow).setStartDelay(0).setDuration(90).start();
+            }
+        });
     }
 
     public void setOnApplyClick(OnApplyClick onApplyClick) {

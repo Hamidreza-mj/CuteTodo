@@ -80,7 +80,7 @@
     <string name="low_priority_filter">اولویت کم</string>
     <string name="apply_filter">اعمال فیلتر</string>
     <string name="show_filter_result">نمایش نتایج</string>
-    <string name="clear_filter">حذف فیلتر</string>
+    <string name="clear_filter">حذف فیلترها</string>
 
     <string name="empty_todos_with_filter">کاری با فیلتر اعمال شده پیدا نشد!</string>
     <string name="empty_todos_with_filter_notes">لطفا فیلترها را بررسی کرده و مجددا تلاش کنید.</string>
@@ -140,5 +140,9 @@
     <string name="editTime">ویرایش ساعت</string>
     <string name="scheduled_todos">کارهای زمانبندی شده</string>
     <string name="today_todos">کارهای امروز</string>
+
+    <string name="todo_filter_type">نوع کار:</string>
+    <string name="todo_filter_category">دسته‌بندی:</string>
+    <string name="todo_filter_priority">اولویت:</string>
 
 </resources>

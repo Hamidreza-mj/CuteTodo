@@ -6,71 +6,68 @@
     android:layout_height="match_parent"
     android:layout_gravity="bottom"
     android:background="@color/transparent"
-    android:padding="15dp"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/indicator"
-        android:layout_width="45dp"
-        android:layout_height="6dp"
-        android:layout_marginTop="4dp"
-        app:cardBackgroundColor="@color/gray25"
-        app:cardCornerRadius="3dp"
-        app:cardElevation="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <TextView
-        android:id="@+id/txtTitle"
-        style="@style/TextNormalMD16"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/toolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:gravity="center"
-        android:text="@string/advanced_filter"
-        android:textSize="15sp"
+        android:background="@drawable/bottomsheet_shape"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/indicator" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/aImgClose"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center"
-        android:layout_marginHorizontal="5dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
-        android:contentDescription="@string/close"
-        android:focusable="true"
-        android:padding="11dp"
-        app:layout_constraintBottom_toBottomOf="@id/txtTitle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/txtTitle"
-        app:srcCompat="@drawable/ic_close_simple"
-        tools:ignore="TouchTargetSizeCheck" />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/indicator"
+            android:layout_width="45dp"
+            android:layout_height="6dp"
+            android:layout_marginTop="4dp"
+            app:cardBackgroundColor="@color/gray25"
+            app:cardCornerRadius="3dp"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
-    <TextView
-        android:id="@+id/txtSortBy"
-        style="@style/TextMD14"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="15dp"
-        android:text="@string/sort_todos_by"
-        android:textColor="@color/blue"
-        app:layout_constraintEnd_toEndOf="@id/aImgClose"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtTitle"
-        tools:ignore="TextContrastCheck" />
+        <TextView
+            android:id="@+id/txtTitle"
+            style="@style/TextNormalMD16"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center"
+            android:text="@string/advanced_filter"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/indicator" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/aImgClose"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="5dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/close"
+            android:focusable="true"
+            android:padding="11dp"
+            app:layout_constraintBottom_toBottomOf="@id/txtTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/txtTitle"
+            app:srcCompat="@drawable/ic_close_simple"
+            tools:ignore="TouchTargetSizeCheck" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="20dp"
         android:layout_marginBottom="10dp"
         android:fadingEdge="vertical"
         android:fadingEdgeLength="20dp"
@@ -79,12 +76,26 @@
         app:layout_constraintBottom_toTopOf="@id/lytButtons"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtSortBy">
-
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="15dp">
+
+            <TextView
+                android:id="@+id/txtTodoType"
+                style="@style/TextMD14"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="15dp"
+                android:text="@string/todo_filter_type"
+                android:textColor="@color/blue"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="TextContrastCheck" />
 
             <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/aChkBoxDone"
@@ -95,7 +106,7 @@
                 android:text="@string/done_todo"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txtTodoType"
                 tools:ignore="TextContrastCheck" />
 
             <androidx.appcompat.widget.AppCompatCheckBox
@@ -146,17 +157,30 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/aChkBoxToday" />
 
+            <TextView
+                android:id="@+id/txtTodoPriority"
+                style="@style/TextMD14"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="15dp"
+                android:text="@string/todo_filter_priority"
+                android:textColor="@color/blue"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/line"
+                tools:ignore="TextContrastCheck" />
+
             <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/aChkBoxLow"
                 style="@style/CheckBoxFilter"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_marginEnd="15dp"
                 android:text="@string/low_priority_filter"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/line"
+                app:layout_constraintTop_toBottomOf="@id/txtTodoPriority"
                 tools:ignore="TextContrastCheck,TextContrastCheck" />
 
             <androidx.appcompat.widget.AppCompatCheckBox
@@ -195,18 +219,32 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/aChkBoxHigh" />
 
+            <TextView
+                android:id="@+id/txtTodoCategory"
+                style="@style/TextMD14"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="15dp"
+                android:text="@string/todo_filter_category"
+                android:textColor="@color/blue"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/line2"
+                tools:ignore="TextContrastCheck" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvCategory"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginEnd="15dp"
                 android:nestedScrollingEnabled="false"
                 android:overScrollMode="never"
                 android:paddingBottom="60dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/line2" />
+                app:layout_constraintTop_toBottomOf="@id/txtTodoCategory" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -217,6 +255,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:padding="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -241,7 +280,8 @@
             app:layout_constraintStart_toEndOf="@id/gl"
             app:layout_constraintTop_toTopOf="parent"
             app:rippleColor="@color/rippleBlue"
-            app:strokeWidth="0dp"
+            app:strokeColor="@color/blue"
+            app:strokeWidth="1.5dp"
             tools:ignore="TextContrastCheck" />
 
         <androidx.constraintlayout.widget.Guideline
@@ -262,7 +302,7 @@
             android:paddingVertical="13dp"
             android:stateListAnimator="@null"
             android:text="@string/clear_filter"
-            android:textColor="@color/gray_text"
+            android:textColor="@color/blue"
             android:textSize="15sp"
             app:cornerRadius="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -270,8 +310,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:rippleColor="@color/blue"
-            app:strokeColor="@color/filter_clear_color"
-            app:strokeWidth="0dp"
+            app:strokeColor="@color/blue"
+            app:strokeWidth="1.5dp"
             tools:ignore="TextContrastCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
