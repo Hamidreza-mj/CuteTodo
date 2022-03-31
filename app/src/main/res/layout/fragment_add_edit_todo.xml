@@ -68,8 +68,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:paddingBottom="50dp"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="50dp">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/inpTitle"
@@ -100,7 +100,7 @@
                     android:maxLength="1000"
                     android:maxLines="10"
                     android:overScrollMode="always"
-                    android:paddingVertical="16dp"
+                    android:paddingVertical="14dp"
                     android:requiresFadingEdge="vertical"
                     android:scrollbarStyle="insideInset"
                     android:scrollbarThumbVertical="@drawable/scrollbar"
@@ -131,7 +131,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingHorizontal="12dp"
-                    android:paddingVertical="9dp">
+                    android:paddingVertical="11dp">
 
                     <TextView
                         android:id="@+id/txtCategory"
@@ -139,7 +139,6 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="8dp"
-                        android:paddingVertical="6dp"
                         android:text="@string/select_category"
                         android:textColor="@color/gray"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -324,7 +323,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingHorizontal="12dp"
-                    android:paddingVertical="9dp">
+                    android:paddingVertical="11dp">
 
                     <TextView
                         android:id="@+id/txtDate"

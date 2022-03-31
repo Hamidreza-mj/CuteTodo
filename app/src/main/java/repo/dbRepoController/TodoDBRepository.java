@@ -46,12 +46,13 @@ public class TodoDBRepository {
         AtomicReference<List<Todo>> filteredTodos = new AtomicReference<>();
 
         if (filter.isDone() && filter.isUndone() || !filter.isDone() && !filter.isUndone()) {//not need check isDone
-            Thread thread = new Thread(() -> filteredTodos.set(dao.filterByAllTodos(finalPriorities)));
+            Thread thread = new Thread(() ->
+                    filteredTodos.set(dao.filterByAllTodos(finalPriorities))
+            );
             thread.start();
             thread.join();
 
-            if (filter.isScheduled())
-                filterByScheduled(filteredTodos.get());
+
             //need to reverse for or iterator (because the main list index has changed)
             //need to starts from end or use the way that independent on index
                 /*for (int i = filteredTodos.get().size() - 1; i >= 0; i--)
@@ -59,11 +60,21 @@ public class TodoDBRepository {
                     if (currentTodo.getArriveDate() == 0)
                         filteredTodos.get().remove(currentTodo);*/
 
+            if (filter.isScheduled())
+                filterByScheduled(filteredTodos.get());
+
+
             if (filter.isToday())
                 filterByToday(filteredTodos.get());
+
+
+            if (filter.needToFilterByCategory())
+                filterByCategory(filteredTodos.get(), filter.getCategoryIds());
 
         } else if (filter.isDone()) {
-            Thread thread = new Thread(() -> filteredTodos.set(dao.filterByDoneTodos(true, finalPriorities)));
+            Thread thread = new Thread(() ->
+                    filteredTodos.set(dao.filterByDoneTodos(true, finalPriorities))
+            );
             thread.start();
             thread.join();
 
@@ -72,9 +83,14 @@ public class TodoDBRepository {
 
             if (filter.isToday())
                 filterByToday(filteredTodos.get());
+
+            if (filter.needToFilterByCategory())
+                filterByCategory(filteredTodos.get(), filter.getCategoryIds());
 
         } else if (filter.isUndone()) {
-            Thread thread = new Thread(() -> filteredTodos.set(dao.filterByDoneTodos(false, finalPriorities)));
+            Thread thread = new Thread(() ->
+                    filteredTodos.set(dao.filterByDoneTodos(false, finalPriorities))
+            );
             thread.start();
             thread.join();
 
@@ -83,9 +99,27 @@ public class TodoDBRepository {
 
             if (filter.isToday())
                 filterByToday(filteredTodos.get());
+
+            if (filter.needToFilterByCategory())
+                filterByCategory(filteredTodos.get(), filter.getCategoryIds());
         }
 
         todos.postValue(filteredTodos.get());
+    }
+
+    private void filterByCategory(List<Todo> filteredTodos, List<Integer> categoryIds) {
+        if (filteredTodos == null)
+            return;
+
+        List<Todo> newTodos = new ArrayList<>();
+
+        for (Todo todo : filteredTodos) {
+            if (categoryIds.contains(todo.getCategoryId()))
+                newTodos.add(todo);
+        }
+
+        filteredTodos.clear();
+        filteredTodos.addAll(newTodos);
     }
 
     private void filterByScheduled(List<Todo> filteredTodos) {

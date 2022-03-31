@@ -20,9 +20,19 @@ public class Filter implements Serializable {
     private boolean isHigh;
 
     private final List<Priority> priorities;
+    private List<Integer> categoryIds;
 
     public Filter() {
         priorities = new ArrayList<>();
+        categoryIds = new ArrayList<>();
+    }
+
+    public List<Integer> getCategoryIds() {
+        return categoryIds;
+    }
+
+    public void setCategoryIds(List<Integer> categoryIds) {
+        this.categoryIds = categoryIds;
     }
 
     public boolean isDone() {
@@ -101,12 +111,19 @@ public class Filter implements Serializable {
         return priorities;
     }
 
-    public boolean filterIsEmpty() {
-        boolean emptyFilter = !isDone && !isUndone &&
-                !isScheduled && !isToday &&
-                !isLow && !isNormal && !isHigh && priorities.isEmpty() ||
-                !isDone && !isUndone && !isScheduled && !isToday && !isLow && !isNormal && !isHigh && priorities.size() == 3;
+    public boolean needToFilterByCategory() {
+        return categoryIds != null && !categoryIds.isEmpty();
+    }
 
-        return emptyFilter;
+    public boolean filterIsEmpty() {
+        boolean emptyWithNonPrioritiesSelected = !isDone && !isUndone && !isScheduled && !isToday &&
+                !isLow && !isNormal && !isHigh && categoryIds.isEmpty() && priorities.isEmpty();
+
+        boolean emptyWithAllPrioritiesSelected = !isDone && !isUndone && !isScheduled && !isToday &&
+                !isLow && !isNormal && !isHigh && categoryIds.isEmpty() && priorities.size() == 3;
+
+        boolean filterIsEmpty = emptyWithNonPrioritiesSelected || emptyWithAllPrioritiesSelected;
+
+        return filterIsEmpty;
     }
 }

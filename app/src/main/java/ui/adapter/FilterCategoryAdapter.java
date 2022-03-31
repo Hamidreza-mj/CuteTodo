@@ -80,13 +80,15 @@ public class FilterCategoryAdapter extends RecyclerView.Adapter<FilterCategoryAd
         private void bind(Category category) {
             if (category == null)
                 return;
+
             binding.getRoot().requestLayout();
             binding.chip.requestLayout();
+
+            binding.chip.setChecked(category.isSelectedForFilter());
 
             binding.chip.setText(category.getName());
 
             binding.chip.setOnCheckedChangeListener(null);
-            binding.chip.setChecked(false);
             binding.chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (buttonView.isPressed()) {
                     category.setSelectedForFilter(isChecked);

@@ -22,6 +22,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.SheetFilterBinding;
@@ -108,6 +109,9 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
     }
 
     private void initData() {
+        adapter = new FilterCategoryAdapter(getContext());
+
+
         if (filter != null) {
             chkDoneTodo.setChecked(filter.isDone());
             chkUndoneTodo.setChecked(filter.isUndone());
@@ -118,6 +122,17 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
             chkLowPriority.setChecked(filter.isLow());
             chkNormalPriority.setChecked(filter.isNormal());
             chkHighPriority.setChecked(filter.isHigh());
+
+            //select item adapter
+            //+ categories
+            //+ must be select ids
+
+            List<Integer> selectedIds = filter.getCategoryIds();
+            for (int i = 0; i < categories.size(); i++) {
+                Category tempCat = categories.get(i);
+                if (selectedIds.contains(tempCat.getId()))
+                    tempCat.setSelectedForFilter(true);
+            }
         }
     }
 
@@ -143,8 +158,7 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
             onClearClick.onClick();
         });
 
-        adapter = new FilterCategoryAdapter(requireContext());
-        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(requireContext());
+        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getContext());
         layoutManager.setFlexDirection(FlexDirection.ROW_REVERSE);
         layoutManager.setJustifyContent(JustifyContent.FLEX_START);
         layoutManager.setFlexWrap(FlexWrap.WRAP);
@@ -200,10 +214,22 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
         filter.setNormal(chkNormalPriority.isChecked());
         filter.setHigh(chkHighPriority.isChecked());
 
+        filter.setCategoryIds(getSelectedIdsInAdapter());
+
         return filter;
     }
 
-    public void clearCheckBoxes() {
+    private ArrayList<Integer> getSelectedIdsInAdapter() {
+        ArrayList<Integer> categoryIds = new ArrayList<>();
+        for (int i = 0; i < adapter.getSelectedItems().size(); i++) {
+            Category tempCat = adapter.getSelectedItems().get(i);
+            categoryIds.add(tempCat.getId());
+        }
+
+        return categoryIds;
+    }
+
+    public void clearFilterViews() {
         if (chkDoneTodo == null) {//check one checkbox that's enough
             dismiss();
             return;
@@ -220,7 +246,16 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
         chkNormalPriority.setChecked(false);
         chkHighPriority.setChecked(false);
 
+        clearSelectRecyclerView();
+
         disableViews();
+    }
+
+    private void clearSelectRecyclerView() {
+        for (int i = 0; i < categories.size(); i++)
+            categories.get(i).setSelectedForFilter(false);
+
+        adapter.getDiffer().submitList(categories);
     }
 
     public void disableViews() {
@@ -240,6 +275,7 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
         chkHighPriority.setEnabled(false);
         btnApplyFilter.setEnabled(false);
         btnClearFilter.setEnabled(false);
+        binding.rvCategory.setEnabled(false);
     }
 
     @NonNull
@@ -294,7 +330,10 @@ public class FilterBottomSheet extends BottomSheetDialogFragment {
 
     private int getWindowHeight() {
         try {
-            return requireContext().getResources().getDisplayMetrics().heightPixels;
+            if (getContext() == null)
+                return 1000;
+
+            return getContext().getResources().getDisplayMetrics().heightPixels;
         } catch (Exception e) {
             return 1000;
         }

@@ -50,7 +50,8 @@ public class Category implements Comparable<Category>, Serializable {
     @Override
     public int compareTo(Category category) {
         boolean isSame = id == category.getId() &&
-                Objects.equals(name, category.getName());
+                Objects.equals(name, category.getName()) &&
+                selectedForFilter == category.isSelectedForFilter();
 
         if (isSame)
             return 0;

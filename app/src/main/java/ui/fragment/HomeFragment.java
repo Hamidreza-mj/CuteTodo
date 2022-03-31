@@ -235,7 +235,7 @@ public class HomeFragment extends BaseFragment {
             });
 
             filterBottomSheet.setOnClearClick(() -> {
-                filterBottomSheet.clearCheckBoxes();
+                filterBottomSheet.clearFilterViews();
                 getTodoViewModel().applyFilter(null);
                 //goToTop(800);
                 scrollBehavior.slideUp(frameLytButton);
@@ -356,7 +356,7 @@ public class HomeFragment extends BaseFragment {
                         rvTodo.setVisibility(View.GONE);
                         lytEmpty.setVisibility(View.VISIBLE);
 
-                        if (getTodoViewModel().getCurrentFilter() == null || getTodoViewModel().getCurrentFilter().filterIsEmpty()) {
+                        if (getTodoViewModel().getCurrentFilter() == null /*|| getTodoViewModel().getCurrentFilter().filterIsEmpty()*/) {
                             filterIndicator.setVisibility(View.GONE);
                             lytGuide.setVisibility(View.VISIBLE);
                             txtEmptyTitle.setText(getString(R.string.todos_empty));
