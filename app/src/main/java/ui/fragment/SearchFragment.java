@@ -2,6 +2,7 @@ package ui.fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -24,8 +25,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.tabs.TabLayout;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
 import hlv.cute.todo.R;
 import hlv.cute.todo.databinding.FragmentSearchBinding;
+import model.Category;
 import model.Search;
 import ui.adapter.TodoAdapter;
 import ui.dialog.DeleteDialog;
@@ -99,11 +107,74 @@ public class SearchFragment extends BaseFragment {
         txtResult = binding.txtResult;
 
         new Handler().postDelayed(() -> {
+            edtSearch.setText("");
             edtSearch.requestFocus();
             showKeyboard();
         }, 500);
 
+        handleTabLayout();
+
         handleShadowScroll();
+    }
+
+    private void handleTabLayout() {
+        List<Category> allCategories = getCategoryViewModel().getAllCategories();
+        Category categoryAllItem = new Category();
+        categoryAllItem.setId(0);
+        categoryAllItem.setName("همه");
+        allCategories.add(0, categoryAllItem);
+
+        Collections.reverse(allCategories);
+
+        int maxLength = 18;
+
+        for (Category category : allCategories) {
+            String categoryName = category.getName();
+
+            if (categoryName.length() > maxLength) {
+                String categoryWithEllipsis = categoryName.substring(0, maxLength) + getString(R.string.ellipsis);
+                binding.tabLyt.addTab(binding.tabLyt.newTab().setText(categoryWithEllipsis));
+            } else {
+                binding.tabLyt.addTab(binding.tabLyt.newTab().setText(categoryName));
+            }
+        }
+
+        int lastTabPos = binding.tabLyt.getTabCount() - 1;
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            search.setCategoryId(categoryAllItem.getId());
+            binding.tabLyt.selectTab(binding.tabLyt.getTabAt(lastTabPos), true);
+        }, 100);
+
+        binding.tabLyt.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int tabCategoryId = allCategories.get(tab.getPosition()).getId();
+                search.setCategoryId(tabCategoryId);
+                nested.smoothScrollTo(0, 0, 500);
+
+                if (tab.getPosition() == lastTabPos) {//all
+                    getSearchViewModel().fetch();
+                } else {
+                    String searchText = Objects.requireNonNull(edtSearch.getText()).toString();
+
+                    if (searchText.isEmpty()) {
+                        getSearchViewModel().fetch(tabCategoryId);
+                    } else {
+                        search.setTerm(searchText);
+                        getSearchViewModel().fetch(search);
+                    }
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                nested.smoothScrollTo(0, 0, 500);
+            }
+        });
     }
 
     private void handleShadowScroll() {
@@ -135,6 +206,20 @@ public class SearchFragment extends BaseFragment {
                 searchModeBottomSheet.disableViews();
                 search.setTerm(getSearchViewModel().getCurrentTerm());
                 getSearchViewModel().search(search);
+
+                ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) binding.tabLyt.getLayoutParams();
+
+                if (search.getSearchMode() == Search.SearchMode.CATEGORY || search.getSearchMode() == Search.SearchMode.BOTH) {
+                    binding.tabLyt.setVisibility(View.INVISIBLE);
+                    lp.height = (int) getResources().getDimension(R.dimen.heigh_invisible_space);
+                } else {
+                    binding.tabLyt.setVisibility(View.VISIBLE);
+                    lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                }
+
+                binding.tabLyt.setLayoutParams(lp);
+                binding.tabLyt.requestLayout();
+
                 searchModeBottomSheet.dismiss();
             });
         });

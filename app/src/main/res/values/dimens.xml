@@ -9,4 +9,5 @@
     <dimen name="toolbar_sheet_shadow">5dp</dimen>
     <dimen name="corner_icon_ripple">14dp</dimen>
     <dimen name="mergin_end_for_detail_button">10dp</dimen>
+    <dimen name="heigh_invisible_space">15dp</dimen>
 </resources>

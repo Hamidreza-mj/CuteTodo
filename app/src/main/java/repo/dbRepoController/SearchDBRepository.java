@@ -23,9 +23,16 @@ public class SearchDBRepository {
         new Thread(() -> todosLive.postValue(dao.getAllTodos())).start();
     }
 
+    public void initFetch(int categoryId) {
+        new Thread(() -> todosLive.postValue(dao.getTodosWithCategory(categoryId))).start();
+    }
+
     public void searchTodo(String term) {
         new Thread(() -> todosLive.postValue(dao.searchTodo(term))).start();
+    }
 
+    public void searchTodo(String term, int categoryId) {
+        new Thread(() -> todosLive.postValue(dao.searchTodoWithCategoryId(term, categoryId))).start();
     }
 
     public void searchCategory(String term) {

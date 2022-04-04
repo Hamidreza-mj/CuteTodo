@@ -28,6 +28,9 @@ public interface TodoDao {
     @Query("SELECT * FROM todos ORDER BY is_done, id DESC;")
     List<Todo> getAllTodos();
 
+    @Query("SELECT * FROM todos WHERE category_id = :categoryId ORDER BY is_done, id DESC;")
+    List<Todo> getTodosWithCategory(int categoryId);
+
     @Query("SELECT * FROM todos WHERE id = :todoID;")
     Todo getTodo(long todoID);
 
@@ -57,6 +60,9 @@ public interface TodoDao {
 
     @Query("SELECT * FROM todos WHERE title LIKE '%' || :term || '%' ORDER BY is_done, id DESC;")
     List<Todo> searchTodo(String term);
+
+    @Query("SELECT * FROM todos WHERE title LIKE '%' || :term || '%' AND category_id = :categoryId ORDER BY is_done, id DESC;")
+    List<Todo> searchTodoWithCategoryId(String term, int categoryId);
 
     @Query("SELECT * FROM todos WHERE category LIKE '%' || :term || '%' ORDER BY is_done, id DESC;")
     List<Todo> searchCategory(String term);

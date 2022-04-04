@@ -29,6 +29,10 @@ public class SearchViewModel extends ViewModel {
             search(search);
     }
 
+    public void fetch(int categoryId) {
+        dbRepository.initFetch(categoryId);
+    }
+
     public void fetch() {
         fetch(getSearch());
     }
@@ -39,7 +43,10 @@ public class SearchViewModel extends ViewModel {
         switch (search.getSearchMode()) {
             case TODO:
             default:
-                dbRepository.searchTodo(search.getTerm());
+                if (search.getCategoryId() == 0)
+                    dbRepository.searchTodo(search.getTerm());
+                else
+                    dbRepository.searchTodo(search.getTerm(), search.getCategoryId());
                 break;
 
             case CATEGORY:

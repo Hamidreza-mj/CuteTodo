@@ -46,6 +46,10 @@
         <item name="android:fontFamily">@font/vazir_regular</item>
     </style>
 
+    <style name="TextRG15" parent="TextRG14">
+        <item name="android:textSize">15sp</item>
+    </style>
+
     <!-- Text with medium weight and size 14 style -->
     <style name="TextMD14">
         <item name="android:textAllCaps">false</item>
