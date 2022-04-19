@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.transition.Slide;
+import android.util.Log;
 import android.view.Gravity;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.yandex.metrica.push.YandexMetricaPush;
 
 import java.util.Objects;
 
@@ -55,6 +58,9 @@ public class MainActivity extends BaseActivity {
                     configIntentTodo(externalIntent.getStringExtra(Intent.EXTRA_PROCESS_TEXT));
                 return;
             }
+        } else if (YandexMetricaPush.OPEN_DEFAULT_ACTIVITY_ACTION.equals(action)) {
+            String payload = externalIntent.getStringExtra(YandexMetricaPush.EXTRA_PAYLOAD); //yandex open with ntification
+            Log.e(Constants.Tags.DEBUG, "onReceive: " + payload);
         }
 
         initViews();
@@ -72,7 +78,7 @@ public class MainActivity extends BaseActivity {
         fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO);
-        transaction.addToBackStack(Constants.BackStack.ADD_EDIT_TODO);
+        transaction.addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO);
         transaction.commit();
     }
 

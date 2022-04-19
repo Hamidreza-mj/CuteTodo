@@ -174,7 +174,7 @@ public class TodoDetailFragment extends BaseFragment {
             fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
             transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO);
-            transaction.addToBackStack(Constants.BackStack.ADD_EDIT_TODO);
+            transaction.addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO);
             transaction.commit();
         });
 

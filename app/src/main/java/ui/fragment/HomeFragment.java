@@ -165,7 +165,7 @@ public class HomeFragment extends BaseFragment {
                 fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                 transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.CATEGORY);
-                transaction.addToBackStack(Constants.BackStack.CATEGORY);
+                transaction.addToBackStack(Constants.FragmentTag.CATEGORY);
                 transaction.commit();
 
                 globalMenu.dismiss();
@@ -248,7 +248,7 @@ public class HomeFragment extends BaseFragment {
             fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
             transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.SEARCH);
-            transaction.addToBackStack(Constants.BackStack.SEARCH);
+            transaction.addToBackStack(Constants.FragmentTag.SEARCH);
             transaction.commit();
         });
 
@@ -257,7 +257,7 @@ public class HomeFragment extends BaseFragment {
             fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
             transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO);
-            transaction.addToBackStack(Constants.BackStack.ADD_EDIT_TODO);
+            transaction.addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO);
             transaction.commit();
         });
 
@@ -283,7 +283,7 @@ public class HomeFragment extends BaseFragment {
                         fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
                         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                         transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO);
-                        transaction.addToBackStack(Constants.BackStack.ADD_EDIT_TODO);
+                        transaction.addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO);
                         transaction.commit();
                     });
 
@@ -309,7 +309,7 @@ public class HomeFragment extends BaseFragment {
 //                        transaction.addSharedElement(sharedElement, sharedElement.getTransitionName());
                         transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.TODO_DETAIL);
 //                        transaction.hide(this);
-                        transaction.addToBackStack(Constants.BackStack.TODO_DETAIL);
+                        transaction.addToBackStack(Constants.FragmentTag.TODO_DETAIL);
                         transaction.commit();
                     });
 

@@ -1,6 +1,11 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
 }
+
+def keyPropertiesFile = rootProject.file("key.properties")
+def keyProperties = new Properties()
+keyProperties.load(new FileInputStream(keyPropertiesFile))
 
 android {
     compileSdk 31
@@ -14,6 +19,8 @@ android {
 
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "METRICA_KEY", keyProperties['METRICA_KEY'])
     }
 
     buildTypes {
@@ -60,6 +67,34 @@ dependencies {
 
     //flexbox
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
+
+
+    //Firebase
+    // When using the BoM, don't specify versions in Firebase dependencies
+    //https://firebase.google.com/docs/android/setup#available-libraries
+    implementation platform('com.google.firebase:firebase-bom:29.2.1')
+
+    implementation 'com.google.firebase:firebase-analytics'
+
+    //push notification
+    implementation 'com.google.firebase:firebase-messaging'
+
+    //in-app messaging
+    implementation 'com.google.firebase:firebase-inappmessaging'
+    implementation 'com.google.firebase:firebase-inappmessaging-display'
+    //
+
+    //app metrica
+    implementation 'com.yandex.android:mobmetricalib:4.2.0'
+
+    //notif sdk
+    //without caching
+    implementation("com.yandex.android:mobmetricapushlib:2.1.1") {
+        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+    }
+
+    implementation 'com.google.android.gms:play-services-base:18.0.1'
+
 
     //test libs
     testImplementation 'junit:junit:4.13.2'

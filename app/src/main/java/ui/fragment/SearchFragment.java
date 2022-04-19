@@ -283,7 +283,7 @@ public class SearchFragment extends BaseFragment {
                         fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
                         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                         transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO);
-                        transaction.addToBackStack(Constants.BackStack.ADD_EDIT_TODO);
+                        transaction.addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO);
                         transaction.commit();
                     });
 
@@ -294,7 +294,7 @@ public class SearchFragment extends BaseFragment {
                         fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
                         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                         transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.TODO_DETAIL);
-                        transaction.addToBackStack(Constants.BackStack.TODO_DETAIL);
+                        transaction.addToBackStack(Constants.FragmentTag.TODO_DETAIL);
                         transaction.commit();
                     });
 

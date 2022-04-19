@@ -11,7 +11,8 @@ public class Constants {
     public static class Tags {
         public static final String ALARM_TAG = "=== AlarmReceived ===";
         public static final String SUCCESS_NOTIF_ALARM = "=== Notif Successed ===";
-        public static final String DEBUG = "DEBUG";
+        public static final String DEBUG = "=== DEBUG CUTE ===";
+        public static final String FCM = "FCM-SERVICE";
     }
 
     public static class FragmentTag {
@@ -22,15 +23,6 @@ public class Constants {
 
         public static final String SEARCH = "search-fragment";
         public static final String TODO_DETAIL = "todo-detail-fragment";
-    }
-
-    public static class BackStack {
-        public static final String CATEGORY = "category-backstack";
-        public static final String ADD_EDIT_TODO = "add-edit-todo-backstack";
-        public static final String ADD_EDIT_CATEGORY = "add-edit-category-backstack";
-
-        public static final String SEARCH = "search-backstack";
-        public static final String TODO_DETAIL = "todo-detail-backstack";
     }
 
 }

@@ -144,5 +144,6 @@
     <string name="todo_filter_type">نوع کار:</string>
     <string name="todo_filter_category">دسته‌بندی:</string>
     <string name="todo_filter_priority">اولویت:</string>
+    <string name="notification_channel_id">cute-todo-channel-id</string>
 
 </resources>

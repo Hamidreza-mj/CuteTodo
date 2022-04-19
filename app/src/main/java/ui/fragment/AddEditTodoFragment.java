@@ -268,7 +268,7 @@ public class AddEditTodoFragment extends BaseFragment {
                 fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                 transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.CATEGORY);
-                transaction.addToBackStack(Constants.BackStack.CATEGORY);
+                transaction.addToBackStack(Constants.FragmentTag.CATEGORY);
                 transaction.commit();
 
                 dropDown.dismiss();
