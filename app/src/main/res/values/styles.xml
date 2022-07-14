@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <style name="Fa_Regular">
+        <item name="android:fontFamily">@font/vazir_rd_fd_regular</item>
+    </style>
+
+    <style name="Fa_Medium">
+        <item name="android:fontFamily">@font/vazir_rd_fd_medium</item>
+    </style>
+
+    <style name="Fa_Bold">
+        <item name="android:fontFamily">@font/vazir_rd_fd_bold</item>
+    </style>
+
+    <style name="Fa_Black">
+        <item name="android:fontFamily">@font/vazir_rd_fd_black</item>
+    </style>
+
+
     <!-- Toolbar title in english style -->
     <style name="ToolbarTitleEN">
         <item name="android:textAllCaps">true</item>
@@ -11,39 +29,36 @@
     </style>
 
     <!-- Toolbar title in persian style -->
-    <style name="ToolbarTitleFA">
+    <style name="ToolbarTitleFA" parent="Fa_Black">
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">17sp</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:fontFamily">@font/vazir_bold</item>
     </style>
 
-    <!-- Normal text with medium weight and size 18 style -->
-    <style name="TextNormalMD18">
-        <item name="android:textAllCaps">false</item>
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:fontFamily">@font/vazir_medium</item>
-    </style>
+    <!--  &lt;!&ndash; Normal text with medium weight and size 18 style &ndash;&gt;
+      <style name="TextNormalMD18">
+          <item name="android:textAllCaps">false</item>
+          <item name="android:textColor">@color/black</item>
+          <item name="android:textSize">18sp</item>
+          <item name="android:textStyle">normal</item>
+          <item name="android:fontFamily">@font/vazir_rd_fd_black</item>
+      </style>-->
 
     <!-- Normal text with medium weight and size 16 style -->
-    <style name="TextNormalMD16">
+    <style name="TextNormalMD16" parent="Fa_Medium">
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:fontFamily">@font/vazir_medium</item>
     </style>
 
     <!-- Text with regular weight and size 14 style -->
-    <style name="TextRG14">
+    <style name="TextRG14" parent="Fa_Regular">
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:fontFamily">@font/vazir_regular</item>
     </style>
 
     <style name="TextRG15" parent="TextRG14">
@@ -51,21 +66,19 @@
     </style>
 
     <!-- Text with medium weight and size 14 style -->
-    <style name="TextMD14">
+    <style name="TextMD14" parent="Fa_Medium">
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:fontFamily">@font/vazir_medium</item>
     </style>
 
     <!-- Text with regular weight and size 16 style -->
-    <style name="TextRG16">
+    <style name="TextRG16" parent="Fa_Regular">
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:fontFamily">@font/vazir_regular</item>
     </style>
 
     <!-- CheckBox -->
@@ -181,7 +194,7 @@
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textColorHint">@color/gray</item>
-        <item name="android:fontFamily">@font/vazir_medium</item>
+        <item name="android:fontFamily">@font/vazir_rd_fd_regular</item>
     </style>
 
     <!-- Custom Dialog Style-->
@@ -231,7 +244,7 @@
         <item name="android:textColorPrimary">@color/black</item>
         <!-- line divider color -->
         <item name="colorControlNormal">#5ECCCCCC</item>
-        <item name="android:fontFamily">@font/vazir_medium</item>
+        <item name="android:fontFamily">@font/vazir_rd_fd_medium</item>
     </style>
 
     <style name="RippleRed">
