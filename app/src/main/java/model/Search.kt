@@ -1,44 +1,15 @@
-package model;
+package model
 
-import androidx.annotation.Keep;
-
-import java.io.Serializable;
+import androidx.annotation.Keep
+import java.io.Serializable
 
 @Keep
-public class Search implements Serializable {
+class Search : Serializable {
+    var term: String? = null
+    var searchMode: SearchMode = SearchMode.TODO
+    var categoryId = 0
 
-    private String term;
-    private SearchMode searchMode;
-    private int categoryId = 0;
-
-    public String getTerm() {
-        return term;
-    }
-
-    public void setTerm(String term) {
-        this.term = term;
-    }
-
-    public SearchMode getSearchMode() {
-        return searchMode;
-    }
-
-    public void setSearchMode(SearchMode searchMode) {
-        this.searchMode = searchMode;
-    }
-
-    public int getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public enum SearchMode {
+    enum class SearchMode {
         TODO, CATEGORY, BOTH
     }
-
 }
-
-

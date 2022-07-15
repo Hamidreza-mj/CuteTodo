@@ -1,8 +1,8 @@
-package model;
+package model
 
-import androidx.annotation.Keep;
+import androidx.annotation.Keep
 
 @Keep
-public enum Priority {
+enum class Priority {
     LOW, NORMAL, HIGH
 }

@@ -1,61 +1,29 @@
-package model;
+package model
 
-import androidx.annotation.Keep;
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
-
-import java.io.Serializable;
-import java.util.Objects;
+import androidx.annotation.Keep
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Keep
 @Entity(tableName = "categories")
-public class Category implements Comparable<Category>, Serializable {
-
+data class Category(
     @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    var id: Int = 0,
 
     @ColumnInfo(name = "name")
-    private String name;
+    var name: String? = null,
 
     @Ignore
-    private boolean selectedForFilter = false;
+    var isSelectedForFilter: Boolean = false
+) : Comparable<Category>, Serializable {
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean isSelectedForFilter() {
-        return selectedForFilter;
-    }
-
-    public void setSelectedForFilter(boolean selectedForFilter) {
-        this.selectedForFilter = selectedForFilter;
-    }
-
-    @Override
-    public int compareTo(Category category) {
-        boolean isSame = id == category.getId() &&
-                Objects.equals(name, category.getName()) &&
-                selectedForFilter == category.isSelectedForFilter();
-
-        if (isSame)
-            return 0;
-
-        return 1;
+    override fun compareTo(other: Category): Int {
+        val isSame = id == other.id &&
+                name == other.name && isSelectedForFilter == other.isSelectedForFilter
+        return if (isSame) 0 else 1
     }
 }

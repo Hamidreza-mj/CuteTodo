@@ -1,116 +1,51 @@
-package model;
+package model
 
-import androidx.annotation.Keep;
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
-
-import java.io.Serializable;
+import androidx.annotation.Keep
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Keep
 @Entity(tableName = "notifications")
-public class Notification implements Serializable {
-
+data class Notification(
     @ColumnInfo(name = "id")
-    @PrimaryKey()
-    private int id;
+    @PrimaryKey
+    var id: Int = 0,
 
     @ColumnInfo(name = "content")
-    private String content;
+    var content: String? = null,
 
     @ColumnInfo(name = "is_done")
-    private boolean isDone;
+    var isDone: Boolean = false,
 
     @ColumnInfo(name = "is_shown", defaultValue = "false")
-    private boolean isShown;
+    var isShown: Boolean = false,
 
     @ColumnInfo(name = "arrive_date", defaultValue = "0")
-    private long arriveDate;
+    var arriveDate: Long = 0,
 
     @ColumnInfo(name = "priority")
-    private Priority priority;
+    var priority: Priority? = null,
 
     @ColumnInfo(name = "category")
-    private String category;
+    var category: String? = null,
 
     @ColumnInfo(name = "category_id", defaultValue = "0")
-    private int categoryId;
+    var categoryId: Int = 0
+) : Serializable {
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public boolean isDone() {
-        return isDone;
-    }
-
-    public void setDone(boolean done) {
-        isDone = done;
-    }
-
-    public boolean isShown() {
-        return isShown;
-    }
-
-    public void setShown(boolean shown) {
-        isShown = shown;
-    }
-
-    public long getArriveDate() {
-        return arriveDate;
-    }
-
-    public void setArriveDate(long arriveDate) {
-        this.arriveDate = arriveDate;
-    }
-
-    public Priority getPriority() {
-        return priority;
-    }
-
-    public void setPriority(Priority priority) {
-        this.priority = priority;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public int getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public void initWith(Todo initTodo) {
+    fun initWith(initTodo: Todo?) {
         if (initTodo == null)
-            return;
+            return
 
-        id = initTodo.getId();
-        content = initTodo.getTitle();
-        isDone = initTodo.isDone();
-        isShown = false;
-        arriveDate = initTodo.getArriveDate();
-        priority = initTodo.getPriority();
-        category = initTodo.getCategory();
-        categoryId = initTodo.getCategoryId();
+        id = initTodo.id
+        content = initTodo.title
+        isDone = initTodo.isDone
+        isShown = false
+        arriveDate = initTodo.arriveDate
+        priority = initTodo.priority
+        category = initTodo.category
+        categoryId = initTodo.categoryId
     }
 }

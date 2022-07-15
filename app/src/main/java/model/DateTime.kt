@@ -1,64 +1,38 @@
-package model;
+package model
 
-import androidx.annotation.Keep;
-
-import java.io.Serializable;
-
-import ir.hamsaa.persiandatepicker.api.PersianPickerDate;
+import androidx.annotation.Keep
+import ir.hamsaa.persiandatepicker.api.PersianPickerDate
+import java.io.Serializable
 
 @Keep
-public class DateTime implements Serializable {
-
+class DateTime : Serializable {
     //if field of serializable class not implement Serializable,
     // must be add `transient` keyword to that
-    private transient PersianPickerDate date;
-    private int hour;
-    private int minute;
+    @Transient
+    var date: PersianPickerDate? = null
 
-    public PersianPickerDate getDate() {
-        return date;
+    var hour = 0
+    var minute = 0
+
+    val hourString: String
+        get() = normalizeTime(hour)
+
+    val minuteString: String
+        get() = normalizeTime(minute)
+
+    fun normalizeTime(clock: Int): String {
+        return if (clock < 10)
+            "0$clock"
+        else
+            clock.toString()
     }
 
-    public void setDate(PersianPickerDate date) {
-        this.date = date;
-    }
+    val clock: String
+        get() = "$hourString:$minuteString"
 
-    public int getHour() {
-        return hour;
-    }
-
-    public void setHour(int hour) {
-        this.hour = hour;
-    }
-
-    public int getMinute() {
-        return minute;
-    }
-
-    public void setMinute(int minute) {
-        this.minute = minute;
-    }
-
-    public String getHourString() {
-        return normalizeTime(hour);
-    }
-
-    public String getMinuteString() {
-        return normalizeTime(minute);
-    }
-
-    public String normalizeTime(int clock) {
-        return clock < 10 ? "0" + clock : String.valueOf(clock);
-    }
-
-    public String getClock() {
-        return getHourString() + ":" + getMinuteString();
-    }
-
-    public String getPersianDate() {
-        return date.getPersianDayOfWeekName() +
-                "، " + date.getPersianDay() +
-                " " + date.getPersianMonthName() +
-                " " + date.getPersianYear();
-    }
+    val persianDate: String
+        get() = date!!.persianDayOfWeekName +
+                "، " + date!!.persianDay +
+                " " + date!!.persianMonthName +
+                " " + date!!.persianYear
 }

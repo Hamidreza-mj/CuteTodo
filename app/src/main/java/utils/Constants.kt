@@ -1,28 +1,25 @@
-package utils;
+package utils
 
-public class Constants {
-
-    public static class Keys {
-        public static final String NOTIF_ID_KEY = "notif-id";
-        public static final String NOTIF_CONTENT_KEY = "notif-content";
-        public static final String NOTIF_ID_DETAIL = "notif-id-detail";
+class Constants {
+    object Keys {
+        const val NOTIF_ID_KEY = "notif-id"
+        const val NOTIF_CONTENT_KEY = "notif-content"
+        const val NOTIF_ID_DETAIL = "notif-id-detail"
     }
 
-    public static class Tags {
-        public static final String ALARM_TAG = "=== AlarmReceived ===";
-        public static final String SUCCESS_NOTIF_ALARM = "=== Notif Successed ===";
-        public static final String DEBUG = "=== DEBUG CUTE ===";
-        public static final String FCM = "FCM-SERVICE";
+    object Tags {
+        const val ALARM_TAG = "=== AlarmReceived ==="
+        const val SUCCESS_NOTIF_ALARM = "=== Notif Successed ==="
+        const val DEBUG = "=== DEBUG CUTE ==="
+        const val FCM = "FCM-SERVICE"
     }
 
-    public static class FragmentTag {
-        public static final String HOME = "home-fragment";
-        public static final String CATEGORY = "category-fragment";
-        public static final String ADD_EDIT_TODO = "add-edit-todo-fragment";
-        public static final String ADD_EDIT_CATEGORY = "add-edit-category-fragment";
-
-        public static final String SEARCH = "search-fragment";
-        public static final String TODO_DETAIL = "todo-detail-fragment";
+    object FragmentTag {
+        const val HOME = "home-fragment"
+        const val CATEGORY = "category-fragment"
+        const val ADD_EDIT_TODO = "add-edit-todo-fragment"
+        const val ADD_EDIT_CATEGORY = "add-edit-category-fragment"
+        const val SEARCH = "search-fragment"
+        const val TODO_DETAIL = "todo-detail-fragment"
     }
-
 }
