@@ -44,12 +44,12 @@ public class ToastHelper {
             }
             TOASTS.clear();
 
-            Toast toast = new Toast(App.get().applicationContext);
+            Toast toast = new Toast(App.get().getAppContext());
             @SuppressLint("InflateParams")
-            View view = LayoutInflater.from(App.get().applicationContext).inflate(R.layout.toast, null, false);
+            View view = LayoutInflater.from(App.get().getAppContext()).inflate(R.layout.toast, null, false);
             TextView txtToast = view.findViewById(R.id.toast_txt);
             txtToast.setText(message);
-            txtToast.setTypeface(Typeface.createFromAsset(App.get().applicationContext.getAssets(), "font/vazir_regular.ttf"));
+            txtToast.setTypeface(Typeface.createFromAsset(App.get().getAppContext().getAssets(), "font/vazir_regular.ttf"));
             toast.setDuration(isLongDuration ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.BOTTOM, 0, 100);
             toast.setView(view);
@@ -66,12 +66,12 @@ public class ToastHelper {
             }
             TOASTS.clear();
 
-            Toast toast = new Toast(App.get().applicationContext);
+            Toast toast = new Toast(App.get().getAppContext());
             @SuppressLint("InflateParams")
-            View view = LayoutInflater.from(App.get().applicationContext).inflate(R.layout.toast_lottie, null, false);
+            View view = LayoutInflater.from(App.get().getAppContext()).inflate(R.layout.toast_lottie, null, false);
             TextView txtToast = view.findViewById(R.id.toast_txt);
             txtToast.setText(message);
-            txtToast.setTypeface(Typeface.createFromAsset(App.get().applicationContext.getAssets(), "font/vazir_regular.ttf"));
+            txtToast.setTypeface(Typeface.createFromAsset(App.get().getAppContext().getAssets(), "font/vazir_regular.ttf"));
             toast.setDuration(isLongDuration ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.BOTTOM, 0, 100);
             toast.setView(view);

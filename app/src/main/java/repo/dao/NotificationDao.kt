@@ -1,51 +1,41 @@
-package repo.dao;
+package repo.dao
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import java.util.List;
-
-import model.Notification;
+import androidx.room.*
+import model.Notification
 
 @Dao
-public interface NotificationDao {
+interface NotificationDao {
 
-    @Insert(entity = Notification.class, onConflict = OnConflictStrategy.REPLACE)
-    void create(Notification notification);
+    @Insert(entity = Notification::class, onConflict = OnConflictStrategy.REPLACE)
+    fun create(notification: Notification?)
 
-    @Update(entity = Notification.class, onConflict = OnConflictStrategy.REPLACE)
-    void update(Notification notification);
+    @Update(entity = Notification::class, onConflict = OnConflictStrategy.REPLACE)
+    fun update(notification: Notification?)
 
-    @Delete(entity = Notification.class)
-    void delete(Notification notification);
-
+    @Delete(entity = Notification::class)
+    fun delete(notification: Notification?)
 
     @Query("SELECT * FROM notifications;")
-    List<Notification> getAllNotifications();
+    fun getAllNotifications(): List<Notification>?
 
     @Query("SELECT * FROM notifications WHERE is_done = 1;")
-    List<Notification> getAllDoneNotifications();
+    fun getAllDoneNotifications(): List<Notification>?
 
     @Query("DELETE FROM notifications WHERE is_shown = 1;")
-    void deleteShownNotifications();
+    fun deleteShownNotifications()
 
     @Query("SELECT * FROM notifications WHERE id = :id;")
-    Notification getNotification(long id);
+    fun getNotification(id: Long): Notification?
 
     @Query("UPDATE notifications SET is_done = not is_done WHERE id = :id")
-    void setDoneTodo(long id);
+    fun setDoneTodo(id: Long)
 
     @Query("UPDATE notifications SET is_shown = 1 WHERE id = :id;")
-    void setShownTodo(long id);
+    fun setShownTodo(id: Long)
 
     @Query("DELETE FROM notifications;")
-    void deleteAllNotifications();
+    fun deleteAllNotifications()
 
     @Query("DELETE FROM notifications WHERE is_done = 1;")
-    void deleteAllDoneNotifications();
-
+    fun deleteAllDoneNotifications()
 }

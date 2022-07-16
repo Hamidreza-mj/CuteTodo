@@ -1,72 +1,63 @@
-package repo.dao;
+package repo.dao
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import java.util.List;
-
-import model.Priority;
-import model.Todo;
+import androidx.room.*
+import model.Priority
+import model.Todo
 
 @Dao
-public interface TodoDao {
+interface TodoDao {
 
-    @Insert(entity = Todo.class, onConflict = OnConflictStrategy.REPLACE)
-    long create(Todo todo);
+    @Insert(entity = Todo::class, onConflict = OnConflictStrategy.REPLACE)
+    fun create(todo: Todo?): Long
 
-    @Update(entity = Todo.class, onConflict = OnConflictStrategy.REPLACE)
-    void update(Todo todo);
+    @Update(entity = Todo::class, onConflict = OnConflictStrategy.REPLACE)
+    fun update(todo: Todo?)
 
-    @Delete(entity = Todo.class)
-    void delete(Todo todo);
-
+    @Delete(entity = Todo::class)
+    fun delete(todo: Todo?)
 
     @Query("SELECT * FROM todos ORDER BY is_done, id DESC;")
-    List<Todo> getAllTodos();
+    fun getAllTodos(): List<Todo>?
 
     @Query("SELECT * FROM todos WHERE category_id = :categoryId ORDER BY is_done, id DESC;")
-    List<Todo> getTodosWithCategory(int categoryId);
+    fun getTodosWithCategory(categoryId: Int): List<Todo>?
 
     @Query("SELECT * FROM todos WHERE id = :todoID;")
-    Todo getTodo(long todoID);
+    fun getTodo(todoID: Long): Todo?
 
     @Query("DELETE FROM todos;")
-    void deleteAllTodos();
+    fun deleteAllTodos()
 
     @Query("DELETE FROM todos WHERE is_done = 1;")
-    void deleteAllDoneTodo();
+    fun deleteAllDoneTodo()
 
     @Query("SELECT COUNT(*) FROM todos;")
-    long getTodosCount();
+    fun getTodosCount(): Long
 
     @Query("SELECT COUNT(*) FROM todos WHERE is_done = 1;")
-    long getDoneTodosCount();
+    fun getDoneTodosCount(): Long
 
     @Query("UPDATE todos SET is_done = not is_done WHERE id = :todoID")
-    void setDoneTodo(long todoID);
+    fun setDoneTodo(todoID: Long)
 
     @Query("UPDATE todos SET is_done = 1 WHERE id = :todoID")
-    void setTodoIsDone(long todoID);
+    fun setTodoIsDone(todoID: Long)
 
     @Query("SELECT * FROM todos WHERE is_done = :isDone AND priority IN (:priorities) ORDER BY is_done, id DESC;")
-    List<Todo> filterByDoneTodos(boolean isDone, List<Priority> priorities);
+    fun filterByDoneTodos(isDone: Boolean, priorities: List<Priority?>?): List<Todo>?
 
     @Query("SELECT * FROM todos WHERE priority IN (:priorities) ORDER BY is_done, id DESC;")
-    List<Todo> filterByAllTodos(List<Priority> priorities);
+    fun filterByAllTodos(priorities: List<Priority?>?): List<Todo>?
 
     @Query("SELECT * FROM todos WHERE title LIKE '%' || :term || '%' ORDER BY is_done, id DESC;")
-    List<Todo> searchTodo(String term);
+    fun searchTodo(term: String?): List<Todo>?
 
     @Query("SELECT * FROM todos WHERE title LIKE '%' || :term || '%' AND category_id = :categoryId ORDER BY is_done, id DESC;")
-    List<Todo> searchTodoWithCategoryId(String term, int categoryId);
+    fun searchTodoWithCategoryId(term: String?, categoryId: Int): List<Todo>?
 
     @Query("SELECT * FROM todos WHERE category LIKE '%' || :term || '%' ORDER BY is_done, id DESC;")
-    List<Todo> searchCategory(String term);
+    fun searchCategory(term: String?): List<Todo>?
 
     @Query("SELECT * FROM todos WHERE title LIKE '%' || :term || '%' OR category LIKE '%' || :term || '%' ORDER BY is_done, id DESC;")
-    List<Todo> searchTodoWithCategory(String term);
+    fun searchTodoWithCategory(term: String?): List<Todo>?
 }
