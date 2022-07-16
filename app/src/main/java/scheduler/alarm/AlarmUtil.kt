@@ -1,52 +1,59 @@
-package scheduler.alarm;
+package scheduler.alarm
 
-import android.annotation.SuppressLint;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
+import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.os.Build
+import scheduler.receiver.NotificationReceiver
+import utils.Constants
 
-import scheduler.receiver.NotificationReceiver;
-import utils.Constants;
+class AlarmUtil private constructor(private val context: Context) {
 
-public class AlarmUtil {
-    @SuppressLint("StaticFieldLeak")
-    private static AlarmUtil alarmUtil;
-    private static AlarmManager alarmManager;
-    private final Context context;
+    companion object {
 
-    private AlarmUtil(Context context) {
-        this.context = context;
-        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        @SuppressLint("StaticFieldLeak")
+        private var alarmUtil: AlarmUtil? = null
+        private var alarmManager: AlarmManager? = null
+
+        @JvmStatic
+        fun with(context: Context): AlarmUtil? {
+            if (alarmUtil == null)
+                alarmUtil = AlarmUtil(context)
+
+            return alarmUtil
+        }
     }
 
-    public static AlarmUtil with(Context context) {
-        if (alarmUtil == null)
-            alarmUtil = new AlarmUtil(context);
-
-        return alarmUtil;
+    init {
+        alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     }
 
-    public void setAlarm(int notificationID, long timeAt) {
+    fun setAlarm(notificationID: Int, timeAt: Long) {
         //if the time to be set has passed, don't need to set alarm
         //if timeAt = 0, set alarm (for canceling)
         if (timeAt < System.currentTimeMillis())
-            return;
+            return
 
-        Intent intent = new Intent(context, NotificationReceiver.class);
+        val intent = Intent(context, NotificationReceiver::class.java)
 
-        intent.putExtra(Constants.Keys.NOTIF_ID_KEY, notificationID);
-
+        intent.putExtra(Constants.Keys.NOTIF_ID_KEY, notificationID)
         @SuppressLint("UnspecifiedImmutableFlag")
-        PendingIntent pendingIntent =
-                PendingIntent.getBroadcast(context, notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        val pendingIntent = PendingIntent.getBroadcast(
+            context, notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT
+        )
 
         //alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(timeAt, pendingIntent), pendingIntent);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeAt, pendingIntent);
-        else
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeAt, pendingIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager?.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                timeAt,
+                pendingIntent
+            )
+        } else {
+            alarmManager?.setExact(AlarmManager.RTC_WAKEUP, timeAt, pendingIntent)
+        }
     }
 
     /**
@@ -55,15 +62,15 @@ public class AlarmUtil {
      *
      * @param notificationID id of pending intent
      */
-    public void cancelAlarm(int notificationID) {
-//        setAlarm(notificationID, "", 0);
-        Intent intent = new Intent(context, NotificationReceiver.class);
+    fun cancelAlarm(notificationID: Int) {
+        //setAlarm(notificationID, "", 0);
+        val intent = Intent(context, NotificationReceiver::class.java)
 
         @SuppressLint("UnspecifiedImmutableFlag")
-        PendingIntent pendingIntent =
-                PendingIntent.getBroadcast(context, notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        val pendingIntent = PendingIntent.getBroadcast(
+            context, notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT
+        )
 
-        alarmManager.cancel(pendingIntent);
+        alarmManager?.cancel(pendingIntent)
     }
-
 }
