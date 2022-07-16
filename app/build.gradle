@@ -57,7 +57,8 @@ dependencies {
 
     //room
     implementation "androidx.room:room-runtime:$room_version"
-    kapt "androidx.room:room-compiler:$room_version" //if use kapt in kotlin: replace annotationProcessor with kapt
+    kapt "androidx.room:room-compiler:$room_version"
+    //if use kapt in kotlin: replace annotationProcessor with kapt
 
     //work manager
 //    implementation "androidx.work:work-runtime:2.6.0"
@@ -99,9 +100,22 @@ dependencies {
 
     //kt
     implementation "org.jetbrains.kotlin:kotlin-script-runtime:1.7.10"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.10"
+
+
+    //ktx
     implementation "androidx.core:core-ktx:1.8.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.10"
+    implementation "androidx.fragment:fragment-ktx:1.5.0"
+    implementation "androidx.activity:activity-ktx:1.5.0"
+    implementation "androidx.room:room-ktx:2.4.2"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.0-alpha01"
+    //implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.0-alpha01"
+
+    //implementation "androidx.navigation:navigation-runtime-ktx:2.5.0"
+    //implementation "androidx.navigation:navigation-fragment-ktx:2.5.0"
+    //implementation "androidx.navigation:navigation-ui-ktx:2.5.0"
+
 
     //test libs
     testImplementation 'junit:junit:4.13.2'

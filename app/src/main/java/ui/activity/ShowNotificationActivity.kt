@@ -1,192 +1,164 @@
-package ui.activity;
+package ui.activity
 
-import android.animation.Animator;
-import android.os.Bundle;
-import android.os.Handler;
-import android.view.View;
-import android.widget.TextView;
+import android.animation.Animator
+import android.os.Bundle
+import android.view.View
+import androidx.activity.viewModels
+import androidx.core.widget.NestedScrollView
+import hlv.cute.todo.R
+import hlv.cute.todo.databinding.ActivityShowNotificationBinding
+import model.Notification
+import model.Priority
+import utils.ToastHelper
+import viewmodel.ShowNotificationViewModel
 
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.widget.NestedScrollView;
-import androidx.lifecycle.ViewModelProvider;
+class ShowNotificationActivity : BaseActivity() {
 
-import com.google.android.material.button.MaterialButton;
+    private lateinit var binding: ActivityShowNotificationBinding
+    private val viewModel by viewModels<ShowNotificationViewModel>()
 
-import hlv.cute.todo.R;
-import hlv.cute.todo.databinding.ActivityShowNotificationBinding;
-import utils.ToastHelper;
-import viewmodel.ShowNotificationViewModel;
 
-public class ShowNotificationActivity extends BaseActivity {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityShowNotificationBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-    private ActivityShowNotificationBinding binding;
-
-    private ShowNotificationViewModel viewModel;
-
-    private ConstraintLayout toolbar;
-    private NestedScrollView nested;
-
-    private TextView txtTitle;
-    private TextView txtCategory;
-    private TextView txtLowPriority, txtNormalPriority, txtHighPriority;
-    private ConstraintLayout lytDate, lytCategory;
-    private TextView txtDateReminder, txtClockReminder;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityShowNotificationBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        initViewModel();
-        initViews();
-        handleObserver();
+        initViewModel()
+        initViews()
+        handleObserver()
     }
 
-    private void initViewModel() {
-        viewModel = new ViewModelProvider(this).get(ShowNotificationViewModel.class);
-        viewModel.setIntent(getIntent());
+    private fun initViewModel() {
+        viewModel.setIntent(intent)
     }
 
-    private void initViews() {
-        binding.aImgBack.setOnClickListener(v -> close());
+    private fun initViews() {
+        binding.aImgBack.setOnClickListener { close() }
 
-        MaterialButton btnClose = binding.mBtnClose;
-        MaterialButton btnDone = binding.mBtnDone;
+        binding.mBtnClose.setOnClickListener { close() }
 
-        toolbar = binding.toolbar;
-        nested = binding.nested;
+        binding.mBtnDone.setOnClickListener {
+            binding.mBtnDone.isEnabled = false
 
-        txtTitle = binding.txtTodoTitle;
-        txtCategory = binding.txtCategory;
+            viewModel.done()
 
-        txtLowPriority = binding.txtLowPriority;
-        txtNormalPriority = binding.txtNormalPriority;
-        txtHighPriority = binding.txtHighPriority;
+            ToastHelper.get().successToast(getString(R.string.todo_done_successfully_simple))
 
-        lytDate = binding.lytDate;
-        lytCategory = binding.lytCategory;
-
-        txtDateReminder = binding.txtDate;
-        txtClockReminder = binding.txtClock;
-
-        btnClose.setOnClickListener(v -> close());
-        btnDone.setOnClickListener(v -> {
-            btnDone.setEnabled(false);
-            viewModel.done();
-            ToastHelper.get().successToast(getString(R.string.todo_done_successfully_simple));
-            binding.confetti.setVisibility(View.VISIBLE);
-            binding.confetti.playAnimation();
-            binding.confetti.addAnimatorListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
+            binding.confetti.visibility = View.VISIBLE
+            binding.confetti.playAnimation()
+            binding.confetti.addAnimatorListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {}
+                override fun onAnimationEnd(animation: Animator) {
+                    close()
                 }
 
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    close();
-                }
+                override fun onAnimationCancel(animation: Animator) {}
+                override fun onAnimationRepeat(animation: Animator) {}
+            })
+        }
 
-                @Override
-                public void onAnimationCancel(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
-            });
-        });
-
-        handleShadowScroll();
+        handleShadowScroll()
     }
 
-    private void handleShadowScroll() {
-        nested.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            final float dpShadow = getResources().getDimension(R.dimen.toolbar_shadow);
-
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+    private fun handleShadowScroll() {
+        binding.nested.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {
+            val dpShadow = resources.getDimension(R.dimen.toolbar_shadow)
+            override fun onScrollChange(
+                v: NestedScrollView,
+                scrollX: Int,
+                scrollY: Int,
+                oldScrollX: Int,
+                oldScrollY: Int
+            ) {
                 if (scrollY == 0) {
-                    toolbar.animate().translationZ(0).setStartDelay(0).setDuration(200).start();
+                    binding.toolbar.animate()
+                        .translationZ(0f)
+                        .setStartDelay(0)
+                        .setDuration(200)
+                        .start()
+
                 } else if (scrollY > 50) {
-                    toolbar.setTranslationZ(dpShadow);
-                    toolbar.animate().translationZ(dpShadow).setStartDelay(0).setDuration(90).start();
+                    binding.toolbar.translationZ = dpShadow
+                    binding.toolbar.animate()
+                        .translationZ(dpShadow)
+                        .setStartDelay(0)
+                        .setDuration(90).start()
                 }
             }
-        });
+        })
     }
 
-    private void handleObserver() {
-        viewModel.getCloseLive().observe(this, mustClose -> {
-            if (mustClose != null && mustClose)
-                close();
-        });
+    private fun handleObserver() {
+        viewModel.closeLive.observe(this) { mustClose: Boolean ->
+            if (mustClose) close()
+        }
 
-        viewModel.getRunMainLive().observe(this, runMain -> {
-            if (runMain != null && runMain)
-                runActivity(MainActivity.class, true);
-        });
+        viewModel.runMainLive.observe(this) { runMain: Boolean ->
+            if (runMain)
+                runActivity(MainActivity::class.java, true)
+        }
 
-        viewModel.getNotificationLive().observe(this, notif -> {
+        viewModel.notificationLive.observe(this) { notif: Notification? ->
             if (notif == null) { //when manual close and open with home
-                runActivity(MainActivity.class, true);
-                return;
+                runActivity(MainActivity::class.java, true)
+                return@observe
             }
 
             //set shown true in startup get all is shown and delete it
-            viewModel.setShown();
+            viewModel.setShown()
+            binding.txtTodoTitle.text = notif.content
 
-            txtTitle.setText(notif.getContent());
+            when (notif.priority) {
+                Priority.LOW -> {
+                    binding.txtLowPriority.visibility = View.VISIBLE
+                    binding.txtNormalPriority.visibility = View.GONE
+                    binding.txtHighPriority.visibility = View.GONE
+                }
 
-            switch (notif.getPriority()) {
-                case LOW:
-                default:
-                    txtLowPriority.setVisibility(View.VISIBLE);
-                    txtNormalPriority.setVisibility(View.GONE);
-                    txtHighPriority.setVisibility(View.GONE);
-                    break;
+                Priority.NORMAL -> {
+                    binding.txtLowPriority.visibility = View.GONE
+                    binding.txtNormalPriority.visibility = View.VISIBLE
+                    binding.txtHighPriority.visibility = View.GONE
+                }
 
-                case NORMAL:
-                    txtLowPriority.setVisibility(View.GONE);
-                    txtNormalPriority.setVisibility(View.VISIBLE);
-                    txtHighPriority.setVisibility(View.GONE);
-                    break;
+                Priority.HIGH -> {
+                    binding.txtLowPriority.visibility = View.GONE
+                    binding.txtNormalPriority.visibility = View.GONE
+                    binding.txtHighPriority.visibility = View.VISIBLE
+                }
 
-                case HIGH:
-                    txtLowPriority.setVisibility(View.GONE);
-                    txtNormalPriority.setVisibility(View.GONE);
-                    txtHighPriority.setVisibility(View.VISIBLE);
-                    break;
+                else -> {
+                    binding.txtLowPriority.visibility = View.VISIBLE
+                    binding.txtNormalPriority.visibility = View.GONE
+                    binding.txtHighPriority.visibility = View.GONE
+                }
             }
 
-            lytDate.setVisibility(viewModel.getLytDateVisibility());
-            lytCategory.setVisibility(viewModel.getLytCategoryVisibility());
+            binding.lytDate.visibility = viewModel.lytDateVisibility
+            binding.lytCategory.visibility = viewModel.lytCategoryVisibility
 
             if (viewModel.hasCategory())
-                txtCategory.setText(notif.getCategory());
+                binding.txtCategory.text = notif.category
 
             if (viewModel.hasArriveDate()) {
-                txtDateReminder.setText(viewModel.getDateReminder());
-                txtClockReminder.setText(viewModel.getClockReminder());
+                binding.txtDate.text = viewModel.dateReminder
+                binding.txtClock.text = viewModel.clockReminder
             }
-        });
+        }
     }
 
-    private void close() {
-        viewModel.deleteNotification();
-        finish();
+    private fun close() {
+        viewModel.deleteNotification()
+        finish()
     }
 
-    @Override
-    public void onBackPressed() {
-        close();
-        super.onBackPressed();
+    override fun onBackPressed() {
+        super.onBackPressed()
+        close()
     }
 
-    @Override
-    protected void onDestroy() {
-        close();
-        super.onDestroy();
+    override fun onDestroy() {
+        super.onDestroy()
+        close()
     }
 }
