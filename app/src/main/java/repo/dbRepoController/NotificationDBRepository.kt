@@ -1,89 +1,131 @@
-package repo.dbRepoController;
+package repo.dbRepoController
 
-import java.util.List;
+import hlv.cute.todo.App
+import model.Notification
+import repo.dao.NotificationDao
 
-import hlv.cute.todo.App;
-import model.Notification;
-import repo.dao.NotificationDao;
+class NotificationDBRepository {
 
-public class NotificationDBRepository {
+    private val dao: NotificationDao = App.get()!!.todoDatabase()!!.notificationDao!!
 
-    private final NotificationDao dao;
-    private Notification notification;
-    private List<Notification> notificationList;
-    private List<Notification> notificationDoneList;
-
-    public NotificationDBRepository() {
-        dao = App.get().todoDatabase().getNotificationDao();
+    @Throws(InterruptedException::class)
+    fun addNotification(notification: Notification?) {
+        Thread {
+            dao.create(notification)
+        }.apply {
+            start()
+            join()
+        }
     }
 
-    public void addNotification(Notification notification) throws InterruptedException {
-        Thread thread = new Thread(() -> dao.create(notification));
-        thread.start();
-        thread.join();
+    @Throws(InterruptedException::class)
+    fun editNotification(notification: Notification?) {
+        Thread {
+            dao.update(notification)
+        }.apply {
+            start()
+            join()
+        }
     }
 
-    public void editNotification(Notification notification) throws InterruptedException {
-        Thread thread = new Thread(() -> dao.update(notification));
-        thread.start();
-        thread.join();
+    @Throws(InterruptedException::class)
+    fun deleteNotification(notification: Notification?) {
+        Thread {
+            dao.delete(notification)
+        }.apply {
+            start()
+            join()
+        }
     }
 
-    public void deleteNotification(Notification notification) throws InterruptedException {
-        Thread thread = new Thread(() -> dao.delete(notification));
-        thread.start();
-        thread.join();
+    @Throws(InterruptedException::class)
+    fun getAllNotifications(): List<Notification>? {
+        var notificationList: List<Notification>? = null
+
+        Thread {
+            notificationList = dao.getAllNotifications()
+        }.apply {
+            start()
+            join()
+        }
+
+        return notificationList
     }
 
-    public List<Notification> getAllNotifications() throws InterruptedException {
-        Thread thread = new Thread(() -> notificationList = dao.getAllNotifications());
-        thread.start();
-        thread.join();
-        return notificationList;
+    @Throws(InterruptedException::class)
+    fun deleteShownNotifications() {
+        Thread {
+            dao.deleteShownNotifications()
+        }.apply {
+            start()
+            join()
+        }
     }
 
-    public void deleteShownNotifications() throws InterruptedException {
-        Thread thread = new Thread(dao::deleteShownNotifications);
-        thread.start();
-        thread.join();
+    @Throws(InterruptedException::class)
+    fun getAllDoneNotifications(): List<Notification>? {
+        var notificationDoneList: List<Notification>? = null
+        Thread {
+            notificationDoneList = dao.getAllDoneNotifications()
+        }.apply {
+            start()
+            join()
+        }
+
+        return notificationDoneList
     }
 
-    public List<Notification> getAllDoneNotifications() throws InterruptedException {
-        Thread thread = new Thread(() -> notificationDoneList = dao.getAllDoneNotifications());
-        thread.start();
-        thread.join();
-        return notificationDoneList;
+    @Throws(InterruptedException::class)
+    fun deleteAllNotifications() {
+        Thread {
+            dao.deleteAllNotifications()
+        }.apply {
+            start()
+            join()
+        }
     }
 
-    public void deleteAllNotifications() throws InterruptedException {
-        Thread thread = new Thread(dao::deleteAllNotifications);
-        thread.start();
-        thread.join();
+    @Throws(InterruptedException::class)
+    fun deleteAllDoneNotifications() {
+        Thread {
+            dao.deleteAllDoneNotifications()
+        }.apply {
+            start()
+            join()
+        }
     }
 
-    public void deleteAllDoneNotifications() throws InterruptedException {
-        Thread thread = new Thread(dao::deleteAllDoneNotifications);
-        thread.start();
-        thread.join();
+    @Throws(InterruptedException::class)
+    fun getNotification(id: Long): Notification? {
+        var notification: Notification? = null
+
+        Thread {
+            notification = dao.getNotification(id)
+        }.apply {
+            start()
+            join()
+        }
+
+        return notification
     }
 
-    public Notification getNotification(long id) throws InterruptedException {
-        Thread thread = new Thread(() -> notification = dao.getNotification(id));
-        thread.start();
-        thread.join();
-        return notification;
+    @Throws(InterruptedException::class)
+    fun setDoneTodo(id: Long) {
+        Thread {
+            dao.setDoneTodo(id)
+        }.apply {
+            start()
+            join()
+        }
     }
 
-    public void setDoneTodo(long id) throws InterruptedException {
-        Thread thread = new Thread(() -> dao.setDoneTodo(id));
-        thread.start();
-        thread.join();
+    @Throws(InterruptedException::class)
+    fun setShownTodo(id: Long) {
+        Thread {
+            dao.setShownTodo(id)
+        }.apply {
+            start()
+            join()
+        }
     }
-
-    public void setShownTodo(long id) throws InterruptedException {
-        Thread thread = new Thread(() -> dao.setShownTodo(id));
-        thread.start();
-        thread.join();
-    }
-
 }

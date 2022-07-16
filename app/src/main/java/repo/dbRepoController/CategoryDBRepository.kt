@@ -7,7 +7,7 @@ import repo.dao.CategoryDao
 
 class CategoryDBRepository {
 
-    private val dao: CategoryDao? = App.get()!!.todoDatabase()!!.categoryDao
+    private val dao: CategoryDao = App.get()!!.todoDatabase()!!.categoryDao!!
 
     val categoriesLiveData: MutableLiveData<List<Category>?> = MutableLiveData()
 
@@ -18,7 +18,7 @@ class CategoryDBRepository {
         //use .postValue() instead of .setValue()
         // because the .postValue() run in the background thread (non-ui thread)
         Thread {
-            categoriesLiveData.postValue(dao!!.getAllCategories())
+            categoriesLiveData.postValue(dao.getAllCategories())
         }.start()
     }
 
@@ -27,7 +27,7 @@ class CategoryDBRepository {
         var allCategories: List<Category>? = null
 
         Thread {
-            allCategories = dao!!.getAllCategories()
+            allCategories = dao.getAllCategories()
         }.apply {
             start()
             join()
@@ -39,7 +39,7 @@ class CategoryDBRepository {
     @Throws(InterruptedException::class)
     fun addCategory(category: Category?) {
         Thread {
-            dao!!.create(category)
+            dao.create(category)
         }.apply {
             start()
             join()
@@ -51,7 +51,7 @@ class CategoryDBRepository {
     @Throws(InterruptedException::class)
     fun editCategory(category: Category) {
         Thread {
-            dao!!.update(category)
+            dao.update(category)
 
             if (category.id != 0 && category.name != null) //maybe not needed!
                 dao.editTodoCategory(
@@ -69,7 +69,7 @@ class CategoryDBRepository {
     @Throws(InterruptedException::class)
     fun deleteCategory(category: Category) {
         Thread {
-            dao!!.delete(category)
+            dao.delete(category)
             dao.clearSingleCategory(category.id.toLong()) //clear category from single todo
         }.apply {
             start()
@@ -82,7 +82,7 @@ class CategoryDBRepository {
     @Throws(InterruptedException::class)
     fun deleteAllCategories() {
         Thread {
-            dao!!.deleteAllCategories()
+            dao.deleteAllCategories()
             dao.clearAllCategories() //clear categories from all todos
         }.apply {
             start()
@@ -95,7 +95,7 @@ class CategoryDBRepository {
     @Throws(InterruptedException::class)
     fun categoriesCount(): Long {
         Thread {
-            count = dao!!.getCategoriesCount()
+            count = dao.getCategoriesCount()
         }.apply {
             start()
             join()
