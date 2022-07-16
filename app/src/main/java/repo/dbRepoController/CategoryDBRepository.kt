@@ -1,91 +1,107 @@
-package repo.dbRepoController;
+package repo.dbRepoController
 
+import androidx.lifecycle.MutableLiveData
+import hlv.cute.todo.App
+import model.Category
+import repo.dao.CategoryDao
 
-import androidx.lifecycle.MutableLiveData;
+class CategoryDBRepository {
 
-import java.util.List;
+    private val dao: CategoryDao? = App.get()!!.todoDatabase()!!.categoryDao
 
-import hlv.cute.todo.App;
-import model.Category;
-import repo.dao.CategoryDao;
+    val categoriesLiveData: MutableLiveData<List<Category>?> = MutableLiveData()
 
-public class CategoryDBRepository {
+    private var count: Long = 0
 
-    private final CategoryDao dao;
-    private final MutableLiveData<List<Category>> categories;
-
-    private long count = 0;
-    private List<Category> allCategories;
-
-    public CategoryDBRepository() {
-        dao = App.get().todoDatabase().getCategoryDao();
-        categories = new MutableLiveData<>();
-    }
-
-    public void fetchAllCategories() {
+    fun fetchAllCategories() {
         //it must call be in another thread
         //use .postValue() instead of .setValue()
         // because the .postValue() run in the background thread (non-ui thread)
-        new Thread(() -> categories.postValue(dao.getAllCategories())).start();
+        Thread {
+            categoriesLiveData.postValue(dao!!.getAllCategories())
+        }.start()
     }
 
-    public List<Category> getAllCategories() throws InterruptedException {
-        Thread thread = new Thread(() -> allCategories = dao.getAllCategories());
-        thread.start();
-        thread.join();
-        return allCategories;
+    @Throws(InterruptedException::class)
+    fun getAllCategories(): List<Category>? {
+        var allCategories: List<Category>? = null
+
+        Thread {
+            allCategories = dao!!.getAllCategories()
+        }.apply {
+            start()
+            join()
+        }
+
+        return allCategories
     }
 
-    public void addCategory(Category category) throws InterruptedException {
-        Thread thread = new Thread(() -> dao.create(category));
-        thread.start();
-        thread.join();
+    @Throws(InterruptedException::class)
+    fun addCategory(category: Category?) {
+        Thread {
+            dao!!.create(category)
+        }.apply {
+            start()
+            join()
+        }
 
-        fetchAllCategories();
+        fetchAllCategories()
     }
 
-    public void editCategory(Category category) throws InterruptedException {
-        Thread thread = new Thread(() -> {
-            dao.update(category);
-            if (category.getId() != 0 && category.getName() != null) //maybe not needed!
-                dao.editTodoCategory(category.getId(), category.getName()); //also edit all used category in todos
-        });
-        thread.start();
-        thread.join();
+    @Throws(InterruptedException::class)
+    fun editCategory(category: Category) {
+        Thread {
+            dao!!.update(category)
 
-        fetchAllCategories();
+            if (category.id != 0 && category.name != null) //maybe not needed!
+                dao.editTodoCategory(
+                    category.id.toLong(),
+                    category.name
+                ) //also edit all used category in todos
+        }.apply {
+            start()
+            join()
+        }
+
+        fetchAllCategories()
     }
 
-    public void deleteCategory(Category category) throws InterruptedException {
-        Thread thread = new Thread(() -> {
-            dao.delete(category);
-            dao.clearSingleCategory(category.getId()); //clear category from single todo
-        });
-        thread.start();
-        thread.join();
+    @Throws(InterruptedException::class)
+    fun deleteCategory(category: Category) {
+        Thread {
+            dao!!.delete(category)
+            dao.clearSingleCategory(category.id.toLong()) //clear category from single todo
+        }.apply {
+            start()
+            join()
+        }
 
-        fetchAllCategories();
+        fetchAllCategories()
     }
 
-    public void deleteAllCategories() throws InterruptedException {
-        Thread thread = new Thread(() -> {
-            dao.deleteAllCategories();
-            dao.clearAllCategories(); //clear categories from all todos
-        });
-        thread.start();
-        thread.join();
+    @Throws(InterruptedException::class)
+    fun deleteAllCategories() {
+        Thread {
+            dao!!.deleteAllCategories()
+            dao.clearAllCategories() //clear categories from all todos
+        }.apply {
+            start()
+            join()
+        }
 
-        fetchAllCategories();
+        fetchAllCategories()
     }
 
-    public long categoriesCount() throws InterruptedException {
-        Thread thread = new Thread(() -> count = dao.getCategoriesCount());
-        thread.start();
-        thread.join();
-        return count;
+    @Throws(InterruptedException::class)
+    fun categoriesCount(): Long {
+        Thread {
+            count = dao!!.getCategoriesCount()
+        }.apply {
+            start()
+            join()
+        }
+
+        return count
     }
 
-    public MutableLiveData<List<Category>> getCategoriesLiveData() {
-        return categories;
-    }
 }
