@@ -1,167 +1,76 @@
-package model;
+package model
 
-import androidx.annotation.Keep;
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
-
-import java.io.Serializable;
-import java.util.Objects;
-
-import ir.hamsaa.persiandatepicker.api.PersianPickerDate;
-import ir.hamsaa.persiandatepicker.date.PersianDateImpl;
-import utils.DateHelper;
+import androidx.annotation.Keep
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
+import ir.hamsaa.persiandatepicker.api.PersianPickerDate
+import ir.hamsaa.persiandatepicker.date.PersianDateImpl
+import utils.DateHelper
+import java.io.Serializable
 
 @Keep
 @Entity(tableName = "todos")
-public class Todo implements Comparable<Todo>, Serializable {
-
+data class Todo(
     @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    var id: Int = 0,
 
     @ColumnInfo(name = "title")
-    private String title;
+    var title: String? = null,
 
     @ColumnInfo(name = "category_id")
-    private int categoryId;
+    var categoryId: Int = 0,
 
     @ColumnInfo(name = "category")
-    private String category;
+    var category: String? = null,
 
     @ColumnInfo(name = "priority")
-    private Priority priority;
+    var priority: Priority? = null,
 
     @ColumnInfo(name = "is_done")
-    private boolean isDone;
+    var isDone: Boolean = false,
 
     @ColumnInfo(name = "arrive_date", defaultValue = "0")
-    private long arriveDate;
+    var arriveDate: Long = 0,
 
     @ColumnInfo(name = "created_at", defaultValue = "0")
-    private long createdAt;
+    var createdAt: Long = 0,
 
     @ColumnInfo(name = "updated_at", defaultValue = "0")
-    private long updatedAt;
+    var updatedAt: Long = 0,
+) : Comparable<Todo>, Serializable {
 
     @Ignore
-    private DateTime dateTime;
+    var dateTime: DateTime? = null
+        get() {
+            field = DateTime()
+            if (arriveDate == 0L) return field
 
-    public int getId() {
-        return id;
+            val persianDate: PersianPickerDate = PersianDateImpl()
+            persianDate.setDate(arriveDate)
+
+            field!!.date = persianDate
+
+            val dateHelper = DateHelper(arriveDate)
+            field!!.hour = dateHelper.hour
+            field!!.minute = dateHelper.minute
+
+            return field
+        }
+
+    val clock: String
+        get() {
+            val dateHelper = DateHelper(arriveDate)
+            return dateHelper.clock
+        }
+
+    override fun compareTo(other: Todo): Int {
+        val isSame = id == other.id &&
+                title == other.title &&
+                category == other.category && categoryId == other.categoryId && arriveDate == other.arriveDate &&
+                priority == other.priority && isDone == other.isDone
+        return if (isSame) 0 else 1
     }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public int getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public Priority getPriority() {
-        return priority;
-    }
-
-    public void setPriority(Priority priority) {
-        this.priority = priority;
-    }
-
-    public boolean isDone() {
-        return isDone;
-    }
-
-    public void setDone(boolean done) {
-        isDone = done;
-    }
-
-    public long getArriveDate() {
-        return arriveDate;
-    }
-
-    public void setArriveDate(long arriveDate) {
-        this.arriveDate = arriveDate;
-    }
-
-    public long getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(long createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public long getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(long updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public DateTime getDateTime() {
-        dateTime = new DateTime();
-
-        if (arriveDate == 0)
-            return dateTime;
-
-        PersianPickerDate persianDate = new PersianDateImpl();
-        persianDate.setDate(arriveDate);
-
-        dateTime.setDate(persianDate);
-
-        DateHelper dateHelper = new DateHelper(arriveDate);
-
-        dateTime.setHour(dateHelper.getHour());
-        dateTime.setMinute(dateHelper.getMinute());
-
-        return dateTime;
-    }
-
-    public void setDateTime(DateTime dateTime) {
-        this.dateTime = dateTime;
-    }
-
-    public String getClock() {
-        DateHelper dateHelper = new DateHelper(arriveDate);
-        return dateHelper.getClock();
-    }
-
-    @Override
-    public int compareTo(Todo todo) {
-        boolean isSame = id == todo.getId() &&
-                Objects.equals(title, todo.getTitle()) &&
-                Objects.equals(category, todo.category) &&
-                categoryId == todo.getCategoryId() &&
-                arriveDate == todo.getArriveDate() &&
-                Objects.equals(priority, todo.priority) &&
-                isDone == todo.isDone();
-
-        if (isSame)
-            return 0;
-
-        return 1;
-    }
-
 }
