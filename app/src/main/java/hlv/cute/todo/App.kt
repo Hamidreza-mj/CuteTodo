@@ -31,7 +31,7 @@ class App : Application() {
         appContext = applicationContext
         app = this
 
-        todoDatabase = TodoDatabase.get(applicationContext)
+        todoDatabase = TodoDatabase[applicationContext]
 
         //when boot
         val receiver = ComponentName(applicationContext, BootCompleteReceiver::class.java)
