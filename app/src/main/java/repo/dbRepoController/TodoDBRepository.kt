@@ -1,239 +1,272 @@
-package repo.dbRepoController;
+package repo.dbRepoController
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import hlv.cute.todo.App
+import model.Filter
+import model.Priority
+import model.Todo
+import repo.dao.TodoDao
+import utils.DateHelper
 
-import androidx.lifecycle.MutableLiveData;
+class TodoDBRepository {
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+    private val dao: TodoDao = App.get()!!.todoDatabase()!!.todoDao!!
 
-import hlv.cute.todo.App;
-import model.Filter;
-import model.Priority;
-import model.Todo;
-import repo.dao.TodoDao;
-import utils.DateHelper;
+    private val _todosLiveDate: MutableLiveData<List<Todo>?> = MutableLiveData()
+    val todosLiveDate: LiveData<List<Todo>?> = _todosLiveDate
 
-public class TodoDBRepository {
-
-    private final TodoDao dao;
-    private final MutableLiveData<List<Todo>> todos;
-
-    private Todo todo;
-
-    private long count = 0;
-    private long doneCount = 0;
-
-    public TodoDBRepository() {
-        dao = App.get().todoDatabase().getTodoDao();
-        todos = new MutableLiveData<>();
-    }
-
-    public void fetchAll() {
+    fun fetchAll() {
         //it must call be in another thread
         //use .postValue() instead of .setValue()
         // because the .postValue() run in the background thread (non-ui thread)
-        new Thread(() -> todos.postValue(dao.getAllTodos())).start();
+        Thread {
+            _todosLiveDate.postValue(dao.getAllTodos())
+        }.start()
     }
 
-    public void fetchWithFilter(Filter filter) throws InterruptedException {
-        List<Priority> priorities = filter.getPriorities();
-        if (priorities.isEmpty()/* && todosCount() != 0*/)
-            priorities = filter.addAllPriorities();
+    @Throws(InterruptedException::class)
+    fun fetchWithFilter(filter: Filter) {
+        var priorities: List<Priority?> = filter.priorities
 
-        List<Priority> finalPriorities = priorities;
+        if (priorities.isEmpty())
+            priorities = filter.addAllPriorities()
 
-        AtomicReference<List<Todo>> filteredTodos = new AtomicReference<>();
+        var filteredTodos = mutableListOf<Todo>()
 
-        if (filter.isDone() && filter.isUndone() || !filter.isDone() && !filter.isUndone()) {//not need check isDone
-            Thread thread = new Thread(() ->
-                    filteredTodos.set(dao.filterByAllTodos(finalPriorities))
-            );
-            thread.start();
-            thread.join();
-
+        if (filter.isDone && filter.isUndone || !filter.isDone && !filter.isUndone) { //not need check isDone
+            Thread {
+                filteredTodos = dao.filterByAllTodos(priorities) as MutableList<Todo>
+            }.apply {
+                start()
+                join()
+            }
 
             //need to reverse for or iterator (because the main list index has changed)
             //need to starts from end or use the way that independent on index
-                /*for (int i = filteredTodos.get().size() - 1; i >= 0; i--)
+            /*for (int i = filteredTodos.get().size() - 1; i >= 0; i--)
                     Todo currentTodo = filteredTodos.get().get(i);
                     if (currentTodo.getArriveDate() == 0)
                         filteredTodos.get().remove(currentTodo);*/
 
-            if (filter.isScheduled())
-                filterByScheduled(filteredTodos.get());
+            if (filter.isScheduled)
+                filterByScheduled(filteredTodos)
 
-
-            if (filter.isToday())
-                filterByToday(filteredTodos.get());
-
+            if (filter.isToday)
+                filterByToday(filteredTodos)
 
             if (filter.needToFilterByCategory())
-                filterByCategory(filteredTodos.get(), filter.getCategoryIds());
+                filterByCategory(filteredTodos, filter.categoryIds)
 
-        } else if (filter.isDone()) {
-            Thread thread = new Thread(() ->
-                    filteredTodos.set(dao.filterByDoneTodos(true, finalPriorities))
-            );
-            thread.start();
-            thread.join();
+        } else if (filter.isDone) {
+            Thread {
+                filteredTodos = dao.filterByDoneTodos(true, priorities) as MutableList<Todo>
+            }.apply {
+                start()
+                join()
+            }
 
-            if (filter.isScheduled())
-                filterByScheduled(filteredTodos.get());
+            if (filter.isScheduled)
+                filterByScheduled(filteredTodos)
 
-            if (filter.isToday())
-                filterByToday(filteredTodos.get());
-
-            if (filter.needToFilterByCategory())
-                filterByCategory(filteredTodos.get(), filter.getCategoryIds());
-
-        } else if (filter.isUndone()) {
-            Thread thread = new Thread(() ->
-                    filteredTodos.set(dao.filterByDoneTodos(false, finalPriorities))
-            );
-            thread.start();
-            thread.join();
-
-            if (filter.isScheduled())
-                filterByScheduled(filteredTodos.get());
-
-            if (filter.isToday())
-                filterByToday(filteredTodos.get());
+            if (filter.isToday)
+                filterByToday(filteredTodos)
 
             if (filter.needToFilterByCategory())
-                filterByCategory(filteredTodos.get(), filter.getCategoryIds());
+                filterByCategory(filteredTodos, filter.categoryIds)
+
+
+        } else if (filter.isUndone) {
+            Thread {
+                filteredTodos = dao.filterByDoneTodos(false, priorities) as MutableList<Todo>
+            }.apply {
+                start()
+                join()
+            }
+
+            if (filter.isScheduled)
+                filterByScheduled(filteredTodos)
+
+            if (filter.isToday)
+                filterByToday(filteredTodos)
+
+            if (filter.needToFilterByCategory())
+                filterByCategory(filteredTodos, filter.categoryIds)
         }
 
-        todos.postValue(filteredTodos.get());
+        _todosLiveDate.postValue(filteredTodos)
     }
 
-    private void filterByCategory(List<Todo> filteredTodos, List<Integer> categoryIds) {
+    private fun filterByCategory(filteredTodos: MutableList<Todo>?, categoryIds: List<Int>?) {
         if (filteredTodos == null)
-            return;
+            return
 
-        List<Todo> newTodos = new ArrayList<>();
+        val newTodos: MutableList<Todo> = mutableListOf()
 
-        for (Todo todo : filteredTodos) {
-            if (categoryIds.contains(todo.getCategoryId()))
-                newTodos.add(todo);
+        for (todo in filteredTodos) {
+            if (categoryIds!!.contains(todo.categoryId))
+                newTodos.add(todo)
         }
 
-        filteredTodos.clear();
-        filteredTodos.addAll(newTodos);
+        filteredTodos.clear()
+        filteredTodos.addAll(newTodos)
     }
 
-    private void filterByScheduled(List<Todo> filteredTodos) {
+    private fun filterByScheduled(filteredTodos: MutableList<Todo>?) {
         if (filteredTodos == null)
-            return;
+            return
 
-        List<Todo> newTodos = new ArrayList<>();
+        val newTodos: MutableList<Todo> = mutableListOf()
 
-        for (Todo todo : filteredTodos) {
-            if (todo.getArriveDate() != 0)
-                newTodos.add(todo);
+        for (todo in filteredTodos) {
+            if (todo.arriveDate != 0L)
+                newTodos.add(todo)
         }
 
-        filteredTodos.clear();
-        filteredTodos.addAll(newTodos);
+        filteredTodos.clear()
+        filteredTodos.addAll(newTodos)
     }
 
-    private void filterByToday(List<Todo> filteredTodos) {
+    private fun filterByToday(filteredTodos: MutableList<Todo>?) {
         if (filteredTodos == null)
-            return;
+            return
 
-        List<Todo> newTodos = new ArrayList<>();
+        val newTodos: MutableList<Todo> = mutableListOf()
 
         //filter by scheduled todos
-        filterByScheduled(filteredTodos);
+        filterByScheduled(filteredTodos)
 
-        for (Todo todo : filteredTodos) {
-            DateHelper todoDate = new DateHelper(todo.getArriveDate());
-            DateHelper nowDate = new DateHelper(System.currentTimeMillis());
+        for (todo in filteredTodos) {
+            val todoDate = DateHelper(todo.arriveDate)
+            val nowDate = DateHelper(System.currentTimeMillis())
 
-            int todoYear = todoDate.getYear();
-            int todoMonth = todoDate.getMonth();
-            int todoDay = todoDate.getDay();
-
-            int nowYear = nowDate.getYear();
-            int nowMonth = nowDate.getMonth();
-            int nowDay = nowDate.getDay();
-
+            val todoYear = todoDate.year
+            val todoMonth = todoDate.month
+            val todoDay = todoDate.day
+            val nowYear = nowDate.year
+            val nowMonth = nowDate.month
+            val nowDay = nowDate.day
 
             if (todoYear == nowYear && todoMonth == nowMonth && todoDay == nowDay)
-                newTodos.add(todo);
+                newTodos.add(todo)
         }
 
-        filteredTodos.clear();
-        filteredTodos.addAll(newTodos);
+        filteredTodos.clear()
+        filteredTodos.addAll(newTodos)
     }
 
-    public long addTodo(Todo todo) throws InterruptedException {
-        final long[] insertedRow = {0};
-        Thread thread = new Thread(() -> insertedRow[0] = dao.create(todo));
-        thread.start();
-        thread.join();
-        return insertedRow[0];
+    @Throws(InterruptedException::class)
+    fun addTodo(todo: Todo?): Long {
+        var insertedRow: Long = 0
+
+        Thread {
+            insertedRow = dao.create(todo)
+        }.apply {
+            start()
+            join()
+        }
+
+        return insertedRow
     }
 
-    public void editTodo(Todo todo) throws InterruptedException {
-        Thread thread = new Thread(() -> dao.update(todo));
-        thread.start();
-        thread.join();
+    @Throws(InterruptedException::class)
+    fun editTodo(todo: Todo?) {
+        Thread {
+            dao.update(todo)
+        }.apply {
+            start()
+            join()
+        }
     }
 
-    public void deleteTodo(Todo todo) throws InterruptedException {
-        Thread thread = new Thread(() -> dao.delete(todo));
-        thread.start();
-        thread.join();
+    @Throws(InterruptedException::class)
+    fun deleteTodo(todo: Todo?) {
+        Thread {
+            dao.delete(todo)
+        }.apply {
+            start()
+            join()
+        }
     }
 
-    public void deleteAllTodos() throws InterruptedException {
-        Thread thread = new Thread(dao::deleteAllTodos);
-        thread.start();
-        thread.join();
+    @Throws(InterruptedException::class)
+    fun deleteAllTodos() {
+        Thread {
+            dao.deleteAllTodos()
+        }.apply {
+            start()
+            join()
+        }
     }
 
-    public void deleteAllDoneTodos() throws InterruptedException {
-        Thread thread = new Thread(dao::deleteAllDoneTodo);
-        thread.start();
-        thread.join();
+    @Throws(InterruptedException::class)
+    fun deleteAllDoneTodos() {
+        Thread {
+            dao.deleteAllDoneTodo()
+        }.apply {
+            start()
+            join()
+        }
     }
 
-    public long todosCount() throws InterruptedException {
-        Thread thread = new Thread(() -> count = dao.getTodosCount());
-        thread.start();
-        thread.join();
-        return count;
+    @Throws(InterruptedException::class)
+    fun todosCount(): Long {
+        var count: Long = 0
+
+        Thread {
+            count = dao.getTodosCount()
+        }.apply {
+            start()
+            join()
+        }
+
+        return count
     }
 
-    public long doneTodosCount() throws InterruptedException {
-        Thread thread = new Thread(() -> doneCount = dao.getDoneTodosCount());
-        thread.start();
-        thread.join();
-        return doneCount;
+    @Throws(InterruptedException::class)
+    fun doneTodosCount(): Long {
+        var doneCount: Long = 0
+        Thread {
+            doneCount = dao.getDoneTodosCount()
+        }.apply {
+            start()
+            join()
+        }
+
+        return doneCount
     }
 
-    public void setDoneTodo(long todoID) throws InterruptedException {
-        Thread thread = new Thread(() -> dao.setDoneTodo(todoID));
-        thread.start();
-        thread.join();
+    @Throws(InterruptedException::class)
+    fun setDoneTodo(todoID: Long) {
+        Thread {
+            dao.setDoneTodo(todoID)
+        }.apply {
+            start()
+            join()
+        }
     }
 
-    public Todo getTodo(long todoID) throws InterruptedException {
-        Thread thread = new Thread(() -> todo = dao.getTodo(todoID));
-        thread.start();
-        thread.join();
-        return todo;
+    @Throws(InterruptedException::class)
+    fun getTodo(todoID: Long): Todo? {
+        var todo: Todo? = null
+
+        Thread {
+            todo = dao.getTodo(todoID)
+        }.apply {
+            start()
+            join()
+        }
+
+        return todo
     }
 
-
-    public void setTodoIsDone(long todoID) throws InterruptedException {
-        Thread thread = new Thread(() -> dao.setTodoIsDone(todoID));
-        thread.start();
-        thread.join();
-    }
-
-    public MutableLiveData<List<Todo>> getTodosLiveDate() {
-        return todos;
+    @Throws(InterruptedException::class)
+    fun setTodoIsDone(todoID: Long) {
+        Thread {
+            dao.setTodoIsDone(todoID)
+        }.apply {
+            start()
+            join()
+        }
     }
 }
