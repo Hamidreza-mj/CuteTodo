@@ -69,8 +69,12 @@ data class Todo(
     override fun compareTo(other: Todo): Int {
         val isSame = id == other.id &&
                 title == other.title &&
-                category == other.category && categoryId == other.categoryId && arriveDate == other.arriveDate &&
-                priority == other.priority && isDone == other.isDone
+                category == other.category &&
+                categoryId == other.categoryId &&
+                arriveDate == other.arriveDate &&
+                priority == other.priority &&
+                isDone == other.isDone
+
         return if (isSame) 0 else 1
     }
 }

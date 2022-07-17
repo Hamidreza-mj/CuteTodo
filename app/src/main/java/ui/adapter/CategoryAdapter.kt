@@ -6,13 +6,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import hlv.cute.todo.databinding.ItemDropdownBinding
+import hlv.cute.todo.databinding.ItemCategoryBinding
 import model.Category
 
-class DropDownCategoryAdapter(
+class CategoryAdapter(
     private val context: Context,
-    private val onClickCategoryListener: OnClickCategoryListener
-) : RecyclerView.Adapter<DropDownCategoryAdapter.ViewHolder>() {
+    private val onClickMenuListener: OnClickMenuListener
+) : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
 
     val differ: AsyncListDiffer<Category>
 
@@ -27,11 +27,12 @@ class DropDownCategoryAdapter(
                     return oldItem.compareTo(newItem) == 0
                 }
             }
+
         differ = AsyncListDiffer(this, diffCallback)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemDropdownBinding.inflate(
+        val binding = ItemCategoryBinding.inflate(
             LayoutInflater.from(
                 context
             ), parent, false
@@ -40,25 +41,25 @@ class DropDownCategoryAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(differ.currentList[position], onClickCategoryListener)
+        holder.bind(differ.currentList[position], onClickMenuListener)
     }
 
     override fun getItemCount(): Int {
         return differ.currentList.size
     }
 
-    inner class ViewHolder(private val binding: ItemDropdownBinding) :
+    inner class ViewHolder(private val binding: ItemCategoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(category: Category, onClickCategoryListener: OnClickCategoryListener) {
-            binding.txt.text =
-                if (category.id == 0 && category.name == null) "-- بدون دسته‌بندی --" else category.name
-
-            binding.txt.setOnClickListener { onClickCategoryListener.onClick(category) }
+        fun bind(category: Category, onClickMenuListener: OnClickMenuListener) {
+            binding.aImgMenu.setOnClickListener { onClickMenuListener.onClick(category) }
+            binding.txtTitle.text = category.name
         }
     }
 
-    interface OnClickCategoryListener {
+    interface OnClickMenuListener {
         fun onClick(category: Category?)
     }
+
+
 }

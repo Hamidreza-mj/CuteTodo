@@ -23,7 +23,9 @@ data class Category(
 
     override fun compareTo(other: Category): Int {
         val isSame = id == other.id &&
-                name == other.name && isSelectedForFilter == other.isSelectedForFilter
+                name == other.name &&
+                isSelectedForFilter == other.isSelectedForFilter
+
         return if (isSame) 0 else 1
     }
 }
