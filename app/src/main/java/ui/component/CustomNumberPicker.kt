@@ -1,53 +1,44 @@
-package ui.component;
+package ui.component
 
-import android.content.Context;
-import android.graphics.Typeface;
-import android.util.AttributeSet;
-import android.view.View;
-import android.widget.NumberPicker;
-import android.widget.TextView;
+import android.content.Context
+import android.widget.NumberPicker
+import android.view.ViewGroup
+import android.widget.TextView
+import hlv.cute.todo.R
+import android.graphics.Typeface
+import android.util.AttributeSet
+import android.view.View
+import androidx.core.content.ContextCompat
 
-import hlv.cute.todo.R;
+class CustomNumberPicker : NumberPicker {
+    constructor(context: Context?) : super(context)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
-
-public class CustomNumberPicker extends NumberPicker {
-
-    public CustomNumberPicker(Context context) {
-        super(context);
+    override fun addView(child: View) {
+        super.addView(child)
+        updateView(child)
     }
 
-    public CustomNumberPicker(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    override fun addView(child: View, index: Int, params: ViewGroup.LayoutParams) {
+        super.addView(child, index, params)
+        updateView(child)
     }
 
-    public CustomNumberPicker(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    override fun addView(child: View, params: ViewGroup.LayoutParams) {
+        super.addView(child, params)
+        updateView(child)
     }
 
-    @Override
-    public void addView(View child) {
-        super.addView(child);
-        updateView(child);
-    }
-
-    @Override
-    public void addView(View child, int index, android.view.ViewGroup.LayoutParams params) {
-        super.addView(child, index, params);
-        updateView(child);
-    }
-
-    @Override
-    public void addView(View child, android.view.ViewGroup.LayoutParams params) {
-        super.addView(child, params);
-        updateView(child);
-    }
-
-    private void updateView(View view) {
-        if (view instanceof TextView) {
-            ((TextView) view).setTextColor(getResources().getColor(R.color.black));
-            ((TextView) view).setTypeface(Typeface.createFromAsset(getResources().getAssets(), "font/vazir_medium.ttf"));
-            ((TextView) view).setTextSize(20);
+    private fun updateView(view: View) {
+        if (view is TextView) {
+            view.setTextColor(ContextCompat.getColor(context, R.color.black))
+            view.typeface = Typeface.createFromAsset(resources.assets, "font/vazir_medium.ttf")
+            view.textSize = 20f
         }
     }
-
 }

@@ -1,39 +1,43 @@
-package ui.component;
+package ui.component
 
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.RecyclerView
+import android.view.animation.Animation
+import android.view.animation.TranslateAnimation
 
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.RecyclerView;
+class CustomItemAnimator : DefaultItemAnimator() {
+    override fun animateRemove(holder: RecyclerView.ViewHolder): Boolean {
 
-public class CustomItemAnimator extends DefaultItemAnimator {
-    @Override
-    public boolean animateRemove(RecyclerView.ViewHolder holder) {
-        float toXDelta = holder.itemView.getContext().getResources().getDisplayMetrics().widthPixels;
-        Animation animation = new TranslateAnimation(0, toXDelta, 0, 0);
-        animation.setDuration(1000);
-        animation.setFillAfter(true);
-        holder.itemView.startAnimation(animation);
-        return super.animateRemove(holder);
+        val toXDelta = holder.itemView.context.resources.displayMetrics.widthPixels.toFloat()
+        val animation: Animation = TranslateAnimation(0f, toXDelta, 0f, 0f).apply {
+            duration = 1000
+            fillAfter = true
+        }
+
+        holder.itemView.startAnimation(animation)
+        return super.animateRemove(holder)
     }
 
-    @Override
-    public boolean animateAdd(RecyclerView.ViewHolder holder) {
-        return super.animateAdd(holder);
+    override fun animateAdd(holder: RecyclerView.ViewHolder): Boolean {
+        return super.animateAdd(holder)
     }
 
-    @Override
-    public boolean animateChange(RecyclerView.ViewHolder oldHolder, RecyclerView.ViewHolder newHolder, int fromX, int fromY, int toX, int toY) {
-        return super.animateChange(oldHolder, newHolder, fromX, fromY, toX, toY);
+    override fun animateChange(
+        oldHolder: RecyclerView.ViewHolder,
+        newHolder: RecyclerView.ViewHolder,
+        fromX: Int,
+        fromY: Int,
+        toX: Int,
+        toY: Int
+    ): Boolean {
+        return super.animateChange(oldHolder, newHolder, fromX, fromY, toX, toY)
     }
 
-    @Override
-    public long getAddDuration() {
-        return 500;
+    override fun getAddDuration(): Long {
+        return 500
     }
 
-    @Override
-    public long getRemoveDuration() {
-        return 800;
+    override fun getRemoveDuration(): Long {
+        return 800
     }
 }
