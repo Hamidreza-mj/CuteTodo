@@ -1,148 +1,100 @@
-package ui.fragment.sheet;
+package ui.fragment.sheet
 
-import android.annotation.SuppressLint;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.RadioGroup
+import androidx.core.os.bundleOf
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import hlv.cute.todo.R
+import hlv.cute.todo.databinding.SheetSearchModeBinding
+import model.Search
+import model.Search.SearchMode
+import utils.KeyboardInputHelper
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+class SearchModeBottomSheet : BottomSheetDialogFragment() {
 
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+    private lateinit var binding: SheetSearchModeBinding
 
-import hlv.cute.todo.R;
-import hlv.cute.todo.databinding.SheetSearchModeBinding;
-import model.Search;
-import utils.KeyboardInputHelper;
+    private var search: Search? = null
+    var onCheckChanged: ((search: Search?) -> Unit)? = null
 
-public class SearchModeBottomSheet extends BottomSheetDialogFragment {
+    companion object {
+        private const val SEARCH_MODE_ARGS = "search-mode-args"
 
-    private SheetSearchModeBinding binding;
+        @JvmStatic
+        fun newInstance(search: Search?): SearchModeBottomSheet {
+            val bottomSheet = SearchModeBottomSheet()
 
-    private RadioGroup radioGP;
-    private RadioButton rdbTodo, rdbCategory, rdbBoth;
+            val args = bundleOf(SEARCH_MODE_ARGS to search)
+            bottomSheet.arguments = args
 
-    private Search search;
-
-    private static final String SEARCH_MODE_ARGS = "search-mode-args";
-
-    private OnCheckChanged onCheckChanged;
-
-    public SearchModeBottomSheet() {
-    }
-
-    public static SearchModeBottomSheet newInstance(Search search) {
-        SearchModeBottomSheet bottomSheet = new SearchModeBottomSheet();
-        Bundle args = new Bundle();
-        args.putSerializable(SEARCH_MODE_ARGS, search);
-        bottomSheet.setArguments(args);
-        return bottomSheet;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (getArguments() != null && !getArguments().isEmpty())
-            search = (Search) getArguments().getSerializable(SEARCH_MODE_ARGS);
-
-        if (getContext() != null)
-            KeyboardInputHelper.getKeyboardInput().hideKeyboard(getContext());
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = SheetSearchModeBinding.inflate(inflater, container, false);
-        return binding.getRoot();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initViews();
-        initData();
-        handleAction();
-    }
-
-    private void initViews() {
-        radioGP = binding.radioGP;
-        rdbTodo = binding.radioBtnTodo;
-        rdbCategory = binding.radioBtnCategory;
-        rdbBoth = binding.radioBtnBoth;
-    }
-
-    @SuppressLint("NonConstantResourceId")
-    private void initData() {
-        if (search != null) {
-            switch (search.getSearchMode()) {
-                case TODO:
-                default:
-                    rdbTodo.setChecked(true);
-                    break;
-
-                case CATEGORY:
-                    rdbCategory.setChecked(true);
-                    break;
-
-                case BOTH:
-                    rdbBoth.setChecked(true);
-                    break;
-            }
+            return bottomSheet
         }
     }
 
-    @SuppressLint("NonConstantResourceId")
-    private void handleAction() {
-        binding.aImgClose.setOnClickListener(view -> dismiss());
-        binding.mBtnClose.setOnClickListener(view -> dismiss());
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-        radioGP.setOnCheckedChangeListener((radioGroup, id) -> {
+        if (arguments != null && arguments!!.isEmpty.not())
+            search = arguments!!.getSerializable(SEARCH_MODE_ARGS) as Search?
+
+        context?.let {
+            KeyboardInputHelper.getKeyboardInput().hideKeyboard(it)
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = SheetSearchModeBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initData()
+        handleAction()
+    }
+
+    private fun initData() {
+        when (search?.searchMode) {
+            SearchMode.TODO -> binding.radioBtnTodo.isChecked = true
+            SearchMode.CATEGORY -> binding.radioBtnCategory.isChecked = true
+            SearchMode.BOTH -> binding.radioBtnBoth.isChecked = true
+            else -> binding.radioBtnTodo.isChecked = true
+        }
+    }
+
+    private fun handleAction() {
+        binding.aImgClose.setOnClickListener { dismiss() }
+        binding.mBtnClose.setOnClickListener { dismiss() }
+
+        binding.radioGP.setOnCheckedChangeListener { _: RadioGroup?, id: Int ->
             if (onCheckChanged == null) {
-                dismiss();
-                return;
+                dismiss()
+                return@setOnCheckedChangeListener
             }
 
-            switch (id) {
-                case R.id.radioBtnTodo:
-                default:
-                    search.setSearchMode(Search.SearchMode.TODO);
-                    break;
-
-                case R.id.radioBtnCategory:
-                    search.setSearchMode(Search.SearchMode.CATEGORY);
-                    break;
-
-                case R.id.radioBtnBoth:
-                    search.setSearchMode(Search.SearchMode.BOTH);
-                    break;
+            when (id) {
+                R.id.radioBtnTodo -> search!!.searchMode = SearchMode.TODO
+                R.id.radioBtnCategory -> search!!.searchMode = SearchMode.CATEGORY
+                R.id.radioBtnBoth -> search!!.searchMode = SearchMode.BOTH
+                else -> search!!.searchMode = SearchMode.TODO
             }
 
-            onCheckChanged.onChange(search);
-        });
-    }
-
-    public void setOnCheckChanged(OnCheckChanged onCheckChanged) {
-        this.onCheckChanged = onCheckChanged;
-    }
-
-    public void disableViews() {
-        if (radioGP == null) { //check one checkbox that's enough
-            dismiss();
-            return;
+            onCheckChanged!!(search)
         }
-
-        radioGP.setEnabled(false);
-        rdbTodo.setEnabled(false);
-        rdbCategory.setEnabled(false);
-        rdbBoth.setEnabled(false);
     }
 
-    public interface OnCheckChanged {
-        void onChange(Search search);
+    fun disableViews() {
+        binding.radioGP.isEnabled = false
+        binding.radioBtnTodo.isEnabled = false
+        binding.radioBtnCategory.isEnabled = false
+        binding.radioBtnBoth.isEnabled = false
     }
-
 }

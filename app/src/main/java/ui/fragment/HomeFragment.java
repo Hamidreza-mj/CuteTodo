@@ -240,6 +240,8 @@ public class HomeFragment extends BaseFragment {
                 //goToTop(800);
                 scrollBehavior.slideUp(frameLytButton);
                 filterBottomSheet.dismiss();
+
+                return null;
             });
 
             filterBottomSheet.setOnClearClick(() -> {
@@ -248,6 +250,8 @@ public class HomeFragment extends BaseFragment {
                 //goToTop(800);
                 scrollBehavior.slideUp(frameLytButton);
                 filterBottomSheet.dismiss();
+
+                return null;
             });
         });
 

@@ -221,6 +221,8 @@ public class SearchFragment extends BaseFragment {
                 binding.tabLyt.requestLayout();
 
                 searchModeBottomSheet.dismiss();
+
+                return null;
             });
         });
 
