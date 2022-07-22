@@ -1,110 +1,69 @@
-package ui.dialog;
+package ui.dialog
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
+import android.app.AlertDialog
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import hlv.cute.todo.R
+import hlv.cute.todo.databinding.DialogMoreBinding
 
-import hlv.cute.todo.R;
-import hlv.cute.todo.databinding.DialogMoreBinding;
+class MoreDialog(context: Context?, cancelable: Boolean = true) {
 
-public class MoreDialog {
+    private var dialog: AlertDialog? = null
 
-    private AlertDialog dialog;
+    private val binding: DialogMoreBinding
 
-    private final DialogMoreBinding binding;
+    var onClickEdit: (() -> Unit)? = null
+    var onClickDetail: (() -> Unit)? = null
+    var onClickDelete: (() -> Unit)? = null
 
-    private OnClickEdit onClickEdit;
-    private OnClickDetail onClickDetail;
-    private OnClickDelete onClickDelete;
+    init {
+        binding = DialogMoreBinding.inflate(LayoutInflater.from(context), null, false)
 
-    public MoreDialog(Context context, boolean cancelable) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.TranslucentDialog);
-        builder.setCancelable(cancelable);
-        binding = DialogMoreBinding.inflate(LayoutInflater.from(context), null, false);
-        builder.setView(binding.getRoot());
+        val builder = AlertDialog.Builder(context, R.style.TranslucentDialog).apply {
+            setCancelable(cancelable)
+            setView(binding.root)
+        }
 
-        binding.txtEdit.setOnClickListener(view -> {
+        binding.txtEdit.setOnClickListener {
             if (onClickEdit == null) {
-                dismiss();
-                return;
+                dismiss()
+                return@setOnClickListener
             }
+            onClickEdit!!()
+        }
 
-            onClickEdit.onClick();
-        });
-
-        binding.txtDelete.setOnClickListener(view -> {
+        binding.txtDelete.setOnClickListener {
             if (onClickDelete == null) {
-                dismiss();
-                return;
+                dismiss()
+                return@setOnClickListener
             }
+            onClickDelete!!()
+        }
 
-            onClickDelete.onClick();
-        });
-
-        binding.txtDetail.setOnClickListener(v -> {
+        binding.txtDetail.setOnClickListener {
             if (onClickDetail == null) {
-                dismiss();
-                return;
+                dismiss()
+                return@setOnClickListener
             }
-
-            onClickDetail.onClick();
-        });
-
+            onClickDetail!!()
+        }
 
         if (dialog == null)
-            dialog = builder.create();
+            dialog = builder.create()
     }
 
-    public MoreDialog(Context context) {
-        this(context, true);
-    }
-
-    public void setOnClickEdit(OnClickEdit onClickEdit) {
-        this.onClickEdit = onClickEdit;
-    }
-
-    public void setOnClickDetail(OnClickDetail onClickDetail) {
-        this.onClickDetail = onClickDetail;
-    }
-
-    public void setOnClickDelete(OnClickDelete onClickDelete) {
-        this.onClickDelete = onClickDelete;
-    }
-
-    public void setWithDetail(boolean withDetail) {
-        if (binding == null)
-            return;
-
+    fun setWithDetail(withDetail: Boolean) {
         if (withDetail) {
-            binding.txtDetail.setVisibility(View.VISIBLE);
-            binding.line2.setVisibility(View.VISIBLE);
+            binding.txtDetail.visibility = View.VISIBLE
+            binding.line2.visibility = View.VISIBLE
         } else {
-            binding.txtDetail.setVisibility(View.GONE);
-            binding.line2.setVisibility(View.GONE);
+            binding.txtDetail.visibility = View.GONE
+            binding.line2.visibility = View.GONE
         }
     }
 
-    public void dismiss() {
-        if (dialog != null)
-            dialog.dismiss();
-    }
+    fun show() = dialog?.show()
 
-    public void show() {
-        if (dialog != null)
-            dialog.show();
-    }
-
-    public interface OnClickEdit {
-        void onClick();
-    }
-
-    public interface OnClickDetail {
-        void onClick();
-    }
-
-    public interface OnClickDelete {
-        void onClick();
-    }
-
+    fun dismiss() = dialog?.dismiss()
 }

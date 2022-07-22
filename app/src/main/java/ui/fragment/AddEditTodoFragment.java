@@ -158,7 +158,7 @@ public class AddEditTodoFragment extends BaseFragment {
         });
 
         binding.aImgReminderGuide.setOnClickListener(v -> {
-            ReminderGuideDialog reminderDialog = new ReminderGuideDialog(getContext());
+            ReminderGuideDialog reminderDialog = new ReminderGuideDialog(getContext(), true);
             reminderDialog.setTitle(getString(R.string.set_reminder));
             reminderDialog.setMessage(getString(R.string.reminder_guide));
             reminderDialog.show();
@@ -253,12 +253,14 @@ public class AddEditTodoFragment extends BaseFragment {
         cardCategory.setOnClickListener(view -> {
             List<Category> categories = getCategoryViewModel().getAllCategories();
 
-            DropDownCategoriesDialog dropDown = new DropDownCategoriesDialog(getActivity(), categories);
+            DropDownCategoriesDialog dropDown = new DropDownCategoriesDialog(getActivity(), categories, true);
             dropDown.show();
 
             dropDown.setOnClickCategory(category -> {
                 dropDown.dismiss();
                 viewModel.commitCategory(category);
+
+                return null;
             });
 
             dropDown.setOnclickManage(() -> {
@@ -272,6 +274,8 @@ public class AddEditTodoFragment extends BaseFragment {
                 transaction.commit();
 
                 dropDown.dismiss();
+
+                return null;
             });
 
         });
@@ -395,7 +399,7 @@ public class AddEditTodoFragment extends BaseFragment {
                     @Override
                     public void onDateSelected(@NotNull PersianPickerDate persianPickerDate, boolean isPassed) {
                         if (isPassed) {
-                            WarningDateDialog dialog = new WarningDateDialog(context);
+                            WarningDateDialog dialog = new WarningDateDialog(context, true);
                             dialog.setTitle(getString(R.string.passedDateTitle));
                             dialog.setMessage(getString(R.string.passedDateMessage));
                             dialog.setEditText(getString(R.string.editDate));
@@ -404,6 +408,8 @@ public class AddEditTodoFragment extends BaseFragment {
                                 dialog.dismiss();
                                 picker.dismiss();
                                 dateSelectedAction(context, persianPickerDate);
+
+                                return null;
                             });
 
                             dialog.show();
@@ -438,12 +444,12 @@ public class AddEditTodoFragment extends BaseFragment {
         viewModel.configTempDateTime();
         viewModel.setDateTemp(persianPickerDate);
 
-        TimePickerSheetDialog sheetTimer = new TimePickerSheetDialog(context, viewModel.getTempDateTime());
+        TimePickerSheetDialog sheetTimer = new TimePickerSheetDialog(context, true, viewModel.getTempDateTime());
         sheetTimer.show();
 
         sheetTimer.setOnClickApply(pickedDateTime -> {
             if (viewModel.todayTtimePassed(pickedDateTime)) {
-                WarningDateDialog dialog = new WarningDateDialog(context);
+                WarningDateDialog dialog = new WarningDateDialog(context, true);
                 dialog.setTitle(getString(R.string.passedDateTitle));
                 dialog.setMessage(getString(R.string.passedTimeMessage));
                 dialog.setEditText(getString(R.string.editTime));
@@ -453,18 +459,26 @@ public class AddEditTodoFragment extends BaseFragment {
                     sheetTimer.dismiss();
                     viewModel.commitDateTime(pickedDateTime);
                     viewModel.commitOldDateTime(pickedDateTime);
+
+                    return null;
                 });
 
                 dialog.show();
-                return;
+
+                return null;
             }
 
             viewModel.commitDateTime(pickedDateTime);
             viewModel.commitOldDateTime(pickedDateTime);
             sheetTimer.dismiss();
+
+            return null;
         });
 
-        sheetTimer.setOnBackClick(date -> handlePickers(context, date));
+        sheetTimer.setOnBackClick(date -> {
+            handlePickers(context, date);
+            return null;
+        });
     }
 
     private void handleObserver() {

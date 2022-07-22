@@ -1,83 +1,58 @@
-package ui.dialog;
+package ui.dialog
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.widget.TextView;
+import android.app.AlertDialog
+import android.content.Context
+import android.view.LayoutInflater
+import hlv.cute.todo.R
+import hlv.cute.todo.databinding.DialogWarningDateBinding
 
-import hlv.cute.todo.R;
-import hlv.cute.todo.databinding.DialogWarningDateBinding;
+class WarningDateDialog(context: Context?, cancelable: Boolean = true) {
+    private var binding: DialogWarningDateBinding
 
-public class WarningDateDialog {
+    private var dialog: AlertDialog? = null
+    var continueClicked: (() -> Unit)? = null
 
-    private AlertDialog dialog;
+    init {
+        binding = DialogWarningDateBinding.inflate(LayoutInflater.from(context), null, false)
 
-    private final TextView txtTitle;
-    private final TextView txtMessage;
+        val builder = AlertDialog.Builder(context, R.style.TranslucentDialog).apply {
+            setCancelable(cancelable)
+            setView(binding.root)
+        }
 
-    private final TextView txtEditDate;
 
-    private ContinueClicked continueClicked;
+        binding.txtEdit.setOnClickListener { dismiss() }
 
-    public WarningDateDialog(Context context, boolean cancelable) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.TranslucentDialog);
-        builder.setCancelable(cancelable);
-        DialogWarningDateBinding binding = DialogWarningDateBinding.inflate(LayoutInflater.from(context), null, false);
-        builder.setView(binding.getRoot());
-
-        txtTitle = binding.txtTitle;
-        txtMessage = binding.txtMessage;
-        txtEditDate = binding.txtEdit;
-
-        txtEditDate.setOnClickListener(view -> dismiss());
-        binding.txtContinue.setOnClickListener(v -> {
+        binding.txtContinue.setOnClickListener {
             if (continueClicked == null) {
-                dismiss();
-                return;
+                dismiss()
+                return@setOnClickListener
             }
 
-            continueClicked.onClick();
-        });
+            continueClicked!!()
+        }
 
         if (dialog == null)
-            dialog = builder.create();
+            dialog = builder.create()
     }
 
-    public WarningDateDialog(Context context) {
-        this(context, true);
-    }
+    fun show() = dialog?.show()
 
-    public void dismiss() {
+    fun dismiss() = dialog?.dismiss()
+
+    fun setTitle(title: String) {
         if (dialog != null)
-            dialog.dismiss();
+            binding.txtTitle.text = title
     }
 
-    public void show() {
+    fun setMessage(message: String) {
         if (dialog != null)
-            dialog.show();
+            binding.txtMessage.text = message
     }
 
-    public void setTitle(String title) {
+    fun setEditText(text: String) {
         if (dialog != null)
-            txtTitle.setText(title);
-    }
-
-    public void setMessage(String message) {
-        if (dialog != null)
-            txtMessage.setText(message);
-    }
-
-    public void setEditText(String text) {
-        if (dialog != null && txtEditDate != null)
-            txtEditDate.setText(text);
-    }
-
-    public void setContinueClicked(ContinueClicked continueClicked) {
-        this.continueClicked = continueClicked;
-    }
-
-    public interface ContinueClicked {
-        void onClick();
+            binding.txtEdit.text = text
     }
 
 }

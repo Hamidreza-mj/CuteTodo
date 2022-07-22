@@ -117,7 +117,7 @@ public class CategoriesFragment extends BaseFragment {
                 return;
             }
 
-            DeleteDialog deleteDialog = new DeleteDialog(getActivity());
+            DeleteDialog deleteDialog = new DeleteDialog(getActivity(), true);
             deleteDialog.show();
 
             deleteDialog.setTitle(getString(R.string.delete_all_categories));
@@ -128,6 +128,8 @@ public class CategoriesFragment extends BaseFragment {
                 getSearchViewModel().fetch();
                 scrollBehavior.slideUp(frameLytButton);
                 deleteDialog.dismiss();
+
+                return null;
             });
         });
 
@@ -149,14 +151,14 @@ public class CategoriesFragment extends BaseFragment {
 
         adapter = new CategoryAdapter(getActivity(),
                 category -> {
-                    MoreDialog moreDialog = new MoreDialog(getActivity());
+                    MoreDialog moreDialog = new MoreDialog(getActivity(), true);
                     moreDialog.setWithDetail(false);
                     moreDialog.show();
 
                     moreDialog.setOnClickDelete(() -> {
                         moreDialog.dismiss();
 
-                        DeleteDialog deleteDialog = new DeleteDialog(getActivity());
+                        DeleteDialog deleteDialog = new DeleteDialog(getActivity(), true);
                         deleteDialog.show();
                         deleteDialog.setTitle(getString(R.string.delete_category));
 
@@ -170,7 +172,11 @@ public class CategoriesFragment extends BaseFragment {
                             getTodoViewModel().fetch(); //need to update todos if category was deleted
                             scrollBehavior.slideUp(frameLytButton);
                             deleteDialog.dismiss();
+
+                            return null;
                         });
+
+                        return null;
                     });
 
                     moreDialog.setOnClickEdit(() -> {
@@ -182,6 +188,8 @@ public class CategoriesFragment extends BaseFragment {
                         transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_CATEGORY);
                         transaction.addToBackStack(Constants.FragmentTag.ADD_EDIT_CATEGORY);
                         transaction.commit();
+
+                        return null;
                     });
                 }
         );

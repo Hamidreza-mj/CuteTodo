@@ -157,7 +157,7 @@ public class HomeFragment extends BaseFragment {
 
     private void handleActions() {
         imgGlobalMenu.setOnClickListener(view -> {
-            GlobalMenuDialog globalMenu = new GlobalMenuDialog(getActivity());
+            GlobalMenuDialog globalMenu = new GlobalMenuDialog(getActivity(), true);
             globalMenu.show();
 
             globalMenu.setOnClickCategories(() -> {
@@ -169,6 +169,8 @@ public class HomeFragment extends BaseFragment {
                 transaction.commit();
 
                 globalMenu.dismiss();
+
+                return null;
             });
 
             globalMenu.setOnClickDeleteAll(() -> {
@@ -176,10 +178,10 @@ public class HomeFragment extends BaseFragment {
 
                 if (getTodoViewModel().todosIsEmpty()) {
                     ToastHelper.get().toast(getString(R.string.todos_is_empty));
-                    return;
+                    return null; //empty return
                 }
 
-                DeleteDialog deleteDialog = new DeleteDialog(getActivity());
+                DeleteDialog deleteDialog = new DeleteDialog(getActivity(), true);
                 deleteDialog.show();
 
                 deleteDialog.setTitle(getString(R.string.delete_all_todos));
@@ -189,23 +191,26 @@ public class HomeFragment extends BaseFragment {
                     getTodoViewModel().deleteAllTodos();
                     scrollBehavior.slideUp(frameLytButton);
                     deleteDialog.dismiss();
+                    return null;
                 });
+
+                return null;
             });
 
-            globalMenu.setOnClickDeleteAllDoneTodos(() -> {
+            globalMenu.setOnClickDeleteAllDone(() -> {
                 globalMenu.dismiss();
 
                 if (getTodoViewModel().todosIsEmpty()) {
                     ToastHelper.get().toast(getString(R.string.todos_is_empty));
-                    return;
+                    return null; //empty return
                 }
 
                 if (getTodoViewModel().todosDoneIsEmpty()) {
                     ToastHelper.get().toast(getString(R.string.todos_done_is_empty));
-                    return;
+                    return null; //empty return
                 }
 
-                DeleteDialog deleteDialog = new DeleteDialog(getActivity());
+                DeleteDialog deleteDialog = new DeleteDialog(getActivity(), true);
                 deleteDialog.show();
 
                 deleteDialog.setTitle(getString(R.string.delete_all_done_todos));
@@ -215,7 +220,10 @@ public class HomeFragment extends BaseFragment {
                     getTodoViewModel().deleteAllDoneTodos();
                     scrollBehavior.slideUp(frameLytButton);
                     deleteDialog.dismiss();
+                    return null;
                 });
+
+                return null;
             });
         });
 
@@ -272,7 +280,7 @@ public class HomeFragment extends BaseFragment {
                 todoID -> getTodoViewModel().setDoneTodo(todoID),
 
                 (todoMenu, sharedElement) -> {
-                    MoreDialog moreDialog = new MoreDialog(getActivity());
+                    MoreDialog moreDialog = new MoreDialog(getActivity(), true);
                     moreDialog.setWithDetail(true);
                     moreDialog.show();
 
@@ -285,6 +293,8 @@ public class HomeFragment extends BaseFragment {
                         transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO);
                         transaction.addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO);
                         transaction.commit();
+
+                        return null;
                     });
 
                     moreDialog.setOnClickDetail(() -> {
@@ -311,12 +321,14 @@ public class HomeFragment extends BaseFragment {
 //                        transaction.hide(this);
                         transaction.addToBackStack(Constants.FragmentTag.TODO_DETAIL);
                         transaction.commit();
+
+                        return null;
                     });
 
                     moreDialog.setOnClickDelete(() -> {
                         moreDialog.dismiss();
 
-                        DeleteDialog deleteDialog = new DeleteDialog(getActivity());
+                        DeleteDialog deleteDialog = new DeleteDialog(getActivity(), true);
                         deleteDialog.show();
                         deleteDialog.setTitle(getString(R.string.delete_todo));
 
@@ -332,7 +344,10 @@ public class HomeFragment extends BaseFragment {
                             getTodoViewModel().deleteTodo(todoMenu);
                             scrollBehavior.slideUp(frameLytButton);
                             deleteDialog.dismiss();
+                            return null;
                         });
+
+                        return null;
                     });
 
 

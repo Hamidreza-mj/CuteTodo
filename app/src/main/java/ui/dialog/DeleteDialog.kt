@@ -4,28 +4,39 @@ import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
 import hlv.cute.todo.R
-import hlv.cute.todo.databinding.DialogReminderGuideBinding
+import hlv.cute.todo.databinding.DialogDeleteBinding
 
-class ReminderGuideDialog(context: Context?, cancelable: Boolean = true) {
-    private var binding: DialogReminderGuideBinding
+class DeleteDialog(context: Context?, cancelable: Boolean = true) {
+
+    private val binding: DialogDeleteBinding
+
     private var dialog: AlertDialog? = null
+    var onClickDelete: (() -> Unit)? = null
 
     init {
-        binding = DialogReminderGuideBinding.inflate(LayoutInflater.from(context), null, false)
+        binding = DialogDeleteBinding.inflate(LayoutInflater.from(context), null, false)
 
         val builder = AlertDialog.Builder(context, R.style.TranslucentDialog).apply {
             setCancelable(cancelable)
             setView(binding.root)
         }
 
+        binding.txtCancel.setOnClickListener { dismiss() }
 
-        binding.txtOk.setOnClickListener { dismiss() }
+        binding.txtDelete.setOnClickListener {
+            if (onClickDelete == null) {
+                dismiss()
+                return@setOnClickListener
+            }
+
+            onClickDelete!!()
+        }
+
         if (dialog == null)
             dialog = builder.create()
     }
 
     fun show() = dialog?.show()
-
     fun dismiss() = dialog?.dismiss()
 
     fun setTitle(title: String?) {
@@ -37,5 +48,4 @@ class ReminderGuideDialog(context: Context?, cancelable: Boolean = true) {
         if (dialog != null)
             binding.txtMessage.text = message
     }
-
 }

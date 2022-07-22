@@ -11,7 +11,7 @@ import model.Category
 
 class DropDownCategoryAdapter(
     private val context: Context,
-    private val onClickCategoryListener: OnClickCategoryListener
+    private val onClickCategory: (Category) -> Unit
 ) : RecyclerView.Adapter<DropDownCategoryAdapter.ViewHolder>() {
 
     val differ: AsyncListDiffer<Category>
@@ -40,7 +40,7 @@ class DropDownCategoryAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(differ.currentList[position], onClickCategoryListener)
+        holder.bind(differ.currentList[position], onClickCategory)
     }
 
     override fun getItemCount(): Int {
@@ -50,11 +50,11 @@ class DropDownCategoryAdapter(
     inner class ViewHolder(private val binding: ItemDropdownBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(category: Category, onClickCategoryListener: OnClickCategoryListener) {
+        fun bind(category: Category, onClickCategory: (Category) -> Unit) {
             binding.txt.text =
                 if (category.id == 0 && category.name == null) "-- بدون دسته‌بندی --" else category.name
 
-            binding.txt.setOnClickListener { onClickCategoryListener.onClick(category) }
+            binding.txt.setOnClickListener { onClickCategory(category) }
         }
     }
 

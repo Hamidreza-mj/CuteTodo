@@ -272,7 +272,7 @@ public class SearchFragment extends BaseFragment {
                 },
 
                 (todoMenu, sharedEl) -> {
-                    MoreDialog moreDialog = new MoreDialog(getActivity());
+                    MoreDialog moreDialog = new MoreDialog(getActivity(), true);
                     moreDialog.setWithDetail(true);
                     moreDialog.show();
 
@@ -285,6 +285,8 @@ public class SearchFragment extends BaseFragment {
                         transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO);
                         transaction.addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO);
                         transaction.commit();
+
+                        return null;
                     });
 
                     moreDialog.setOnClickDetail(() -> {
@@ -296,12 +298,14 @@ public class SearchFragment extends BaseFragment {
                         transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.TODO_DETAIL);
                         transaction.addToBackStack(Constants.FragmentTag.TODO_DETAIL);
                         transaction.commit();
+
+                        return null;
                     });
 
                     moreDialog.setOnClickDelete(() -> {
                         moreDialog.dismiss();
 
-                        DeleteDialog deleteDialog = new DeleteDialog(getActivity());
+                        DeleteDialog deleteDialog = new DeleteDialog(getActivity(), true);
                         deleteDialog.show();
                         deleteDialog.setTitle(getString(R.string.delete_todo));
 
@@ -317,7 +321,10 @@ public class SearchFragment extends BaseFragment {
                             getTodoViewModel().deleteTodo(todoMenu);
                             getSearchViewModel().fetch();
                             deleteDialog.dismiss();
+                            return null;
                         });
+
+                        return null;
                     });
 
                 }
@@ -371,8 +378,8 @@ public class SearchFragment extends BaseFragment {
 
     @Override
     public void onDestroyView() {
-        getSearchViewModel().release();
         super.onDestroyView();
+        getSearchViewModel().release();
     }
 
     @Override

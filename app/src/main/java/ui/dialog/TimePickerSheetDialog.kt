@@ -1,167 +1,129 @@
-package ui.dialog;
+package ui.dialog
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.widget.TextView;
+import android.content.Context
+import android.view.LayoutInflater
+import android.widget.NumberPicker
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import hlv.cute.todo.R
+import hlv.cute.todo.databinding.SheetTimePickerBinding
+import ir.hamsaa.persiandatepicker.api.PersianPickerDate
+import model.DateTime
+import java.text.MessageFormat
 
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.button.MaterialButton;
+class TimePickerSheetDialog(
+    context: Context?,
+    cancelable: Boolean,
+    private val dateTime: DateTime
+) {
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
+    private var binding: SheetTimePickerBinding
+    private val sheetDialog: BottomSheetDialog?
 
-import hlv.cute.todo.R;
-import hlv.cute.todo.databinding.SheetTimePickerBinding;
-import ir.hamsaa.persiandatepicker.api.PersianPickerDate;
-import model.DateTime;
-import ui.component.CustomNumberPicker;
+    var onClickApply: ((dateTime: DateTime?) -> Unit)? = null
+    var onBackClick: ((date: PersianPickerDate?) -> Unit)? = null
 
-public class TimePickerSheetDialog {
+    init {
+        binding = SheetTimePickerBinding.inflate(LayoutInflater.from(context), null, false)
 
-    private final BottomSheetDialog sheetDialog;
+        sheetDialog = BottomSheetDialog(context!!, R.style.AppBottomSheetDialogTheme).apply {
+            setCancelable(cancelable)
+            setContentView(binding.root)
+            create()
+        }
 
-    private final CustomNumberPicker hourPicker;
-    private final CustomNumberPicker minutePicker;
-    private final TextView txtTitle;
+        binding.mBtnCancel.setOnClickListener { dismiss() }
 
-    private final DateTime dateTime;
-
-    private OnClickApply onClickApply;
-    private OnBackClick onBackClick;
-
-    public TimePickerSheetDialog(Context context, boolean cancelable, DateTime dateTime) {
-        this.dateTime = dateTime;
-
-        sheetDialog = new BottomSheetDialog(context, R.style.AppBottomSheetDialogTheme);
-        sheetDialog.setCancelable(cancelable);
-        SheetTimePickerBinding binding = SheetTimePickerBinding.inflate(LayoutInflater.from(context), null, false);
-        sheetDialog.setContentView(binding.getRoot());
-
-        txtTitle = binding.txtTitle;
-        hourPicker = binding.nPickerHour;
-        minutePicker = binding.nPickerMinute;
-        MaterialButton btnSet = binding.mBtnSet;
-
-        binding.mBtnCancel.setOnClickListener(view -> dismiss());
-        btnSet.setOnClickListener(view -> {
+        binding.mBtnSet.setOnClickListener {
             if (onClickApply == null) {
-                dismiss();
-                return;
+                dismiss()
+                return@setOnClickListener
             }
 
-            onClickApply.onClick(dateTime);
-        });
+            onClickApply!!(dateTime)
+        }
 
-        binding.aImgBack.setOnClickListener(view -> {
+        binding.aImgBack.setOnClickListener {
             if (onBackClick == null) {
-                dismiss();
-                return;
+                dismiss()
+                return@setOnClickListener
             }
 
-            onBackClick.onBack(dateTime.getDate());
-            dismiss();
-        });
-
-        binding.mBtnCancel.setOnClickListener(view -> dismiss());
+            onBackClick!!(dateTime.date)
+            dismiss()
+        }
 
         //need to set post delay for updating number pickers
-        hourPicker.postDelayed(this::handleHourNumPicker, 100);
-        minutePicker.postDelayed(this::handleMinuteNumPicker, 100);
+        binding.nPickerHour.postDelayed({ handleHourNumPicker() }, 100)
+        binding.nPickerMinute.postDelayed({ handleMinuteNumPicker() }, 100)
 
-        updateValues(dateTime);
+        updateValues(dateTime)
 
-        hourPicker.setOnValueChangedListener((numberPicker, oldHour, newHour) -> {
-            dateTime.setHour(newHour);
-            updateValues(dateTime);
-        });
+        binding.nPickerHour.setOnValueChangedListener { _: NumberPicker?, _: Int, newHour: Int ->
+            dateTime.hour = newHour
+            updateValues(dateTime)
+        }
 
-        minutePicker.setOnValueChangedListener((numberPicker, oldMinute, newMinute) -> {
-            dateTime.setMinute(newMinute);
-            updateValues(dateTime);
-        });
-
-        sheetDialog.create();
+        binding.nPickerMinute.setOnValueChangedListener { _: NumberPicker?, _: Int, newMinute: Int ->
+            dateTime.minute = newMinute
+            updateValues(dateTime)
+        }
     }
 
-    private void handleHourNumPicker() {
-        hourPicker.setDisplayedValues(getAllHours());
-//        hourPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-        hourPicker.setWrapSelectorWheel(true);
-
-        hourPicker.setMinValue(0);
-        hourPicker.setMaxValue(23);
-        hourPicker.setValue(dateTime.getHour());
+    private fun handleHourNumPicker() {
+        binding.nPickerHour.displayedValues = getAllHours()
+        //hourPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        binding.nPickerHour.wrapSelectorWheel = true
+        binding.nPickerHour.minValue = 0
+        binding.nPickerHour.maxValue = 23
+        binding.nPickerHour.value = dateTime.hour
     }
 
-    private void handleMinuteNumPicker() {
-        minutePicker.setDisplayedValues(getAllMinutes());
-//        minutePicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-        minutePicker.setWrapSelectorWheel(true);
-
-        minutePicker.setMinValue(0);
-        minutePicker.setMaxValue(59);
-        minutePicker.setValue(dateTime.getMinute());
+    private fun handleMinuteNumPicker() {
+        binding.nPickerMinute.displayedValues = getAllMinutes()
+        //minutePicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        binding.nPickerMinute.wrapSelectorWheel = true
+        binding.nPickerMinute.minValue = 0
+        binding.nPickerMinute.maxValue = 59
+        binding.nPickerMinute.value = dateTime.minute
     }
 
-    private String[] getAllHours() {
-        ArrayList<String> arrayList = new ArrayList<>();
-        for (int i = 0; i < 24; i++)
-            arrayList.add(dateTime.normalizeTime((i))); // i < 0 -> 00 01 02 03 04 05 ...
+    // i < 0 ==> 00 01 02 03 04 05 ...
+    private fun getAllHours(): Array<String?> {
+        val arrayList = ArrayList<String>()
 
-        String[] hours = new String[arrayList.size()];
-        hours = arrayList.toArray(hours);
+        for (i in 0..23)
+            arrayList.add(dateTime.normalizeTime(i)) //normalize: i < 0 ==> 00 01 02 03 04 05 ...
 
-        return hours;
+        var hours = arrayOfNulls<String>(arrayList.size)
+        hours = arrayList.toArray(hours)
+
+        return hours
     }
 
-    private String[] getAllMinutes() {
-        ArrayList<String> arrayList = new ArrayList<>();
-        for (int i = 0; i < 60; i++)
-            arrayList.add(dateTime.normalizeTime(i)); // i < 0 -> 00 01 02 03 04 05 ...
+    // i < 0  ==> 00 01 02 03 04 05 ...
+    private fun getAllMinutes(): Array<String?> {
+        val arrayList = ArrayList<String>()
 
-        String[] minutes = new String[arrayList.size()];
-        minutes = arrayList.toArray(minutes);
+        for (i in 0..59)
+            arrayList.add(dateTime.normalizeTime(i)) // i < 0  ==> 00 01 02 03 04 05 ...
 
-        return minutes;
+        var minutes = arrayOfNulls<String>(arrayList.size)
+        minutes = arrayList.toArray(minutes)
+
+        return minutes
     }
 
-    public TimePickerSheetDialog(Context context, DateTime dateTime) {
-        this(context, true, dateTime);
+    private fun updateValues(dateTime: DateTime) {
+        binding.txtTitle.text = MessageFormat.format(
+            "{0}\n ساعت {1}:{2}",
+            dateTime.persianDate,
+            dateTime.hourString,
+            dateTime.minuteString
+        )
     }
 
-    private void updateValues(DateTime dateTime) {
-        txtTitle.setText(
-                MessageFormat.format("{0}\n ساعت {1}:{2}",
-                        dateTime.getPersianDate(),
-                        dateTime.getHourString(),
-                        dateTime.getMinuteString())
-        );
-    }
+    fun show() = sheetDialog?.show()
 
-    public void setOnClickApply(OnClickApply onClickApply) {
-        this.onClickApply = onClickApply;
-    }
-
-    public void setOnBackClick(OnBackClick onBackClick) {
-        this.onBackClick = onBackClick;
-    }
-
-    public void dismiss() {
-        if (sheetDialog != null)
-            sheetDialog.dismiss();
-    }
-
-    public void show() {
-        if (sheetDialog != null)
-            sheetDialog.show();
-    }
-
-    public interface OnClickApply {
-        void onClick(DateTime dateTime);
-    }
-
-    public interface OnBackClick {
-        void onBack(PersianPickerDate date);
-    }
+    fun dismiss() = sheetDialog?.dismiss()
 
 }

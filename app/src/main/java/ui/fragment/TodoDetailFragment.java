@@ -144,7 +144,7 @@ public class TodoDetailFragment extends BaseFragment {
 
     private void handleActions() {
         imgDelete.setOnClickListener(view -> {
-            DeleteDialog deleteDialog = new DeleteDialog(getActivity());
+            DeleteDialog deleteDialog = new DeleteDialog(getActivity(), true);
             deleteDialog.show();
 
             deleteDialog.setTitle(getString(R.string.delete_todo));
@@ -166,6 +166,7 @@ public class TodoDetailFragment extends BaseFragment {
 
                 deleteDialog.dismiss();
                 back();
+                return null;
             });
         });
 

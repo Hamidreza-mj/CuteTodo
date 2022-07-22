@@ -1,102 +1,61 @@
-package ui.dialog;
+package ui.dialog
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.widget.TextView;
+import android.app.AlertDialog
+import android.content.Context
+import android.view.LayoutInflater
+import hlv.cute.todo.R
+import hlv.cute.todo.databinding.DialogGlobalMenuBinding
 
-import hlv.cute.todo.R;
-import hlv.cute.todo.databinding.DialogGlobalMenuBinding;
+class GlobalMenuDialog(context: Context?, cancelable: Boolean = true) {
 
-public class GlobalMenuDialog {
+    private var dialog: AlertDialog? = null
 
-    private AlertDialog dialog;
+    var onClickCategories: (() -> Unit)? = null
+    var onClickDeleteAll: (() -> Unit)? = null
+    var onClickDeleteAllDone: (() -> Unit)? = null
 
-    private OnClickCategories onClickCategories;
-    private OnClickDeleteAll onClickDeleteAll;
-    public OnClickDeleteAllDone onClickDeleteAllDone;
+    init {
+        val binding = DialogGlobalMenuBinding.inflate(LayoutInflater.from(context), null, false)
 
-    public GlobalMenuDialog(Context context, boolean cancelable) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.TranslucentDialog);
-        builder.setCancelable(cancelable);
+        val builder = AlertDialog.Builder(context, R.style.TranslucentDialog).apply {
+            setCancelable(cancelable)
+            setView(binding.root)
+        }
 
-        hlv.cute.todo.databinding.DialogGlobalMenuBinding binding = DialogGlobalMenuBinding.inflate(LayoutInflater.from(context), null, false);
-        TextView txtCategories = binding.txtCategories;
-        TextView txtDeleteAll = binding.txtDeleteAll;
-        TextView txtDeleteAllDoneTodos = binding.txtDeleteAllDone;
 
-        txtCategories.setOnClickListener(view -> {
+        binding.txtCategories.setOnClickListener {
             if (onClickCategories == null) {
-                if (dialog != null)
-                    dismiss();
-
-                return;
+                if (dialog != null) dismiss()
+                return@setOnClickListener
             }
 
-            onClickCategories.onClick();
-        });
+            onClickCategories!!()
+        }
 
-        txtDeleteAll.setOnClickListener(view -> {
+        binding.txtDeleteAll.setOnClickListener {
             if (onClickDeleteAll == null) {
-                dismiss();
-                return;
+                dismiss()
+                return@setOnClickListener
             }
 
-            onClickDeleteAll.onClick();
-        });
+            onClickDeleteAll!!()
+        }
 
-        txtDeleteAllDoneTodos.setOnClickListener(v -> {
+        binding.txtDeleteAllDone.setOnClickListener {
             if (onClickDeleteAllDone == null) {
-                dismiss();
-                return;
+                dismiss()
+                return@setOnClickListener
             }
 
-            onClickDeleteAllDone.onClick();
-        });
+            onClickDeleteAllDone!!()
+        }
 
-        builder.setView(binding.getRoot());
 
         if (dialog == null)
-            dialog = builder.create();
+            dialog = builder.create()
     }
 
-    public GlobalMenuDialog(Context context) {
-        this(context, true);
-    }
-
-    public void setOnClickCategories(OnClickCategories onClickCategories) {
-        this.onClickCategories = onClickCategories;
-    }
-
-    public void setOnClickDeleteAll(OnClickDeleteAll onClickDeleteAll) {
-        this.onClickDeleteAll = onClickDeleteAll;
-    }
-
-    public void setOnClickDeleteAllDoneTodos(OnClickDeleteAllDone onClickDeleteAllDone) {
-        this.onClickDeleteAllDone = onClickDeleteAllDone;
-    }
-
-    public void dismiss() {
-        if (dialog != null)
-            dialog.dismiss();
-
-    }
-
-    public void show() {
-        if (dialog != null)
-            dialog.show();
-    }
-
-    public interface OnClickCategories {
-        void onClick();
-    }
-
-    public interface OnClickDeleteAll {
-        void onClick();
-    }
-
-    public interface OnClickDeleteAllDone {
-        void onClick();
-    }
+    fun show() = dialog?.show()
+    fun dismiss() = dialog?.dismiss()
 
 }
