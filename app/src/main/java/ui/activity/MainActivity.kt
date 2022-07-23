@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.transition.Slide
 import android.util.Log
 import android.view.Gravity
-import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import com.yandex.metrica.push.YandexMetricaPush
 import hlv.cute.todo.R
@@ -15,15 +14,8 @@ import ui.fragment.AddEditTodoFragment
 import ui.fragment.CategoriesFragment
 import ui.fragment.HomeFragment
 import utils.Constants
-import viewmodel.CategoryViewModel
-import viewmodel.SearchViewModel
-import viewmodel.TodoViewModel
 
 class MainActivity : BaseActivity() {
-
-    val todoViewModel by viewModels<TodoViewModel>()
-    val categoryViewModel by viewModels<CategoryViewModel>()
-    val searchViewModel by viewModels<SearchViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,17 +105,15 @@ class MainActivity : BaseActivity() {
         } else if (fragment is AddEditTodoFragment) {
             val addEditTodoViewModel = fragment.viewModel
 
-            if (addEditTodoViewModel != null) {
-                if (addEditTodoViewModel.isShareMode) {
-                    supportFragmentManager.popBackStack()
-                    val homeFragment: Fragment = HomeFragment.newInstance()
+            if (addEditTodoViewModel.isShareMode) {
+                supportFragmentManager.popBackStack()
+                val homeFragment: Fragment = HomeFragment.newInstance()
 
-                    supportFragmentManager.beginTransaction().apply {
-                        add(R.id.mainContainer, homeFragment, Constants.FragmentTag.HOME)
-                    }.commit()
+                supportFragmentManager.beginTransaction().apply {
+                    add(R.id.mainContainer, homeFragment, Constants.FragmentTag.HOME)
+                }.commit()
 
-                    return
-                }
+                return
             }
 
         }

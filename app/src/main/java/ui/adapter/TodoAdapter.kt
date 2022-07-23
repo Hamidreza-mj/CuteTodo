@@ -15,8 +15,8 @@ import utils.TextHelper
 
 class TodoAdapter(
     private val context: Context,
-    private val onCheckChangedListener: OnCheckChangedListener,
-    private val onClickMenuListener: OnClickMenuListener
+    private val onCheckChangedListener: (todoID: Int) -> Unit,
+    private val onClickMenuListener: (todo: Todo, view: View) -> Unit
 ) : RecyclerView.Adapter<TodoAdapter.ViewHolder>() {
 
     val differ: AsyncListDiffer<Todo>
@@ -57,8 +57,8 @@ class TodoAdapter(
 
         fun bind(
             todo: Todo,
-            onCheckChangedListener: OnCheckChangedListener,
-            onClickMenuListener: OnClickMenuListener
+            onCheckChangedListener: (todoID: Int) -> Unit,
+            onClickMenuListener: (todo: Todo, view: View) -> Unit
         ) {
             //must be set null
             //to avoid when recyclerview scroll, default implemented interface body called!
@@ -86,12 +86,12 @@ class TodoAdapter(
                     else
                         TextHelper.removeLineThrough(binding.aChkBoxTitle)
 
-                    onCheckChangedListener.onChange(todo.id)
+                    onCheckChangedListener(todo.id)
                 }
             }
 
 
-            binding.aImgMenu.setOnClickListener { onClickMenuListener.onClick(todo, binding.root) }
+            binding.aImgMenu.setOnClickListener { onClickMenuListener(todo, binding.root) }
 
             if (todo.category != null) {
                 binding.txtCategory.visibility = View.VISIBLE
@@ -135,13 +135,5 @@ class TodoAdapter(
             }
         }
 
-    }
-
-    interface OnCheckChangedListener {
-        fun onChange(todoID: Int)
-    }
-
-    interface OnClickMenuListener {
-        fun onClick(todo: Todo?, view: View?)
     }
 }

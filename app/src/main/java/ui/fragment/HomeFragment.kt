@@ -1,123 +1,83 @@
-package ui.fragment;
+package ui.fragment
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.text.Html;
-import android.transition.Slide;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.TextView;
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.transition.Slide
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
+import hlv.cute.todo.R
+import hlv.cute.todo.databinding.FragmentHomeBinding
+import model.Filter
+import model.Todo
+import ui.adapter.TodoAdapter
+import ui.dialog.DeleteDialog
+import ui.dialog.GlobalMenuDialog
+import ui.dialog.MoreDialog
+import ui.fragment.sheet.FilterBottomSheet
+import utils.Constants
+import utils.TextHelper
+import utils.ToastHelper
+import viewmodel.NotificationViewModel
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.widget.NestedScrollView;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+class HomeFragment : BaseFragment() {
 
-import com.google.android.material.behavior.HideBottomViewOnScrollBehavior;
-import com.google.android.material.button.MaterialButton;
+    private lateinit var binding: FragmentHomeBinding
 
-import java.util.ArrayList;
+    private val notificationViewModel by viewModels<NotificationViewModel>()
 
-import hlv.cute.todo.R;
-import hlv.cute.todo.databinding.FragmentHomeBinding;
-import model.Filter;
-import ui.adapter.TodoAdapter;
-import ui.dialog.DeleteDialog;
-import ui.dialog.GlobalMenuDialog;
-import ui.dialog.MoreDialog;
-import ui.fragment.sheet.FilterBottomSheet;
-import utils.Constants;
-import utils.ToastHelper;
-import viewmodel.NotificationViewModel;
+    private var scrollBehavior: HideBottomViewOnScrollBehavior<FrameLayout?>? = null
 
-public class HomeFragment extends BaseFragment {
+    private var adapter: TodoAdapter? = null
 
-    private FragmentHomeBinding binding;
+    var scrollYPos = 0
+        private set
 
-    private NotificationViewModel notificationViewModel;
-
-    private ConstraintLayout toolbar;
-    private AppCompatImageView imgGlobalMenu;
-    private AppCompatImageView imgFilter;
-    private View filterIndicator;
-    private AppCompatImageView imgSearch;
-    private NestedScrollView nested;
-    private RecyclerView rvTodo;
-    private FrameLayout frameLytButton;
-    private MaterialButton btnAdd;
-    private ConstraintLayout lytEmpty;
-    private ConstraintLayout lytGuide;
-    private TextView txtEmptyTitle;
-    private TextView txtEmptyNotes;
-    private HideBottomViewOnScrollBehavior<FrameLayout> scrollBehavior;
-
-    private TodoAdapter adapter;
-    private int scrollYPos = 0;
-
-    public HomeFragment() {
+    companion object {
+        @JvmStatic
+        fun newInstance(): HomeFragment {
+            return HomeFragment()
+        }
     }
 
-    public static HomeFragment newInstance() {
-        return new HomeFragment();
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentHomeBinding.inflate(inflater)
+        return binding.root
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        notificationViewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initViews()
+        handleActions()
+        handleObserver()
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentHomeBinding.inflate(inflater);
-        return binding.getRoot();
+    private fun initViews() {
+        setScrollBehavior()
+        handleShadowScroll()
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initViews();
-        handleActions();
-        handleObserver();
+    private fun setScrollBehavior() {
+        scrollBehavior = HideBottomViewOnScrollBehavior()
+        val lp = binding.frameLytButton.layoutParams as CoordinatorLayout.LayoutParams
+        lp.behavior = scrollBehavior
     }
 
-    private void initViews() {
-        toolbar = binding.toolbar;
-        imgGlobalMenu = binding.aImgGlobalMenu;
-        filterIndicator = binding.filterIndicator;
-        imgFilter = binding.aImgFilter;
-        imgSearch = binding.aImgSearch;
-        nested = binding.nested;
-        rvTodo = binding.rvTodo;
-        frameLytButton = binding.frameLytButton;
-        btnAdd = binding.mBtnAdd;
-        lytEmpty = binding.cLytEmpty;
-        lytGuide = binding.cLytGuide;
-        txtEmptyTitle = binding.txtEmpty;
-        txtEmptyNotes = binding.txtNotesEmpty;
-
-        setScrollBehavior();
-        handleShadowScroll();
-    }
-
-    private void setScrollBehavior() {
-        scrollBehavior = new HideBottomViewOnScrollBehavior<>();
-        CoordinatorLayout.LayoutParams lp = ((CoordinatorLayout.LayoutParams) frameLytButton.getLayoutParams());
-        lp.setBehavior(scrollBehavior);
-    }
-
-    private void handleShadowScroll() {
+    private fun handleShadowScroll() {
         /*rvTodo.addOnScrollListener(new RecyclerView.OnScrollListener() {
             final float dpShadow = DisplayUtils.getDisplay().dpToPx(rvTodo.getContext(), 12);
 
@@ -136,295 +96,342 @@ public class HomeFragment extends BaseFragment {
                 super.onScrolled(recyclerView, dx, dy);
             }
         });*/
-
-        nested.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            final float dpShadow = getResources().getDimension(R.dimen.toolbar_shadow);
-
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                scrollYPos = scrollY;
-
+        binding.nested.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {
+            val dpShadow = resources.getDimension(R.dimen.toolbar_shadow)
+            override fun onScrollChange(
+                v: NestedScrollView,
+                scrollX: Int,
+                scrollY: Int,
+                oldScrollX: Int,
+                oldScrollY: Int
+            ) {
+                scrollYPos = scrollY
                 if (scrollY == 0) {
-                    toolbar.animate().translationZ(0).setStartDelay(0).setDuration(200).start();
+                    binding.toolbar.animate()
+                        .translationZ(0f)
+                        .setStartDelay(0)
+                        .setDuration(200)
+                        .start()
+
                     //toolbar.setTranslationZ(0);
                 } else if (scrollY > 50) {
-                    toolbar.setTranslationZ(dpShadow);
-                    toolbar.animate().translationZ(dpShadow).setStartDelay(0).setDuration(90).start();
+                    binding.toolbar.translationZ = dpShadow
+
+                    binding.toolbar.animate()
+                        .translationZ(dpShadow)
+                        .setStartDelay(0)
+                        .setDuration(90)
+                        .start()
                 }
             }
-        });
+        })
     }
 
-    private void handleActions() {
-        imgGlobalMenu.setOnClickListener(view -> {
-            GlobalMenuDialog globalMenu = new GlobalMenuDialog(getActivity(), true);
-            globalMenu.show();
+    private fun handleActions() {
+        binding.aImgGlobalMenu.setOnClickListener {
+            GlobalMenuDialog(context).apply {
+                show()
 
-            globalMenu.setOnClickCategories(() -> {
-                Fragment fragment = CategoriesFragment.newInstance();
-                fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.CATEGORY);
-                transaction.addToBackStack(Constants.FragmentTag.CATEGORY);
-                transaction.commit();
+                onClickCategories = {
+                    val fragment: Fragment = CategoriesFragment.newInstance().apply {
+                        enterTransition = Slide(Gravity.BOTTOM)
+                    }
 
-                globalMenu.dismiss();
+                    parentFragmentManager.beginTransaction().apply {
+                        add(R.id.mainContainer, fragment, Constants.FragmentTag.CATEGORY)
+                        addToBackStack(Constants.FragmentTag.CATEGORY)
+                    }.commit()
 
-                return null;
-            });
-
-            globalMenu.setOnClickDeleteAll(() -> {
-                globalMenu.dismiss();
-
-                if (getTodoViewModel().todosIsEmpty()) {
-                    ToastHelper.get().toast(getString(R.string.todos_is_empty));
-                    return null; //empty return
+                    dismiss()
                 }
 
-                DeleteDialog deleteDialog = new DeleteDialog(getActivity(), true);
-                deleteDialog.show();
+                onClickDeleteAll = deleteAll@{
+                    dismiss()
 
-                deleteDialog.setTitle(getString(R.string.delete_all_todos));
-                deleteDialog.setMessage(getString(R.string.delete_all_todos_message, getTodoViewModel().getTodosCount()));
-                deleteDialog.setOnClickDelete(() -> {
-                    notificationViewModel.cancelAllAlarm();
-                    getTodoViewModel().deleteAllTodos();
-                    scrollBehavior.slideUp(frameLytButton);
-                    deleteDialog.dismiss();
-                    return null;
-                });
+                    if (todoViewModel.todosIsEmpty()) {
+                        ToastHelper.get().toast(getString(R.string.todos_is_empty))
+                        return@deleteAll //empty return
+                    }
 
-                return null;
-            });
+                    DeleteDialog(context).apply {
+                        show()
 
-            globalMenu.setOnClickDeleteAllDone(() -> {
-                globalMenu.dismiss();
+                        setTitle(getString(R.string.delete_all_todos))
 
-                if (getTodoViewModel().todosIsEmpty()) {
-                    ToastHelper.get().toast(getString(R.string.todos_is_empty));
-                    return null; //empty return
-                }
+                        setMessage(
+                            getString(
+                                R.string.delete_all_todos_message,
+                                todoViewModel.todosCount
+                            )
+                        )
 
-                if (getTodoViewModel().todosDoneIsEmpty()) {
-                    ToastHelper.get().toast(getString(R.string.todos_done_is_empty));
-                    return null; //empty return
-                }
+                        onClickDelete = {
+                            notificationViewModel.cancelAllAlarm()
+                            todoViewModel.deleteAllTodos()
+                            scrollBehavior!!.slideUp(binding.frameLytButton)
 
-                DeleteDialog deleteDialog = new DeleteDialog(getActivity(), true);
-                deleteDialog.show();
+                            dismiss()
+                        }
+                    }
 
-                deleteDialog.setTitle(getString(R.string.delete_all_done_todos));
-                deleteDialog.setMessage(getString(R.string.delete_all_done_todos_message, getTodoViewModel().getDoneTodosCount()));
-                deleteDialog.setOnClickDelete(() -> {
-                    notificationViewModel.cancelAllDoneAlarm();
-                    getTodoViewModel().deleteAllDoneTodos();
-                    scrollBehavior.slideUp(frameLytButton);
-                    deleteDialog.dismiss();
-                    return null;
-                });
+                    onClickDeleteAllDone = deleteAllDone@{
+                        dismiss()
 
-                return null;
-            });
-        });
-
-        imgFilter.setOnClickListener(view -> {
-            FilterBottomSheet filterBottomSheet = FilterBottomSheet.newInstance(getTodoViewModel().getCurrentFilter(), new ArrayList<>(getCategoryViewModel().getAllCategories()));
-            filterBottomSheet.show(getChildFragmentManager(), null);
-
-            filterBottomSheet.setOnApplyClick(() -> {
-                filterBottomSheet.disableViews();
-                Filter filter = filterBottomSheet.getFilter();
-
-//              if (!filter.filterIsEmpty() || getTodoViewModel().getTodosCount() != 0) //if all filter is empty do nothing
-                getTodoViewModel().applyFilter(filter);
-                //goToTop(800);
-                scrollBehavior.slideUp(frameLytButton);
-                filterBottomSheet.dismiss();
-
-                return null;
-            });
-
-            filterBottomSheet.setOnClearClick(() -> {
-                filterBottomSheet.clearFilterViews();
-                getTodoViewModel().applyFilter(null);
-                //goToTop(800);
-                scrollBehavior.slideUp(frameLytButton);
-                filterBottomSheet.dismiss();
-
-                return null;
-            });
-        });
-
-        imgSearch.setOnClickListener(view -> {
-            Fragment fragment = SearchFragment.newInstance();
-            fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
-            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-            transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.SEARCH);
-            transaction.addToBackStack(Constants.FragmentTag.SEARCH);
-            transaction.commit();
-        });
-
-        btnAdd.setOnClickListener(view -> {
-            Fragment fragment = AddEditTodoFragment.newInstance(null);
-            fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
-            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-            transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO);
-            transaction.addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO);
-            transaction.commit();
-        });
-
-        handleRecyclerView();
-    }
-
-    private void handleRecyclerView() {
-        if (getActivity() == null)
-            return;
-
-        adapter = new TodoAdapter(getActivity(),
-                todoID -> getTodoViewModel().setDoneTodo(todoID),
-
-                (todoMenu, sharedElement) -> {
-                    MoreDialog moreDialog = new MoreDialog(getActivity(), true);
-                    moreDialog.setWithDetail(true);
-                    moreDialog.show();
-
-                    moreDialog.setOnClickEdit(() -> {
-                        moreDialog.dismiss();
-
-                        Fragment fragment = AddEditTodoFragment.newInstance(todoMenu);
-                        fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
-                        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                        transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO);
-                        transaction.addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO);
-                        transaction.commit();
-
-                        return null;
-                    });
-
-                    moreDialog.setOnClickDetail(() -> {
-                        moreDialog.dismiss();
-
-                        Fragment fragment = TodoDetailFragment.newInstance(todoMenu);
-                        fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
-//                        MaterialContainerTransform t = new MaterialContainerTransform();
-//                        t.setDuration(400);
-//                        t.setScrimColor(Color.TRANSPARENT);
-//                        t.setPathMotion(new MaterialArcMotion());
-//                        t.setStartElevation(0);
-//                        t.setEndElevation(0);
-//
-//                        fragment.setSharedElementEnterTransition(t);
-//                        fragment.setSharedElementReturnTransition(t);
-
-//                        fragment.setAllowEnterTransitionOverlap(true);
-                        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-//                        transaction.setReorderingAllowed(true);
-//                        scheduleStartPostponedTransition(sharedElement);
-//                        transaction.addSharedElement(sharedElement, sharedElement.getTransitionName());
-                        transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.TODO_DETAIL);
-//                        transaction.hide(this);
-                        transaction.addToBackStack(Constants.FragmentTag.TODO_DETAIL);
-                        transaction.commit();
-
-                        return null;
-                    });
-
-                    moreDialog.setOnClickDelete(() -> {
-                        moreDialog.dismiss();
-
-                        DeleteDialog deleteDialog = new DeleteDialog(getActivity(), true);
-                        deleteDialog.show();
-                        deleteDialog.setTitle(getString(R.string.delete_todo));
-
-                        String todoTitle = todoMenu.getTitle();
-                        if (todoTitle != null && todoTitle.trim().length() > 30)
-                            todoTitle = todoTitle.substring(0, 30).trim() + getString(R.string.ellipsis);
-
-                        deleteDialog.setMessage(getString(R.string.delete_todo_message, todoTitle));
-                        deleteDialog.setOnClickDelete(() -> {
-                            if (todoMenu.getArriveDate() != 0)
-                                notificationViewModel.cancelAlarm(todoMenu);
-
-                            getTodoViewModel().deleteTodo(todoMenu);
-                            scrollBehavior.slideUp(frameLytButton);
-                            deleteDialog.dismiss();
-                            return null;
-                        });
-
-                        return null;
-                    });
-
-
-                }
-        );
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        rvTodo.setLayoutManager(layoutManager);
-        rvTodo.setAdapter(adapter);
-    }
-
-    private void handleObserver() {
-        AppCompatImageView box = binding.box;
-        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) box.getLayoutParams();
-
-        getTodoViewModel().fetch();
-
-        getTodoViewModel().getTodosLiveData().observe(getViewLifecycleOwner(),
-                todos -> {
-                    if (todos == null || todos.isEmpty()) {
-                        rvTodo.setVisibility(View.GONE);
-                        lytEmpty.setVisibility(View.VISIBLE);
-
-                        if (getTodoViewModel().getCurrentFilter() == null /*|| getTodoViewModel().getCurrentFilter().filterIsEmpty()*/) {
-                            filterIndicator.setVisibility(View.GONE);
-                            lytGuide.setVisibility(View.VISIBLE);
-                            txtEmptyTitle.setText(getString(R.string.todos_empty));
-                            txtEmptyNotes.setText(Html.fromHtml(getString(R.string.todos_empty_notes)));
-                            params.verticalBias = 0.2f;
-                        } else {
-                            filterIndicator.setVisibility(View.VISIBLE);
-                            lytGuide.setVisibility(View.GONE);
-                            txtEmptyTitle.setText(getString(R.string.empty_todos_with_filter));
-                            txtEmptyNotes.setText(getString(R.string.empty_todos_with_filter_notes));
-                            params.verticalBias = 0.35f;
+                        if (todoViewModel.todosIsEmpty()) {
+                            ToastHelper.get().toast(getString(R.string.todos_is_empty))
+                            return@deleteAllDone //empty return
                         }
 
-                        box.setLayoutParams(params);
+                        if (todoViewModel.todosDoneIsEmpty()) {
+                            ToastHelper.get().toast(getString(R.string.todos_done_is_empty))
+                            return@deleteAllDone //empty return
+                        }
 
-                    } else {
-                        filterIndicator.setVisibility(getTodoViewModel().getCurrentFilter() != null &&
-                                !getTodoViewModel().getCurrentFilter().filterIsEmpty() ? View.VISIBLE : View.GONE);
+                        DeleteDialog(context).apply {
+                            show()
 
-                        lytEmpty.setVisibility(View.GONE);
-                        rvTodo.setVisibility(View.VISIBLE);
-                        rvTodo.post(() -> adapter.getDiffer().submitList(todos));
+                            setTitle(getString(R.string.delete_all_done_todos))
+
+                            setMessage(
+                                getString(
+                                    R.string.delete_all_done_todos_message,
+                                    todoViewModel.doneTodosCount
+                                )
+                            )
+
+                            onClickDelete = {
+                                notificationViewModel.cancelAllDoneAlarm()
+                                todoViewModel.deleteAllDoneTodos()
+                                scrollBehavior!!.slideUp(binding.frameLytButton)
+                                dismiss()
+                            }
+
+                        }
+                    }
+
+                }
+            }
+
+        }
+
+
+        binding.aImgFilter.setOnClickListener {
+            FilterBottomSheet.newInstance(
+                todoViewModel.currentFilter,
+                ArrayList(categoryViewModel.allCategories)
+            ).apply {
+                onApplyClick = {
+                    disableViews()
+                    val filter = getFilter()
+
+//              if (!filter.filterIsEmpty() || getTodoViewModel().getTodosCount() != 0) //if all filter is empty do nothing
+                    todoViewModel.applyFilter(filter)
+                    //goToTop(800);
+                    scrollBehavior!!.slideUp(binding.frameLytButton)
+                    dismiss()
+                }
+
+                onClearClick = {
+                    clearFilterViews()
+                    todoViewModel.applyFilter(null)
+                    //goToTop(800);
+                    scrollBehavior!!.slideUp(binding.frameLytButton)
+                    dismiss()
+                }
+            }.show(childFragmentManager, null)
+        }
+
+
+        binding.aImgSearch.setOnClickListener {
+            val fragment: Fragment = SearchFragment.newInstance().apply {
+                enterTransition = Slide(Gravity.BOTTOM)
+            }
+
+            parentFragmentManager.beginTransaction().apply {
+                add(R.id.mainContainer, fragment, Constants.FragmentTag.SEARCH)
+
+                addToBackStack(Constants.FragmentTag.SEARCH)
+            }.commit()
+        }
+
+        binding.mBtnAdd.setOnClickListener {
+            val fragment: Fragment = AddEditTodoFragment.newInstance(null).apply {
+                enterTransition = Slide(Gravity.BOTTOM)
+            }
+
+            parentFragmentManager.beginTransaction().apply {
+                add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO)
+
+                addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO)
+            }.commit()
+        }
+
+
+        handleRecyclerView()
+    }
+
+    private fun handleRecyclerView() {
+        adapter = TodoAdapter(
+            context!!,
+
+            { todoID: Int ->
+                todoViewModel.setDoneTodo(todoID.toLong())
+            },
+
+            { todoMenu: Todo, _: View? ->
+                MoreDialog(context).apply {
+                    show()
+
+                    setWithDetail(true)
+
+                    onClickEdit = {
+                        dismiss()
+                        val fragment: Fragment = AddEditTodoFragment.newInstance(todoMenu)
+                        fragment.enterTransition = Slide(Gravity.BOTTOM)
+                        val transaction = parentFragmentManager.beginTransaction()
+                        transaction.add(
+                            R.id.mainContainer,
+                            fragment,
+                            Constants.FragmentTag.ADD_EDIT_TODO
+                        )
+                        transaction.addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO)
+                        transaction.commit()
+                    }
+
+                    onClickDetail = {
+                        dismiss()
+                        val fragment: Fragment = TodoDetailFragment.newInstance(todoMenu).apply {
+                            enterTransition = Slide(Gravity.BOTTOM)
+                        }
+
+                        /*MaterialContainerTransform t = new MaterialContainerTransform();
+                        t.setDuration(400);
+                        t.setScrimColor(Color.TRANSPARENT);
+                        t.setPathMotion(new MaterialArcMotion());
+                        t.setStartElevation(0);
+                        t.setEndElevation(0);
+
+                        fragment.setSharedElementEnterTransition(t);
+                        fragment.setSharedElementReturnTransition(t);
+
+                        fragment.setAllowEnterTransitionOverlap(true);*/
+                        parentFragmentManager.beginTransaction().apply {
+                            add(R.id.mainContainer, fragment, Constants.FragmentTag.TODO_DETAIL)
+
+                            addToBackStack(Constants.FragmentTag.TODO_DETAIL)
+                        }.commit()
+
+                        /*transaction.setReorderingAllowed(true);
+                         scheduleStartPostponedTransition(sharedElement);
+                         transaction.addSharedElement(sharedElement, sharedElement.getTransitionName());
+                         transaction.hide(this);*/
+
+                    }
+
+                    onClickDelete = {
+                        dismiss()
+
+                        DeleteDialog(context).apply {
+                            show()
+
+                            setTitle(getString(R.string.delete_todo))
+
+                            var todoTitle = todoMenu.title
+                            if (todoTitle != null && todoTitle.trim().length > 30)
+                                todoTitle =
+                                    todoTitle.substring(0, 30).trim() + getString(R.string.ellipsis)
+
+                            setMessage(getString(R.string.delete_todo_message, todoTitle))
+
+                            onClickDelete = {
+                                if (todoMenu.arriveDate != 0L)
+                                    notificationViewModel.cancelAlarm(todoMenu)
+
+                                todoViewModel.deleteTodo(todoMenu)
+                                scrollBehavior!!.slideUp(binding.frameLytButton)
+
+                                dismiss()
+                            }
+                        }
                     }
                 }
-        );
+            }
+        )
 
-        getTodoViewModel().getFilterLiveData().observe(getViewLifecycleOwner(),
-                filter -> getTodoViewModel().fetch(filter));
-
-        getTodoViewModel().getGoToTopLiveData().observe(getViewLifecycleOwner(), scroll ->
-                goToTop(1000)
-        );
+        val layoutManager = LinearLayoutManager(context)
+        binding.rvTodo.apply {
+            this.layoutManager = layoutManager
+            adapter = this@HomeFragment.adapter
+        }
     }
 
-    public void goToTop(int duration) {
-        if (nested == null || scrollBehavior == null || frameLytButton == null)
-            return;
+    private fun handleObserver() {
+        val box = binding.box
+        val params = box.layoutParams as ConstraintLayout.LayoutParams
 
-        nested.smoothScrollTo(0, 0, duration);
-        new Handler().postDelayed(() -> scrollBehavior.slideUp(frameLytButton), 500);
+        todoViewModel.fetch()
+
+        todoViewModel.todosLiveData.observe(viewLifecycleOwner) { todos: List<Todo>? ->
+
+            if (todos == null || todos.isEmpty()) {
+                binding.rvTodo.visibility = View.GONE
+                binding.cLytEmpty.visibility = View.VISIBLE
+                if (todoViewModel.currentFilter == null /*|| getTodoViewModel().getCurrentFilter().filterIsEmpty()*/) {
+                    binding.filterIndicator.visibility = View.GONE
+                    binding.cLytGuide.visibility = View.VISIBLE
+
+                    binding.txtEmpty.text = getString(R.string.todos_empty)
+                    binding.txtNotesEmpty.text =
+                        TextHelper.fromHtml(getString(R.string.todos_empty_notes))
+
+                    params.verticalBias = 0.2f
+                } else {
+                    binding.filterIndicator.visibility = View.VISIBLE
+                    binding.cLytGuide.visibility = View.GONE
+
+                    binding.txtEmpty.text = getString(R.string.empty_todos_with_filter)
+                    binding.txtNotesEmpty.text = getString(R.string.empty_todos_with_filter_notes)
+
+                    params.verticalBias = 0.35f
+                }
+
+                box.layoutParams = params
+            } else {
+                binding.filterIndicator.visibility =
+                    if (todoViewModel.currentFilter != null && !todoViewModel.currentFilter.filterIsEmpty())
+                        View.VISIBLE
+                    else
+                        View.GONE
+
+                binding.cLytEmpty.visibility = View.GONE
+                binding.rvTodo.visibility = View.VISIBLE
+                binding.rvTodo.post { adapter?.differ?.submitList(todos) }
+            }
+        }
+
+        todoViewModel.filterLiveData.observe(viewLifecycleOwner) { filter: Filter? ->
+            todoViewModel.fetch(filter)
+        }
+
+        todoViewModel.goToTopLiveData.observe(viewLifecycleOwner) {
+            goToTop(1000)
+        }
+
     }
 
-    public int getScrollYPos() {
-        return scrollYPos;
+    fun goToTop(duration: Int) {
+        if (scrollBehavior == null)
+            return
+
+        binding.nested.smoothScrollTo(0, 0, duration)
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            scrollBehavior!!.slideUp(binding.frameLytButton)
+        }, 500)
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        getTodoViewModel().fetch();
+    override fun onResume() {
+        super.onResume()
+        todoViewModel.fetch()
     }
 }

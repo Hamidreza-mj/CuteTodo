@@ -1,392 +1,383 @@
-package ui.fragment;
+package ui.fragment
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.text.Editable;
-import android.text.Html;
-import android.text.TextWatcher;
-import android.transition.Slide;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
+import android.transition.Slide
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import hlv.cute.todo.R
+import hlv.cute.todo.databinding.FragmentSearchBinding
+import model.Category
+import model.Search
+import model.Todo
+import ui.adapter.TodoAdapter
+import ui.dialog.DeleteDialog
+import ui.dialog.MoreDialog
+import ui.fragment.sheet.SearchModeBottomSheet
+import utils.Constants
+import utils.TextHelper
+import viewmodel.NotificationViewModel
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.widget.NestedScrollView;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+class SearchFragment : BaseFragment() {
 
-import com.google.android.material.tabs.TabLayout;
+    private lateinit var binding: FragmentSearchBinding
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+    private val notificationViewModel by viewModels<NotificationViewModel>()
 
-import hlv.cute.todo.R;
-import hlv.cute.todo.databinding.FragmentSearchBinding;
-import model.Category;
-import model.Search;
-import ui.adapter.TodoAdapter;
-import ui.dialog.DeleteDialog;
-import ui.dialog.MoreDialog;
-import ui.fragment.sheet.SearchModeBottomSheet;
-import utils.Constants;
-import viewmodel.NotificationViewModel;
+    private var adapter: TodoAdapter? = null
 
-public class SearchFragment extends BaseFragment {
+    private var afterTextChanged = false
+    private var search: Search? = Search()
 
-    private FragmentSearchBinding binding;
-
-    private NotificationViewModel notificationViewModel;
-
-    private ConstraintLayout toolbar;
-    private NestedScrollView nested;
-    private RecyclerView rvSearch;
-
-    private TodoAdapter adapter;
-
-    private AppCompatEditText edtSearch;
-    private AppCompatImageView imgClear;
-    private AppCompatImageView imgFilter;
-    private AppCompatImageView vectorImage;
-    private TextView txtResult, txtNotes;
-
-    private boolean afterTextChanged = false;
-
-    private Search search;
-
-    public SearchFragment() {
+    companion object {
+        @JvmStatic
+        fun newInstance(): SearchFragment {
+            return SearchFragment()
+        }
     }
 
-    public static SearchFragment newInstance() {
-        return new SearchFragment();
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentSearchBinding.inflate(inflater)
+        return binding.root
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        search = new Search();
-        notificationViewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initViews()
+        handleActions()
+        handleObserver()
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentSearchBinding.inflate(inflater);
-        return binding.getRoot();
+    private fun initViews() {
+        binding.aImgBack.setOnClickListener { back() }
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding.edtSearch.setText("")
+            binding.edtSearch.requestFocus()
+        }, 50)
+
+        Handler(Looper.getMainLooper()).postDelayed({ showKeyboard() }, 600)
+
+        handleTabLayout()
+        handleShadowScroll()
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initViews();
-        handleActions();
-        handleObserver();
-    }
+    private fun handleTabLayout() {
+        val allCategories = categoryViewModel.allCategories
 
-    private void initViews() {
-        binding.aImgBack.setOnClickListener(view -> back());
+        val categoryAllItem = Category().apply {
+            id = 0
+            name = "همه"
+        }
 
-        toolbar = binding.toolbar;
-        nested = binding.nested;
-        rvSearch = binding.rvSearch;
-        imgClear = binding.aImgClear;
-        imgFilter = binding.aImgFilter;
-        edtSearch = binding.edtSearch;
-        vectorImage = binding.vector;
-        txtNotes = binding.txtNotes;
-        txtResult = binding.txtResult;
+        allCategories.add(0, categoryAllItem)
+        allCategories.reverse()
 
-        new Handler().postDelayed(() -> {
-            edtSearch.setText("");
-            edtSearch.requestFocus();
-            showKeyboard();
-        }, 500);
+        val maxLength = 18
 
-        handleTabLayout();
+        for (category in allCategories) {
+            val categoryName = category!!.name
 
-        handleShadowScroll();
-    }
+            if (categoryName!!.length > maxLength) {
+                val categoryWithEllipsis =
+                    categoryName.substring(0, maxLength) + getString(R.string.ellipsis)
 
-    private void handleTabLayout() {
-        List<Category> allCategories = getCategoryViewModel().getAllCategories();
-        Category categoryAllItem = new Category();
-        categoryAllItem.setId(0);
-        categoryAllItem.setName("همه");
-        allCategories.add(0, categoryAllItem);
-
-        Collections.reverse(allCategories);
-
-        int maxLength = 18;
-
-        for (Category category : allCategories) {
-            String categoryName = category.getName();
-
-            if (categoryName.length() > maxLength) {
-                String categoryWithEllipsis = categoryName.substring(0, maxLength) + getString(R.string.ellipsis);
-                binding.tabLyt.addTab(binding.tabLyt.newTab().setText(categoryWithEllipsis));
+                binding.tabLyt.addTab(binding.tabLyt.newTab().setText(categoryWithEllipsis))
             } else {
-                binding.tabLyt.addTab(binding.tabLyt.newTab().setText(categoryName));
+                binding.tabLyt.addTab(binding.tabLyt.newTab().setText(categoryName))
             }
         }
 
-        int lastTabPos = binding.tabLyt.getTabCount() - 1;
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            search.setCategoryId(categoryAllItem.getId());
-            binding.tabLyt.selectTab(binding.tabLyt.getTabAt(lastTabPos), true);
-        }, 100);
 
-        binding.tabLyt.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                int tabCategoryId = allCategories.get(tab.getPosition()).getId();
-                search.setCategoryId(tabCategoryId);
-                nested.smoothScrollTo(0, 0, 500);
+        val lastTabPos = binding.tabLyt.tabCount - 1
 
-                if (tab.getPosition() == lastTabPos) {//all
-                    getSearchViewModel().fetch();
+        Handler(Looper.getMainLooper()).postDelayed({
+            search!!.categoryId = categoryAllItem.id
+            binding.tabLyt.selectTab(binding.tabLyt.getTabAt(lastTabPos), true)
+        }, 100)
+
+        binding.tabLyt.addOnTabSelectedListener(object : OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+
+                val tabCategoryId = allCategories[tab.position]!!.id
+
+                search!!.categoryId = tabCategoryId
+
+                binding.nested.smoothScrollTo(0, 0, 500)
+
+                if (tab.position == lastTabPos) { //all
+                    searchViewModel.fetch()
                 } else {
-                    String searchText = Objects.requireNonNull(edtSearch.getText()).toString();
+                    val searchText = binding.edtSearch.text.toString()
 
                     if (searchText.isEmpty()) {
-                        getSearchViewModel().fetch(tabCategoryId);
+                        searchViewModel.fetch(tabCategoryId)
                     } else {
-                        search.setTerm(searchText);
-                        getSearchViewModel().fetch(search);
+                        search!!.term = searchText
+                        searchViewModel.fetch(search)
                     }
                 }
             }
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
+            override fun onTabUnselected(tab: TabLayout.Tab) {}
+            override fun onTabReselected(tab: TabLayout.Tab) {
+                binding.nested.smoothScrollTo(0, 0, 500)
             }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                nested.smoothScrollTo(0, 0, 500);
-            }
-        });
+        })
     }
 
-    private void handleShadowScroll() {
-        nested.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            final float dpShadow = getResources().getDimension(R.dimen.toolbar_shadow);
-
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+    private fun handleShadowScroll() {
+        binding.nested.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {
+            val dpShadow = resources.getDimension(R.dimen.toolbar_shadow)
+            override fun onScrollChange(
+                v: NestedScrollView,
+                scrollX: Int,
+                scrollY: Int,
+                oldScrollX: Int,
+                oldScrollY: Int
+            ) {
                 if (scrollY == 0) {
-                    toolbar.animate().translationZ(0).setStartDelay(0).setDuration(200).start();
+                    binding.toolbar.animate()
+                        .translationZ(0f)
+                        .setStartDelay(0)
+                        .setDuration(200)
+                        .start()
+
                 } else if (scrollY > 50) {
-                    toolbar.setTranslationZ(dpShadow);
-                    toolbar.animate().translationZ(dpShadow).setStartDelay(0).setDuration(90).start();
+                    binding.toolbar.translationZ = dpShadow
+
+                    binding.toolbar.animate()
+                        .translationZ(dpShadow)
+                        .setStartDelay(0)
+                        .setDuration(90)
+                        .start()
                 }
             }
-        });
+        })
     }
 
-    private void handleActions() {
-        imgFilter.setOnClickListener(view -> {
-            if (search.getTerm() == null || search.getSearchMode() == null) {
-                search.setTerm("");
-                search.setSearchMode(Search.SearchMode.TODO);
+    private fun handleActions() {
+        binding.aImgFilter.setOnClickListener {
+            if (search!!.term == null) {
+                search!!.term = ""
+                search!!.searchMode = Search.SearchMode.TODO
             }
 
-            SearchModeBottomSheet searchModeBottomSheet = SearchModeBottomSheet.newInstance(search);
-            searchModeBottomSheet.show(getChildFragmentManager(), null);
-            searchModeBottomSheet.setOnCheckChanged(search -> {
-                searchModeBottomSheet.disableViews();
-                search.setTerm(getSearchViewModel().getCurrentTerm());
-                getSearchViewModel().search(search);
+            SearchModeBottomSheet.newInstance(search).apply {
+                onCheckChanged = { search: Search? ->
+                    disableViews()
 
-                ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) binding.tabLyt.getLayoutParams();
+                    search!!.term = searchViewModel.currentTerm
 
-                if (search.getSearchMode() == Search.SearchMode.CATEGORY || search.getSearchMode() == Search.SearchMode.BOTH) {
-                    binding.tabLyt.setVisibility(View.INVISIBLE);
-                    lp.height = (int) getResources().getDimension(R.dimen.heigh_invisible_space);
+                    searchViewModel.search(search)
+
+                    val lp = binding.tabLyt.layoutParams as ConstraintLayout.LayoutParams
+
+                    if (search.searchMode === Search.SearchMode.CATEGORY || search.searchMode === Search.SearchMode.BOTH) {
+                        binding.tabLyt.visibility = View.INVISIBLE
+                        lp.height = resources.getDimension(R.dimen.heigh_invisible_space).toInt()
+                    } else {
+                        binding.tabLyt.visibility = View.VISIBLE
+                        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    }
+
+                    binding.tabLyt.layoutParams = lp
+                    binding.tabLyt.requestLayout()
+
+                    dismiss()
+                }
+
+            }.show(childFragmentManager, null)
+        }
+
+        binding.aImgClear.setOnClickListener {
+            binding.edtSearch.setText("")
+            binding.aImgClear.visibility = View.INVISIBLE
+        }
+
+
+        binding.edtSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+            override fun afterTextChanged(editable: Editable) {
+                if (editable.isNotEmpty()) {
+                    afterTextChanged = true
+                    binding.txtResult.visibility = View.VISIBLE
+                    binding.aImgClear.visibility = View.VISIBLE
                 } else {
-                    binding.tabLyt.setVisibility(View.VISIBLE);
-                    lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    afterTextChanged = false
+                    binding.txtResult.visibility = View.GONE
+                    binding.aImgClear.visibility = View.INVISIBLE
                 }
+                search!!.term = editable.toString().trim()
+                search!!.searchMode = searchViewModel.searchMode
 
-                binding.tabLyt.setLayoutParams(lp);
-                binding.tabLyt.requestLayout();
-
-                searchModeBottomSheet.dismiss();
-
-                return null;
-            });
-        });
-
-        imgClear.setOnClickListener(view -> {
-            edtSearch.setText("");
-            imgClear.setVisibility(View.INVISIBLE);
-        });
-
-        edtSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                searchViewModel.search(search)
             }
+        })
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (editable.length() != 0) {
-                    afterTextChanged = true;
-                    txtResult.setVisibility(View.VISIBLE);
-                    imgClear.setVisibility(View.VISIBLE);
-                } else {
-                    afterTextChanged = false;
-                    txtResult.setVisibility(View.GONE);
-                    imgClear.setVisibility(View.INVISIBLE);
-                }
-
-                search.setTerm(editable.toString().trim());
-                search.setSearchMode(getSearchViewModel().getSearchMode());
-                getSearchViewModel().search(search);
-            }
-        });
-
-        handleRecyclerView();
+        handleRecyclerView()
     }
 
-    private void handleRecyclerView() {
-        if (getActivity() == null)
-            return;
+    private fun handleRecyclerView() {
+        adapter = TodoAdapter(
+            context!!,
 
-        adapter = new TodoAdapter(getActivity(),
-                todoID -> {
-                    getTodoViewModel().setDoneTodo(todoID);
-                    getSearchViewModel().fetch();
-                },
+            onCheckChangedListener = { todoID: Int ->
+                todoViewModel.setDoneTodo(todoID.toLong())
+                searchViewModel.fetch()
+            },
 
-                (todoMenu, sharedEl) -> {
-                    MoreDialog moreDialog = new MoreDialog(getActivity(), true);
-                    moreDialog.setWithDetail(true);
-                    moreDialog.show();
+            onClickMenuListener = { todoMenu: Todo, _: View ->
 
-                    moreDialog.setOnClickEdit(() -> {
-                        moreDialog.dismiss();
+                MoreDialog(context).apply {
+                    show()
+                    setWithDetail(true)
 
-                        Fragment fragment = AddEditTodoFragment.newInstance(todoMenu);
-                        fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
-                        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                        transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO);
-                        transaction.addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO);
-                        transaction.commit();
+                    onClickEdit = {
+                        dismiss()
 
-                        return null;
-                    });
-
-                    moreDialog.setOnClickDetail(() -> {
-                        moreDialog.dismiss();
-
-                        Fragment fragment = TodoDetailFragment.newInstance(todoMenu);
-                        fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
-                        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                        transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.TODO_DETAIL);
-                        transaction.addToBackStack(Constants.FragmentTag.TODO_DETAIL);
-                        transaction.commit();
-
-                        return null;
-                    });
-
-                    moreDialog.setOnClickDelete(() -> {
-                        moreDialog.dismiss();
-
-                        DeleteDialog deleteDialog = new DeleteDialog(getActivity(), true);
-                        deleteDialog.show();
-                        deleteDialog.setTitle(getString(R.string.delete_todo));
-
-                        String todoTitle = todoMenu.getTitle();
-                        if (todoTitle != null && todoTitle.trim().length() > 60)
-                            todoTitle = todoTitle.substring(0, 60).trim();
-
-                        deleteDialog.setMessage(getString(R.string.delete_todo_message, todoTitle));
-                        deleteDialog.setOnClickDelete(() -> {
-                            if (todoMenu.getArriveDate() != 0)
-                                notificationViewModel.cancelAlarm(todoMenu);
-
-                            getTodoViewModel().deleteTodo(todoMenu);
-                            getSearchViewModel().fetch();
-                            deleteDialog.dismiss();
-                            return null;
-                        });
-
-                        return null;
-                    });
-
-                }
-        );
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        rvSearch.setLayoutManager(layoutManager);
-        rvSearch.setAdapter(adapter);
-    }
-
-    private void handleObserver() {
-        getSearchViewModel().fetch();
-
-        getSearchViewModel().getTodosLiveData().observe(getViewLifecycleOwner(),
-                todos -> {
-                    if (todos == null || todos.isEmpty()) {
-                        txtResult.setVisibility(View.GONE);
-                        nested.setVisibility(View.GONE);
-                        rvSearch.setVisibility(View.GONE);
-
-                        txtNotes.setVisibility(View.VISIBLE);
-
-
-                        if (getTodoViewModel().todosIsEmpty())
-                            txtNotes.setText(getString(R.string.todos_empty));
-                        else {
-                            String term = getSearchViewModel().getCurrentTerm();
-
-                            if (term.isEmpty()) {
-                                term = "موردی یافت نشد!";
-                                txtNotes.setText(term);
-                            } else {
-                                txtNotes.setText(Html.fromHtml(getString(R.string.todo_not_found, getSearchViewModel().getTitleTerm(), term)));
-                            }
+                        val fragment: Fragment = AddEditTodoFragment.newInstance(todoMenu).apply {
+                            enterTransition = Slide(Gravity.BOTTOM)
                         }
 
+                        parentFragmentManager.beginTransaction().apply {
+                            add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO)
 
-                        vectorImage.setVisibility(View.VISIBLE);
-                    } else {
-                        txtNotes.setVisibility(View.GONE);
-                        vectorImage.setVisibility(View.GONE);
-                        txtResult.setText(Html.fromHtml(getString(R.string.search_result, todos.size(), getTodoViewModel().getTodosCount(), getSearchViewModel().getTitleTermResult())));
-                        txtResult.setVisibility(afterTextChanged ? View.VISIBLE : View.GONE);
-                        nested.setVisibility(View.VISIBLE);
-                        rvSearch.setVisibility(View.VISIBLE);
-                        rvSearch.post(() -> adapter.getDiffer().submitList(todos));
+                            addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO)
+                        }.commit()
+                    }
+
+                    onClickDetail = {
+                        dismiss()
+
+                        val fragment: Fragment = TodoDetailFragment.newInstance(todoMenu).apply {
+                            enterTransition = Slide(Gravity.BOTTOM)
+                        }
+
+                        parentFragmentManager.beginTransaction().apply {
+                            add(R.id.mainContainer, fragment, Constants.FragmentTag.TODO_DETAIL)
+                            addToBackStack(Constants.FragmentTag.TODO_DETAIL)
+                        }.commit()
+
+                    }
+
+                    onClickDelete = {
+                        dismiss()
+
+                        DeleteDialog(context).apply {
+                            show()
+
+                            setTitle(getString(R.string.delete_todo))
+
+                            var todoTitle = todoMenu.title
+                            if (todoTitle != null && todoTitle.trim().length > 60) todoTitle =
+                                todoTitle.substring(0, 60).trim()
+
+                            setMessage(getString(R.string.delete_todo_message, todoTitle))
+
+
+                            onClickDelete = {
+                                if (todoMenu.arriveDate != 0L)
+                                    notificationViewModel.cancelAlarm(todoMenu)
+
+                                todoViewModel.deleteTodo(todoMenu)
+                                searchViewModel.fetch()
+                                dismiss()
+                            }
+                        }
                     }
                 }
-        );
+            }
+        )
+
+        val layoutManager = LinearLayoutManager(context)
+        binding.rvSearch.apply {
+            this.layoutManager = layoutManager
+            adapter = this@SearchFragment.adapter
+        }
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        getSearchViewModel().release();
+    private fun handleObserver() {
+        searchViewModel.fetch()
+
+        searchViewModel.todosLiveData.observe(viewLifecycleOwner) { todos: List<Todo>? ->
+
+            if (todos == null || todos.isEmpty()) {
+                binding.txtResult.visibility = View.GONE
+                binding.nested.visibility = View.GONE
+                binding.rvSearch.visibility = View.GONE
+
+                binding.txtNotes.visibility = View.VISIBLE
+
+
+                if (todoViewModel.todosIsEmpty()) {
+                    binding.txtNotes.text = getString(R.string.todos_empty)
+                } else {
+                    var term = searchViewModel.currentTerm
+
+                    if (term.isEmpty()) {
+                        term = "موردی یافت نشد!"
+                        binding.txtNotes.text = term
+                    } else {
+                        binding.txtNotes.text = TextHelper.fromHtml(
+                            getString(
+                                R.string.todo_not_found,
+                                searchViewModel.titleTerm,
+                                term
+                            )
+                        )
+                    }
+                }
+
+                binding.vector.visibility = View.VISIBLE
+
+            } else {
+                binding.txtNotes.visibility = View.GONE
+                binding.vector.visibility = View.GONE
+
+                binding.txtResult.text = TextHelper.fromHtml(
+                    getString(
+                        R.string.search_result,
+                        todos.size,
+                        todoViewModel.todosCount,
+                        searchViewModel.titleTermResult
+                    )
+                )
+
+                binding.txtResult.visibility = if (afterTextChanged) View.VISIBLE else View.GONE
+
+                binding.nested.visibility = View.VISIBLE
+                binding.rvSearch.visibility = View.VISIBLE
+
+                binding.rvSearch.post { adapter?.differ?.submitList(todos) }
+            }
+        }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        getSearchViewModel().fetch();
+    override fun onDestroyView() {
+        super.onDestroyView()
+        searchViewModel.release()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        searchViewModel.fetch()
     }
 }

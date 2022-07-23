@@ -11,7 +11,7 @@ import model.Category
 
 class CategoryAdapter(
     private val context: Context,
-    private val onClickMenuListener: OnClickMenuListener
+    private val onClickMenuListener: (category: Category) -> Unit
 ) : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
 
     val differ: AsyncListDiffer<Category>
@@ -51,15 +51,13 @@ class CategoryAdapter(
     inner class ViewHolder(private val binding: ItemCategoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(category: Category, onClickMenuListener: OnClickMenuListener) {
-            binding.aImgMenu.setOnClickListener { onClickMenuListener.onClick(category) }
+        fun bind(category: Category, onClickMenuListener: (category: Category) -> Unit) {
+            binding.aImgMenu.setOnClickListener {
+                onClickMenuListener(category)
+            }
+
             binding.txtTitle.text = category.name
         }
     }
-
-    interface OnClickMenuListener {
-        fun onClick(category: Category?)
-    }
-
 
 }

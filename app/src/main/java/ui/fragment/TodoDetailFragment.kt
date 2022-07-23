@@ -1,263 +1,242 @@
-package ui.fragment;
+package ui.fragment
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.transition.Slide;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.content.Intent
+import android.os.Bundle
+import android.transition.Slide
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import hlv.cute.todo.R
+import hlv.cute.todo.databinding.FragmentTodoDetailBinding
+import model.Priority
+import model.Todo
+import ui.dialog.DeleteDialog
+import utils.Constants
+import viewmodel.NotificationViewModel
+import viewmodel.TodoDetailViewModel
+import java.text.MessageFormat
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.widget.NestedScrollView;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
+class TodoDetailFragment : BaseFragment() {
 
-import com.google.android.material.button.MaterialButton;
+    private lateinit var binding: FragmentTodoDetailBinding
 
-import java.text.MessageFormat;
+    val viewModel by viewModels<TodoDetailViewModel>()
+    private val notificationViewModel by viewModels<NotificationViewModel>()
 
-import hlv.cute.todo.R;
-import hlv.cute.todo.databinding.FragmentTodoDetailBinding;
-import model.Todo;
-import ui.dialog.DeleteDialog;
-import utils.Constants;
-import viewmodel.NotificationViewModel;
-import viewmodel.TodoDetailViewModel;
+    companion object {
 
-public class TodoDetailFragment extends BaseFragment {
+        private const val TODO_DETAIL_ARGS = "todo-detail-args"
 
-    private static final String TODO_DETAIL_ARGS = "todo-detail-args";
+        @JvmStatic
+        fun newInstance(todo: Todo?): TodoDetailFragment {
+            val fragment = TodoDetailFragment()
 
-    private FragmentTodoDetailBinding binding;
+            val bundle = bundleOf(
+                TODO_DETAIL_ARGS to todo
+            )
 
-    private TodoDetailViewModel viewModel;
-    private NotificationViewModel notificationViewModel;
+            fragment.arguments = bundle
 
-    private ConstraintLayout toolbar;
-    private NestedScrollView nested;
-    private MaterialButton btnClose;
-    private AppCompatImageView imgDelete, imgEdit, imgShare;
-
-    private TextView txtTitle;
-    private TextView txtCategory;
-    private TextView txtLowPriority, txtNormalPriority, txtHighPriority;
-    private TextView txtDone;
-    private AppCompatImageView imgDone;
-    private ConstraintLayout lytDate, lytCategory;
-    private TextView txtDateReminder, txtClockReminder;
-    private TextView txtCreatedAt, txtUpdatedAt;
-
-    public TodoDetailFragment() {
-    }
-
-    public static TodoDetailFragment newInstance(Todo todo) {
-        TodoDetailFragment fragment = new TodoDetailFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(TODO_DETAIL_ARGS, todo);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        viewModel = new ViewModelProvider(this).get(TodoDetailViewModel.class);
-        notificationViewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
-
-        if (getArguments() != null && !getArguments().isEmpty()) {
-            Todo todo = (Todo) getArguments().getSerializable(TODO_DETAIL_ARGS);
-            viewModel.setTodo(todo);
-        } else {
-            back();
+            return fragment
         }
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentTodoDetailBinding.inflate(inflater);
-        return binding.getRoot();
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        if (arguments != null && arguments!!.isEmpty.not()) {
+            val todo = arguments!!.getSerializable(TODO_DETAIL_ARGS) as Todo?
+            viewModel.todo = todo
+        } else {
+            back()
+        }
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initViews();
-        handleActions();
-        handleObserver();
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentTodoDetailBinding.inflate(inflater)
+        return binding.root
     }
 
-    private void initViews() {
-        binding.aImgBack.setOnClickListener(view -> back());
-        imgDelete = binding.aImgDelete;
-        imgEdit = binding.aImgEdit;
-        imgShare = binding.aImgShare;
-        toolbar = binding.toolbar;
-        nested = binding.nested;
-
-        txtTitle = binding.txtTodoTitle;
-        txtCategory = binding.txtCategory;
-
-        txtLowPriority = binding.txtLowPriority;
-        txtNormalPriority = binding.txtNormalPriority;
-        txtHighPriority = binding.txtHighPriority;
-
-        txtDone = binding.txtDone;
-        imgDone = binding.imgDone;
-
-        lytDate = binding.lytDate;
-        lytCategory = binding.lytCategory;
-
-        txtDateReminder = binding.txtDate;
-        txtClockReminder = binding.txtClock;
-
-        txtCreatedAt = binding.txtCreatedAt;
-        txtUpdatedAt = binding.txtUpdatedAt;
-
-        btnClose = binding.mBtnClose;
-
-        handleShadowScroll();
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        handleViews()
+        handleActions()
+        handleObserver()
     }
 
-    private void handleShadowScroll() {
-        nested.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            final float dpShadow = getResources().getDimension(R.dimen.toolbar_shadow);
+    private fun handleViews() {
+        binding.aImgBack.setOnClickListener { back() }
 
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+        handleShadowScroll()
+    }
+
+    private fun handleShadowScroll() {
+        binding.nested.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {
+            val dpShadow = resources.getDimension(R.dimen.toolbar_shadow)
+            override fun onScrollChange(
+                v: NestedScrollView,
+                scrollX: Int,
+                scrollY: Int,
+                oldScrollX: Int,
+                oldScrollY: Int
+            ) {
                 if (scrollY == 0) {
-                    toolbar.animate().translationZ(0).setStartDelay(0).setDuration(200).start();
+                    binding.toolbar.animate()
+                        .translationZ(0f)
+                        .setStartDelay(0)
+                        .setDuration(200)
+                        .start()
+
                 } else if (scrollY > 50) {
-                    toolbar.setTranslationZ(dpShadow);
-                    toolbar.animate().translationZ(dpShadow).setStartDelay(0).setDuration(90).start();
+                    binding.toolbar.translationZ = dpShadow
+
+                    binding.toolbar.animate()
+                        .translationZ(dpShadow).setStartDelay(0)
+                        .setDuration(90)
+                        .start()
                 }
             }
-        });
+        })
     }
 
-    private void handleActions() {
-        imgDelete.setOnClickListener(view -> {
-            DeleteDialog deleteDialog = new DeleteDialog(getActivity(), true);
-            deleteDialog.show();
+    private fun handleActions() {
+        binding.aImgDelete.setOnClickListener {
+            DeleteDialog(activity).apply {
+                show()
 
-            deleteDialog.setTitle(getString(R.string.delete_todo));
-            String todoTitle = viewModel.getTodo().getTitle();
-            if (todoTitle != null && todoTitle.trim().length() > 30)
-                todoTitle = todoTitle.substring(0, 30).trim() + getString(R.string.ellipsis);
+                setTitle(getString(R.string.delete_todo))
 
-            deleteDialog.setMessage(getString(R.string.delete_todo_message, todoTitle));
-            deleteDialog.setOnClickDelete(() -> {
-                if (viewModel.hasArriveDate())
-                    notificationViewModel.cancelAlarm(viewModel.getTodo());
 
-                getTodoViewModel().deleteTodo(viewModel.getTodo());
-                getTodoViewModel().fetch(); //need to update todos if categories was deleted
-                getSearchViewModel().fetch();
+                var todoTitle = viewModel.todo.title
+                if (todoTitle != null && todoTitle.trim().length > 30)
+                    todoTitle = todoTitle.substring(0, 30).trim() + getString(R.string.ellipsis)
 
-                if (getTodoViewModel().todosIsEmpty())
-                    getTodoViewModel().goToTop();
+                setMessage(getString(R.string.delete_todo_message, todoTitle))
 
-                deleteDialog.dismiss();
-                back();
-                return null;
-            });
-        });
+                onClickDelete = {
+                    if (viewModel.hasArriveDate())
+                        notificationViewModel.cancelAlarm(viewModel.todo)
 
-        imgEdit.setOnClickListener(v -> {
-            Fragment fragment = AddEditTodoFragment.newInstance(viewModel.getTodo());
-            fragment.setEnterTransition(new Slide(Gravity.BOTTOM));
-            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-            transaction.add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO);
-            transaction.addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO);
-            transaction.commit();
-        });
+                    todoViewModel.deleteTodo(viewModel.todo)
+                    todoViewModel.fetch() //need to update todos if categories was deleted
+                    searchViewModel.fetch()
 
-        imgShare.setOnClickListener(v -> {
-            if (getActivity() == null)
-                return;
+                    if (todoViewModel.todosIsEmpty())
+                        todoViewModel.goToTop()
 
-            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-            sharingIntent.setType("text/plain");
-            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, viewModel.shareContent());
-            getActivity().startActivity(Intent.createChooser(sharingIntent, getString(R.string.share_using)));
-        });
+                    dismiss()
+                    back()
+                }
+            }
 
-        btnClose.setOnClickListener(view -> back());
+        }
 
+        binding.aImgEdit.setOnClickListener {
+            val fragment: Fragment = AddEditTodoFragment.newInstance(viewModel.todo).apply {
+                enterTransition = Slide(Gravity.BOTTOM)
+            }
+
+            parentFragmentManager.beginTransaction().apply {
+                add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO)
+
+                addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO)
+            }.commit()
+
+        }
+
+        binding.aImgShare.setOnClickListener {
+            if (activity == null)
+                return@setOnClickListener
+
+            val sharingIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, viewModel.shareContent())
+            }
+
+            activity?.startActivity(
+                Intent.createChooser(sharingIntent, getString(R.string.share_using))
+            )
+        }
+
+        binding.mBtnClose.setOnClickListener { back() }
     }
 
-    private void handleObserver() {
-        viewModel.getTodoLiveDate().observe(getViewLifecycleOwner(), todo -> {
+    private fun handleObserver() {
+        viewModel.todoLiveDate.observe(viewLifecycleOwner) { todo: Todo? ->
             if (todo != null) {
-//                binding.getRoot().setTransitionName("t-" + todo.getId());
+                //binding.getRoot().setTransitionName("t-" + todo.getId());
+                binding.txtTodoTitle.text = todo.title
 
-                txtTitle.setText(todo.getTitle());
+                when (todo.priority) {
+                    Priority.LOW -> {
+                        binding.txtLowPriority.visibility = View.VISIBLE
+                        binding.txtNormalPriority.visibility = View.GONE
+                        binding.txtHighPriority.visibility = View.GONE
+                    }
 
-                switch (todo.getPriority()) {
-                    case LOW:
-                    default:
-                        txtLowPriority.setVisibility(View.VISIBLE);
-                        txtNormalPriority.setVisibility(View.GONE);
-                        txtHighPriority.setVisibility(View.GONE);
-                        break;
+                    Priority.NORMAL -> {
+                        binding.txtLowPriority.visibility = View.GONE
+                        binding.txtNormalPriority.visibility = View.VISIBLE
+                        binding.txtHighPriority.visibility = View.GONE
+                    }
 
-                    case NORMAL:
-                        txtLowPriority.setVisibility(View.GONE);
-                        txtNormalPriority.setVisibility(View.VISIBLE);
-                        txtHighPriority.setVisibility(View.GONE);
-                        break;
+                    Priority.HIGH -> {
+                        binding.txtLowPriority.visibility = View.GONE
+                        binding.txtNormalPriority.visibility = View.GONE
+                        binding.txtHighPriority.visibility = View.VISIBLE
+                    }
 
-                    case HIGH:
-                        txtLowPriority.setVisibility(View.GONE);
-                        txtNormalPriority.setVisibility(View.GONE);
-                        txtHighPriority.setVisibility(View.VISIBLE);
-                        break;
+                    else -> {
+                        binding.txtLowPriority.visibility = View.VISIBLE
+                        binding.txtNormalPriority.visibility = View.GONE
+                        binding.txtHighPriority.visibility = View.GONE
+                    }
                 }
 
-                txtDone.setText(viewModel.getDoneText());
-                imgDone.setImageResource(viewModel.getImgDoneResource());
+                binding.txtDone.text = viewModel.doneText
+                binding.imgDone.setImageResource(viewModel.imgDoneResource)
 
-                lytDate.setVisibility(viewModel.getLytDateVisibility());
-                lytCategory.setVisibility(viewModel.getLytCategoryVisibility());
-                txtCreatedAt.setVisibility(viewModel.getCreatedAtVisibility());
-                txtUpdatedAt.setVisibility(viewModel.getUpdatedAtVisibility());
+                binding.lytDate.visibility = viewModel.lytDateVisibility
+                binding.lytCategory.visibility = viewModel.lytCategoryVisibility
+                binding.txtCreatedAt.visibility = viewModel.createdAtVisibility
+                binding.txtUpdatedAt.visibility = viewModel.updatedAtVisibility
 
                 if (viewModel.hasCategory())
-                    txtCategory.setText(todo.getCategory());
+                    binding.txtCategory.text = todo.category
 
                 if (viewModel.hasArriveDate()) {
-                    txtDateReminder.setText(viewModel.getDateReminder());
-                    txtClockReminder.setText(viewModel.getClockReminder());
+                    binding.txtDate.text = viewModel.dateReminder
+                    binding.txtClock.text = viewModel.clockReminder
                 }
 
                 if (viewModel.hasCreatedAt()) {
-                    txtCreatedAt.setText(MessageFormat.format("{0} {1}",
-                            getString(R.string.todo_created_at), viewModel.getCompleteCreatedAt()));
+                    binding.txtCreatedAt.text = MessageFormat.format(
+                        "{0} {1}",
+                        getString(R.string.todo_created_at), viewModel.completeCreatedAt
+                    )
                 }
 
                 if (viewModel.hasUpdatedAt()) {
-                    txtUpdatedAt.setText(MessageFormat.format("{0} {1}",
-                            getString(R.string.todo_updated_at), viewModel.getCompleteUpdatedAt()));
+                    binding.txtUpdatedAt.text = MessageFormat.format(
+                        "{0} {1}",
+                        getString(R.string.todo_updated_at), viewModel.completeUpdatedAt
+                    )
                 }
             }
-        });
-
+        }
     }
 
-    public TodoDetailViewModel getViewModel() {
-        return viewModel;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        viewModel.fetchOnResume();
+    override fun onResume() {
+        super.onResume()
+        viewModel.fetchOnResume()
     }
 }
