@@ -175,41 +175,41 @@ class HomeFragment : BaseFragment() {
                         }
                     }
 
-                    onClickDeleteAllDone = deleteAllDone@{
-                        dismiss()
+                }
 
-                        if (todoViewModel.todosIsEmpty()) {
-                            ToastHelper.get().toast(getString(R.string.todos_is_empty))
-                            return@deleteAllDone //empty return
-                        }
+                onClickDeleteAllDone = deleteAllDone@{
+                    dismiss()
 
-                        if (todoViewModel.todosDoneIsEmpty()) {
-                            ToastHelper.get().toast(getString(R.string.todos_done_is_empty))
-                            return@deleteAllDone //empty return
-                        }
-
-                        DeleteDialog(context).apply {
-                            show()
-
-                            setTitle(getString(R.string.delete_all_done_todos))
-
-                            setMessage(
-                                getString(
-                                    R.string.delete_all_done_todos_message,
-                                    todoViewModel.doneTodosCount
-                                )
-                            )
-
-                            onClickDelete = {
-                                notificationViewModel.cancelAllDoneAlarm()
-                                todoViewModel.deleteAllDoneTodos()
-                                scrollBehavior!!.slideUp(binding.frameLytButton)
-                                dismiss()
-                            }
-
-                        }
+                    if (todoViewModel.todosIsEmpty()) {
+                        ToastHelper.get().toast(getString(R.string.todos_is_empty))
+                        return@deleteAllDone //empty return
                     }
 
+                    if (todoViewModel.todosDoneIsEmpty()) {
+                        ToastHelper.get().toast(getString(R.string.todos_done_is_empty))
+                        return@deleteAllDone //empty return
+                    }
+
+                    DeleteDialog(context).apply {
+                        show()
+
+                        setTitle(getString(R.string.delete_all_done_todos))
+
+                        setMessage(
+                            getString(
+                                R.string.delete_all_done_todos_message,
+                                todoViewModel.doneTodosCount
+                            )
+                        )
+
+                        onClickDelete = {
+                            notificationViewModel.cancelAllDoneAlarm()
+                            todoViewModel.deleteAllDoneTodos()
+                            scrollBehavior!!.slideUp(binding.frameLytButton)
+                            dismiss()
+                        }
+
+                    }
                 }
             }
 
