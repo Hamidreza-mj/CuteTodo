@@ -1,8 +1,6 @@
 package ui.fragment
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -12,6 +10,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import hlv.cute.todo.databinding.FragmentAddEditCategoryBinding
 import model.Category
+import utils.KeyboardUtil.focusAndShowKeyboard
 import viewmodel.AddEditCategoryViewModel
 
 class AddEditCategoryFragment : BaseFragment() {
@@ -66,13 +65,7 @@ class AddEditCategoryFragment : BaseFragment() {
     private fun initLogic() {
         binding.aImgBack.setOnClickListener { back() }
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            binding.inpEdtName.requestFocus()
-        }, 500)
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            showKeyboard()
-        }, 600)
+        binding.inpEdtName.focusAndShowKeyboard(context!!)
 
         binding.txtTitle.text = viewModel.titleFragment
 

@@ -96,6 +96,7 @@ class HomeFragment : BaseFragment() {
                 super.onScrolled(recyclerView, dx, dy);
             }
         });*/
+
         binding.nested.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {
             val dpShadow = resources.getDimension(R.dimen.toolbar_shadow)
             override fun onScrollChange(

@@ -11,7 +11,7 @@ import hlv.cute.todo.R
 import hlv.cute.todo.databinding.SheetSearchModeBinding
 import model.Search
 import model.Search.SearchMode
-import utils.KeyboardInputHelper
+import utils.KeyboardUtil
 
 class SearchModeBottomSheet : BottomSheetDialogFragment() {
 
@@ -40,9 +40,7 @@ class SearchModeBottomSheet : BottomSheetDialogFragment() {
         if (arguments != null && arguments!!.isEmpty.not())
             search = arguments!!.getSerializable(SEARCH_MODE_ARGS) as Search?
 
-        context?.let {
-            KeyboardInputHelper.getKeyboardInput().hideKeyboard(it)
-        }
+        KeyboardUtil.hideKeyboard(context!!)
     }
 
     override fun onCreateView(

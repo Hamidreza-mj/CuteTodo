@@ -6,8 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
-import ui.activity.MainActivity
-import utils.KeyboardInputHelper
+import utils.KeyboardUtil
 import viewmodel.CategoryViewModel
 import viewmodel.SearchViewModel
 import viewmodel.TodoViewModel
@@ -25,14 +24,12 @@ open class BaseFragment : Fragment() {
 
     private fun hideKeyboard() {
         context?.let {
-            KeyboardInputHelper.getKeyboardInput().hideKeyboard(it)
+            KeyboardUtil.hideKeyboard(it)
         }
     }
 
     protected fun showKeyboard() {
-        context?.let {
-            KeyboardInputHelper.getKeyboardInput().showKeyboard(it)
-        }
+        KeyboardUtil.showKeyboard(context!!)
     }
 
     protected fun back() {

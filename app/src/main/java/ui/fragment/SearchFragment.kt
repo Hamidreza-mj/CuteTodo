@@ -27,6 +27,7 @@ import ui.dialog.DeleteDialog
 import ui.dialog.MoreDialog
 import ui.fragment.sheet.SearchModeBottomSheet
 import utils.Constants
+import utils.KeyboardUtil.focusAndShowKeyboard
 import utils.TextHelper
 import viewmodel.NotificationViewModel
 
@@ -72,7 +73,7 @@ class SearchFragment : BaseFragment() {
             binding.edtSearch.requestFocus()
         }, 50)
 
-        Handler(Looper.getMainLooper()).postDelayed({ showKeyboard() }, 600)
+        binding.edtSearch.focusAndShowKeyboard(context!!)
 
         handleTabLayout()
         handleShadowScroll()

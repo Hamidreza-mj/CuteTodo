@@ -22,7 +22,7 @@ import hlv.cute.todo.databinding.SheetFilterBinding
 import model.Category
 import model.Filter
 import ui.adapter.FilterCategoryAdapter
-import utils.KeyboardInputHelper
+import utils.KeyboardUtil
 
 class FilterBottomSheet : BottomSheetDialogFragment() {
     private lateinit var binding: SheetFilterBinding
@@ -63,9 +63,8 @@ class FilterBottomSheet : BottomSheetDialogFragment() {
             categories = arguments!!.getSerializable(CATEGORY_ARGS) as ArrayList<Category>?
         }
 
-        context?.let {
-            KeyboardInputHelper.getKeyboardInput().hideKeyboard(it)
-        }
+
+        KeyboardUtil.hideKeyboard(context!!)
     }
 
     override fun onCreateView(
