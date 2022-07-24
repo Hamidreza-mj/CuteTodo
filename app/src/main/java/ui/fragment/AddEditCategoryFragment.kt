@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
@@ -13,10 +12,12 @@ import model.Category
 import utils.KeyboardUtil.focusAndShowKeyboard
 import viewmodel.AddEditCategoryViewModel
 
-class AddEditCategoryFragment : BaseFragment() {
+class AddEditCategoryFragment : BaseViewBindingFragment<FragmentAddEditCategoryBinding>() {
 
-    private lateinit var binding: FragmentAddEditCategoryBinding
     val viewModel by viewModels<AddEditCategoryViewModel>()
+
+    override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentAddEditCategoryBinding
+        get() = FragmentAddEditCategoryBinding::inflate
 
     companion object {
         private const val CATEGORY_ARGS = "category-args"
@@ -47,17 +48,7 @@ class AddEditCategoryFragment : BaseFragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentAddEditCategoryBinding.inflate(inflater)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun initiate() {
         initLogic()
         handleAction()
     }

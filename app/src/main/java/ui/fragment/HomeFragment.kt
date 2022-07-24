@@ -1,6 +1,5 @@
 package ui.fragment
 
-import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.transition.Slide
@@ -30,9 +29,10 @@ import utils.TextHelper
 import utils.ToastHelper
 import viewmodel.NotificationViewModel
 
-class HomeFragment : BaseFragment() {
+class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
 
-    private lateinit var binding: FragmentHomeBinding
+    override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentHomeBinding
+        get() = FragmentHomeBinding::inflate
 
     private val notificationViewModel by viewModels<NotificationViewModel>()
 
@@ -50,17 +50,7 @@ class HomeFragment : BaseFragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentHomeBinding.inflate(inflater)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun initiate() {
         initViews()
         handleActions()
         handleObserver()

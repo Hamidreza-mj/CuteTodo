@@ -67,7 +67,4 @@ open class BaseActivity : AppCompatActivity() {
         runActivity(targetActivity, null, finishBackActivity)
     }
 
-    protected fun getColorRes(@ColorRes color: Int): Int {
-        return ContextCompat.getColor(this, color)
-    }
 }

@@ -1,6 +1,5 @@
 package ui.fragment
 
-import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.transition.Slide
@@ -25,9 +24,11 @@ import utils.Constants
 import utils.TextHelper
 import utils.ToastHelper
 
-class CategoriesFragment : BaseFragment() {
+class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() {
 
-    private lateinit var binding: FragmentCategoriesBinding
+    override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentCategoriesBinding
+        get() = FragmentCategoriesBinding::inflate
+
 
     private var scrollBehavior: HideBottomViewOnScrollBehavior<FrameLayout?>? = null
 
@@ -43,17 +44,7 @@ class CategoriesFragment : BaseFragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentCategoriesBinding.inflate(inflater)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun initiate() {
         initViews()
         handleActions()
         handleObserver()

@@ -21,9 +21,10 @@ import viewmodel.NotificationViewModel
 import viewmodel.TodoDetailViewModel
 import java.text.MessageFormat
 
-class TodoDetailFragment : BaseFragment() {
+class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() {
 
-    private lateinit var binding: FragmentTodoDetailBinding
+    override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentTodoDetailBinding
+        get() = FragmentTodoDetailBinding::inflate
 
     val viewModel by viewModels<TodoDetailViewModel>()
     private val notificationViewModel by viewModels<NotificationViewModel>()
@@ -57,17 +58,7 @@ class TodoDetailFragment : BaseFragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentTodoDetailBinding.inflate(inflater)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun initiate() {
         handleViews()
         handleActions()
         handleObserver()

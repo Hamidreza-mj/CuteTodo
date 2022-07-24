@@ -29,15 +29,15 @@ import ui.dialog.TimePickerSheetDialog
 import ui.dialog.WarningDateDialog
 import ui.fragment.CategoriesFragment.Companion.newInstance
 import utils.Constants
-import utils.ResourceUtils
 import utils.ToastHelper
 import viewmodel.AddEditTodoViewModel
 import viewmodel.NotificationViewModel
 import java.text.MessageFormat
 
-class AddEditTodoFragment : BaseFragment() {
+class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>() {
 
-    private lateinit var binding: FragmentAddEditTodoBinding
+    override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentAddEditTodoBinding
+        get() = FragmentAddEditTodoBinding::inflate
 
     val viewModel by viewModels<AddEditTodoViewModel>()
     private val notificationViewModel by viewModels<NotificationViewModel>()
@@ -101,17 +101,7 @@ class AddEditTodoFragment : BaseFragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentAddEditTodoBinding.inflate(inflater)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun initiate() {
         handleViews()
         initLogic()
         handleAction()
@@ -515,9 +505,9 @@ class AddEditTodoFragment : BaseFragment() {
             binding.txtCategory.text = viewModel.categoryTitleText
 
             if (viewModel.categoryIsValid())
-                binding.txtCategory.setTextColor(ResourceUtils.get().getColor(R.color.black))
+                binding.txtCategory.setTextColor(provideResource.getColor(R.color.black))
             else
-                binding.txtCategory.setTextColor(ResourceUtils.get().getColor(R.color.gray))
+                binding.txtCategory.setTextColor(provideResource.getColor(R.color.gray))
         }
     }
 

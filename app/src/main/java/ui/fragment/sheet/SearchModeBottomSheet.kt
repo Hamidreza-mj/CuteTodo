@@ -2,20 +2,19 @@ package ui.fragment.sheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioGroup
 import androidx.core.os.bundleOf
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.SheetSearchModeBinding
 import model.Search
 import model.Search.SearchMode
 import utils.KeyboardUtil
 
-class SearchModeBottomSheet : BottomSheetDialogFragment() {
+class SearchModeBottomSheet : BaseViewBindingBottomSheet<SheetSearchModeBinding>() {
 
-    private lateinit var binding: SheetSearchModeBinding
+    override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> SheetSearchModeBinding
+        get() = SheetSearchModeBinding::inflate
 
     private var search: Search? = null
     var onCheckChanged: ((search: Search?) -> Unit)? = null
@@ -34,6 +33,12 @@ class SearchModeBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
+
+    override fun initiate() {
+        initData()
+        handleAction()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -41,22 +46,6 @@ class SearchModeBottomSheet : BottomSheetDialogFragment() {
             search = arguments!!.getSerializable(SEARCH_MODE_ARGS) as Search?
 
         KeyboardUtil.hideKeyboard(context!!)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = SheetSearchModeBinding.inflate(inflater, container, false)
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initData()
-        handleAction()
     }
 
     private fun initData() {

@@ -16,7 +16,6 @@ import com.google.android.flexbox.JustifyContent
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.SheetFilterBinding
 import model.Category
@@ -24,8 +23,11 @@ import model.Filter
 import ui.adapter.FilterCategoryAdapter
 import utils.KeyboardUtil
 
-class FilterBottomSheet : BottomSheetDialogFragment() {
-    private lateinit var binding: SheetFilterBinding
+class FilterBottomSheet : BaseViewBindingBottomSheet<SheetFilterBinding>() {
+
+    override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> SheetFilterBinding
+        get() = SheetFilterBinding::inflate
+
 
     private var filter: Filter? = null
 
@@ -67,17 +69,7 @@ class FilterBottomSheet : BottomSheetDialogFragment() {
         KeyboardUtil.hideKeyboard(context!!)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = SheetFilterBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun initiate() {
         initData()
         handleAction()
     }

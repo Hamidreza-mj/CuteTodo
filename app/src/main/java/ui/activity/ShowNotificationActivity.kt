@@ -1,7 +1,7 @@
 package ui.activity
 
 import android.animation.Animator
-import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.viewModels
 import androidx.core.widget.NestedScrollView
@@ -12,17 +12,14 @@ import model.Priority
 import utils.ToastHelper
 import viewmodel.ShowNotificationViewModel
 
-class ShowNotificationActivity : BaseActivity() {
+class ShowNotificationActivity : BaseViewBindingActivity<ActivityShowNotificationBinding>() {
 
-    private lateinit var binding: ActivityShowNotificationBinding
+    override val bindingInflater: (LayoutInflater) -> ActivityShowNotificationBinding
+        get() = ActivityShowNotificationBinding::inflate
+
     private val viewModel by viewModels<ShowNotificationViewModel>()
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityShowNotificationBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
+    override fun initiate() {
         initViewModel()
         initViews()
         handleObserver()
@@ -42,7 +39,8 @@ class ShowNotificationActivity : BaseActivity() {
 
             viewModel.done()
 
-            ToastHelper.get().successToast(getString(R.string.todo_done_successfully_simple))
+            ToastHelper.get()
+                .successToast(provideResource.getString(R.string.todo_done_successfully_simple))
 
             binding.confetti.visibility = View.VISIBLE
             binding.confetti.playAnimation()
@@ -62,7 +60,7 @@ class ShowNotificationActivity : BaseActivity() {
 
     private fun handleShadowScroll() {
         binding.nested.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {
-            val dpShadow = resources.getDimension(R.dimen.toolbar_shadow)
+            val dpShadow = provideResource.getDimen(R.dimen.toolbar_shadow)
             override fun onScrollChange(
                 v: NestedScrollView,
                 scrollX: Int,
