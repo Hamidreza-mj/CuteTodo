@@ -2,10 +2,8 @@ package utils
 
 import android.content.Context
 import android.content.res.ColorStateList
-import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
-import androidx.annotation.DimenRes
-import androidx.annotation.StringRes
+import android.graphics.drawable.Drawable
+import androidx.annotation.*
 import androidx.core.content.ContextCompat
 
 interface ResourceProvider {
@@ -24,6 +22,8 @@ interface ResourceProvider {
 
     fun getDimenInt(@DimenRes resId: Int): Int
 
+    fun getDrawable(@DrawableRes resId: Int): Drawable
+
     //... other things, above methods just for the example
 }
 
@@ -36,15 +36,17 @@ value class AppResourcesProvider(
     @ColorInt
     override fun getColor(resId: Int) = ContextCompat.getColor(context, resId)
 
-    override fun getColorStateList(resId: Int): ColorStateList = context.getColorStateList(resId)
+    override fun getColorStateList(resId: Int) = context.getColorStateList(resId)
 
     override fun getString(resId: Int) = context.getString(resId)
 
     override fun getString(resId: Int, vararg args: Any) = context.getString(resId, *args)
 
-    override fun getDimen(resId: Int): Float = context.resources.getDimension(resId)
+    override fun getDimen(resId: Int) = context.resources.getDimension(resId)
 
     override fun getDimenInt(resId: Int) = context.resources.getDimensionPixelSize(resId)
+
+    override fun getDrawable(resId: Int) = ContextCompat.getDrawable(context, resId)!!
 
     //implementation for another methods
 
