@@ -14,8 +14,8 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayout.*
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import com.google.android.material.tabs.TabLayout.Tab
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentSearchBinding
 import model.Category
@@ -122,7 +122,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
         }, 100)
 
         binding.tabLyt.addOnTabSelectedListener(object : OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
+            override fun onTabSelected(tab: Tab) {
 
                 val tabCategoryId = allCategories[tab.position]!!.id
 
@@ -144,8 +144,8 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                 }
             }
 
-            override fun onTabUnselected(tab: TabLayout.Tab) {}
-            override fun onTabReselected(tab: TabLayout.Tab) {
+            override fun onTabUnselected(tab: Tab) {}
+            override fun onTabReselected(tab: Tab) {
                 binding.nested.smoothScrollTo(0, 0, 500)
             }
         })
