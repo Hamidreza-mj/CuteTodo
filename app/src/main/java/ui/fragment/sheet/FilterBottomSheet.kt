@@ -38,6 +38,8 @@ class FilterBottomSheet : BaseViewBindingBottomSheet<SheetFilterBinding>() {
 
     private var adapter: FilterCategoryAdapter? = null
 
+    private var hasCategory: Boolean = false
+
     companion object {
         private const val FILTER_ARGS = "filter-args"
         private const val CATEGORY_ARGS = "categories-args"
@@ -63,6 +65,17 @@ class FilterBottomSheet : BaseViewBindingBottomSheet<SheetFilterBinding>() {
 
             @Suppress("UNCHECKED_CAST")
             categories = arguments!!.getSerializable(CATEGORY_ARGS) as ArrayList<Category>?
+
+            if (categories != null && categories!!.isNotEmpty()) {
+                hasCategory = true
+
+                val firstCat = Category().apply {
+                    id = 0
+                    name = null
+                }
+
+                categories?.add(0, firstCat)
+            }
         }
 
 
@@ -118,6 +131,14 @@ class FilterBottomSheet : BaseViewBindingBottomSheet<SheetFilterBinding>() {
             }
 
             onClearClick!!()
+        }
+
+        if (hasCategory) {
+            binding.txtTodoCategory.visibility = View.VISIBLE
+            binding.rvCategory.visibility = View.VISIBLE
+        } else {
+            binding.txtTodoCategory.visibility = View.GONE
+            binding.rvCategory.visibility = View.GONE
         }
 
         val layoutManager = FlexboxLayoutManager(context).apply {

@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import com.google.android.material.tabs.TabLayout.*
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentSearchBinding
 import model.Category
@@ -72,6 +72,21 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
     private fun handleTabLayout() {
         val allCategories = categoryViewModel.allCategories
 
+        val lp = (binding.tabLyt.layoutParams as ConstraintLayout.LayoutParams)
+
+        if (allCategories.isNullOrEmpty()) {
+            binding.tabLyt.visibility = View.INVISIBLE
+            lp.height = provideResource.getDimen(R.dimen.heigh_invisible_space).toInt()
+
+            return
+        }
+
+        binding.tabLyt.visibility = View.VISIBLE
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT
+
+        binding.tabLyt.layoutParams = lp
+        binding.tabLyt.requestLayout()
+
         val categoryAllItem = Category().apply {
             id = 0
             name = "همه"
@@ -87,7 +102,10 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
 
             if (categoryName!!.length > maxLength) {
                 val categoryWithEllipsis =
-                    categoryName.substring(0, maxLength) + provideResource.getString(R.string.ellipsis)
+                    categoryName.substring(
+                        0,
+                        maxLength
+                    ) + provideResource.getString(R.string.ellipsis)
 
                 binding.tabLyt.addTab(binding.tabLyt.newTab().setText(categoryWithEllipsis))
             } else {
@@ -282,7 +300,12 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                             if (todoTitle.trim().length > 60) todoTitle =
                                 todoTitle.substring(0, 60).trim()
 
-                            setMessage(provideResource.getString(R.string.delete_todo_message, todoTitle))
+                            setMessage(
+                                provideResource.getString(
+                                    R.string.delete_todo_message,
+                                    todoTitle
+                                )
+                            )
 
 
                             onClickDelete = {

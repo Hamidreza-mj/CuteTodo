@@ -75,7 +75,13 @@ class FilterCategoryAdapter(private val context: Context) :
 
             binding.chip.isChecked = category.isSelectedForFilter
 
-            binding.chip.text = category.name
+            with(category) {
+                if (id == 0 && name == null)
+                    binding.chip.text = "-بدون دسته‌بندی-"
+                else
+                    binding.chip.text = name
+            }
+
 
             binding.chip.setOnCheckedChangeListener(null)
 

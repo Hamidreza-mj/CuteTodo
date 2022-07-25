@@ -57,8 +57,4 @@ class DropDownCategoryAdapter(
             binding.txt.setOnClickListener { onClickCategory(category) }
         }
     }
-
-    interface OnClickCategoryListener {
-        fun onClick(category: Category?)
-    }
 }
