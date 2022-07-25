@@ -54,8 +54,8 @@ data class Todo(
             field!!.date = persianDate
 
             val dateHelper = DateHelper(arriveDate)
-            field!!.hour = dateHelper.hour
-            field!!.minute = dateHelper.minute
+            field!!.hour = dateHelper.getHour()
+            field!!.minute = dateHelper.getMinute()
 
             return field
         }
@@ -63,7 +63,7 @@ data class Todo(
     val clock: String
         get() {
             val dateHelper = DateHelper(arriveDate)
-            return dateHelper.clock
+            return dateHelper.getClock()
         }
 
     override fun compareTo(other: Todo): Int {

@@ -1,111 +1,80 @@
-package utils;
+package utils
 
-import android.annotation.SuppressLint;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import android.annotation.SuppressLint
+import java.text.SimpleDateFormat
+import java.util.*
 
 @SuppressLint("SimpleDateFormat")
-public class DateHelper {
+class DateHelper(timeMillisecond: Long) {
 
-    private final Date date;
+    val date: Date
 
-    public DateHelper(long timeMillisecond) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(timeMillisecond);
-        this.date = calendar.getTime();
+    private fun yearFormatter(): SimpleDateFormat = SimpleDateFormat("yyyy")
+    private fun monthFormatter(): SimpleDateFormat = SimpleDateFormat("MM")
+    private fun dayFormatter(): SimpleDateFormat = SimpleDateFormat("dd")
+
+    private fun hourFormatter(): SimpleDateFormat = SimpleDateFormat("HH")
+    private fun minuteFormatter(): SimpleDateFormat = SimpleDateFormat("mm")
+
+    init {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = timeMillisecond
+        date = calendar.time
     }
 
-    public SimpleDateFormat yearFormatter() {
-        return new SimpleDateFormat("yyyy");
-    }
-
-    public SimpleDateFormat monthFormatter() {
-        return new SimpleDateFormat("MM");
-    }
-
-    public SimpleDateFormat dayFormatter() {
-        return new SimpleDateFormat("dd");
-    }
-
-    public SimpleDateFormat hourFormatter() {
-        return new SimpleDateFormat("HH");
-    }
-
-    public SimpleDateFormat minuteFormatter() {
-        return new SimpleDateFormat("mm");
-    }
-
-    public int getYear() {
-        int year = 0;
+    fun getYear(): Int {
+        var year = 0
         try {
-            year = Integer.parseInt(yearFormatter().format(date));
-        } catch (Exception ignored) {
+            year = yearFormatter().format(date).toInt()
+        } catch (ignored: Exception) {
         }
-
-        return year;
+        return year
     }
 
-    public int getMonth() {
-        int month = 0;
+    fun getMonth(): Int {
+        var month = 0
         try {
-            month = Integer.parseInt(monthFormatter().format(date));
-        } catch (Exception ignored) {
+            month = monthFormatter().format(date).toInt()
+        } catch (ignored: Exception) {
         }
-
-        return month;
+        return month
     }
 
-    public int getDay() {
-        int day = 0;
+    fun getDay(): Int {
+        var day = 0
         try {
-            day = Integer.parseInt(dayFormatter().format(date));
-        } catch (Exception ignored) {
+            day = dayFormatter().format(date).toInt()
+        } catch (ignored: Exception) {
         }
-
-        return day;
+        return day
     }
 
-    public int getHour() {
-        int hour = 0;
+    fun getHour(): Int {
+        var hour = 0
         try {
-            hour = Integer.parseInt(hourFormatter().format(date));
-        } catch (Exception ignored) {
+            hour = hourFormatter().format(date).toInt()
+        } catch (ignored: Exception) {
         }
-
-        return hour;
+        return hour
     }
 
-    public int getMinute() {
-        int minute = 0;
+    fun getMinute(): Int {
+        var minute = 0
         try {
-            minute = Integer.parseInt(minuteFormatter().format(date));
-        } catch (Exception ignored) {
+            minute = minuteFormatter().format(date).toInt()
+        } catch (ignored: Exception) {
         }
-
-        return minute;
+        return minute
     }
 
-    public Date getDate() {
-        return date;
-    }
+    val hourString: String
+        get() = normalizeTime(getHour())
 
-    public String getHourString() {
-        return normalizeTime(getHour());
-    }
+    val minuteString: String
+        get() = normalizeTime(getMinute())
 
-    public String getMinuteString() {
-        return normalizeTime(getMinute());
-    }
+    private fun normalizeTime(clock: Int): String = if (clock < 10) "0$clock" else clock.toString()
 
-    public String normalizeTime(int clock) {
-        return clock < 10 ? "0" + clock : String.valueOf(clock);
-    }
-
-    public String getClock() {
-        return getHourString() + ":" + getMinuteString();
-    }
+    fun getClock(): String = "$hourString:$minuteString"
 
 }
-

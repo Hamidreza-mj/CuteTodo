@@ -140,12 +140,12 @@ class TodoDBRepository {
             val todoDate = DateHelper(todo.arriveDate)
             val nowDate = DateHelper(System.currentTimeMillis())
 
-            val todoYear = todoDate.year
-            val todoMonth = todoDate.month
-            val todoDay = todoDate.day
-            val nowYear = nowDate.year
-            val nowMonth = nowDate.month
-            val nowDay = nowDate.day
+            val todoYear = todoDate.getYear()
+            val todoMonth = todoDate.getMonth()
+            val todoDay = todoDate.getDay()
+            val nowYear = nowDate.getYear()
+            val nowMonth = nowDate.getMonth()
+            val nowDay = nowDate.getDay()
 
             if (todoYear == nowYear && todoMonth == nowMonth && todoDay == nowDay)
                 newTodos.add(todo)
