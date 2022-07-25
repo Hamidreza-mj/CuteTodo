@@ -88,7 +88,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
         });*/
 
         binding.nested.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {
-            val dpShadow = resources.getDimension(R.dimen.toolbar_shadow)
+            val dpShadow = provideResource.getDimen(R.dimen.toolbar_shadow)
             override fun onScrollChange(
                 v: NestedScrollView,
                 scrollX: Int,
@@ -140,17 +140,17 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                     dismiss()
 
                     if (todoViewModel.todosIsEmpty()) {
-                        ToastHelper.get().toast(getString(R.string.todos_is_empty))
+                        ToastHelper.get().toast(provideResource.getString(R.string.todos_is_empty))
                         return@deleteAll //empty return
                     }
 
                     DeleteDialog(context).apply {
                         show()
 
-                        setTitle(getString(R.string.delete_all_todos))
+                        setTitle(provideResource.getString(R.string.delete_all_todos))
 
                         setMessage(
-                            getString(
+                            provideResource.getString(
                                 R.string.delete_all_todos_message,
                                 todoViewModel.todosCount
                             )
@@ -171,22 +171,22 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                     dismiss()
 
                     if (todoViewModel.todosIsEmpty()) {
-                        ToastHelper.get().toast(getString(R.string.todos_is_empty))
+                        ToastHelper.get().toast(provideResource.getString(R.string.todos_is_empty))
                         return@deleteAllDone //empty return
                     }
 
                     if (todoViewModel.todosDoneIsEmpty()) {
-                        ToastHelper.get().toast(getString(R.string.todos_done_is_empty))
+                        ToastHelper.get().toast(provideResource.getString(R.string.todos_done_is_empty))
                         return@deleteAllDone //empty return
                     }
 
                     DeleteDialog(context).apply {
                         show()
 
-                        setTitle(getString(R.string.delete_all_done_todos))
+                        setTitle(provideResource.getString(R.string.delete_all_done_todos))
 
                         setMessage(
-                            getString(
+                            provideResource.getString(
                                 R.string.delete_all_done_todos_message,
                                 todoViewModel.doneTodosCount
                             )
@@ -325,14 +325,14 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                         DeleteDialog(context).apply {
                             show()
 
-                            setTitle(getString(R.string.delete_todo))
+                            setTitle(provideResource.getString(R.string.delete_todo))
 
-                            var todoTitle = todoMenu.title
-                            if (todoTitle != null && todoTitle.trim().length > 30)
+                            var todoTitle = todoMenu.title ?: ""
+                            if (todoTitle.trim().length > 30)
                                 todoTitle =
-                                    todoTitle.substring(0, 30).trim() + getString(R.string.ellipsis)
+                                    todoTitle.substring(0, 30).trim() + provideResource.getString(R.string.ellipsis)
 
-                            setMessage(getString(R.string.delete_todo_message, todoTitle))
+                            setMessage(provideResource.getString(R.string.delete_todo_message, todoTitle))
 
                             onClickDelete = {
                                 if (todoMenu.arriveDate != 0L)
@@ -371,17 +371,17 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                     binding.filterIndicator.visibility = View.GONE
                     binding.cLytGuide.visibility = View.VISIBLE
 
-                    binding.txtEmpty.text = getString(R.string.todos_empty)
+                    binding.txtEmpty.text = provideResource.getString(R.string.todos_empty)
                     binding.txtNotesEmpty.text =
-                        TextHelper.fromHtml(getString(R.string.todos_empty_notes))
+                        TextHelper.fromHtml(provideResource.getString(R.string.todos_empty_notes))
 
                     params.verticalBias = 0.2f
                 } else {
                     binding.filterIndicator.visibility = View.VISIBLE
                     binding.cLytGuide.visibility = View.GONE
 
-                    binding.txtEmpty.text = getString(R.string.empty_todos_with_filter)
-                    binding.txtNotesEmpty.text = getString(R.string.empty_todos_with_filter_notes)
+                    binding.txtEmpty.text = provideResource.getString(R.string.empty_todos_with_filter)
+                    binding.txtNotesEmpty.text = provideResource.getString(R.string.empty_todos_with_filter_notes)
 
                     params.verticalBias = 0.35f
                 }

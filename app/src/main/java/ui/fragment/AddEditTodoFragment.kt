@@ -9,7 +9,6 @@ import android.text.TextWatcher
 import android.transition.Slide
 import android.view.*
 import androidx.annotation.IdRes
-import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
@@ -129,9 +128,9 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
             ReminderGuideDialog(context).apply {
                 show()
 
-                setTitle(getString(R.string.set_reminder))
+                setTitle(provideResource.getString(R.string.set_reminder))
 
-                setMessage(getString(R.string.reminder_guide))
+                setMessage(provideResource.getString(R.string.reminder_guide))
             }
         }
 
@@ -155,7 +154,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
 
 
         binding.nested.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {
-            val dpShadow = resources.getDimension(R.dimen.toolbar_shadow)
+            val dpShadow = provideResource.getDimen(R.dimen.toolbar_shadow)
             override fun onScrollChange(
                 v: NestedScrollView,
                 scrollX: Int,
@@ -320,7 +319,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
                     updateDetail(editedTodo)
 
                     ToastHelper.get()
-                        .successToast(getString(R.string.todo_edited_successfully_simple))
+                        .successToast(provideResource.getString(R.string.todo_edited_successfully_simple))
 
                     back()
 
@@ -346,7 +345,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
                     }
 
                     ToastHelper.get()
-                        .successToast(getString(R.string.todo_added_successfully_simple))
+                        .successToast(provideResource.getString(R.string.todo_added_successfully_simple))
 
                     back()
 
@@ -379,9 +378,9 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
             .setMinYear(1400)
             .setMaxYear(1440)
             .setTypeFace(Typeface.createFromAsset(context!!.assets, "font/vazir_medium.ttf"))
-            .setTitleColor(ContextCompat.getColor(context, R.color.blue))
+            .setTitleColor(provideResource.getColor(R.color.blue))
             .setAllButtonsTextSize(15)
-            .setPickerBackgroundColor(ContextCompat.getColor(context, R.color.white))
+            .setPickerBackgroundColor(provideResource.getColor(R.color.white))
             .setTitleType(PersianDatePickerDialog.WEEKDAY_DAY_MONTH_YEAR)
             .setShowInBottomSheet(true)
             .setEnableBellView(false)
@@ -395,11 +394,11 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
                         WarningDateDialog(context).apply {
                             show()
 
-                            setTitle(getString(R.string.passedDateTitle))
+                            setTitle(provideResource.getString(R.string.passedDateTitle))
 
-                            setMessage(getString(R.string.passedDateMessage))
+                            setMessage(provideResource.getString(R.string.passedDateMessage))
 
-                            setEditText(getString(R.string.editDate))
+                            setEditText(provideResource.getString(R.string.editDate))
 
                             continueClicked = {
                                 dismiss()
@@ -444,11 +443,11 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
                 if (viewModel.todayTtimePassed(pickedDateTime)) {
 
                     WarningDateDialog(context).apply {
-                        setTitle(getString(R.string.passedDateTitle))
+                        setTitle(provideResource.getString(R.string.passedDateTitle))
 
-                        setMessage(getString(R.string.passedTimeMessage))
+                        setMessage(provideResource.getString(R.string.passedTimeMessage))
 
-                        setEditText(getString(R.string.editTime))
+                        setEditText(provideResource.getString(R.string.editTime))
 
                         continueClicked = {
                             dismiss()
@@ -481,7 +480,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
 
             if (changedDateTime?.date != null) {
                 binding.txtDate.setTextColor(
-                    ContextCompat.getColor(binding.txtDate.context, R.color.black)
+                    provideResource.getColor(R.color.black)
                 )
 
                 binding.txtDate.text = MessageFormat.format(
@@ -493,10 +492,10 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
                 binding.aImgClear.visibility = View.VISIBLE
             } else {
                 binding.txtDate.setTextColor(
-                    ContextCompat.getColor(binding.txtDate.context, R.color.gray)
+                    provideResource.getColor(R.color.gray)
                 )
 
-                binding.txtDate.text = getString(R.string.set_date_time)
+                binding.txtDate.text = provideResource.getString(R.string.set_date_time)
                 binding.aImgClear.visibility = View.GONE
             }
         }

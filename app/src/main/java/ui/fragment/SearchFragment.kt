@@ -87,7 +87,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
 
             if (categoryName!!.length > maxLength) {
                 val categoryWithEllipsis =
-                    categoryName.substring(0, maxLength) + getString(R.string.ellipsis)
+                    categoryName.substring(0, maxLength) + provideResource.getString(R.string.ellipsis)
 
                 binding.tabLyt.addTab(binding.tabLyt.newTab().setText(categoryWithEllipsis))
             } else {
@@ -135,7 +135,8 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
 
     private fun handleShadowScroll() {
         binding.nested.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {
-            val dpShadow = resources.getDimension(R.dimen.toolbar_shadow)
+            val dpShadow = provideResource.getDimen(R.dimen.toolbar_shadow)
+
             override fun onScrollChange(
                 v: NestedScrollView,
                 scrollX: Int,
@@ -182,7 +183,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
 
                     if (search.searchMode === Search.SearchMode.CATEGORY || search.searchMode === Search.SearchMode.BOTH) {
                         binding.tabLyt.visibility = View.INVISIBLE
-                        lp.height = resources.getDimension(R.dimen.heigh_invisible_space).toInt()
+                        lp.height = provideResource.getDimen(R.dimen.heigh_invisible_space).toInt()
                     } else {
                         binding.tabLyt.visibility = View.VISIBLE
                         lp.height = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -275,13 +276,13 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                         DeleteDialog(context).apply {
                             show()
 
-                            setTitle(getString(R.string.delete_todo))
+                            setTitle(provideResource.getString(R.string.delete_todo))
 
-                            var todoTitle = todoMenu.title
-                            if (todoTitle != null && todoTitle.trim().length > 60) todoTitle =
+                            var todoTitle = todoMenu.title ?: ""
+                            if (todoTitle.trim().length > 60) todoTitle =
                                 todoTitle.substring(0, 60).trim()
 
-                            setMessage(getString(R.string.delete_todo_message, todoTitle))
+                            setMessage(provideResource.getString(R.string.delete_todo_message, todoTitle))
 
 
                             onClickDelete = {
@@ -319,7 +320,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
 
 
                 if (todoViewModel.todosIsEmpty()) {
-                    binding.txtNotes.text = getString(R.string.todos_empty)
+                    binding.txtNotes.text = provideResource.getString(R.string.todos_empty)
                 } else {
                     var term = searchViewModel.currentTerm
 
@@ -328,7 +329,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                         binding.txtNotes.text = term
                     } else {
                         binding.txtNotes.text = TextHelper.fromHtml(
-                            getString(
+                            provideResource.getString(
                                 R.string.todo_not_found,
                                 searchViewModel.titleTerm,
                                 term
@@ -344,7 +345,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                 binding.vector.visibility = View.GONE
 
                 binding.txtResult.text = TextHelper.fromHtml(
-                    getString(
+                    provideResource.getString(
                         R.string.search_result,
                         todos.size,
                         todoViewModel.todosCount,

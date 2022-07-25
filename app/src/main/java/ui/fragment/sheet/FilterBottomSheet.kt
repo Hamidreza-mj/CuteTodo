@@ -132,7 +132,7 @@ class FilterBottomSheet : BaseViewBindingBottomSheet<SheetFilterBinding>() {
 
         binding.nested.setOnScrollChangeListener(object :
             NestedScrollView.OnScrollChangeListener {
-            val dpShadow = resources.getDimension(R.dimen.toolbar_sheet_shadow)
+            val dpShadow = provideResource.getDimen(R.dimen.toolbar_sheet_shadow)
             override fun onScrollChange(
                 v: NestedScrollView,
                 scrollX: Int,

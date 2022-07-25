@@ -72,7 +72,7 @@ class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() 
 
     private fun handleShadowScroll() {
         binding.nested.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {
-            val dpShadow = resources.getDimension(R.dimen.toolbar_shadow)
+            val dpShadow = provideResource.getDimen(R.dimen.toolbar_shadow)
             override fun onScrollChange(
                 v: NestedScrollView,
                 scrollX: Int,
@@ -104,14 +104,14 @@ class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() 
             DeleteDialog(activity).apply {
                 show()
 
-                setTitle(getString(R.string.delete_todo))
+                setTitle(provideResource.getString(R.string.delete_todo))
 
 
-                var todoTitle = viewModel.todo.title
-                if (todoTitle != null && todoTitle.trim().length > 30)
-                    todoTitle = todoTitle.substring(0, 30).trim() + getString(R.string.ellipsis)
+                var todoTitle = viewModel.todo.title ?: ""
+                if (todoTitle.trim().length > 30)
+                    todoTitle = todoTitle.substring(0, 30).trim() + provideResource.getString(R.string.ellipsis)
 
-                setMessage(getString(R.string.delete_todo_message, todoTitle))
+                setMessage(provideResource.getString(R.string.delete_todo_message, todoTitle))
 
                 onClickDelete = {
                     if (viewModel.hasArriveDate())
@@ -154,7 +154,7 @@ class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() 
             }
 
             activity?.startActivity(
-                Intent.createChooser(sharingIntent, getString(R.string.share_using))
+                Intent.createChooser(sharingIntent, provideResource.getString(R.string.share_using))
             )
         }
 
@@ -212,14 +212,14 @@ class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() 
                 if (viewModel.hasCreatedAt()) {
                     binding.txtCreatedAt.text = MessageFormat.format(
                         "{0} {1}",
-                        getString(R.string.todo_created_at), viewModel.completeCreatedAt
+                        provideResource.getString(R.string.todo_created_at), viewModel.completeCreatedAt
                     )
                 }
 
                 if (viewModel.hasUpdatedAt()) {
                     binding.txtUpdatedAt.text = MessageFormat.format(
                         "{0} {1}",
-                        getString(R.string.todo_updated_at), viewModel.completeUpdatedAt
+                        provideResource.getString(R.string.todo_updated_at), viewModel.completeUpdatedAt
                     )
                 }
             }

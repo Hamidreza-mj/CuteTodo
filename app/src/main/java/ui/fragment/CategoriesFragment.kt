@@ -53,7 +53,7 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
     private fun initViews() {
         binding.aImgBack.setOnClickListener { back() }
 
-        binding.txtNotesEmpty.text = TextHelper.fromHtml(getString(R.string.categories_empty_notes))
+        binding.txtNotesEmpty.text = TextHelper.fromHtml(provideResource.getString(R.string.categories_empty_notes))
 
         setScrollBehavior()
         handleShadowScroll()
@@ -67,7 +67,7 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
 
     private fun handleShadowScroll() {
         binding.nested.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {
-            val dpShadow = resources.getDimension(R.dimen.toolbar_shadow)
+            val dpShadow = provideResource.getDimen(R.dimen.toolbar_shadow)
             override fun onScrollChange(
                 v: NestedScrollView,
                 scrollX: Int,
@@ -101,17 +101,17 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
     private fun handleActions() {
         binding.aImgDeleteAll.setOnClickListener {
             if (categoryViewModel.categoriesIsEmpty()) {
-                ToastHelper.get().toast(getString(R.string.categories_is_empty))
+                ToastHelper.get().toast(provideResource.getString(R.string.categories_is_empty))
                 return@setOnClickListener
             }
 
             DeleteDialog(context).apply {
                 show()
 
-                setTitle(getString(R.string.delete_all_categories))
+                setTitle(provideResource.getString(R.string.delete_all_categories))
 
                 setMessage(
-                    getString(
+                    provideResource.getString(
                         R.string.delete_all_categories_message,
                         categoryViewModel.categoriesCount
                     )
@@ -158,15 +158,15 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
                         DeleteDialog(context).apply {
                             show()
 
-                            setTitle(getString(R.string.delete_category))
+                            setTitle(provideResource.getString(R.string.delete_category))
 
-                            val categoryName = category.name
+                            val categoryName = category.name ?: ""
 
                             /*if (categoryName != null && categoryName.trim().length > 40)
                                 categoryName = categoryName.substring(0, 40).trim()*/
 
                             setMessage(
-                                getString(R.string.delete_category_message, categoryName)
+                                provideResource.getString(R.string.delete_category_message, categoryName)
                             )
 
                             onClickDelete = {
