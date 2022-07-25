@@ -1,34 +1,30 @@
-package utils;
+package utils
 
-import android.annotation.SuppressLint;
-import android.graphics.Typeface;
-import android.os.Handler;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.annotation.SuppressLint
+import android.graphics.Typeface
+import android.os.Handler
+import android.os.Looper
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.widget.TextView
+import android.widget.Toast
+import com.airbnb.lottie.LottieAnimationView
+import hlv.cute.todo.App
+import hlv.cute.todo.R
 
-import com.airbnb.lottie.LottieAnimationView;
+class ToastHelper private constructor() {
 
-import java.util.ArrayList;
+    companion object {
+        private val TOASTS = ArrayList<Toast>()
+        private var toastHelper: ToastHelper? = null
 
-import hlv.cute.todo.App;
-import hlv.cute.todo.R;
+        @JvmStatic
+        fun get(): ToastHelper {
+            if (toastHelper == null)
+                toastHelper = ToastHelper()
 
-public class ToastHelper {
-
-    private static final ArrayList<Toast> TOASTS = new ArrayList<>();
-    private static ToastHelper toastHelper;
-
-    private ToastHelper() {
-    }
-
-    public static ToastHelper get() {
-        if (toastHelper == null)
-            toastHelper = new ToastHelper();
-
-        return toastHelper;
+            return toastHelper!!
+        }
     }
 
     /**
@@ -37,62 +33,64 @@ public class ToastHelper {
      * @param message        message that show in toast
      * @param isLongDuration default is false, to show toast longer that normal mode you must set it true
      */
-    public void toast(final String message, final boolean isLongDuration) {
-        new Handler().post(() -> {
-            for (Toast toast : TOASTS) {
-                toast.cancel();
-            }
-            TOASTS.clear();
-
-            Toast toast = new Toast(App.get().getAppContext());
-            @SuppressLint("InflateParams")
-            View view = LayoutInflater.from(App.get().getAppContext()).inflate(R.layout.toast, null, false);
-            TextView txtToast = view.findViewById(R.id.toast_txt);
-            txtToast.setText(message);
-            txtToast.setTypeface(Typeface.createFromAsset(App.get().getAppContext().getAssets(), "font/vazir_regular.ttf"));
-            toast.setDuration(isLongDuration ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.BOTTOM, 0, 100);
-            toast.setView(view);
-            toast.show();
-
-            TOASTS.add(toast);
-        });
-    }
-
-    public void successToast(final String message, final boolean isLongDuration) {
-        new Handler().post(() -> {
-            for (Toast toast : TOASTS) {
-                toast.cancel();
-            }
-            TOASTS.clear();
-
-            Toast toast = new Toast(App.get().getAppContext());
-            @SuppressLint("InflateParams")
-            View view = LayoutInflater.from(App.get().getAppContext()).inflate(R.layout.toast_lottie, null, false);
-            TextView txtToast = view.findViewById(R.id.toast_txt);
-            txtToast.setText(message);
-            txtToast.setTypeface(Typeface.createFromAsset(App.get().getAppContext().getAssets(), "font/vazir_regular.ttf"));
-            toast.setDuration(isLongDuration ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.BOTTOM, 0, 100);
-            toast.setView(view);
-            toast.show();
-            LottieAnimationView animationView = view.findViewById(R.id.success);
-            animationView.playAnimation();
-            TOASTS.add(toast);
-        });
-    }
-
     /**
      * show toast with normal duration
      *
      * @param message message that show in toast
      */
-    public void toast(String message) {
-        toast(message, false);
+    @JvmOverloads
+    fun toast(message: String?, isLongDuration: Boolean = false) {
+        Handler(Looper.getMainLooper()).post {
+            for (toast in TOASTS)
+                toast.cancel()
+
+            TOASTS.clear()
+
+            val toast = Toast(App.get()!!.appContext)
+
+            @SuppressLint("InflateParams")
+            val view =
+                LayoutInflater.from(App.get()!!.appContext).inflate(R.layout.toast, null, false)
+
+            val txtToast = view.findViewById<TextView>(R.id.toast_txt)
+
+            txtToast.text = message
+            txtToast.typeface =
+                Typeface.createFromAsset(App.get()!!.appContext.assets, "font/vazir_regular.ttf")
+            toast.duration = if (isLongDuration) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
+            toast.setGravity(Gravity.BOTTOM, 0, 100)
+            toast.view = view
+            toast.show()
+            TOASTS.add(toast)
+        }
     }
 
-    public void successToast(String message) {
-        successToast(message, false);
+    @JvmOverloads
+    fun successToast(message: String?, isLongDuration: Boolean = false) {
+        Handler(Looper.getMainLooper()).post {
+            for (toast in TOASTS)
+                toast.cancel()
+
+            TOASTS.clear()
+
+            val toast = Toast(App.get()!!.appContext)
+            @SuppressLint("InflateParams") val view = LayoutInflater.from(App.get()!!.appContext)
+                .inflate(R.layout.toast_lottie, null, false)
+
+            val txtToast = view.findViewById<TextView>(R.id.toast_txt)
+            txtToast.text = message
+            txtToast.typeface =
+                Typeface.createFromAsset(App.get()!!.appContext.assets, "font/vazir_regular.ttf")
+
+            toast.duration = if (isLongDuration) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
+            toast.setGravity(Gravity.BOTTOM, 0, 100)
+            toast.view = view
+            toast.show()
+            val animationView = view.findViewById<LottieAnimationView>(R.id.success)
+            animationView.playAnimation()
+            TOASTS.add(toast)
+        }
     }
+
 
 }
