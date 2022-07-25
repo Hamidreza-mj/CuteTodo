@@ -1,70 +1,39 @@
-package viewmodel;
+package viewmodel
 
-import androidx.annotation.StringRes;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
+import androidx.annotation.StringRes
+import androidx.lifecycle.ViewModel
+import hlv.cute.todo.R
+import model.Category
+import utils.ResourceUtils
 
-import java.util.Calendar;
-import java.util.Objects;
+class AddEditCategoryViewModel : ViewModel() {
 
-import hlv.cute.todo.R;
-import model.Category;
-import model.DateTime;
-import model.Todo;
-import utils.ResourceUtils;
+    var category: Category? = null
+    var isEditMode = false
 
-public class AddEditCategoryViewModel extends ViewModel {
-
-    private Category category;
-    private boolean isEditMode = false;
-
-    public void setCategory(Category category) {
-        this.category = category;
+    fun addCategory(title: String?): Category {
+        category = Category(name = title)
+        return category!!
     }
 
-    public Category getCategory() {
-        return category;
+    fun editCategory(title: String?): Category {
+        val mustBeEditedCategory = Category().apply {
+            id = category!!.id
+            name = title
+        }
+
+        return mustBeEditedCategory
     }
 
-    public boolean isEditMode() {
-        return isEditMode;
+    fun getTitleFragment(): String =
+        getString(if (isEditMode) R.string.edit_category else R.string.add_new_category)
+
+    fun getButtonPrimaryText(): String =
+        getString(if (isEditMode) R.string.edit else R.string.save)
+
+    fun getEditTextTitle(): String? = if (isEditMode) category!!.name else ""
+
+    private fun getString(@StringRes stringRes: Int): String {
+        return ResourceUtils.get().getString(stringRes)
     }
-
-    public void setEditMode(boolean editMode) {
-        isEditMode = editMode;
-    }
-
-    public Category addCategory(String title) {
-        category = new Category();
-        category.setId(category.getId());
-        category.setName(title);
-        return category;
-    }
-
-    public Category editCategory(String title) {
-        Category mustBeEditedCategory = new Category();
-        mustBeEditedCategory.setId(category.getId());
-        mustBeEditedCategory.setName(title);
-        return mustBeEditedCategory;
-    }
-
-    //region: get text and strings
-    public String getTitleFragment() {
-        return getString(isEditMode ? R.string.edit_category : R.string.add_new_category);
-    }
-
-    public String getButtonPrimaryText() {
-        return getString(isEditMode ? R.string.edit : R.string.save);
-    }
-
-    public String getEditTextTitle() {
-        return isEditMode ? category.getName() : "";
-    }
-
-    //endregion
-
-    private String getString(@StringRes int stringRes) {
-        return ResourceUtils.get().getString(stringRes);
-    }
-
 }

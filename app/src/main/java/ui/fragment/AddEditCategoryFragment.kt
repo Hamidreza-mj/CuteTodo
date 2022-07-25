@@ -58,13 +58,13 @@ class AddEditCategoryFragment : BaseViewBindingFragment<FragmentAddEditCategoryB
 
         binding.inpEdtName.focusAndShowKeyboard(context!!)
 
-        binding.txtTitle.text = viewModel.titleFragment
+        binding.txtTitle.text = viewModel.getTitleFragment()
 
-        binding.mBtnSave.text = viewModel.buttonPrimaryText
+        binding.mBtnSave.text = viewModel.getButtonPrimaryText()
 
         //for moving cursor to end of line editText
         binding.inpEdtName.setText("")
-        binding.inpEdtName.append(viewModel.editTextTitle)
+        binding.inpEdtName.append(viewModel.getEditTextTitle())
     }
 
     private fun handleAction() {

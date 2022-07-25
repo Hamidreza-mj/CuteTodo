@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import androidx.annotation.*
 import androidx.core.content.ContextCompat
+import hlv.cute.todo.App
 
 interface ResourceProvider {
     //val isRtl: Boolean
@@ -30,7 +31,7 @@ interface ResourceProvider {
 @JvmInline
 @Suppress("TooManyFunctions")
 value class AppResourcesProvider(
-    private val context: Context
+    private val context: Context = App.get()?.appContext!!
 ) : ResourceProvider {
 
     @ColorInt
