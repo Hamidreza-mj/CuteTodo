@@ -1,12 +1,14 @@
 package model
 
+import android.os.Parcelable
 import androidx.annotation.Keep
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.io.Serializable
+import kotlinx.parcelize.Parcelize
 
 @Keep
+@Parcelize
 @Entity(tableName = "notifications")
 data class Notification(
     @ColumnInfo(name = "id")
@@ -33,7 +35,7 @@ data class Notification(
 
     @ColumnInfo(name = "category_id", defaultValue = "0")
     var categoryId: Int = 0
-) : Serializable {
+) : Parcelable {
 
     fun initWith(initTodo: Todo?) {
         if (initTodo == null)
