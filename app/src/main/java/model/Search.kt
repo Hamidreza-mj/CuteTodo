@@ -1,13 +1,17 @@
 package model
 
+import android.os.Parcelable
 import androidx.annotation.Keep
-import java.io.Serializable
+import kotlinx.parcelize.Parcelize
 
 @Keep
-class Search : Serializable {
-    var term: String? = null
-    var searchMode: SearchMode = SearchMode.TODO
-    var categoryId = 0
+@Parcelize
+data class Search(
+    var term: String? = null,
+    var searchMode: SearchMode = SearchMode.TODO,
+    var categoryId: Int = 0,
+
+    ) : Parcelable {
 
     enum class SearchMode {
         TODO, CATEGORY, BOTH

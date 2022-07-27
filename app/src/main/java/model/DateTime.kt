@@ -1,18 +1,25 @@
 package model
 
+import android.os.Parcelable
 import androidx.annotation.Keep
 import ir.hamsaa.persiandatepicker.api.PersianPickerDate
-import java.io.Serializable
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
 @Keep
-class DateTime : Serializable {
+@Parcelize
+data class DateTime(
     //if field of serializable class not implement Serializable,
     // must be add `transient` keyword to that
     @Transient
-    var date: PersianPickerDate? = null
+    @IgnoredOnParcel
+    var date: PersianPickerDate? = null,
 
-    var hour = 0
-    var minute = 0
+    var hour: Int = 0,
+
+    var minute: Int = 0,
+
+    ) : Parcelable {
 
     val hourString: String
         get() = normalizeTime(hour)

@@ -1,14 +1,16 @@
 package model
 
+import android.os.Parcelable
 import androidx.annotation.Keep
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import java.io.Serializable
+import kotlinx.parcelize.Parcelize
 
 @Keep
 @Entity(tableName = "categories")
+@Parcelize
 data class Category(
     @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true)
@@ -19,7 +21,7 @@ data class Category(
 
     @Ignore
     var isSelectedForFilter: Boolean = false
-) : Comparable<Category>, Serializable {
+) : Comparable<Category>, Parcelable {
 
     override fun compareTo(other: Category): Int {
         val isSame = id == other.id &&

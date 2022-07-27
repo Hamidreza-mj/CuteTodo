@@ -3,6 +3,7 @@ plugins {
     id 'com.google.gms.google-services'
     id 'kotlin-android'
     id 'kotlin-kapt' //kotlin annotation processing task
+    id 'kotlin-parcelize' //kotlin parcelable
 }
 
 def keyPropertiesFile = rootProject.file("key.properties")

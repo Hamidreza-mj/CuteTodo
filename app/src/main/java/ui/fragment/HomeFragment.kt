@@ -176,7 +176,8 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                     }
 
                     if (todoViewModel.todosDoneIsEmpty()) {
-                        ToastHelper.get().toast(provideResource.getString(R.string.todos_done_is_empty))
+                        ToastHelper.get()
+                            .toast(provideResource.getString(R.string.todos_done_is_empty))
                         return@deleteAllDone //empty return
                     }
 
@@ -277,16 +278,13 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
 
                     onClickEdit = {
                         dismiss()
-                        val fragment: Fragment = AddEditTodoFragment.newInstance(todoMenu)
-                        fragment.enterTransition = Slide(Gravity.BOTTOM)
-                        val transaction = parentFragmentManager.beginTransaction()
-                        transaction.add(
-                            R.id.mainContainer,
-                            fragment,
-                            Constants.FragmentTag.ADD_EDIT_TODO
-                        )
-                        transaction.addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO)
-                        transaction.commit()
+                        val fragment: Fragment = AddEditTodoFragment.newInstance(todoMenu).apply {
+                            enterTransition = Slide(Gravity.BOTTOM)
+                        }
+                        parentFragmentManager.beginTransaction().apply {
+                            add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO)
+                            addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO)
+                        }.commit()
                     }
 
                     onClickDetail = {
@@ -330,9 +328,15 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                             var todoTitle = todoMenu.title ?: ""
                             if (todoTitle.trim().length > 30)
                                 todoTitle =
-                                    todoTitle.substring(0, 30).trim() + provideResource.getString(R.string.ellipsis)
+                                    todoTitle.substring(0, 30)
+                                        .trim() + provideResource.getString(R.string.ellipsis)
 
-                            setMessage(provideResource.getString(R.string.delete_todo_message, todoTitle))
+                            setMessage(
+                                provideResource.getString(
+                                    R.string.delete_todo_message,
+                                    todoTitle
+                                )
+                            )
 
                             onClickDelete = {
                                 if (todoMenu.arriveDate != 0L)
@@ -380,8 +384,11 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                     binding.filterIndicator.visibility = View.VISIBLE
                     binding.cLytGuide.visibility = View.GONE
 
-                    binding.txtEmpty.text = provideResource.getString(R.string.empty_todos_with_filter)
-                    binding.txtNotesEmpty.text = provideResource.getString(R.string.empty_todos_with_filter_notes)
+                    binding.txtEmpty.text =
+                        provideResource.getString(R.string.empty_todos_with_filter)
+
+                    binding.txtNotesEmpty.text =
+                        provideResource.getString(R.string.empty_todos_with_filter_notes)
 
                     params.verticalBias = 0.35f
                 }

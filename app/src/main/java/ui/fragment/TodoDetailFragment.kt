@@ -51,7 +51,7 @@ class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() 
         super.onCreate(savedInstanceState)
 
         if (arguments != null && arguments!!.isEmpty.not()) {
-            val todo = arguments!!.getSerializable(TODO_DETAIL_ARGS) as Todo?
+            val todo: Todo? = arguments!!.getParcelable(TODO_DETAIL_ARGS)
             viewModel.todo = todo
         } else {
             back()
@@ -109,7 +109,8 @@ class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() 
 
                 var todoTitle = viewModel.todo.title ?: ""
                 if (todoTitle.trim().length > 30)
-                    todoTitle = todoTitle.substring(0, 30).trim() + provideResource.getString(R.string.ellipsis)
+                    todoTitle = todoTitle.substring(0, 30)
+                        .trim() + provideResource.getString(R.string.ellipsis)
 
                 setMessage(provideResource.getString(R.string.delete_todo_message, todoTitle))
 
@@ -212,14 +213,16 @@ class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() 
                 if (viewModel.hasCreatedAt()) {
                     binding.txtCreatedAt.text = MessageFormat.format(
                         "{0} {1}",
-                        provideResource.getString(R.string.todo_created_at), viewModel.completeCreatedAt
+                        provideResource.getString(R.string.todo_created_at),
+                        viewModel.completeCreatedAt
                     )
                 }
 
                 if (viewModel.hasUpdatedAt()) {
                     binding.txtUpdatedAt.text = MessageFormat.format(
                         "{0} {1}",
-                        provideResource.getString(R.string.todo_updated_at), viewModel.completeUpdatedAt
+                        provideResource.getString(R.string.todo_updated_at),
+                        viewModel.completeUpdatedAt
                     )
                 }
             }

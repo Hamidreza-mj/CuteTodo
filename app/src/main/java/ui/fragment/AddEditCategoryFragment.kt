@@ -37,7 +37,7 @@ class AddEditCategoryFragment : BaseViewBindingFragment<FragmentAddEditCategoryB
         super.onCreate(savedInstanceState)
 
         if (arguments != null && arguments!!.isEmpty.not()) {
-            val category = arguments!!.getSerializable(CATEGORY_ARGS) as Category?
+            val category: Category? = arguments!!.getParcelable(CATEGORY_ARGS)
 
             if (category != null) {
                 viewModel.isEditMode = true

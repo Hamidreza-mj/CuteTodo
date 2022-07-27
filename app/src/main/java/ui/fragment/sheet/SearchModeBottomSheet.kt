@@ -43,7 +43,7 @@ class SearchModeBottomSheet : BaseViewBindingBottomSheet<SheetSearchModeBinding>
         super.onCreate(savedInstanceState)
 
         if (arguments != null && arguments!!.isEmpty.not())
-            search = arguments!!.getSerializable(SEARCH_MODE_ARGS) as Search?
+            search = arguments!!.getParcelable(SEARCH_MODE_ARGS)
 
         KeyboardUtil.hideKeyboard(context!!)
     }

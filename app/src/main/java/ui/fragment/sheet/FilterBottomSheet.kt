@@ -63,8 +63,8 @@ class FilterBottomSheet : BaseViewBindingBottomSheet<SheetFilterBinding>() {
         if (arguments != null && !arguments!!.isEmpty) {
             filter = arguments!!.getSerializable(FILTER_ARGS) as Filter?
 
-            @Suppress("UNCHECKED_CAST")
-            categories = arguments!!.getSerializable(CATEGORY_ARGS) as ArrayList<Category>?
+            //@Suppress("UNCHECKED_CAST")
+            categories = arguments!!.getParcelableArrayList(CATEGORY_ARGS)
 
             if (categories != null && categories!!.isNotEmpty()) {
                 hasCategory = true

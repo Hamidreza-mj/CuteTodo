@@ -1,5 +1,6 @@
 package model
 
+import android.os.Parcelable
 import androidx.annotation.Keep
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -7,10 +8,12 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import ir.hamsaa.persiandatepicker.api.PersianPickerDate
 import ir.hamsaa.persiandatepicker.date.PersianDateImpl
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 import utils.DateHelper
-import java.io.Serializable
 
 @Keep
+@Parcelize
 @Entity(tableName = "todos")
 data class Todo(
     @ColumnInfo(name = "id")
@@ -40,9 +43,10 @@ data class Todo(
 
     @ColumnInfo(name = "updated_at", defaultValue = "0")
     var updatedAt: Long = 0,
-) : Comparable<Todo>, Serializable {
+) : Comparable<Todo>, Parcelable {
 
     @Ignore
+    @IgnoredOnParcel
     var dateTime: DateTime? = null
         get() {
             field = DateTime()

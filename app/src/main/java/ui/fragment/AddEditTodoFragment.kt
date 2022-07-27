@@ -77,7 +77,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
 
         if (arguments != null && arguments!!.isEmpty.not()) {
 
-            val todo = arguments!!.getSerializable(TODO_ARGS) as Todo?
+            val todo: Todo? = arguments!!.getParcelable(TODO_ARGS)
 
             if (todo != null) {
                 //edit mode
