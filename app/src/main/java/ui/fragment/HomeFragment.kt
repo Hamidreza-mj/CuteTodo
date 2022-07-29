@@ -210,7 +210,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
         binding.aImgFilter.setOnClickListener {
             FilterBottomSheet.newInstance(
                 todoViewModel.currentFilter,
-                ArrayList(categoryViewModel.allCategories)
+                categoryViewModel.getAllCategories()?.let { list -> ArrayList(list) }
             ).apply {
                 onApplyClick = {
                     disableViews()

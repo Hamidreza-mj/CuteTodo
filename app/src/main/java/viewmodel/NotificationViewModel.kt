@@ -1,141 +1,151 @@
-package viewmodel;
+package viewmodel
 
-import android.content.Context;
+import android.content.Context
+import androidx.lifecycle.ViewModel
+import hlv.cute.todo.App.Companion.get
+import model.Notification
+import model.Todo
+import repo.dbRepoController.NotificationDBRepository
+import scheduler.alarm.AlarmUtil
+import java.lang.ref.WeakReference
 
-import androidx.lifecycle.ViewModel;
+class NotificationViewModel : ViewModel() {
 
-import java.lang.ref.WeakReference;
-import java.util.List;
+    private val dbRepository: NotificationDBRepository = NotificationDBRepository()
 
-import hlv.cute.todo.App;
-import model.Notification;
-import model.Todo;
-import repo.dbRepoController.NotificationDBRepository;
-import scheduler.alarm.AlarmUtil;
+    private val context: WeakReference<Context> = WeakReference(get()!!.applicationContext)
 
-public class NotificationViewModel extends ViewModel {
-
-    private final NotificationDBRepository dbRepository;
-    private final WeakReference<Context> context;
-
-    public NotificationViewModel() {
-        dbRepository = new NotificationDBRepository();
-        context = new WeakReference<>(App.get().getApplicationContext());
-    }
-
-    public void addNotification(Todo todo) {
+    fun addNotification(todo: Todo) {
         try {
-            if (todo.getArriveDate() < System.currentTimeMillis())
-                return;
+            if (todo.arriveDate < System.currentTimeMillis()) return
 
-            Notification notification = new Notification();
-            notification.initWith(todo);
-            dbRepository.addNotification(notification);
-
-            AlarmUtil.with(context.get()).setAlarm(todo.getId(), todo.getArriveDate());
-        } catch (InterruptedException ignored) {
-        }
-    }
-
-    public void editNotification(Todo todo) {
-        try {
-            //cancel and delete old alarm
-            Notification notification = new Notification();
-            notification.initWith(todo);
-            AlarmUtil.with(context.get()).cancelAlarm(notification.getId());
-
-            if (todo.getArriveDate() < System.currentTimeMillis()) {
-                deleteNotification(notification);
-                return;
+            val notification = Notification().apply {
+                initWith(todo)
             }
 
-            dbRepository.editNotification(notification);
+            dbRepository.addNotification(notification)
+            context.get()?.let {
+                AlarmUtil.with(it)?.setAlarm(todo.id, todo.arriveDate)
+            }
 
-            AlarmUtil.with(context.get()).setAlarm(todo.getId(), todo.getArriveDate());
-        } catch (InterruptedException ignored) {
+        } catch (ignored: InterruptedException) {
         }
     }
 
-    private void deleteNotification(Notification notification) {
+    private fun editNotification(todo: Todo) {
         try {
-            dbRepository.deleteNotification(notification);
-        } catch (InterruptedException ignored) {
+            //cancel and delete old alarm
+            val notification = Notification().apply {
+                initWith(todo)
+            }
+
+            context.get()?.let {
+                AlarmUtil.with(it)?.cancelAlarm(notification.id)
+            }
+
+            if (todo.arriveDate < System.currentTimeMillis()) {
+                deleteNotification(notification)
+                return
+            }
+
+            dbRepository.editNotification(notification)
+
+            context.get()?.let {
+                AlarmUtil.with(it)?.setAlarm(todo.id, todo.arriveDate)
+            }
+        } catch (ignored: InterruptedException) {
         }
     }
 
-    private List<Notification> getAllNotifications() {
+    private fun deleteNotification(notification: Notification) {
         try {
-            return dbRepository.getAllNotifications();
-        } catch (InterruptedException e) {
-            return null;
+            dbRepository.deleteNotification(notification)
+        } catch (ignored: InterruptedException) {
         }
     }
 
-    private List<Notification> getAllDoneNotifications() {
-        try {
-            return dbRepository.getAllDoneNotifications();
-        } catch (InterruptedException e) {
-            return null;
+    private fun getAllNotifications(): List<Notification>? {
+        return try {
+            dbRepository.getAllNotifications()
+        } catch (e: InterruptedException) {
+            null
         }
     }
 
-    public Notification getNotification(int id) {
-        try {
-            return dbRepository.getNotification(id);
-        } catch (InterruptedException e) {
-            return null;
+    private fun getAllDoneNotifications(): List<Notification>? {
+        return try {
+            dbRepository.getAllDoneNotifications()
+        } catch (e: InterruptedException) {
+            null
         }
     }
 
-    private boolean existsNotification(int id) {
-        return getNotification(id) != null;
+    private fun getNotification(id: Int): Notification? {
+        return try {
+            dbRepository.getNotification(id.toLong())
+        } catch (e: InterruptedException) {
+            null
+        }
     }
 
-    public void setNotificationEditMode(Todo todo) {
-        if (existsNotification(todo.getId()))
-            editNotification(todo);
+    private fun existsNotification(id: Int): Boolean {
+        return getNotification(id) != null
+    }
+
+    fun setNotificationEditMode(todo: Todo) {
+        if (existsNotification(todo.id))
+            editNotification(todo)
         else
-            addNotification(todo);
+            addNotification(todo)
     }
 
-    private void deleteAllNotifications() {
+    private fun deleteAllNotifications() {
         try {
-            dbRepository.deleteAllNotifications();
-        } catch (InterruptedException ignored) {
+            dbRepository.deleteAllNotifications()
+        } catch (ignored: InterruptedException) {
         }
     }
 
-    private void deleteAllDoneNotifications() {
+    private fun deleteAllDoneNotifications() {
         try {
-            dbRepository.deleteAllDoneNotifications();
-        } catch (InterruptedException ignored) {
+            dbRepository.deleteAllDoneNotifications()
+        } catch (ignored: InterruptedException) {
         }
     }
 
-    public void cancelAllDoneAlarm() {
-        List<Notification> notificationList = getAllDoneNotifications();
+    fun cancelAllDoneAlarm() {
+        val notificationList = getAllDoneNotifications()
+
         if (notificationList != null) {
-            for (Notification notification : notificationList)
-                AlarmUtil.with(context.get()).cancelAlarm(notification.getId());
+            for (notif: Notification in notificationList)
+                context.get()?.let {
+                    AlarmUtil.with(it)?.cancelAlarm(notif.id)
+                }
         }
 
-        deleteAllDoneNotifications();
+        deleteAllDoneNotifications()
     }
 
-    public void cancelAllAlarm() {
-        List<Notification> notificationList = getAllNotifications();
+    fun cancelAllAlarm() {
+        val notificationList = getAllNotifications()
         if (notificationList != null) {
-            for (Notification notification : notificationList)
-                AlarmUtil.with(context.get()).cancelAlarm(notification.getId());
+            for (notif: Notification in notificationList)
+                context.get()?.let {
+                    AlarmUtil.with(it)?.cancelAlarm(notif.id)
+                }
         }
 
-        deleteAllNotifications();
+        deleteAllNotifications()
     }
 
-    public void cancelAlarm(Todo todo) {
-        Notification notification = new Notification();
-        notification.initWith(todo);
-        AlarmUtil.with(context.get()).cancelAlarm(notification.getId());
-        deleteNotification(notification);
+    fun cancelAlarm(todo: Todo?) {
+        val notification = Notification()
+        notification.initWith(todo)
+        context.get()?.let {
+            AlarmUtil.with(it)?.cancelAlarm(notification.id)
+        }
+
+        deleteNotification(notification)
     }
+
 }
