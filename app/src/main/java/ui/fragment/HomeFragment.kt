@@ -396,11 +396,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
 
                 box.layoutParams = params
             } else {
-                binding.filterIndicator.visibility =
-                    if (todoViewModel.currentFilter != null && !todoViewModel.currentFilter.filterIsEmpty())
-                        View.VISIBLE
-                    else
-                        View.GONE
+                binding.filterIndicator.visibility = todoViewModel.filterIndicatorVisibility
 
                 binding.cLytEmpty.visibility = View.GONE
                 binding.rvTodo.visibility = View.VISIBLE

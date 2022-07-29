@@ -1,181 +1,168 @@
-package viewmodel;
+package viewmodel
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+import android.view.View
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import model.Filter
+import model.Notification
+import model.Todo
+import repo.dbRepoController.NotificationDBRepository
+import repo.dbRepoController.TodoDBRepository
 
-import java.util.List;
+class TodoViewModel : ViewModel() {
+    private val dbRepository: TodoDBRepository = TodoDBRepository()
+    private val notifRepo: NotificationDBRepository = NotificationDBRepository()
 
-import model.Filter;
-import model.Notification;
-import model.Todo;
-import repo.dbRepoController.NotificationDBRepository;
-import repo.dbRepoController.TodoDBRepository;
+    val todosLiveData: LiveData<List<Todo>?> = dbRepository.todosLiveDate
 
-public class TodoViewModel extends ViewModel {
+    private val _filterLiveData: MutableLiveData<Filter?> = MutableLiveData()
+    val filterLiveData: LiveData<Filter?> = _filterLiveData
 
-    private final TodoDBRepository dbRepository;
-    private final NotificationDBRepository notifRepo;
+    private val _goToTopLiveData: MutableLiveData<Boolean> = MutableLiveData()
+    val goToTopLiveData: LiveData<Boolean> = _goToTopLiveData
 
-    private final LiveData<List<Todo>> todosLiveDate;
-    private final MutableLiveData<Filter> filterLiveData;
-    private final MutableLiveData<Boolean> goToTopLiveData;
+    val currentFilter: Filter?
+        get() = filterLiveData.value
 
-    public TodoViewModel() {
-        dbRepository = new TodoDBRepository();
-        notifRepo = new NotificationDBRepository();
-        todosLiveDate = dbRepository.getTodosLiveDate();
-        filterLiveData = new MutableLiveData<>();
-        goToTopLiveData = new MutableLiveData<>();
-        deleteShownNotification();
+    val todosCount: Long
+        get() = try {
+            dbRepository.todosCount()
+        } catch (e: InterruptedException) {
+            0
+        }
+
+    val doneTodosCount: Long
+        get() = try {
+            dbRepository.doneTodosCount()
+        } catch (e: InterruptedException) {
+            0
+        }
+
+    val filterIndicatorVisibility: Int
+        get() {
+            return if (currentFilter != null && currentFilter?.filterIsEmpty() == false)
+                View.VISIBLE
+            else
+                View.GONE
+        }
+
+    init {
+        deleteShownNotification()
     }
 
-    private void deleteShownNotification() {
+    fun applyFilter(filter: Filter?) {
+        _filterLiveData.value = filter
+    }
+
+    fun goToTop() {
+        _goToTopLiveData.value = true
+    }
+
+    private fun deleteShownNotification() {
         //in startup get all is shown and delete it
-        NotificationDBRepository repository = new NotificationDBRepository();
+        val repository = NotificationDBRepository()
+
         try {
-            repository.deleteShownNotifications();
+            repository.deleteShownNotifications()
 
             //for in notifs if arrive date < current time millis delete this
-            List<Notification> allNotifications = repository.getAllNotifications();
-            for (Notification notification : allNotifications) {
-                if (notification.getArriveDate() < System.currentTimeMillis()) //arrive date is passed
-                    repository.deleteNotification(notification);
+            val allNotifications: List<Notification>? = repository.getAllNotifications()
+            if (allNotifications != null) {
+                for (notif: Notification in allNotifications) {
+                    if (notif.arriveDate < System.currentTimeMillis()) //arrive date is passed
+                        repository.deleteNotification(notif)
+                }
             }
-        } catch (InterruptedException ignored) {
+
+        } catch (ignored: InterruptedException) {
         }
     }
 
-    public void fetch(Filter filter) {
-        if (filter == null)
-            dbRepository.fetchAll();
-        else {
+    @JvmOverloads
+    fun fetch(filter: Filter? = currentFilter) {
+        if (filter == null) {
+            dbRepository.fetchAll()
+        } else {
             try {
-                dbRepository.fetchWithFilter(filter);
-            } catch (InterruptedException ignored) {
+                dbRepository.fetchWithFilter(filter)
+            } catch (ignored: InterruptedException) {
             }
         }
     }
 
-    public void fetch() {
-        fetch(getCurrentFilter());
-    }
+    fun addTodo(todo: Todo?): Long {
+        var insertedRow: Long = 0
 
-    public long addTodo(Todo todo) {
-        long insertedRow = 0;
         try {
-            insertedRow = dbRepository.addTodo(todo);
-        } catch (InterruptedException ignored) {
+            insertedRow = dbRepository.addTodo(todo)
+        } catch (ignored: InterruptedException) {
         }
 
-        fetch();
-        return insertedRow;
+        fetch()
+
+        return insertedRow
     }
 
-    public void editTodo(Todo todo) {
+    fun editTodo(todo: Todo?) {
         try {
-            dbRepository.editTodo(todo);
-        } catch (InterruptedException ignored) {
+            dbRepository.editTodo(todo)
+        } catch (ignored: InterruptedException) {
         }
-        fetch();
+        fetch()
     }
 
-    public void deleteTodo(Todo todo) {
+    fun deleteTodo(todo: Todo?) {
         try {
-            dbRepository.deleteTodo(todo);
-        } catch (InterruptedException ignored) {
+            dbRepository.deleteTodo(todo)
+        } catch (ignored: InterruptedException) {
         }
-        fetch();
+        fetch()
     }
 
-    public void deleteAllTodos() {
+    fun deleteAllTodos() {
         try {
-            dbRepository.deleteAllTodos();
-        } catch (InterruptedException ignored) {
+            dbRepository.deleteAllTodos()
+        } catch (ignored: InterruptedException) {
         }
-        applyFilter(null);
-        fetch();
+        applyFilter(null)
+        fetch()
     }
 
-    public void deleteAllDoneTodos() {
+    fun deleteAllDoneTodos() {
         try {
-            dbRepository.deleteAllDoneTodos();
-        } catch (InterruptedException ignored) {
+            dbRepository.deleteAllDoneTodos()
+        } catch (ignored: InterruptedException) {
         }
-        applyFilter(null);
-        fetch();
+        applyFilter(null)
+        fetch()
     }
 
-    public long getTodosCount() {
+    fun todosIsEmpty(): Boolean {
+        return todosCount == 0L
+    }
+
+    fun todosDoneIsEmpty(): Boolean {
+        return doneTodosCount == 0L
+    }
+
+    fun setDoneTodo(todoID: Long) {
         try {
-            return dbRepository.todosCount();
-        } catch (InterruptedException e) {
-            return 0;
+            dbRepository.setDoneTodo(todoID)
+            notifRepo.setDoneTodo(todoID) //set done todo for notifications
+        } catch (ignored: InterruptedException) {
         }
+        fetch()
     }
 
-    public long getDoneTodosCount() {
-        try {
-            return dbRepository.doneTodosCount();
-        } catch (InterruptedException e) {
-            return 0;
-        }
+    private fun pureValidateTodo(todo: Todo): Boolean {
+        val todoTitle = todo.title
+        return todoTitle != null && todoTitle.trim().isNotEmpty() && todoTitle.trim().isNotEmpty()
     }
 
-    public boolean todosIsEmpty() {
-        return getTodosCount() == 0;
+    fun validateTodo(todo: Todo): String? {
+        val isValidTodo = pureValidateTodo(todo)
+        return if (!isValidTodo) "عنوان کار نمی تواند خالی باشد!" else null
     }
 
-    public boolean todosDoneIsEmpty() {
-        return getDoneTodosCount() == 0;
-    }
-
-    public void setDoneTodo(long todoID) {
-        try {
-            dbRepository.setDoneTodo(todoID);
-            notifRepo.setDoneTodo(todoID); //set done todo for notifications
-        } catch (InterruptedException ignored) {
-        }
-        fetch();
-    }
-
-    public boolean pureValidateTodo(Todo todo) {
-        String todoTitle = todo.getTitle();
-        return todoTitle != null && !todoTitle.trim().isEmpty() && todoTitle.trim().length() != 0;
-    }
-
-    public String validateTodo(Todo todo) {
-        boolean isValidTodo = pureValidateTodo(todo);
-
-        if (!isValidTodo)
-            return "عنوان کار نمی تواند خالی باشد!";
-
-        return null;
-    }
-
-    public void applyFilter(Filter filter) {
-        if (filterLiveData != null)
-            filterLiveData.setValue(filter);
-    }
-
-    public void goToTop() {
-        if (goToTopLiveData != null)
-            goToTopLiveData.setValue(true);
-    }
-
-    public LiveData<List<Todo>> getTodosLiveData() {
-        return todosLiveDate;
-    }
-
-    public LiveData<Filter> getFilterLiveData() {
-        return filterLiveData;
-    }
-
-    public Filter getCurrentFilter() {
-        return getFilterLiveData().getValue();
-    }
-
-    public LiveData<Boolean> getGoToTopLiveData() {
-        return goToTopLiveData;
-    }
 }
