@@ -107,7 +107,8 @@ class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() 
                 setTitle(provideResource.getString(R.string.delete_todo))
 
 
-                var todoTitle = viewModel.todo.title ?: ""
+                var todoTitle = viewModel.todo?.title ?: ""
+
                 if (todoTitle.trim().length > 30)
                     todoTitle = todoTitle.substring(0, 30)
                         .trim() + provideResource.getString(R.string.ellipsis)
@@ -197,17 +198,17 @@ class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() 
                 binding.txtDone.text = viewModel.doneText
                 binding.imgDone.setImageResource(viewModel.imgDoneResource)
 
-                binding.lytDate.visibility = viewModel.lytDateVisibility
-                binding.lytCategory.visibility = viewModel.lytCategoryVisibility
-                binding.txtCreatedAt.visibility = viewModel.createdAtVisibility
-                binding.txtUpdatedAt.visibility = viewModel.updatedAtVisibility
+                binding.lytDate.visibility = viewModel.getLytDateVisibility()
+                binding.lytCategory.visibility = viewModel.getLytCategoryVisibility()
+                binding.txtCreatedAt.visibility = viewModel.getCreatedAtVisibility()
+                binding.txtUpdatedAt.visibility = viewModel.getUpdatedAtVisibility()
 
                 if (viewModel.hasCategory())
                     binding.txtCategory.text = todo.category
 
                 if (viewModel.hasArriveDate()) {
-                    binding.txtDate.text = viewModel.dateReminder
-                    binding.txtClock.text = viewModel.clockReminder
+                    binding.txtDate.text = viewModel.getDateReminder()
+                    binding.txtClock.text = viewModel.getClockReminder()
                 }
 
                 if (viewModel.hasCreatedAt()) {
