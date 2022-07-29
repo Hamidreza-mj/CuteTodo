@@ -113,7 +113,7 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
                 setMessage(
                     provideResource.getString(
                         R.string.delete_all_categories_message,
-                        categoryViewModel.categoriesCount
+                        categoryViewModel.getCategoriesCount()
                     )
                 )
 

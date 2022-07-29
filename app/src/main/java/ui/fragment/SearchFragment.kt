@@ -70,7 +70,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
     }
 
     private fun handleTabLayout() {
-        val allCategories = categoryViewModel.allCategories
+        val allCategories = categoryViewModel.getAllCategories()
 
         val lp = (binding.tabLyt.layoutParams as ConstraintLayout.LayoutParams)
 

@@ -230,7 +230,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
     @SuppressLint("NonConstantResourceId")
     private fun handleAction() {
         binding.mCardCategory.setOnClickListener {
-            val categories = categoryViewModel.allCategories
+            val categories = categoryViewModel.getAllCategories()
 
             DropDownCategoriesDialog(activity!!, categories).apply {
                 show()
