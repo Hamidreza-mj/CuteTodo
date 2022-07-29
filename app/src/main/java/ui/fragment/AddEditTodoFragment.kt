@@ -91,7 +91,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
 
                 if (shareTitle != null) {
                     viewModel.isShareMode = true
-                    viewModel.setShareTitle(shareTitle)
+                    viewModel.shareTitle = shareTitle
                 } else {
                     viewModel.isShareMode = false
                 }
@@ -196,25 +196,25 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
         if (viewModel.isEditMode) {
 
             @IdRes val chipID: Int
-            when (viewModel.todo.priority) {
+            when (viewModel.todo?.priority) {
                 Priority.LOW -> {
                     chipID = R.id.chipLow
-                    viewModel.setPriority(Priority.LOW)
+                    viewModel.priority = Priority.LOW
                 }
 
                 Priority.NORMAL -> {
                     chipID = R.id.chipNormal
-                    viewModel.setPriority(Priority.NORMAL)
+                    viewModel.priority = Priority.NORMAL
                 }
 
                 Priority.HIGH -> {
                     chipID = R.id.chipHigh
-                    viewModel.setPriority(Priority.HIGH)
+                    viewModel.priority = Priority.HIGH
                 }
 
                 else -> {
                     chipID = R.id.chipLow
-                    viewModel.setPriority(Priority.LOW)
+                    viewModel.priority = Priority.LOW
                 }
             }
 
@@ -224,7 +224,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
 
         //set default priority
         binding.chipGP.check(R.id.chipLow)
-        viewModel.setPriority(Priority.LOW)
+        viewModel.priority = Priority.LOW
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -271,13 +271,13 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
 
         binding.chipGP.setOnCheckedStateChangeListener { _, checkedIds ->
             when (checkedIds[0]) {
-                R.id.chipLow -> viewModel.setPriority(Priority.LOW)
+                R.id.chipLow -> viewModel.priority = Priority.LOW
 
-                R.id.chipNormal -> viewModel.setPriority(Priority.NORMAL)
+                R.id.chipNormal -> viewModel.priority = Priority.NORMAL
 
-                R.id.chipHigh -> viewModel.setPriority(Priority.HIGH)
+                R.id.chipHigh -> viewModel.priority = Priority.HIGH
 
-                else -> viewModel.setPriority(Priority.LOW)
+                else -> viewModel.priority = Priority.LOW
             }
         }
 
@@ -292,7 +292,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
 
 
         binding.mCardReminder.setOnClickListener {
-            handlePickers(activity, viewModel.oldDateTime.date)
+            handlePickers(activity, viewModel.oldDateTime?.date)
         }
 
         binding.aImgClear.setOnClickListener { viewModel.releaseAll() }

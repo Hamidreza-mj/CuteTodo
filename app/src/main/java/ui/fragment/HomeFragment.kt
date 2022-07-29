@@ -281,6 +281,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                         val fragment: Fragment = AddEditTodoFragment.newInstance(todoMenu).apply {
                             enterTransition = Slide(Gravity.BOTTOM)
                         }
+
                         parentFragmentManager.beginTransaction().apply {
                             add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO)
                             addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO)
