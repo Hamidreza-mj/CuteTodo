@@ -96,7 +96,7 @@ class ShowNotificationActivity : BaseViewBindingActivity<ActivityShowNotificatio
                 runActivity(MainActivity::class.java, true)
         }
 
-        viewModel.notificationLive.observe(this) { notif: Notification? ->
+        viewModel.notificationLiveData.observe(this) { notif: Notification? ->
             if (notif == null) { //when manual close and open with home
                 runActivity(MainActivity::class.java, true)
                 return@observe
@@ -132,15 +132,15 @@ class ShowNotificationActivity : BaseViewBindingActivity<ActivityShowNotificatio
                 }
             }
 
-            binding.lytDate.visibility = viewModel.lytDateVisibility
-            binding.lytCategory.visibility = viewModel.lytCategoryVisibility
+            binding.lytDate.visibility = viewModel.getLytDateVisibility()
+            binding.lytCategory.visibility = viewModel.getLytCategoryVisibility()
 
             if (viewModel.hasCategory())
                 binding.txtCategory.text = notif.category
 
             if (viewModel.hasArriveDate()) {
-                binding.txtDate.text = viewModel.dateReminder
-                binding.txtClock.text = viewModel.clockReminder
+                binding.txtDate.text = viewModel.getDateReminder()
+                binding.txtClock.text = viewModel.getClockReminder()
             }
         }
     }

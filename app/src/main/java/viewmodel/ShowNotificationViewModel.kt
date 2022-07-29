@@ -1,177 +1,160 @@
-package viewmodel;
+package viewmodel
 
-import android.content.Intent;
-import android.view.View;
+import android.content.Intent
+import android.view.View
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import ir.hamsaa.persiandatepicker.date.PersianDateImpl
+import model.DateTime
+import model.Notification
+import repo.dbRepoController.NotificationDBRepository
+import repo.dbRepoController.TodoDBRepository
+import utils.Constants
+import utils.DateHelper
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+class ShowNotificationViewModel : ViewModel() {
 
-import ir.hamsaa.persiandatepicker.date.PersianDateImpl;
-import model.DateTime;
-import model.Notification;
-import model.Todo;
-import repo.dbRepoController.NotificationDBRepository;
-import repo.dbRepoController.TodoDBRepository;
-import utils.Constants;
-import utils.DateHelper;
+    private val dbRepository: NotificationDBRepository = NotificationDBRepository()
+    private val todoRepository: TodoDBRepository = TodoDBRepository()
 
-public class ShowNotificationViewModel extends ViewModel {
+    private val _notificationLiveData: MutableLiveData<Notification> = MutableLiveData()
+    private val _closeLive: MutableLiveData<Boolean> = MutableLiveData()
+    private val _runMainLive: MutableLiveData<Boolean> = MutableLiveData()
 
-    private final MutableLiveData<Notification> notificationLiveData;
-    private final MutableLiveData<Boolean> closeLive;
-    private final MutableLiveData<Boolean> runMainLive;
-    private final NotificationDBRepository dbRepository;
-    private final TodoDBRepository todoRepository;
+    val notificationLiveData: LiveData<Notification> = _notificationLiveData
+    val closeLive: LiveData<Boolean> = _closeLive
+    val runMainLive: LiveData<Boolean> = _runMainLive
 
-    public ShowNotificationViewModel() {
-        notificationLiveData = new MutableLiveData<>();
-        closeLive = new MutableLiveData<>();
-        runMainLive = new MutableLiveData<>();
-        dbRepository = new NotificationDBRepository();
-        todoRepository = new TodoDBRepository();
+    val notification: Notification?
+        get() = notificationLiveData.value
+
+    fun setIntent(intent: Intent) = handleExtras(intent)
+
+    fun getLytDateVisibility(): Int {
+        return if (hasArriveDate())
+            View.VISIBLE
+        else
+            View.GONE
     }
 
-    public void setIntent(Intent intent) {
-        handleExtras(intent);
+    fun getLytCategoryVisibility(): Int {
+        return if (hasCategory())
+            View.VISIBLE
+        else
+            View.GONE
     }
 
-    public int getLytDateVisibility() {
-        return hasArriveDate() ? View.VISIBLE : View.GONE;
+    fun hasArriveDate(): Boolean {
+        return if (notification == null)
+            false
+        else
+            notification!!.arriveDate != 0L
     }
 
-    public int getLytCategoryVisibility() {
-        return hasCategory() ? View.VISIBLE : View.GONE;
+    fun hasCategory(): Boolean {
+        return if (notification == null)
+            false
+        else
+            notification!!.categoryId != 0 && notification!!.category != null
     }
 
-    public boolean hasArriveDate() {
-        if (getNotification() == null)
-            return false;
-
-        return getNotification().getArriveDate() != 0;
+    fun getDateReminder(): String {
+        return if (notification == null)
+            ""
+        else
+            getDate(notification!!.arriveDate).persianDate
     }
 
-    public boolean hasCategory() {
-        if (getNotification() == null)
-            return false;
-
-        return getNotification().getCategoryId() != 0 && getNotification().getCategory() != null;
+    fun getClockReminder(): String {
+        return if (notification == null)
+            ""
+        else
+            getDate(notification!!.arriveDate).clock
     }
 
-    public String getDateReminder() {
-        if (getNotification() == null)
-            return "";
+    private fun getDate(timeMillis: Long): DateTime {
+        val dateHelper = DateHelper(timeMillis)
 
-        return getDate(getNotification().getArriveDate()).getPersianDate();
+        val dateTime = DateTime().apply {
+            hour = dateHelper.getHour()
+            minute = dateHelper.getMinute()
+        }
+
+        val persianDate = PersianDateImpl().apply {
+            setDate(timeMillis)
+        }
+
+        dateTime.date = persianDate
+        return dateTime
     }
 
-    public String getClockReminder() {
-        if (getNotification() == null)
-            return "";
-
-        return getDate(getNotification().getArriveDate()).getClock();
-    }
-
-    private DateTime getDate(long timeMillis) {
-        DateTime dateTime = new DateTime();
-
-        DateHelper dateHelper = new DateHelper(timeMillis);
-        dateTime.setHour(dateHelper.getHour());
-        dateTime.setMinute(dateHelper.getMinute());
-
-        PersianDateImpl persianDate = new PersianDateImpl();
-        persianDate.setDate(timeMillis);
-
-        dateTime.setDate(persianDate);
-
-        return dateTime;
-    }
-
-    private void handleExtras(Intent intent) {
+    private fun handleExtras(intent: Intent) {
         if (!intent.hasExtra(Constants.Keys.NOTIF_ID_DETAIL)) {
-            mustClose();
-            return;
+            mustClose()
+            return
         }
 
-        int notifId = intent.getIntExtra(Constants.Keys.NOTIF_ID_DETAIL, 0);
+        val notifId = intent.getIntExtra(Constants.Keys.NOTIF_ID_DETAIL, 0)
         if (notifId == 0) {
-            mustClose();
-            return;
+            mustClose()
+            return
         }
 
-
-        Notification notification = null;
+        var notification: Notification? = null
         try {
-            notification = dbRepository.getNotification(notifId);
-        } catch (InterruptedException ignored) {
+            notification = dbRepository.getNotification(notifId.toLong())
+        } catch (ignored: InterruptedException) {
         }
 
         if (notification == null) {
             try {
-                Todo todo = todoRepository.getTodo(notifId);
+                val todo = todoRepository.getTodo(notifId.toLong())
                 if (todo != null) {
-                    Notification newNotification = new Notification();
-                    newNotification.initWith(todo);
-                    notificationLiveData.setValue(newNotification);
-                    return;
+                    val newNotification = Notification().apply {
+                        initWith(todo)
+                    }
+
+                    _notificationLiveData.value = newNotification
+                    return
                 }
-            } catch (InterruptedException ignored) {
+            } catch (ignored: InterruptedException) {
             }
 
-            runMainLive.setValue(true); //run main if notification or todo == null
-            return;
+            _runMainLive.value = true //run main if notification or todo == null
+            return
         }
 
-        notificationLiveData.setValue(notification);
+        _notificationLiveData.value = notification
     }
 
-    public void deleteNotification() {
-        if (getNotification() == null)
-            return;
-
+    fun deleteNotification() {
+        if (notification == null) return
         try {
-            dbRepository.deleteNotification(getNotification());
-        } catch (InterruptedException ignored) {
+            dbRepository.deleteNotification(notification)
+        } catch (ignored: InterruptedException) {
         }
     }
 
-    public void done() {
-        if (getNotification() == null)
-            return;
-
+    fun done() {
+        if (notification == null) return
         try {
-            todoRepository.setTodoIsDone(getNotification().getId());
-        } catch (InterruptedException ignored) {
+            todoRepository.setTodoIsDone(notification!!.id.toLong())
+        } catch (ignored: InterruptedException) {
         }
     }
 
-    public void setShown() {
-        if (getNotification() == null)
-            return;
-
+    fun setShown() {
+        if (notification == null) return
         try {
-            dbRepository.setShownTodo(getNotification().getId());
-        } catch (InterruptedException ignored) {
+            dbRepository.setShownTodo(notification!!.id.toLong())
+        } catch (ignored: InterruptedException) {
         }
     }
 
-    public Notification getNotification() {
-        return notificationLiveData.getValue();
+
+    private fun mustClose() {
+        _closeLive.value = true
     }
 
-    public LiveData<Notification> getNotificationLive() {
-        return notificationLiveData;
-    }
-
-    public LiveData<Boolean> getCloseLive() {
-        return closeLive;
-    }
-
-    public LiveData<Boolean> getRunMainLive() {
-        return runMainLive;
-    }
-
-    private void mustClose() {
-        closeLive.setValue(true);
-    }
 }
