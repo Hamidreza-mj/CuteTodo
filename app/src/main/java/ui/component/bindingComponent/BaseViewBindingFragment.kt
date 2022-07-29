@@ -1,4 +1,4 @@
-package ui.fragment
+package ui.component.bindingComponent
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 import hlv.cute.todo.App
+import ui.fragment.BaseFragment
 import utils.AppResourcesProvider
 
 abstract class BaseViewBindingFragment<VB : ViewBinding> : BaseFragment() {

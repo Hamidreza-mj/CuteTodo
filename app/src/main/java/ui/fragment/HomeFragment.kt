@@ -20,6 +20,7 @@ import hlv.cute.todo.databinding.FragmentHomeBinding
 import model.Filter
 import model.Todo
 import ui.adapter.TodoAdapter
+import ui.component.bindingComponent.BaseViewBindingFragment
 import ui.dialog.DeleteDialog
 import ui.dialog.GlobalMenuDialog
 import ui.dialog.MoreDialog

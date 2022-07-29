@@ -1,4 +1,4 @@
-package ui.fragment.sheet
+package ui.component.bindingComponent
 
 import android.os.Bundle
 import android.view.LayoutInflater

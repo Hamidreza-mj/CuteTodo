@@ -9,6 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import hlv.cute.todo.databinding.FragmentAddEditCategoryBinding
 import model.Category
+import ui.component.bindingComponent.BaseViewBindingFragment
 import utils.KeyboardUtil.focusAndShowKeyboard
 import viewmodel.AddEditCategoryViewModel
 

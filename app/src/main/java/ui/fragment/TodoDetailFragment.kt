@@ -15,6 +15,7 @@ import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentTodoDetailBinding
 import model.Priority
 import model.Todo
+import ui.component.bindingComponent.BaseViewBindingFragment
 import ui.dialog.DeleteDialog
 import utils.Constants
 import viewmodel.NotificationViewModel

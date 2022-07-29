@@ -21,6 +21,7 @@ import hlv.cute.todo.databinding.SheetFilterBinding
 import model.Category
 import model.Filter
 import ui.adapter.FilterCategoryAdapter
+import ui.component.bindingComponent.BaseViewBindingBottomSheet
 import utils.KeyboardUtil
 
 class FilterBottomSheet : BaseViewBindingBottomSheet<SheetFilterBinding>() {

@@ -9,6 +9,7 @@ import hlv.cute.todo.R
 import hlv.cute.todo.databinding.SheetSearchModeBinding
 import model.Search
 import model.Search.SearchMode
+import ui.component.bindingComponent.BaseViewBindingBottomSheet
 import utils.KeyboardUtil
 
 class SearchModeBottomSheet : BaseViewBindingBottomSheet<SheetSearchModeBinding>() {

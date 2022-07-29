@@ -17,6 +17,7 @@ import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentCategoriesBinding
 import model.Category
 import ui.adapter.CategoryAdapter
+import ui.component.bindingComponent.BaseViewBindingFragment
 import ui.dialog.DeleteDialog
 import ui.dialog.MoreDialog
 import ui.fragment.AddEditCategoryFragment.Companion.newInstance

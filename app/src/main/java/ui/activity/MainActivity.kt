@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.yandex.metrica.push.YandexMetricaPush
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.ActivityMainBinding
+import ui.component.bindingComponent.BaseViewBindingActivity
 import ui.fragment.AddEditTodoFragment
 import ui.fragment.CategoriesFragment
 import ui.fragment.HomeFragment

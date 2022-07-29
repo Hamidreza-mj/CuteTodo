@@ -22,6 +22,7 @@ import model.Category
 import model.Search
 import model.Todo
 import ui.adapter.TodoAdapter
+import ui.component.bindingComponent.BaseViewBindingFragment
 import ui.dialog.DeleteDialog
 import ui.dialog.MoreDialog
 import ui.fragment.sheet.SearchModeBottomSheet

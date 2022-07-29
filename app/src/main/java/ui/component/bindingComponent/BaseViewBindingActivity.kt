@@ -1,9 +1,10 @@
-package ui.activity
+package ui.component.bindingComponent
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.viewbinding.ViewBinding
 import hlv.cute.todo.App
+import ui.activity.BaseActivity
 import utils.AppResourcesProvider
 
 abstract class BaseViewBindingActivity<VB : ViewBinding> : BaseActivity() {

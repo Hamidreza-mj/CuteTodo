@@ -9,6 +9,7 @@ import hlv.cute.todo.R
 import hlv.cute.todo.databinding.ActivityShowNotificationBinding
 import model.Notification
 import model.Priority
+import ui.component.bindingComponent.BaseViewBindingActivity
 import utils.ToastHelper
 import viewmodel.ShowNotificationViewModel
 

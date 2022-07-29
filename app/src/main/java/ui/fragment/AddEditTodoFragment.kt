@@ -22,6 +22,7 @@ import model.Category
 import model.DateTime
 import model.Priority
 import model.Todo
+import ui.component.bindingComponent.BaseViewBindingFragment
 import ui.dialog.DropDownCategoriesDialog
 import ui.dialog.ReminderGuideDialog
 import ui.dialog.TimePickerSheetDialog
