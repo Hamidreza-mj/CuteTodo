@@ -238,7 +238,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                 search!!.term = editable.toString().trim()
                 search!!.searchMode = searchViewModel.searchMode
 
-                searchViewModel.search(search)
+                searchViewModel.search(search!!)
             }
         })
 
