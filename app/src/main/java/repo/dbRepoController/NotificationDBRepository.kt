@@ -1,17 +1,17 @@
 package repo.dbRepoController
 
-import hlv.cute.todo.App
 import model.Notification
 import repo.dao.NotificationDao
+import javax.inject.Inject
 
-class NotificationDBRepository {
-
-    private val dao: NotificationDao = App.get()!!.todoDatabase()!!.notificationDao!!
+class NotificationDBRepository @Inject constructor(
+    private val notificationDao: NotificationDao
+) {
 
     @Throws(InterruptedException::class)
     fun addNotification(notification: Notification?) {
         Thread {
-            dao.create(notification)
+            notificationDao.create(notification)
         }.apply {
             start()
             join()
@@ -21,7 +21,7 @@ class NotificationDBRepository {
     @Throws(InterruptedException::class)
     fun editNotification(notification: Notification?) {
         Thread {
-            dao.update(notification)
+            notificationDao.update(notification)
         }.apply {
             start()
             join()
@@ -31,7 +31,7 @@ class NotificationDBRepository {
     @Throws(InterruptedException::class)
     fun deleteNotification(notification: Notification?) {
         Thread {
-            dao.delete(notification)
+            notificationDao.delete(notification)
         }.apply {
             start()
             join()
@@ -43,7 +43,7 @@ class NotificationDBRepository {
         var notificationList: List<Notification>? = null
 
         Thread {
-            notificationList = dao.getAllNotifications()
+            notificationList = notificationDao.getAllNotifications()
         }.apply {
             start()
             join()
@@ -55,7 +55,7 @@ class NotificationDBRepository {
     @Throws(InterruptedException::class)
     fun deleteShownNotifications() {
         Thread {
-            dao.deleteShownNotifications()
+            notificationDao.deleteShownNotifications()
         }.apply {
             start()
             join()
@@ -66,7 +66,7 @@ class NotificationDBRepository {
     fun getAllDoneNotifications(): List<Notification>? {
         var notificationDoneList: List<Notification>? = null
         Thread {
-            notificationDoneList = dao.getAllDoneNotifications()
+            notificationDoneList = notificationDao.getAllDoneNotifications()
         }.apply {
             start()
             join()
@@ -78,7 +78,7 @@ class NotificationDBRepository {
     @Throws(InterruptedException::class)
     fun deleteAllNotifications() {
         Thread {
-            dao.deleteAllNotifications()
+            notificationDao.deleteAllNotifications()
         }.apply {
             start()
             join()
@@ -88,7 +88,7 @@ class NotificationDBRepository {
     @Throws(InterruptedException::class)
     fun deleteAllDoneNotifications() {
         Thread {
-            dao.deleteAllDoneNotifications()
+            notificationDao.deleteAllDoneNotifications()
         }.apply {
             start()
             join()
@@ -100,7 +100,7 @@ class NotificationDBRepository {
         var notification: Notification? = null
 
         Thread {
-            notification = dao.getNotification(id)
+            notification = notificationDao.getNotification(id)
         }.apply {
             start()
             join()
@@ -112,7 +112,7 @@ class NotificationDBRepository {
     @Throws(InterruptedException::class)
     fun setDoneTodo(id: Long) {
         Thread {
-            dao.setDoneTodo(id)
+            notificationDao.setDoneTodo(id)
         }.apply {
             start()
             join()
@@ -122,7 +122,7 @@ class NotificationDBRepository {
     @Throws(InterruptedException::class)
     fun setShownTodo(id: Long) {
         Thread {
-            dao.setShownTodo(id)
+            notificationDao.setShownTodo(id)
         }.apply {
             start()
             join()

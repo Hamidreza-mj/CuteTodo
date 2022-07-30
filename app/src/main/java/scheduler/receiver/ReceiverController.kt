@@ -9,8 +9,12 @@ import repo.dbRepoController.NotificationDBRepository
 import scheduler.alarm.AlarmUtil
 import utils.Constants
 import utils.NotificationUtil
+import javax.inject.Inject
 
 class ReceiverController(private val context: Context, private val intent: Intent?) {
+
+    @Inject
+    lateinit var repository: NotificationDBRepository
 
     private var mustBeSetAgain = false
 
@@ -34,8 +38,6 @@ class ReceiverController(private val context: Context, private val intent: Inten
         }
 
         normalLog(received)
-
-        val repository = NotificationDBRepository()
 
         if (mustBeSetAgain) {
             try {

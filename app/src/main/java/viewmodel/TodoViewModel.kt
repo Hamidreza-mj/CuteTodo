@@ -4,15 +4,19 @@ import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import model.Filter
 import model.Notification
 import model.Todo
 import repo.dbRepoController.NotificationDBRepository
 import repo.dbRepoController.TodoDBRepository
+import javax.inject.Inject
 
-class TodoViewModel : ViewModel() {
-    private val dbRepository: TodoDBRepository = TodoDBRepository()
-    private val notifRepo: NotificationDBRepository = NotificationDBRepository()
+@HiltViewModel
+class TodoViewModel @Inject constructor(
+    private val dbRepository: TodoDBRepository,
+    private val notifRepo: NotificationDBRepository
+) : ViewModel() {
 
     val todosLiveData: LiveData<List<Todo>?> = dbRepository.todosLiveDate
 
@@ -61,17 +65,15 @@ class TodoViewModel : ViewModel() {
 
     private fun deleteShownNotification() {
         //in startup get all is shown and delete it
-        val repository = NotificationDBRepository()
-
         try {
-            repository.deleteShownNotifications()
+            notifRepo.deleteShownNotifications()
 
             //for in notifs if arrive date < current time millis delete this
-            val allNotifications: List<Notification>? = repository.getAllNotifications()
+            val allNotifications: List<Notification>? = notifRepo.getAllNotifications()
             if (allNotifications != null) {
                 for (notif: Notification in allNotifications) {
                     if (notif.arriveDate < System.currentTimeMillis()) //arrive date is passed
-                        repository.deleteNotification(notif)
+                        notifRepo.deleteNotification(notif)
                 }
             }
 

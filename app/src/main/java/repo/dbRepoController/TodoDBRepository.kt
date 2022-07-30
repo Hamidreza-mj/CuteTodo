@@ -2,16 +2,16 @@ package repo.dbRepoController
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import hlv.cute.todo.App
 import model.Filter
 import model.Priority
 import model.Todo
 import repo.dao.TodoDao
 import utils.DateHelper
+import javax.inject.Inject
 
-class TodoDBRepository {
-
-    private val dao: TodoDao = App.get()!!.todoDatabase()!!.todoDao!!
+class TodoDBRepository @Inject constructor(
+    private val todoDao: TodoDao
+) {
 
     private val _todosLiveDate: MutableLiveData<List<Todo>?> = MutableLiveData()
     val todosLiveDate: LiveData<List<Todo>?> = _todosLiveDate
@@ -21,7 +21,7 @@ class TodoDBRepository {
         //use .postValue() instead of .setValue()
         // because the .postValue() run in the background thread (non-ui thread)
         Thread {
-            _todosLiveDate.postValue(dao.getAllTodos())
+            _todosLiveDate.postValue(todoDao.getAllTodos())
         }.start()
     }
 
@@ -36,7 +36,7 @@ class TodoDBRepository {
 
         if (filter.isDone && filter.isUndone || !filter.isDone && !filter.isUndone) { //not need check isDone
             Thread {
-                filteredTodos = dao.filterByAllTodos(priorities) as MutableList<Todo>
+                filteredTodos = todoDao.filterByAllTodos(priorities) as MutableList<Todo>
             }.apply {
                 start()
                 join()
@@ -60,7 +60,7 @@ class TodoDBRepository {
 
         } else if (filter.isDone) {
             Thread {
-                filteredTodos = dao.filterByDoneTodos(true, priorities) as MutableList<Todo>
+                filteredTodos = todoDao.filterByDoneTodos(true, priorities) as MutableList<Todo>
             }.apply {
                 start()
                 join()
@@ -78,7 +78,7 @@ class TodoDBRepository {
 
         } else if (filter.isUndone) {
             Thread {
-                filteredTodos = dao.filterByDoneTodos(false, priorities) as MutableList<Todo>
+                filteredTodos = todoDao.filterByDoneTodos(false, priorities) as MutableList<Todo>
             }.apply {
                 start()
                 join()
@@ -160,7 +160,7 @@ class TodoDBRepository {
         var insertedRow: Long = 0
 
         Thread {
-            insertedRow = dao.create(todo)
+            insertedRow = todoDao.create(todo)
         }.apply {
             start()
             join()
@@ -172,7 +172,7 @@ class TodoDBRepository {
     @Throws(InterruptedException::class)
     fun editTodo(todo: Todo?) {
         Thread {
-            dao.update(todo)
+            todoDao.update(todo)
         }.apply {
             start()
             join()
@@ -182,7 +182,7 @@ class TodoDBRepository {
     @Throws(InterruptedException::class)
     fun deleteTodo(todo: Todo?) {
         Thread {
-            dao.delete(todo)
+            todoDao.delete(todo)
         }.apply {
             start()
             join()
@@ -192,7 +192,7 @@ class TodoDBRepository {
     @Throws(InterruptedException::class)
     fun deleteAllTodos() {
         Thread {
-            dao.deleteAllTodos()
+            todoDao.deleteAllTodos()
         }.apply {
             start()
             join()
@@ -202,7 +202,7 @@ class TodoDBRepository {
     @Throws(InterruptedException::class)
     fun deleteAllDoneTodos() {
         Thread {
-            dao.deleteAllDoneTodo()
+            todoDao.deleteAllDoneTodo()
         }.apply {
             start()
             join()
@@ -214,7 +214,7 @@ class TodoDBRepository {
         var count: Long = 0
 
         Thread {
-            count = dao.getTodosCount()
+            count = todoDao.getTodosCount()
         }.apply {
             start()
             join()
@@ -227,7 +227,7 @@ class TodoDBRepository {
     fun doneTodosCount(): Long {
         var doneCount: Long = 0
         Thread {
-            doneCount = dao.getDoneTodosCount()
+            doneCount = todoDao.getDoneTodosCount()
         }.apply {
             start()
             join()
@@ -239,7 +239,7 @@ class TodoDBRepository {
     @Throws(InterruptedException::class)
     fun setDoneTodo(todoID: Long) {
         Thread {
-            dao.setDoneTodo(todoID)
+            todoDao.setDoneTodo(todoID)
         }.apply {
             start()
             join()
@@ -251,7 +251,7 @@ class TodoDBRepository {
         var todo: Todo? = null
 
         Thread {
-            todo = dao.getTodo(todoID)
+            todo = todoDao.getTodo(todoID)
         }.apply {
             start()
             join()
@@ -263,7 +263,7 @@ class TodoDBRepository {
     @Throws(InterruptedException::class)
     fun setTodoIsDone(todoID: Long) {
         Thread {
-            dao.setTodoIsDone(todoID)
+            todoDao.setTodoIsDone(todoID)
         }.apply {
             start()
             join()

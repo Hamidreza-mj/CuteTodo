@@ -1,6 +1,11 @@
 package utils
 
 class Constants {
+
+    object Names {
+        const val DB_NAME = "TodoDB"
+    }
+
     object Keys {
         const val NOTIF_ID_KEY = "notif-id"
         const val NOTIF_CONTENT_KEY = "notif-content"

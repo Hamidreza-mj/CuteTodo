@@ -3,12 +3,16 @@ package viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import model.Category
 import repo.dbRepoController.CategoryDBRepository
+import repo.dbRepoController.NotificationDBRepository
+import javax.inject.Inject
 
-class CategoryViewModel : ViewModel() {
-
-    private val dbRepository: CategoryDBRepository = CategoryDBRepository()
+@HiltViewModel
+class CategoryViewModel @Inject constructor(
+    private val dbRepository: CategoryDBRepository
+) : ViewModel() {
 
     private val _categoriesLiveDate: MutableLiveData<List<Category>?> =
         dbRepository.categoriesLiveData

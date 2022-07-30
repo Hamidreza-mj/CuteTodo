@@ -18,10 +18,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TodoDetailViewModel @Inject constructor(
-    private val provideResource: ResourceProvider
+    private val provideResource: ResourceProvider,
+    private val todoRepo: TodoDBRepository
 ) : ViewModel() {
-
-    private val todoRepo: TodoDBRepository = TodoDBRepository()
 
     private val _todoLiveDate: MutableLiveData<Todo> = MutableLiveData()
     val todoLiveDate: LiveData<Todo> = _todoLiveDate

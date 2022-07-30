@@ -1,13 +1,13 @@
 package repo.dbRepoController
 
 import androidx.lifecycle.MutableLiveData
-import hlv.cute.todo.App
 import model.Category
 import repo.dao.CategoryDao
+import javax.inject.Inject
 
-class CategoryDBRepository {
-
-    private val dao: CategoryDao = App.get()!!.todoDatabase()!!.categoryDao!!
+class CategoryDBRepository @Inject constructor(
+    private val categoryDao: CategoryDao
+) {
 
     val categoriesLiveData: MutableLiveData<List<Category>?> = MutableLiveData()
 
@@ -18,7 +18,7 @@ class CategoryDBRepository {
         //use .postValue() instead of .setValue()
         // because the .postValue() run in the background thread (non-ui thread)
         Thread {
-            categoriesLiveData.postValue(dao.getAllCategories())
+            categoriesLiveData.postValue(categoryDao.getAllCategories())
         }.start()
     }
 
@@ -27,7 +27,7 @@ class CategoryDBRepository {
         var allCategories: List<Category>? = null
 
         Thread {
-            allCategories = dao.getAllCategories()
+            allCategories = categoryDao.getAllCategories()
         }.apply {
             start()
             join()
@@ -39,7 +39,7 @@ class CategoryDBRepository {
     @Throws(InterruptedException::class)
     fun addCategory(category: Category?) {
         Thread {
-            dao.create(category)
+            categoryDao.create(category)
         }.apply {
             start()
             join()
@@ -51,10 +51,10 @@ class CategoryDBRepository {
     @Throws(InterruptedException::class)
     fun editCategory(category: Category) {
         Thread {
-            dao.update(category)
+            categoryDao.update(category)
 
             if (category.id != 0 && category.name != null) //maybe not needed!
-                dao.editTodoCategory(
+                categoryDao.editTodoCategory(
                     category.id.toLong(),
                     category.name
                 ) //also edit all used category in todos
@@ -69,8 +69,8 @@ class CategoryDBRepository {
     @Throws(InterruptedException::class)
     fun deleteCategory(category: Category) {
         Thread {
-            dao.delete(category)
-            dao.clearSingleCategory(category.id.toLong()) //clear category from single todo
+            categoryDao.delete(category)
+            categoryDao.clearSingleCategory(category.id.toLong()) //clear category from single todo
         }.apply {
             start()
             join()
@@ -82,8 +82,8 @@ class CategoryDBRepository {
     @Throws(InterruptedException::class)
     fun deleteAllCategories() {
         Thread {
-            dao.deleteAllCategories()
-            dao.clearAllCategories() //clear categories from all todos
+            categoryDao.deleteAllCategories()
+            categoryDao.clearAllCategories() //clear categories from all todos
         }.apply {
             start()
             join()
@@ -95,7 +95,7 @@ class CategoryDBRepository {
     @Throws(InterruptedException::class)
     fun categoriesCount(): Long {
         Thread {
-            count = dao.getCategoriesCount()
+            count = categoryDao.getCategoriesCount()
         }.apply {
             start()
             join()

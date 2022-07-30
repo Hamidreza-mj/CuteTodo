@@ -3,14 +3,17 @@ package viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import model.Search
 import model.Search.SearchMode
 import model.Todo
 import repo.dbRepoController.SearchDBRepository
+import javax.inject.Inject
 
-class SearchViewModel : ViewModel() {
-
-    private val dbRepository: SearchDBRepository = SearchDBRepository()
+@HiltViewModel
+class SearchViewModel @Inject constructor(
+    private val dbRepository: SearchDBRepository
+) : ViewModel() {
 
     val todosLiveData: LiveData<List<Todo>?> = dbRepository.todosLive
     private val _searchLiveData: MutableLiveData<Search?> = MutableLiveData()

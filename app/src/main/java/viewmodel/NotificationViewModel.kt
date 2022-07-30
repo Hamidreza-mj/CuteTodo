@@ -2,16 +2,19 @@ package viewmodel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import hlv.cute.todo.App.Companion.get
 import model.Notification
 import model.Todo
 import repo.dbRepoController.NotificationDBRepository
 import scheduler.alarm.AlarmUtil
 import java.lang.ref.WeakReference
+import javax.inject.Inject
 
-class NotificationViewModel : ViewModel() {
-
-    private val dbRepository: NotificationDBRepository = NotificationDBRepository()
+@HiltViewModel
+class NotificationViewModel @Inject constructor(
+    private val dbRepository: NotificationDBRepository
+) : ViewModel() {
 
     private val context: WeakReference<Context> = WeakReference(get()!!.applicationContext)
 

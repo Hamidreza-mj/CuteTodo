@@ -5,6 +5,7 @@ import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import ir.hamsaa.persiandatepicker.date.PersianDateImpl
 import model.DateTime
 import model.Notification
@@ -12,11 +13,13 @@ import repo.dbRepoController.NotificationDBRepository
 import repo.dbRepoController.TodoDBRepository
 import utils.Constants
 import utils.DateHelper
+import javax.inject.Inject
 
-class ShowNotificationViewModel : ViewModel() {
-
-    private val dbRepository: NotificationDBRepository = NotificationDBRepository()
-    private val todoRepository: TodoDBRepository = TodoDBRepository()
+@HiltViewModel
+class ShowNotificationViewModel @Inject constructor(
+    private val dbRepository: NotificationDBRepository,
+    private val todoRepository: TodoDBRepository
+) : ViewModel() {
 
     private val _notificationLiveData: MutableLiveData<Notification> = MutableLiveData()
     private val _closeLive: MutableLiveData<Boolean> = MutableLiveData()

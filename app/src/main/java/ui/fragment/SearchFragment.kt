@@ -99,7 +99,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
         val maxLength = 18
 
         for (category in allCategories) {
-            val categoryName = category!!.name
+            val categoryName = category.name
 
             if (categoryName!!.length > maxLength) {
                 val categoryWithEllipsis =
@@ -125,7 +125,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
         binding.tabLyt.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: Tab) {
 
-                val tabCategoryId = allCategories[tab.position]!!.id
+                val tabCategoryId = allCategories[tab.position].id
 
                 search!!.categoryId = tabCategoryId
 

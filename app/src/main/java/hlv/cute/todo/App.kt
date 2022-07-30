@@ -13,15 +13,12 @@ import com.yandex.metrica.YandexMetrica
 import com.yandex.metrica.YandexMetricaConfig
 import com.yandex.metrica.push.YandexMetricaPush
 import dagger.hilt.android.HiltAndroidApp
-import repo.database.TodoDatabase
 import scheduler.receiver.BootCompleteReceiver
 import utils.Constants
 
 @HiltAndroidApp
 class App : Application() {
     lateinit var appContext: Context
-
-    private var todoDatabase: TodoDatabase? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -32,8 +29,6 @@ class App : Application() {
 
         appContext = applicationContext
         app = this
-
-        todoDatabase = TodoDatabase[applicationContext]
 
         //when boot
         val receiver = ComponentName(applicationContext, BootCompleteReceiver::class.java)
@@ -100,10 +95,6 @@ class App : Application() {
                     Log.e("Installations", "Unable to get Installation ID")
                 }
             }
-    }
-
-    fun todoDatabase(): TodoDatabase? {
-        return todoDatabase
     }
 
     // Implement logic to detect whether the app is opening for the first time.
