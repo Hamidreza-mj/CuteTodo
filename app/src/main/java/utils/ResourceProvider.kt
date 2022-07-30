@@ -5,6 +5,8 @@ import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import androidx.annotation.*
 import androidx.core.content.ContextCompat
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
 interface ResourceProvider {
     //val isRtl: Boolean
@@ -27,8 +29,8 @@ interface ResourceProvider {
     //... other things, above methods just for the example
 }
 
-class AppResourcesProvider(
-    private val context: Context
+class AppResourcesProvider @Inject constructor(
+    @ApplicationContext private val context: Context
 ) : ResourceProvider {
 
     @ColorInt
