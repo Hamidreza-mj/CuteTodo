@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt' //kotlin annotation processing task
     id 'kotlin-parcelize' //kotlin parcelable
+    id 'dagger.hilt.android.plugin'
 }
 
 def keyPropertiesFile = rootProject.file("key.properties")
@@ -46,7 +47,7 @@ android {
 
 dependencies {
     implementation 'org.jetbrains:annotations:15.0'
-    def room_version = '2.4.2'
+    def room_version = '2.4.3'
 
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'com.google.android.material:material:1.6.1'
@@ -109,7 +110,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0"
     implementation "androidx.fragment:fragment-ktx:1.5.0"
     implementation "androidx.activity:activity-ktx:1.5.0"
-    implementation "androidx.room:room-ktx:2.4.2"
+    implementation "androidx.room:room-ktx:$room_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.0-alpha01"
     //implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.0-alpha01"
 
@@ -117,6 +118,9 @@ dependencies {
     //implementation "androidx.navigation:navigation-fragment-ktx:2.5.0"
     //implementation "androidx.navigation:navigation-ui-ktx:2.5.0"
 
+    //di
+    implementation "com.google.dagger:hilt-android:2.38.1"
+    kapt "com.google.dagger:hilt-compiler:2.38.1"
 
     //test libs
     testImplementation 'junit:junit:4.13.2'
