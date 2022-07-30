@@ -7,12 +7,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import hlv.cute.todo.databinding.FragmentAddEditCategoryBinding
 import model.Category
 import ui.component.bindingComponent.BaseViewBindingFragment
 import utils.KeyboardUtil.focusAndShowKeyboard
 import viewmodel.AddEditCategoryViewModel
 
+@AndroidEntryPoint
 class AddEditCategoryFragment : BaseViewBindingFragment<FragmentAddEditCategoryBinding>() {
 
     val viewModel by viewModels<AddEditCategoryViewModel>()

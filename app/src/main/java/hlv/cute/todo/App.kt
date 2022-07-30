@@ -12,10 +12,12 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.yandex.metrica.YandexMetrica
 import com.yandex.metrica.YandexMetricaConfig
 import com.yandex.metrica.push.YandexMetricaPush
+import dagger.hilt.android.HiltAndroidApp
 import repo.database.TodoDatabase
 import scheduler.receiver.BootCompleteReceiver
 import utils.Constants
 
+@HiltAndroidApp
 class App : Application() {
     lateinit var appContext: Context
 

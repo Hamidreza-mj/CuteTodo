@@ -1,9 +1,9 @@
 package viewmodel
 
-import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import hlv.cute.todo.R
 import ir.hamsaa.persiandatepicker.PersianDatePickerDialog
 import ir.hamsaa.persiandatepicker.api.PersianPickerDate
@@ -12,11 +12,15 @@ import model.Category
 import model.DateTime
 import model.Priority
 import model.Todo
+import utils.AppResourcesProvider
 import utils.DateHelper
-import utils.ResourceUtils
 import java.util.*
+import javax.inject.Inject
 
-class AddEditTodoViewModel : ViewModel() {
+@HiltViewModel
+class AddEditTodoViewModel @Inject constructor(
+    private val provideResource: AppResourcesProvider
+) : ViewModel() {
 
     private val _categoryLiveData: MutableLiveData<Category> = MutableLiveData()
     private val _dateTimeLiveData: MutableLiveData<DateTime?> = MutableLiveData()
@@ -296,10 +300,10 @@ class AddEditTodoViewModel : ViewModel() {
 
     //region: get text and strings
     val titleFragment: String
-        get() = getString(if (isEditMode) R.string.edit_todo else R.string.add_new_todo)
+        get() = provideResource.getString(if (isEditMode) R.string.edit_todo else R.string.add_new_todo)
 
     val buttonPrimaryText: String
-        get() = getString(if (isEditMode) R.string.edit else R.string.save)
+        get() = provideResource.getString(if (isEditMode) R.string.edit else R.string.save)
 
     //add mode or share mode
     val editTextTitle: String?
@@ -316,13 +320,9 @@ class AddEditTodoViewModel : ViewModel() {
         }
 
     val categoryTitleText: String?
-        get() = if (categoryIsValid()) category!!.name else getString(R.string.enter_category_name)
+        get() = if (categoryIsValid()) category!!.name else provideResource.getString(R.string.enter_category_name)
 
     //endregion
-
-    private fun getString(@StringRes stringRes: Int): String {
-        return ResourceUtils.get().getString(stringRes)
-    }
 
     private fun handleCategory() {
         if (todo?.categoryId != 0 && todo?.category != null) {

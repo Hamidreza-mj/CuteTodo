@@ -5,16 +5,21 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import hlv.cute.todo.R
 import ir.hamsaa.persiandatepicker.date.PersianDateImpl
 import model.DateTime
 import model.Priority
 import model.Todo
 import repo.dbRepoController.TodoDBRepository
+import utils.AppResourcesProvider
 import utils.DateHelper
-import utils.ResourceUtils
+import javax.inject.Inject
 
-class TodoDetailViewModel : ViewModel() {
+@HiltViewModel
+class TodoDetailViewModel @Inject constructor(
+    private val provideResource: AppResourcesProvider
+) : ViewModel() {
 
     private val todoRepo: TodoDBRepository = TodoDBRepository()
 
@@ -107,7 +112,7 @@ class TodoDetailViewModel : ViewModel() {
     }
 
     fun getString(@StringRes stringRes: Int): String {
-        return ResourceUtils.get().getString(stringRes)
+        return provideResource.getString(stringRes)
     }
 
     private fun getCurrentPriority(): String {

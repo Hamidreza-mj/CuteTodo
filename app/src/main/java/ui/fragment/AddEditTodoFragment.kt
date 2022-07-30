@@ -13,6 +13,7 @@ import androidx.core.os.bundleOf
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentAddEditTodoBinding
 import ir.hamsaa.persiandatepicker.PersianDatePickerDialog
@@ -34,6 +35,7 @@ import viewmodel.AddEditTodoViewModel
 import viewmodel.NotificationViewModel
 import java.text.MessageFormat
 
+@AndroidEntryPoint
 class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>() {
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentAddEditTodoBinding
