@@ -1,17 +1,15 @@
 package viewmodel
 
 import androidx.lifecycle.ViewModel
-import dagger.assisted.Assisted
 import dagger.hilt.android.lifecycle.HiltViewModel
-import hlv.cute.todo.App
 import hlv.cute.todo.R
 import model.Category
-import utils.AppResourcesProvider
+import utils.ResourceProvider
 import javax.inject.Inject
 
 @HiltViewModel
 class AddEditCategoryViewModel @Inject constructor(
-    private val provideResource: AppResourcesProvider
+    private val provideResource: ResourceProvider
 ) : ViewModel() {
 
     var category: Category? = null

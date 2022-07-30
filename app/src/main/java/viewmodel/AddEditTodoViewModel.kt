@@ -12,14 +12,14 @@ import model.Category
 import model.DateTime
 import model.Priority
 import model.Todo
-import utils.AppResourcesProvider
 import utils.DateHelper
+import utils.ResourceProvider
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class AddEditTodoViewModel @Inject constructor(
-    private val provideResource: AppResourcesProvider
+    private val provideResource: ResourceProvider
 ) : ViewModel() {
 
     private val _categoryLiveData: MutableLiveData<Category> = MutableLiveData()

@@ -12,13 +12,13 @@ import model.DateTime
 import model.Priority
 import model.Todo
 import repo.dbRepoController.TodoDBRepository
-import utils.AppResourcesProvider
 import utils.DateHelper
+import utils.ResourceProvider
 import javax.inject.Inject
 
 @HiltViewModel
 class TodoDetailViewModel @Inject constructor(
-    private val provideResource: AppResourcesProvider
+    private val provideResource: ResourceProvider
 ) : ViewModel() {
 
     private val todoRepo: TodoDBRepository = TodoDBRepository()
