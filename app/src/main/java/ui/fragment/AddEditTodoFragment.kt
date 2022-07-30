@@ -35,7 +35,6 @@ import viewmodel.AddEditTodoViewModel
 import viewmodel.NotificationViewModel
 import java.text.MessageFormat
 
-@AndroidEntryPoint
 class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>() {
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentAddEditTodoBinding

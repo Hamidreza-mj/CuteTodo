@@ -11,7 +11,6 @@ import androidx.core.os.bundleOf
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import dagger.hilt.android.AndroidEntryPoint
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentTodoDetailBinding
 import model.Priority
@@ -23,7 +22,6 @@ import viewmodel.NotificationViewModel
 import viewmodel.TodoDetailViewModel
 import java.text.MessageFormat
 
-@AndroidEntryPoint
 class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() {
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentTodoDetailBinding

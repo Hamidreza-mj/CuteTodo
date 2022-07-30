@@ -6,20 +6,23 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
-import hlv.cute.todo.App
-import utils.AppResourcesProvider
+import dagger.hilt.android.AndroidEntryPoint
 import utils.KeyboardUtil
+import utils.ResourceProvider
 import viewmodel.CategoryViewModel
 import viewmodel.SearchViewModel
 import viewmodel.TodoViewModel
+import javax.inject.Inject
 
+@AndroidEntryPoint
 open class BaseFragment : Fragment() {
 
     protected val todoViewModel by activityViewModels<TodoViewModel>()
     protected val categoryViewModel by activityViewModels<CategoryViewModel>()
     protected val searchViewModel by activityViewModels<SearchViewModel>()
 
-    protected val provideResource = AppResourcesProvider(App.get()?.appContext!!)
+    @Inject
+    protected lateinit var provideResource: ResourceProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

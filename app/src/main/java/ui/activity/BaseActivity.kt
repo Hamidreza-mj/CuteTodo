@@ -6,13 +6,16 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import hlv.cute.todo.App
-import utils.AppResourcesProvider
+import dagger.hilt.android.AndroidEntryPoint
+import utils.ResourceProvider
 import java.text.MessageFormat
+import javax.inject.Inject
 
+@AndroidEntryPoint
 open class BaseActivity : AppCompatActivity() {
 
-    protected val provideResource = AppResourcesProvider(App.get()?.appContext!!)
+    @Inject
+    protected lateinit var provideResource: ResourceProvider
 
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {

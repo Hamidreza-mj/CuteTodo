@@ -1,11 +1,14 @@
 package ui.fragment.sheet
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import hlv.cute.todo.App
-import utils.AppResourcesProvider
+import dagger.hilt.android.AndroidEntryPoint
+import utils.ResourceProvider
+import javax.inject.Inject
 
+@AndroidEntryPoint
 open class BaseBottomSheet : BottomSheetDialogFragment() {
 
-    protected val provideResource = AppResourcesProvider(App.get()?.appContext!!)
+    @Inject
+    protected lateinit var provideResource: ResourceProvider
 
 }
