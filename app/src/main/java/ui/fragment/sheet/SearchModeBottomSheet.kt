@@ -46,7 +46,9 @@ class SearchModeBottomSheet : BaseViewBindingBottomSheet<SheetSearchModeBinding>
         if (arguments != null && arguments!!.isEmpty.not())
             search = arguments!!.getParcelable(SEARCH_MODE_ARGS)
 
-        KeyboardUtil.hideKeyboard(context!!)
+        activity?.let {
+            KeyboardUtil.hideKeyboard(it)
+        }
     }
 
     private fun initData() {

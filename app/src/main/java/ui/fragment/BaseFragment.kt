@@ -30,13 +30,9 @@ open class BaseFragment : Fragment() {
     }
 
     private fun hideKeyboard() {
-        context?.let {
+        activity?.let {
             KeyboardUtil.hideKeyboard(it)
         }
-    }
-
-    protected fun showKeyboard() {
-        KeyboardUtil.showKeyboard(context!!)
     }
 
     protected fun back() {

@@ -80,7 +80,9 @@ class FilterBottomSheet : BaseViewBindingBottomSheet<SheetFilterBinding>() {
         }
 
 
-        KeyboardUtil.hideKeyboard(context!!)
+        activity?.let {
+            KeyboardUtil.hideKeyboard(it)
+        }
     }
 
     override fun initiate() {

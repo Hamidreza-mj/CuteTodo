@@ -38,13 +38,13 @@ object KeyboardUtil {
     }
 
 
-    fun hideKeyboard(context: Context) {
+    fun hideKeyboard(activity: Activity) {
         try {
-            (context as Activity).window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
-            if (context.currentFocus != null && context.currentFocus!!.windowToken != null) {
+            activity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+            if (activity.currentFocus != null && activity.currentFocus!!.windowToken != null) {
 
-                (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
-                    .hideSoftInputFromWindow(context.currentFocus!!.windowToken, 0)
+                (activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
+                    .hideSoftInputFromWindow(activity.currentFocus!!.windowToken, 0)
             }
         } catch (e: Exception) {
             e.printStackTrace()
