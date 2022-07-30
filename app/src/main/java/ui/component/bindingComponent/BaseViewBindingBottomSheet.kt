@@ -5,17 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import hlv.cute.todo.App
-import utils.AppResourcesProvider
+import ui.fragment.sheet.BaseBottomSheet
 
-abstract class BaseViewBindingBottomSheet<VB : ViewBinding> : BottomSheetDialogFragment() {
+abstract class BaseViewBindingBottomSheet<VB : ViewBinding> : BaseBottomSheet() {
 
     private var _binding: ViewBinding? = null
 
     abstract val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> VB
-
-    protected val provideResource = AppResourcesProvider(App.get()?.appContext!!)
 
     @Suppress("UNCHECKED_CAST")
     protected val binding: VB

@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
+import hlv.cute.todo.App
+import utils.AppResourcesProvider
 import utils.KeyboardUtil
 import viewmodel.CategoryViewModel
 import viewmodel.SearchViewModel
@@ -16,6 +18,8 @@ open class BaseFragment : Fragment() {
     protected val todoViewModel by activityViewModels<TodoViewModel>()
     protected val categoryViewModel by activityViewModels<CategoryViewModel>()
     protected val searchViewModel by activityViewModels<SearchViewModel>()
+
+    protected val provideResource = AppResourcesProvider(App.get()?.appContext!!)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

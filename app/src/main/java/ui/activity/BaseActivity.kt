@@ -1,18 +1,18 @@
 package ui.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.annotation.SuppressLint
-import android.os.Bundle
-import android.content.pm.ActivityInfo
-import kotlin.jvm.JvmOverloads
 import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.os.Bundle
 import android.util.Log
-import androidx.annotation.ColorRes
-import androidx.core.content.ContextCompat
-import androidx.core.content.edit
+import androidx.appcompat.app.AppCompatActivity
+import hlv.cute.todo.App
+import utils.AppResourcesProvider
 import java.text.MessageFormat
 
 open class BaseActivity : AppCompatActivity() {
+
+    protected val provideResource = AppResourcesProvider(App.get()?.appContext!!)
 
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {

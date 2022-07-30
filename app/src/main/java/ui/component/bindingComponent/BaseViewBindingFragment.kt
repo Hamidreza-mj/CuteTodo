@@ -5,17 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
-import hlv.cute.todo.App
 import ui.fragment.BaseFragment
-import utils.AppResourcesProvider
 
 abstract class BaseViewBindingFragment<VB : ViewBinding> : BaseFragment() {
 
     private var _binding: ViewBinding? = null
 
     abstract val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> VB
-
-    protected val provideResource = AppResourcesProvider(App.get()?.appContext!!)
 
     @Suppress("UNCHECKED_CAST")
     protected val binding: VB
