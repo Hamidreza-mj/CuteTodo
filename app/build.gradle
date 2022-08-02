@@ -69,6 +69,7 @@ dependencies {
 //    implementation 'com.github.aliab:Persian-Date-Picker-Dialog:1.7.1'
     implementation 'com.github.Hamidreza-mj:Persian-Date-Picker-Dialog:cute4.3'
     implementation 'com.airbnb.android:lottie:4.1.0'
+    implementation 'io.github.aghajari:AXrLottie:1.3.1'
 
     //flexbox
     implementation 'com.google.android.flexbox:flexbox:3.0.0'

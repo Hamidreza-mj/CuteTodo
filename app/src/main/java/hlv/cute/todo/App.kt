@@ -2,7 +2,6 @@ package hlv.cute.todo
 
 import android.app.Application
 import android.content.ComponentName
-import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
 import com.google.android.gms.tasks.Task
@@ -18,7 +17,6 @@ import utils.Constants
 
 @HiltAndroidApp
 class App : Application() {
-    lateinit var appContext: Context
 
     override fun onCreate() {
         super.onCreate()

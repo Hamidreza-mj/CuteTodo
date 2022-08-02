@@ -1,10 +1,13 @@
 package ui.activity
 
-import android.animation.Animator
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.viewModels
 import androidx.core.widget.NestedScrollView
+import com.aghajari.rlottie.AXrLottie
+import com.aghajari.rlottie.AXrLottieDrawable
 import dagger.hilt.android.AndroidEntryPoint
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.ActivityShowNotificationBinding
@@ -14,6 +17,7 @@ import ui.component.bindingComponent.BaseViewBindingActivity
 import utils.ToastUtil
 import viewmodel.ShowNotificationViewModel
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class ShowNotificationActivity : BaseViewBindingActivity<ActivityShowNotificationBinding>() {
@@ -37,6 +41,8 @@ class ShowNotificationActivity : BaseViewBindingActivity<ActivityShowNotificatio
     }
 
     private fun initViews() {
+        AXrLottie.init(this)
+
         binding.aImgBack.setOnClickListener { close() }
 
         binding.mBtnClose.setOnClickListener { close() }
@@ -49,16 +55,25 @@ class ShowNotificationActivity : BaseViewBindingActivity<ActivityShowNotificatio
             toastUtil.successToast(provideResource.getString(R.string.todo_done_successfully_simple))
 
             binding.confetti.visibility = View.VISIBLE
-            binding.confetti.playAnimation()
-            binding.confetti.addAnimatorListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(animation: Animator) {}
-                override fun onAnimationEnd(animation: Animator) {
-                    close()
-                }
 
-                override fun onAnimationCancel(animation: Animator) {}
-                override fun onAnimationRepeat(animation: Animator) {}
-            })
+            val width = windowManager.currentWindowMetrics.bounds.width()
+            val height = windowManager.currentWindowMetrics.bounds.height()
+
+            binding.confetti.lottieDrawable =
+                AXrLottieDrawable
+                    .fromAssets(this, "congratulations_confetti_lottie.json") //from assets
+                    .setSize(width, height)
+                    .setOnLottieLoaderListener(object : AXrLottieDrawable.OnLottieLoaderListener {
+                        override fun onLoaded(drawable: AXrLottieDrawable?) {
+                            Handler(Looper.myLooper()!!).postDelayed({ close() }, 3_000L)
+                        }
+
+                        override fun onError(drawable: AXrLottieDrawable?, error: Throwable?) {
+                        }
+                    })
+                    .build()
+
+            binding.confetti.playAnimation()
         }
 
         handleShadowScroll()
