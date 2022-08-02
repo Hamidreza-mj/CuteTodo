@@ -13,6 +13,7 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
+import dagger.hilt.android.AndroidEntryPoint
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentCategoriesBinding
 import model.Category
@@ -23,8 +24,10 @@ import ui.dialog.MoreDialog
 import ui.fragment.AddEditCategoryFragment.Companion.newInstance
 import utils.Constants
 import utils.TextHelper
-import utils.ToastHelper
+import utils.ToastUtil
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() {
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentCategoriesBinding
@@ -37,6 +40,9 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
 
     var scrollYPos = 0
         private set
+
+    @Inject
+    lateinit var toastUtil: ToastUtil
 
     companion object {
         @JvmStatic
@@ -102,7 +108,7 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
     private fun handleActions() {
         binding.aImgDeleteAll.setOnClickListener {
             if (categoryViewModel.categoriesIsEmpty()) {
-                ToastHelper.get().toast(provideResource.getString(R.string.categories_is_empty))
+                toastUtil.toast(provideResource.getString(R.string.categories_is_empty))
                 return@setOnClickListener
             }
 

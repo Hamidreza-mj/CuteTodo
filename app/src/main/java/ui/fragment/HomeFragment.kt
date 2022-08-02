@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
+import dagger.hilt.android.AndroidEntryPoint
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentHomeBinding
 import model.Filter
@@ -27,9 +28,11 @@ import ui.dialog.MoreDialog
 import ui.fragment.sheet.FilterBottomSheet
 import utils.Constants
 import utils.TextHelper
-import utils.ToastHelper
+import utils.ToastUtil
 import viewmodel.NotificationViewModel
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentHomeBinding
@@ -43,6 +46,9 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
 
     var scrollYPos = 0
         private set
+
+    @Inject
+    lateinit var toastUtil: ToastUtil
 
     companion object {
         @JvmStatic
@@ -141,7 +147,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                     dismiss()
 
                     if (todoViewModel.todosIsEmpty()) {
-                        ToastHelper.get().toast(provideResource.getString(R.string.todos_is_empty))
+                        toastUtil.toast(provideResource.getString(R.string.todos_is_empty))
                         return@deleteAll //empty return
                     }
 
@@ -172,13 +178,12 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                     dismiss()
 
                     if (todoViewModel.todosIsEmpty()) {
-                        ToastHelper.get().toast(provideResource.getString(R.string.todos_is_empty))
+                        toastUtil.toast(provideResource.getString(R.string.todos_is_empty))
                         return@deleteAllDone //empty return
                     }
 
                     if (todoViewModel.todosDoneIsEmpty()) {
-                        ToastHelper.get()
-                            .toast(provideResource.getString(R.string.todos_done_is_empty))
+                        toastUtil.toast(provideResource.getString(R.string.todos_done_is_empty))
                         return@deleteAllDone //empty return
                     }
 

@@ -1,22 +1,19 @@
 package viewmodel
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import hlv.cute.todo.App.Companion.get
 import model.Notification
 import model.Todo
 import repo.dbRepoController.NotificationDBRepository
 import scheduler.alarm.AlarmUtil
-import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 @HiltViewModel
 class NotificationViewModel @Inject constructor(
-    private val dbRepository: NotificationDBRepository
+    private val dbRepository: NotificationDBRepository,
+    private val alarmUtil: AlarmUtil
 ) : ViewModel() {
 
-    private val context: WeakReference<Context> = WeakReference(get()!!.applicationContext)
 
     fun addNotification(todo: Todo) {
         try {
@@ -27,9 +24,7 @@ class NotificationViewModel @Inject constructor(
             }
 
             dbRepository.addNotification(notification)
-            context.get()?.let {
-                AlarmUtil.with(it)?.setAlarm(todo.id, todo.arriveDate)
-            }
+            alarmUtil.setAlarm(todo.id, todo.arriveDate)
 
         } catch (ignored: InterruptedException) {
         }
@@ -42,9 +37,7 @@ class NotificationViewModel @Inject constructor(
                 initWith(todo)
             }
 
-            context.get()?.let {
-                AlarmUtil.with(it)?.cancelAlarm(notification.id)
-            }
+            alarmUtil.cancelAlarm(notification.id)
 
             if (todo.arriveDate < System.currentTimeMillis()) {
                 deleteNotification(notification)
@@ -53,9 +46,7 @@ class NotificationViewModel @Inject constructor(
 
             dbRepository.editNotification(notification)
 
-            context.get()?.let {
-                AlarmUtil.with(it)?.setAlarm(todo.id, todo.arriveDate)
-            }
+            alarmUtil.setAlarm(todo.id, todo.arriveDate)
         } catch (ignored: InterruptedException) {
         }
     }
@@ -121,9 +112,8 @@ class NotificationViewModel @Inject constructor(
 
         if (notificationList != null) {
             for (notif: Notification in notificationList)
-                context.get()?.let {
-                    AlarmUtil.with(it)?.cancelAlarm(notif.id)
-                }
+                alarmUtil.cancelAlarm(notif.id)
+
         }
 
         deleteAllDoneNotifications()
@@ -133,9 +123,7 @@ class NotificationViewModel @Inject constructor(
         val notificationList = getAllNotifications()
         if (notificationList != null) {
             for (notif: Notification in notificationList)
-                context.get()?.let {
-                    AlarmUtil.with(it)?.cancelAlarm(notif.id)
-                }
+                alarmUtil.cancelAlarm(notif.id)
         }
 
         deleteAllNotifications()
@@ -144,9 +132,7 @@ class NotificationViewModel @Inject constructor(
     fun cancelAlarm(todo: Todo?) {
         val notification = Notification()
         notification.initWith(todo)
-        context.get()?.let {
-            AlarmUtil.with(it)?.cancelAlarm(notification.id)
-        }
+        alarmUtil.cancelAlarm(notification.id)
 
         deleteNotification(notification)
     }

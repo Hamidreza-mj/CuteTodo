@@ -3,6 +3,7 @@ package scheduler.receiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import dagger.hilt.android.qualifiers.ApplicationContext
 import hlv.cute.todo.R
 import model.Notification
 import repo.dbRepoController.NotificationDBRepository
@@ -11,14 +12,21 @@ import utils.Constants
 import utils.NotificationUtil
 import javax.inject.Inject
 
-class ReceiverController(private val context: Context, private val intent: Intent?) {
+class ReceiverController @Inject constructor() {
+
+    @Inject
+    @ApplicationContext
+    lateinit var context: Context
 
     @Inject
     lateinit var repository: NotificationDBRepository
 
+    @Inject
+    lateinit var alarmUtil: AlarmUtil
+
     private var mustBeSetAgain = false
 
-    fun handle() {
+    fun handleWith(intent: Intent?) {
         if (intent == null)
             return
 
@@ -45,7 +53,7 @@ class ReceiverController(private val context: Context, private val intent: Inten
                 if (notifications != null) {
                     for ((id, _, _, _, arriveDate) in notifications) {
                         //AlarmUtil.with(context.getApplicationContext()).cancelAlarm(notification.getId());
-                        AlarmUtil.with(context.applicationContext)!!.setAlarm(id, arriveDate)
+                        alarmUtil.setAlarm(id, arriveDate)
                     }
                 }
             } catch (ignored: InterruptedException) {

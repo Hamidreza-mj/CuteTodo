@@ -7,6 +7,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import repo.dao.CategoryDao
+import repo.dao.NotificationDao
+import repo.dao.TodoDao
 import repo.database.TodoDatabase
 import utils.Constants
 import javax.inject.Singleton
@@ -32,14 +35,14 @@ object DBModule {
 
     @Singleton
     @Provides
-    fun provideCategoryDao(db: TodoDatabase) = db.categoryDao
+    fun provideCategoryDao(db: TodoDatabase): CategoryDao = db.categoryDao
 
     @Singleton
     @Provides
-    fun provideNotificationDao(db: TodoDatabase) = db.notificationDao
+    fun provideNotificationDao(db: TodoDatabase): NotificationDao = db.notificationDao
 
     @Singleton
     @Provides
-    fun provideTodoDao(db: TodoDatabase) = db.todoDao
+    fun provideTodoDao(db: TodoDatabase): TodoDao = db.todoDao
 
 }

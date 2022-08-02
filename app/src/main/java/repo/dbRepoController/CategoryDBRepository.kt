@@ -6,7 +6,7 @@ import repo.dao.CategoryDao
 import javax.inject.Inject
 
 class CategoryDBRepository @Inject constructor(
-    private val categoryDao: CategoryDao
+    private val dao: CategoryDao
 ) {
 
     val categoriesLiveData: MutableLiveData<List<Category>?> = MutableLiveData()
@@ -18,7 +18,7 @@ class CategoryDBRepository @Inject constructor(
         //use .postValue() instead of .setValue()
         // because the .postValue() run in the background thread (non-ui thread)
         Thread {
-            categoriesLiveData.postValue(categoryDao.getAllCategories())
+            categoriesLiveData.postValue(dao.getAllCategories())
         }.start()
     }
 
@@ -27,7 +27,7 @@ class CategoryDBRepository @Inject constructor(
         var allCategories: List<Category>? = null
 
         Thread {
-            allCategories = categoryDao.getAllCategories()
+            allCategories = dao.getAllCategories()
         }.apply {
             start()
             join()
@@ -39,7 +39,7 @@ class CategoryDBRepository @Inject constructor(
     @Throws(InterruptedException::class)
     fun addCategory(category: Category?) {
         Thread {
-            categoryDao.create(category)
+            dao.create(category)
         }.apply {
             start()
             join()
@@ -51,10 +51,10 @@ class CategoryDBRepository @Inject constructor(
     @Throws(InterruptedException::class)
     fun editCategory(category: Category) {
         Thread {
-            categoryDao.update(category)
+            dao.update(category)
 
             if (category.id != 0 && category.name != null) //maybe not needed!
-                categoryDao.editTodoCategory(
+                dao.editTodoCategory(
                     category.id.toLong(),
                     category.name
                 ) //also edit all used category in todos
@@ -69,8 +69,8 @@ class CategoryDBRepository @Inject constructor(
     @Throws(InterruptedException::class)
     fun deleteCategory(category: Category) {
         Thread {
-            categoryDao.delete(category)
-            categoryDao.clearSingleCategory(category.id.toLong()) //clear category from single todo
+            dao.delete(category)
+            dao.clearSingleCategory(category.id.toLong()) //clear category from single todo
         }.apply {
             start()
             join()
@@ -82,8 +82,8 @@ class CategoryDBRepository @Inject constructor(
     @Throws(InterruptedException::class)
     fun deleteAllCategories() {
         Thread {
-            categoryDao.deleteAllCategories()
-            categoryDao.clearAllCategories() //clear categories from all todos
+            dao.deleteAllCategories()
+            dao.clearAllCategories() //clear categories from all todos
         }.apply {
             start()
             join()
@@ -95,7 +95,7 @@ class CategoryDBRepository @Inject constructor(
     @Throws(InterruptedException::class)
     fun categoriesCount(): Long {
         Thread {
-            count = categoryDao.getCategoriesCount()
+            count = dao.getCategoriesCount()
         }.apply {
             start()
             join()

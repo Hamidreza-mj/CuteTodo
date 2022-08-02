@@ -1,19 +1,23 @@
 package scheduler.receiver
 
-import android.content.BroadcastReceiver
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import scheduler.receiver.ReceiverController
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /**
  * this class is receiver to rehandle Notification after boot up device
  */
-class BootCompleteReceiver : BroadcastReceiver() {
+@AndroidEntryPoint
+class BootCompleteReceiver : HiltBroadcastReceiver() {
+
+    @Inject
+    lateinit var receiverController: ReceiverController
 
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
-    override fun onReceive(context: Context, intent: Intent) {
-        val controller = ReceiverController(context, intent)
-        controller.handle()
+    override fun onReceive(context: Context?, intent: Intent?) {
+        super.onReceive(context, intent)
+        receiverController.handleWith(intent)
     }
 }

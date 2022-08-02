@@ -27,9 +27,6 @@ class App : Application() {
 
         activateFirebase()
 
-        appContext = applicationContext
-        app = this
-
         //when boot
         val receiver = ComponentName(applicationContext, BootCompleteReceiver::class.java)
         applicationContext.packageManager.setComponentEnabledSetting(
@@ -107,13 +104,4 @@ class App : Application() {
         // which the app creates on its first launch.
             // TODO: 4/18/22 first launch
             true
-
-    companion object {
-        private var app: App? = null
-
-        @JvmStatic
-        fun get(): App? {
-            return app
-        }
-    }
 }

@@ -16,6 +16,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayout.Tab
+import dagger.hilt.android.AndroidEntryPoint
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentSearchBinding
 import model.Category
@@ -31,6 +32,7 @@ import utils.KeyboardUtil.focusAndShowKeyboard
 import utils.TextHelper
 import viewmodel.NotificationViewModel
 
+@AndroidEntryPoint
 class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentSearchBinding

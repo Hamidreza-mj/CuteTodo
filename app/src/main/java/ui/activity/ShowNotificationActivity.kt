@@ -5,20 +5,26 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.viewModels
 import androidx.core.widget.NestedScrollView
+import dagger.hilt.android.AndroidEntryPoint
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.ActivityShowNotificationBinding
 import model.Notification
 import model.Priority
 import ui.component.bindingComponent.BaseViewBindingActivity
-import utils.ToastHelper
+import utils.ToastUtil
 import viewmodel.ShowNotificationViewModel
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ShowNotificationActivity : BaseViewBindingActivity<ActivityShowNotificationBinding>() {
 
     override val bindingInflater: (LayoutInflater) -> ActivityShowNotificationBinding
         get() = ActivityShowNotificationBinding::inflate
 
     private val viewModel by viewModels<ShowNotificationViewModel>()
+
+    @Inject
+    lateinit var toastUtil: ToastUtil
 
     override fun initiate() {
         initViewModel()
@@ -40,8 +46,7 @@ class ShowNotificationActivity : BaseViewBindingActivity<ActivityShowNotificatio
 
             viewModel.done()
 
-            ToastHelper.get()
-                .successToast(provideResource.getString(R.string.todo_done_successfully_simple))
+            toastUtil.successToast(provideResource.getString(R.string.todo_done_successfully_simple))
 
             binding.confetti.visibility = View.VISIBLE
             binding.confetti.playAnimation()

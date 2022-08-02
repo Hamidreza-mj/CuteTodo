@@ -30,11 +30,13 @@ import ui.dialog.TimePickerSheetDialog
 import ui.dialog.WarningDateDialog
 import ui.fragment.CategoriesFragment.Companion.newInstance
 import utils.Constants
-import utils.ToastHelper
+import utils.ToastUtil
 import viewmodel.AddEditTodoViewModel
 import viewmodel.NotificationViewModel
 import java.text.MessageFormat
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>() {
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentAddEditTodoBinding
@@ -42,6 +44,9 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
 
     val viewModel by viewModels<AddEditTodoViewModel>()
     private val notificationViewModel by viewModels<NotificationViewModel>()
+
+    @Inject
+    lateinit var toastUtil: ToastUtil
 
     companion object {
         private const val TODO_ARGS = "todo-args"
@@ -320,8 +325,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
 
                     updateDetail(editedTodo)
 
-                    ToastHelper.get()
-                        .successToast(provideResource.getString(R.string.todo_edited_successfully_simple))
+                    toastUtil.successToast(provideResource.getString(R.string.todo_edited_successfully_simple))
 
                     back()
 
@@ -346,8 +350,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
                         notificationViewModel.addNotification(newTodo)
                     }
 
-                    ToastHelper.get()
-                        .successToast(provideResource.getString(R.string.todo_added_successfully_simple))
+                    toastUtil.successToast(provideResource.getString(R.string.todo_added_successfully_simple))
 
                     back()
 

@@ -16,6 +16,7 @@ import com.google.android.flexbox.JustifyContent
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import dagger.hilt.android.AndroidEntryPoint
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.SheetFilterBinding
 import model.Category
@@ -24,6 +25,7 @@ import ui.adapter.FilterCategoryAdapter
 import ui.component.bindingComponent.BaseViewBindingBottomSheet
 import utils.KeyboardUtil
 
+@AndroidEntryPoint
 class FilterBottomSheet : BaseViewBindingBottomSheet<SheetFilterBinding>() {
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> SheetFilterBinding

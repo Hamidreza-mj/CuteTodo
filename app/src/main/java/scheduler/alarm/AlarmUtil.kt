@@ -6,25 +6,18 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import dagger.hilt.android.qualifiers.ApplicationContext
 import scheduler.receiver.NotificationReceiver
 import utils.Constants
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class AlarmUtil private constructor(private val context: Context) {
+@Singleton
+class AlarmUtil @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
 
-    companion object {
-
-        @SuppressLint("StaticFieldLeak")
-        private var alarmUtil: AlarmUtil? = null
-        private var alarmManager: AlarmManager? = null
-
-        @JvmStatic
-        fun with(context: Context): AlarmUtil? {
-            if (alarmUtil == null)
-                alarmUtil = AlarmUtil(context)
-
-            return alarmUtil
-        }
-    }
+    private var alarmManager: AlarmManager? = null
 
     init {
         alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
