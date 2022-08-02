@@ -11,12 +11,13 @@ import android.widget.TextView
 import android.widget.Toast
 import com.airbnb.lottie.LottieAnimationView
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.scopes.ActivityScoped
 import hlv.cute.todo.R
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class ToastUtil @Inject constructor(
+@ActivityScoped
+class ToastUtil
+@Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 
