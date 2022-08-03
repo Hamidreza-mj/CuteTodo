@@ -24,6 +24,9 @@ class ReceiverController @Inject constructor() {
     @Inject
     lateinit var alarmUtil: AlarmUtil
 
+    @Inject
+    lateinit var notificationUtil: NotificationUtil
+
     private var mustBeSetAgain = false
 
     fun handleWith(intent: Intent?) {
@@ -81,8 +84,6 @@ class ReceiverController @Inject constructor() {
 
             if (content != null && content.trim().length > 100)
                 content = content.substring(0, 100).trim() + context.getString(R.string.ellipsis)
-
-            val notificationUtil = NotificationUtil(context)
 
             notificationUtil.makeNotification(
                 title,

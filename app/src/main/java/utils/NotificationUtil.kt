@@ -15,11 +15,16 @@ import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import dagger.hilt.android.qualifiers.ApplicationContext
 import hlv.cute.todo.R
 import model.Priority
 import ui.activity.ShowNotificationActivity
+import javax.inject.Inject
 
-class NotificationUtil(private val context: Context) {
+class NotificationUtil @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
+
     private val defaultSound: Uri =
         Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.applicationContext.packageName + "/" + R.raw.notification)
 
