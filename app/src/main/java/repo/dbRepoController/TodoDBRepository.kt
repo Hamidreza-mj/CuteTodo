@@ -2,6 +2,7 @@ package repo.dbRepoController
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import dagger.hilt.android.scopes.ViewModelScoped
 import model.Filter
 import model.Priority
 import model.Todo
@@ -9,6 +10,7 @@ import repo.dao.TodoDao
 import utils.DateHelper
 import javax.inject.Inject
 
+@ViewModelScoped
 class TodoDBRepository @Inject constructor(
     private val todoDao: TodoDao
 ) {

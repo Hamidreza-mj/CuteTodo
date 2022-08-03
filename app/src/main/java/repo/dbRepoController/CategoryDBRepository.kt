@@ -1,10 +1,12 @@
 package repo.dbRepoController
 
 import androidx.lifecycle.MutableLiveData
+import dagger.hilt.android.scopes.ViewModelScoped
 import model.Category
 import repo.dao.CategoryDao
 import javax.inject.Inject
 
+@ViewModelScoped
 class CategoryDBRepository @Inject constructor(
     private val dao: CategoryDao
 ) {

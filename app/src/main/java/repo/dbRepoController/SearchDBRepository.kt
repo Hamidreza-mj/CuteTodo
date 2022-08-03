@@ -2,10 +2,12 @@ package repo.dbRepoController
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import dagger.hilt.android.scopes.ViewModelScoped
 import model.Todo
 import repo.dao.TodoDao
 import javax.inject.Inject
 
+@ViewModelScoped
 class SearchDBRepository @Inject constructor(
     private val todoDao: TodoDao
 ) {
