@@ -10,15 +10,14 @@ import android.view.LayoutInflater
 import android.widget.TextView
 import android.widget.Toast
 import com.airbnb.lottie.LottieAnimationView
-import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.scopes.ActivityScoped
 import hlv.cute.todo.R
 import javax.inject.Inject
 
 @ActivityScoped
-class ToastUtil
-@Inject constructor(
-    @ApplicationContext private val context: Context
+class ToastUtil @Inject constructor(
+    @ActivityContext private val context: Context
 ) {
 
     private val toasts = mutableListOf<Toast>()
