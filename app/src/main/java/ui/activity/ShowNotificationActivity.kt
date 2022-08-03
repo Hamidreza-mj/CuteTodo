@@ -56,8 +56,8 @@ class ShowNotificationActivity : BaseViewBindingActivity<ActivityShowNotificatio
 
             binding.confetti.visibility = View.VISIBLE
 
-            val width = windowManager.currentWindowMetrics.bounds.width()
-            val height = windowManager.currentWindowMetrics.bounds.height()
+            val width = resources.displayMetrics.widthPixels
+            val height = resources.displayMetrics.heightPixels
 
             binding.confetti.lottieDrawable =
                 AXrLottieDrawable
