@@ -2,11 +2,7 @@ package ui.component
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color.BLACK
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.InsetDrawable
-import android.graphics.drawable.PaintDrawable
 import android.os.Build
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -24,20 +20,33 @@ import dagger.hilt.android.scopes.FragmentScoped
 import hlv.cute.todo.R
 import javax.inject.Inject
 
-
 @FragmentScoped
 class PopupMaker @Inject constructor(
-    @ActivityContext private val context: Context
+    @ActivityContext private val context: Context,
+    private val dimView: DimView
 ) {
+
+    private var clicked = false
 
     @SuppressLint("RestrictedApi")
     fun showMenu(
         anchor: View,
+        viewToDim: ViewGroup? = null,
         @MenuRes menuRes: Int,
         isRtl: Boolean = true,
         gravity: Int = Gravity.START,
-        onMenuItemClick: (MenuItem) -> Unit
-    ): PopupMenu {
+        onMenuItemClick: (MenuItem) -> Unit,
+        onDismiss: (() -> Unit)? = null
+    ): PopupMenu? {
+
+        if (clicked) return null
+
+        clicked = true
+
+        viewToDim?.let {
+            dimView.applyDim(it, 60)
+        }
+
 
         val directionContext: Context =
             ContextThemeWrapper(context, if (isRtl) R.style.RTLStyle else R.style.LTRStyle)
@@ -50,6 +59,17 @@ class PopupMaker @Inject constructor(
                 onMenuItemClick(menuItem)
                 return@setOnMenuItemClickListener true
             }
+
+            setOnDismissListener {
+                clicked = false
+
+                viewToDim?.let {
+                    dimView.clearDim(it)
+                }
+
+                onDismiss?.invoke()
+                dismiss()
+            }
         }
 
         if (popup.menu is MenuBuilder) {
@@ -58,12 +78,7 @@ class PopupMaker @Inject constructor(
             }
 
             for (item in menuBuilder.visibleItems) {
-                val iconMarginPx =
-                    TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_DIP,
-                        3.toFloat(),
-                        directionContext.resources.displayMetrics
-                    ).toInt()
+                val iconMarginPx = 5.dp2px
 
                 if (item.icon != null) {
                     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
@@ -105,30 +120,11 @@ class PopupMaker @Inject constructor(
         item.title = span
     }
 
-    fun applyDim(parent: ViewGroup, dimAmount: Int) {
-        val dim: Drawable = ColorDrawable(BLACK)
-        dim.setBounds(0, 0, parent.width, parent.height)
-        dim.alpha = dimAmount
-        val overlay = parent.overlay
-        overlay.add(dim)
-    }
-
-    fun clearDim(parent: ViewGroup) {
-        val overlay = parent.overlay
-        overlay.clear()
-    }
-
-    /*  private val Number.dp2px: Int
-          get() =
-              TypedValue.applyDimension(
-                  TypedValue.COMPLEX_UNIT_DIP,
-                  this.toFloat(),
-                  context.resources?.displayMetrics
-              ).toInt()*/
-}
-
-class RoundedRectDrawable(color: Int, radius: Float) : PaintDrawable(color) {
-    init {
-        setCornerRadius(radius)
-    }
+    private val Number.dp2px: Int
+        get() =
+            TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                this.toFloat(),
+                context.resources?.displayMetrics
+            ).toInt()
 }

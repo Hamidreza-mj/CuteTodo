@@ -130,105 +130,104 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
     }
 
     private fun handleActions() {
-        var clicked = false
         binding.aImgGlobalMenu.setOnClickListener {
-            if (clicked)
-                return@setOnClickListener
+            val popup: PopupMenu? =
+                popupMaker.showMenu(
+                    anchor = it,
 
-            clicked = true
+                    viewToDim = binding.root,
 
-            popupMaker.applyDim(binding.root, 60)
+                    menuRes = R.menu.popup_menu_home,
 
-            val popup: PopupMenu =
-                popupMaker.showMenu(anchor = it, R.menu.popup_menu_home) popup@{ menuItem ->
-                    when (menuItem.itemId) {
-                        R.id.menuCategories -> {
-                            val fragment: Fragment = CategoriesFragment.newInstance().apply {
-                                enterTransition = Slide(Gravity.BOTTOM)
-                            }
-
-                            parentFragmentManager.beginTransaction().apply {
-                                add(R.id.mainContainer, fragment, Constants.FragmentTag.CATEGORY)
-                                addToBackStack(Constants.FragmentTag.CATEGORY)
-                            }.commit()
-                        }
-
-                        R.id.menuDeleteAll -> {
-                            if (todoViewModel.todosIsEmpty()) {
-                                toastUtil.toast(provideResource.getString(R.string.todos_is_empty))
-                                return@popup //empty return
-                            }
-
-                            DeleteDialog(context).apply {
-                                show()
-
-                                setTitle(provideResource.getString(R.string.delete_all_todos))
-
-                                setMessage(
-                                    provideResource.getString(
-                                        R.string.delete_all_todos_message,
-                                        todoViewModel.todosCount
-                                    )
-                                )
-
-                                onClickDelete = {
-                                    notificationViewModel.cancelAllAlarm()
-                                    todoViewModel.deleteAllTodos()
-                                    scrollBehavior!!.slideUp(binding.frameLytButton)
-
-                                    dismiss()
-                                }
-                            }
-                        }
-
-                        R.id.menuDeleteAllDone -> {
-                            if (todoViewModel.todosIsEmpty()) {
-                                toastUtil.toast(provideResource.getString(R.string.todos_is_empty))
-                                return@popup //empty return
-                            }
-
-                            if (todoViewModel.todosDoneIsEmpty()) {
-                                toastUtil.toast(provideResource.getString(R.string.todos_done_is_empty))
-                                return@popup //empty return
-                            }
-
-                            DeleteDialog(context).apply {
-                                show()
-
-                                setTitle(provideResource.getString(R.string.delete_all_done_todos))
-
-                                setMessage(
-                                    provideResource.getString(
-                                        R.string.delete_all_done_todos_message,
-                                        todoViewModel.doneTodosCount
-                                    )
-                                )
-
-                                onClickDelete = {
-                                    notificationViewModel.cancelAllDoneAlarm()
-                                    todoViewModel.deleteAllDoneTodos()
-                                    scrollBehavior!!.slideUp(binding.frameLytButton)
-                                    dismiss()
+                    onMenuItemClick = itemClicked@{ menuItem ->
+                        when (menuItem.itemId) {
+                            R.id.menuCategories -> {
+                                val fragment: Fragment = CategoriesFragment.newInstance().apply {
+                                    enterTransition = Slide(Gravity.BOTTOM)
                                 }
 
+                                parentFragmentManager.beginTransaction().apply {
+                                    add(
+                                        R.id.mainContainer,
+                                        fragment,
+                                        Constants.FragmentTag.CATEGORY
+                                    )
+                                    addToBackStack(Constants.FragmentTag.CATEGORY)
+                                }.commit()
+                            }
+
+                            R.id.menuDeleteAll -> {
+                                if (todoViewModel.todosIsEmpty()) {
+                                    toastUtil.toast(provideResource.getString(R.string.todos_is_empty))
+                                    return@itemClicked //empty return
+                                }
+
+                                DeleteDialog(context).apply {
+                                    show()
+
+                                    setTitle(provideResource.getString(R.string.delete_all_todos))
+
+                                    setMessage(
+                                        provideResource.getString(
+                                            R.string.delete_all_todos_message,
+                                            todoViewModel.todosCount
+                                        )
+                                    )
+
+                                    onClickDelete = {
+                                        notificationViewModel.cancelAllAlarm()
+                                        todoViewModel.deleteAllTodos()
+                                        scrollBehavior!!.slideUp(binding.frameLytButton)
+
+                                        dismiss()
+                                    }
+                                }
+                            }
+
+                            R.id.menuDeleteAllDone -> {
+                                if (todoViewModel.todosIsEmpty()) {
+                                    toastUtil.toast(provideResource.getString(R.string.todos_is_empty))
+                                    return@itemClicked //empty return
+                                }
+
+                                if (todoViewModel.todosDoneIsEmpty()) {
+                                    toastUtil.toast(provideResource.getString(R.string.todos_done_is_empty))
+                                    return@itemClicked //empty return
+                                }
+
+                                DeleteDialog(context).apply {
+                                    show()
+
+                                    setTitle(provideResource.getString(R.string.delete_all_done_todos))
+
+                                    setMessage(
+                                        provideResource.getString(
+                                            R.string.delete_all_done_todos_message,
+                                            todoViewModel.doneTodosCount
+                                        )
+                                    )
+
+                                    onClickDelete = {
+                                        notificationViewModel.cancelAllDoneAlarm()
+                                        todoViewModel.deleteAllDoneTodos()
+                                        scrollBehavior!!.slideUp(binding.frameLytButton)
+                                        dismiss()
+                                    }
+
+                                }
                             }
                         }
                     }
-                }
-
-            popup.setOnDismissListener {
-                popupMaker.clearDim(binding.root)
-                clicked = false
-            }
+                )
 
             popupMaker.apply {
-                popup.changeTextColorOfItem(
+                popup?.changeTextColorOfItem(
                     1,
                     provideResource.getString(R.string.delete_all_todos),
                     provideResource.getColor(R.color.red)
                 )
 
-                popup.changeTextColorOfItem(
+                popup?.changeTextColorOfItem(
                     2,
                     provideResource.getString(R.string.delete_all_done_todos),
                     provideResource.getColor(R.color.red)
