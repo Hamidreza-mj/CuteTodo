@@ -19,7 +19,7 @@
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/logo"
-        android:supportsRtl="true"
+        android:supportsRtl="false"
         android:theme="@style/Theme.CuteTodo"
         tools:ignore="DataExtractionRules">
 

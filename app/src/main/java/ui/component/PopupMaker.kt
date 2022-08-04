@@ -1,16 +1,22 @@
 package ui.component
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color.BLACK
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.InsetDrawable
+import android.graphics.drawable.PaintDrawable
 import android.os.Build
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.TypedValue
-import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.MenuRes
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.PopupMenu
 import dagger.hilt.android.qualifiers.ActivityContext
@@ -24,6 +30,7 @@ class PopupMaker @Inject constructor(
     @ActivityContext private val context: Context
 ) {
 
+    @SuppressLint("RestrictedApi")
     fun showMenu(
         anchor: View,
         @MenuRes menuRes: Int,
@@ -37,7 +44,7 @@ class PopupMaker @Inject constructor(
 
 
         val popup = PopupMenu(directionContext, anchor, gravity).apply {
-            menuInflater.inflate(menuRes, menu)
+            inflate(menuRes)
 
             setOnMenuItemClickListener { menuItem ->
                 onMenuItemClick(menuItem)
@@ -73,8 +80,17 @@ class PopupMaker @Inject constructor(
             }
         }
 
-        popup.show()
+        /*val menuPopupHelper = MenuPopupHelper(
+            directionContext,
+            popup.menu as MenuBuilder,
+            anchor,
+            false,
+            0,
+            R.style.PopupMenuMoreCentralized
+        )
+        menuPopupHelper.show(233, 321)*/
 
+        popup.show()
         return popup
     }
 
@@ -89,25 +105,30 @@ class PopupMaker @Inject constructor(
         item.title = span
     }
 
+    fun applyDim(parent: ViewGroup, dimAmount: Int) {
+        val dim: Drawable = ColorDrawable(BLACK)
+        dim.setBounds(0, 0, parent.width, parent.height)
+        dim.alpha = dimAmount
+        val overlay = parent.overlay
+        overlay.add(dim)
+    }
+
+    fun clearDim(parent: ViewGroup) {
+        val overlay = parent.overlay
+        overlay.clear()
+    }
+
+    /*  private val Number.dp2px: Int
+          get() =
+              TypedValue.applyDimension(
+                  TypedValue.COMPLEX_UNIT_DIP,
+                  this.toFloat(),
+                  context.resources?.displayMetrics
+              ).toInt()*/
 }
 
-/*private fun setupPopupWindow() {
-      val inflater =
-          activity?.applicationContext?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-
-      val popUpview = inflater.inflate(R.layout.popup, null) //parent view with android:translationZ="15dp"
-
-
-      val txtCat: TextView = popUpview!!.findViewById(R.id.txtCategories)
-
-      val width =
-          (resources.displayMetrics?.widthPixels)?.let { displayWidth ->
-              (displayWidth * 0.5).toInt()
-          } ?: 300
-
-      popupWindow = PopupWindow(popUpview, width, RelativeLayout.LayoutParams.WRAP_CONTENT, true)
-
-      popupWindow?.contentView?.setOnClickListener {
-          popupWindow?.dismiss()
-      }
-  }*/
+class RoundedRectDrawable(color: Int, radius: Float) : PaintDrawable(color) {
+    init {
+        setCornerRadius(radius)
+    }
+}

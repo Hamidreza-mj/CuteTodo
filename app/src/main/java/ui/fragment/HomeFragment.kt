@@ -137,8 +137,10 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
 
             clicked = true
 
+            popupMaker.applyDim(binding.root, 60)
+
             val popup: PopupMenu =
-                popupMaker.showMenu(it, R.menu.popup_home, false) popup@{ menuItem ->
+                popupMaker.showMenu(anchor = it, R.menu.popup_menu_home) popup@{ menuItem ->
                     when (menuItem.itemId) {
                         R.id.menuCategories -> {
                             val fragment: Fragment = CategoriesFragment.newInstance().apply {
@@ -215,6 +217,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                 }
 
             popup.setOnDismissListener {
+                popupMaker.clearDim(binding.root)
                 clicked = false
             }
 

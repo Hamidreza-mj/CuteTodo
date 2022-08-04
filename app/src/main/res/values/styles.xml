@@ -285,4 +285,14 @@
         <item name="autoSizeTextType">uniform</item>
     </style>
 
+    <!--<style name="PopupMenuMoreCentralized" parent="@style/Widget.AppCompat.PopupMenu">
+        <item name="android:dropDownHorizontalOffset">114dp</item>
+        <item name="android:dropDownVerticalOffset">-126dp</item>
+    </style>-->
+
+   <!-- <style name="PopupMenuStyle" parent="@style/Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@drawable/popup_shape</item>
+        <item name="android:popupElevation">8dp</item>
+    </style>-->
+
 </resources>

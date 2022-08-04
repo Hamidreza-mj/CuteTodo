@@ -36,7 +36,7 @@ class AppResourcesProvider @Inject constructor(
     @ColorInt
     override fun getColor(resId: Int) = ContextCompat.getColor(context, resId)
 
-    override fun getColorStateList(resId: Int) = context.getColorStateList(resId)
+    override fun getColorStateList(resId: Int): ColorStateList = ContextCompat.getColorStateList(context, resId)!!
 
     override fun getString(resId: Int) = context.getString(resId)
 
