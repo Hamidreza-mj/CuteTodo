@@ -23,6 +23,7 @@
         <entry key="app/src/main/res/drawable/ic_cute_todo_app_logo.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_cute_todo_share_logo_2.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_delete.xml" value="0.31979166666666664" />
+        <entry key="app/src/main/res/drawable/ic_delete_all_done.xml" value="0.1785" />
         <entry key="app/src/main/res/drawable/ic_edit.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_expand.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_filter.xml" value="0.31979166666666664" />

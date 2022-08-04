@@ -15,7 +15,7 @@
 
     <item
         android:id="@+id/menuDeleteAllDone"
-        android:icon="@drawable/ic_recycle_bin"
+        android:icon="@drawable/ic_delete_all_done"
         android:title="@string/delete_all_done_todos"
         app:iconTint="@color/red" />
 </menu>
