@@ -66,7 +66,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
             binding.edtSearch.requestFocus()
         }, 50)
 
-        binding.edtSearch.focusAndShowKeyboard(context!!)
+        binding.edtSearch.focusAndShowKeyboard(requireContext())
 
         handleTabLayout()
         handleShadowScroll()
@@ -250,7 +250,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
 
     private fun handleRecyclerView() {
         adapter = TodoAdapter(
-            context!!,
+            requireContext(),
 
             onCheckChangedListener = { todoID: Int ->
                 todoViewModel.setDoneTodo(todoID.toLong())

@@ -91,7 +91,7 @@ class TodoAdapter(
             }
 
 
-            binding.aImgMenu.setOnClickListener { onClickMenuListener(todo, binding.root) }
+            binding.aImgMenu.setOnClickListener { onClickMenuListener(todo, it) }
 
             if (todo.category != null) {
                 binding.txtCategory.visibility = View.VISIBLE

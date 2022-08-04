@@ -1,5 +1,6 @@
 package ui.fragment
 
+import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.transition.Slide
@@ -25,7 +26,6 @@ import ui.adapter.TodoAdapter
 import ui.component.PopupMaker
 import ui.component.bindingComponent.BaseViewBindingFragment
 import ui.dialog.DeleteDialog
-import ui.dialog.MoreDialog
 import ui.fragment.sheet.FilterBottomSheet
 import utils.Constants
 import utils.TextHelper
@@ -299,87 +299,129 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                 todoViewModel.setDoneTodo(todoID.toLong())
             },
 
-            { todoMenu: Todo, _: View? ->
-                MoreDialog(context).apply {
+            { todoMenu: Todo, menuView: View ->
+                val popup = popupMaker.showMenu(
+                    anchor = menuView,
+
+                    viewToDim = binding.root,
+
+                    menuRes = R.menu.popup_menu_todo_item,
+
+                    onMenuItemClick = itemClicked@{ menuItem ->
+                        when (menuItem.itemId) {
+                            R.id.menuEdit -> {
+                                val fragment: Fragment =
+                                    AddEditTodoFragment.newInstance(todoMenu).apply {
+                                        enterTransition = Slide(Gravity.BOTTOM)
+                                    }
+
+                                parentFragmentManager.beginTransaction().apply {
+                                    add(
+                                        R.id.mainContainer,
+                                        fragment,
+                                        Constants.FragmentTag.ADD_EDIT_TODO
+                                    )
+                                    addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO)
+                                }.commit()
+                            }
+
+                            R.id.menuDetail -> {
+                                val fragment: Fragment =
+                                    TodoDetailFragment.newInstance(todoMenu).apply {
+                                        enterTransition = Slide(Gravity.BOTTOM)
+                                    }
+
+                                parentFragmentManager.beginTransaction().apply {
+                                    add(
+                                        R.id.mainContainer,
+                                        fragment,
+                                        Constants.FragmentTag.TODO_DETAIL
+                                    )
+
+                                    addToBackStack(Constants.FragmentTag.TODO_DETAIL)
+                                }.commit()
+                            }
+
+                            R.id.menuShare -> {
+                                activity?.let {
+                                    val sharingIntent = Intent(Intent.ACTION_SEND).apply {
+                                        type = "text/plain"
+                                        putExtra(
+                                            Intent.EXTRA_TEXT,
+                                            todoViewModel.shareContent(todoMenu)
+                                        )
+                                    }
+
+                                    it.startActivity(
+                                        Intent.createChooser(
+                                            sharingIntent,
+                                            provideResource.getString(R.string.share_using)
+                                        )
+                                    )
+                                }
+                            }
+
+                            R.id.menuShare -> {}
+
+                            R.id.menuDelete -> {
+                                DeleteDialog(context).apply {
+                                    show()
+
+                                    setTitle(provideResource.getString(R.string.delete_todo))
+
+                                    var todoTitle = todoMenu.title ?: ""
+                                    if (todoTitle.trim().length > 30)
+                                        todoTitle =
+                                            todoTitle.substring(0, 30)
+                                                .trim() + provideResource.getString(R.string.ellipsis)
+
+                                    setMessage(
+                                        provideResource.getString(
+                                            R.string.delete_todo_message,
+                                            todoTitle
+                                        )
+                                    )
+
+                                    onClickDelete = {
+                                        if (todoMenu.arriveDate != 0L)
+                                            notificationViewModel.cancelAlarm(todoMenu)
+
+                                        todoViewModel.deleteTodo(todoMenu)
+                                        scrollBehavior!!.slideUp(binding.frameLytButton)
+
+                                        dismiss()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                )
+
+                popupMaker.apply {
+                    popup?.changeTextColorOfItem(
+                        4,
+                        provideResource.getString(R.string.delete),
+                        provideResource.getColor(R.color.red)
+                    )
+                }
+
+                /*MoreDialog(context).apply {
                     show()
 
                     setWithDetail(true)
 
                     onClickEdit = {
                         dismiss()
-                        val fragment: Fragment = AddEditTodoFragment.newInstance(todoMenu).apply {
-                            enterTransition = Slide(Gravity.BOTTOM)
-                        }
-
-                        parentFragmentManager.beginTransaction().apply {
-                            add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO)
-                            addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO)
-                        }.commit()
                     }
 
                     onClickDetail = {
                         dismiss()
-                        val fragment: Fragment = TodoDetailFragment.newInstance(todoMenu).apply {
-                            enterTransition = Slide(Gravity.BOTTOM)
-                        }
-
-                        /*MaterialContainerTransform t = new MaterialContainerTransform();
-                        t.setDuration(400);
-                        t.setScrimColor(Color.TRANSPARENT);
-                        t.setPathMotion(new MaterialArcMotion());
-                        t.setStartElevation(0);
-                        t.setEndElevation(0);
-
-                        fragment.setSharedElementEnterTransition(t);
-                        fragment.setSharedElementReturnTransition(t);
-
-                        fragment.setAllowEnterTransitionOverlap(true);*/
-                        parentFragmentManager.beginTransaction().apply {
-                            add(R.id.mainContainer, fragment, Constants.FragmentTag.TODO_DETAIL)
-
-                            addToBackStack(Constants.FragmentTag.TODO_DETAIL)
-                        }.commit()
-
-                        /*transaction.setReorderingAllowed(true);
-                         scheduleStartPostponedTransition(sharedElement);
-                         transaction.addSharedElement(sharedElement, sharedElement.getTransitionName());
-                         transaction.hide(this);*/
-
                     }
 
                     onClickDelete = {
                         dismiss()
-
-                        DeleteDialog(context).apply {
-                            show()
-
-                            setTitle(provideResource.getString(R.string.delete_todo))
-
-                            var todoTitle = todoMenu.title ?: ""
-                            if (todoTitle.trim().length > 30)
-                                todoTitle =
-                                    todoTitle.substring(0, 30)
-                                        .trim() + provideResource.getString(R.string.ellipsis)
-
-                            setMessage(
-                                provideResource.getString(
-                                    R.string.delete_todo_message,
-                                    todoTitle
-                                )
-                            )
-
-                            onClickDelete = {
-                                if (todoMenu.arriveDate != 0L)
-                                    notificationViewModel.cancelAlarm(todoMenu)
-
-                                todoViewModel.deleteTodo(todoMenu)
-                                scrollBehavior!!.slideUp(binding.frameLytButton)
-
-                                dismiss()
-                            }
-                        }
                     }
-                }
+                }*/
             }
         )
 

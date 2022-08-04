@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menuEdit"
+        android:icon="@drawable/ic_edit"
+        android:title="@string/edit"
+        app:iconTint="@color/black" />
+
+    <item
+        android:id="@+id/menuDetail"
+        android:icon="@drawable/ic_detail"
+        android:title="@string/detail"
+        app:iconTint="@color/black" />
+
+    <item
+        android:id="@+id/menuShare"
+        android:icon="@drawable/ic_send"
+        android:title="@string/share"
+        app:iconTint="@color/black" />
+
+    <item
+        android:id="@+id/menuAdvencedShare"
+        android:icon="@drawable/ic_advenced_share"
+        android:title="@string/advenced_share"
+        app:iconTint="@color/black" />
+
+    <item
+        android:id="@+id/menuDelete"
+        android:icon="@drawable/ic_delete"
+        android:title="@string/delete"
+        app:iconTint="@color/red" />
+</menu>

@@ -145,5 +145,7 @@
     <string name="todo_filter_category">دسته‌بندی:</string>
     <string name="todo_filter_priority">اولویت:</string>
     <string name="notification_channel_id">cute-todo-channel-id</string>
+    <string name="share">ارسال</string>
+    <string name="advenced_share">ارسال پیشرفته</string>
 
 </resources>

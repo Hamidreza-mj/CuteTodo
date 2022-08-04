@@ -22,8 +22,8 @@ class TodoDetailViewModel @Inject constructor(
     private val todoRepo: TodoDBRepository
 ) : ViewModel() {
 
-    private val _todoLiveDate: MutableLiveData<Todo> = MutableLiveData()
-    val todoLiveDate: LiveData<Todo> = _todoLiveDate
+    private val _todoLiveDate: MutableLiveData<Todo?> = MutableLiveData()
+    val todoLiveDate: LiveData<Todo?> = _todoLiveDate
 
     var todo: Todo?
         get() = todoLiveDate.value
