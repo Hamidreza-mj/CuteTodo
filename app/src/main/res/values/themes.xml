@@ -30,5 +30,7 @@
         <item name="textAppearanceSmallPopupMenu">@style/PopupTextAppearance</item>
         <item name="popupMenuBackground">@drawable/popup_shape</item>
 
+        <item name="android:layoutDirection">ltr</item>
+
     </style>
 </resources>

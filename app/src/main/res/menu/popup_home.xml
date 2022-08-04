@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/option_1"
+        android:id="@+id/menuCategories"
         android:icon="@drawable/ic_category"
-        android:title="@string/categories" />
+        android:title="@string/categories"
+        app:iconTint="@color/black" />
 
     <item
-        android:id="@+id/option_2"
+        android:id="@+id/menuDeleteAll"
         android:icon="@drawable/ic_delete"
-        android:title="@string/delete_all_todos" />
+        android:title="@string/delete_all_todos"
+        app:iconTint="@color/red" />
 
     <item
-        android:id="@+id/option_3"
-        android:icon="@drawable/ic_close_square"
-        android:title="@string/delete_all_done_todos" />
+        android:id="@+id/menuDeleteAllDone"
+        android:icon="@drawable/ic_recycle_bin"
+        android:title="@string/delete_all_done_todos"
+        app:iconTint="@color/red" />
 </menu>

@@ -382,7 +382,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
             .setTodayButtonVisible(true)
             .setMinYear(1400)
             .setMaxYear(1440)
-            .setTypeFace(Typeface.createFromAsset(context!!.assets, "font/vazir_medium.ttf"))
+            .setTypeFace(Typeface.createFromAsset(context!!.assets, "font/vazir_rd_fd_medium.ttf"))
             .setTitleColor(provideResource.getColor(R.color.blue))
             .setAllButtonsTextSize(15)
             .setPickerBackgroundColor(provideResource.getColor(R.color.white))

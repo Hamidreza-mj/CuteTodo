@@ -37,8 +37,9 @@ class CustomNumberPicker : NumberPicker {
     private fun updateView(view: View) {
         if (view is TextView) {
             view.setTextColor(ContextCompat.getColor(context, R.color.black))
-            view.typeface = Typeface.createFromAsset(resources.assets, "font/vazir_medium.ttf")
+            view.typeface = Typeface.createFromAsset(resources.assets, "font/vazir_rd_fd_medium.ttf")
             view.textSize = 20f
+            view.setAutoSizeTextTypeUniformWithConfiguration(8, 20, 1, 1)
         }
     }
 }

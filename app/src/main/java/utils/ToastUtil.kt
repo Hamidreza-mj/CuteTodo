@@ -62,7 +62,7 @@ class ToastUtil @Inject constructor(
             val txtToast = view.findViewById<TextView>(R.id.toast_txt)
             txtToast.text = message
             txtToast.typeface =
-                Typeface.createFromAsset(context.assets, "font/vazir_regular.ttf")
+                Typeface.createFromAsset(context.assets, "font/vazir_rd_fd_regular.ttf")
 
             toast.duration = if (isLongDuration) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
             toast.setGravity(Gravity.BOTTOM, 0, 100)
