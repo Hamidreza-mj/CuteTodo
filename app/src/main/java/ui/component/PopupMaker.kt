@@ -32,6 +32,7 @@ class PopupMaker @Inject constructor(
     fun showMenu(
         anchor: View,
         viewToDim: ViewGroup? = null,
+        nonDimItem: View? = null,
         @MenuRes menuRes: Int,
         isRtl: Boolean = true,
         gravity: Int = Gravity.START,
@@ -44,7 +45,7 @@ class PopupMaker @Inject constructor(
         clicked = true
 
         viewToDim?.let {
-            dimView.applyDim(it, 40)
+            dimView.applyBlurDim(it, nonDimItem)
         }
 
 

@@ -257,7 +257,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                 searchViewModel.fetch()
             },
 
-            onClickMenuListener = { todoMenu: Todo, _: View ->
+            onClickMenuListener = { todoMenu: Todo, _: View, _: View ->
 
                 MoreDialog(context).apply {
                     show()

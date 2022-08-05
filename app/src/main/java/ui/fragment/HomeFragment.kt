@@ -137,6 +137,8 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
 
                     viewToDim = binding.root,
 
+                    nonDimItem = it,
+
                     menuRes = R.menu.popup_menu_home,
 
                     onMenuItemClick = itemClicked@{ menuItem ->
@@ -299,11 +301,13 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                 todoViewModel.setDoneTodo(todoID.toLong())
             },
 
-            { todoMenu: Todo, menuView: View ->
+            { todoMenu: Todo, menuView: View, wholeItem: View ->
                 val popup = popupMaker.showMenu(
                     anchor = menuView,
 
                     viewToDim = binding.root,
+
+                    nonDimItem = wholeItem,
 
                     menuRes = R.menu.popup_menu_todo_item,
 

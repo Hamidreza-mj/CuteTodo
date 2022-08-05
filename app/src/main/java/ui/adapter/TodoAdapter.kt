@@ -16,7 +16,7 @@ import utils.TextHelper
 class TodoAdapter(
     private val context: Context,
     private val onCheckChangedListener: (todoID: Int) -> Unit,
-    private val onClickMenuListener: (todo: Todo, view: View) -> Unit
+    private val onClickMenuListener: (todo: Todo, anchor: View, wholeItem: View) -> Unit
 ) : RecyclerView.Adapter<TodoAdapter.ViewHolder>() {
 
     val differ: AsyncListDiffer<Todo>
@@ -58,7 +58,7 @@ class TodoAdapter(
         fun bind(
             todo: Todo,
             onCheckChangedListener: (todoID: Int) -> Unit,
-            onClickMenuListener: (todo: Todo, view: View) -> Unit
+            onClickMenuListener: (todo: Todo, anchor: View, wholeItem: View) -> Unit
         ) {
             //must be set null
             //to avoid when recyclerview scroll, default implemented interface body called!
@@ -91,7 +91,7 @@ class TodoAdapter(
             }
 
 
-            binding.aImgMenu.setOnClickListener { onClickMenuListener(todo, it) }
+            binding.aImgMenu.setOnClickListener { onClickMenuListener(todo, it, binding.root) }
 
             if (todo.category != null) {
                 binding.txtCategory.visibility = View.VISIBLE
