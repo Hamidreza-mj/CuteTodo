@@ -29,6 +29,8 @@ class DimView @Inject constructor(
             val overlay = parent.overlay
             overlay.add(blurDimDrawable)
 
+            fade(parent)
+
             nonDimView?.let {
                 try {
                     val nonDimBitmap = it.drawToBitmap()
@@ -39,7 +41,7 @@ class DimView @Inject constructor(
                     val y = nonDimViewPos[1]
 
                     val nonDimDrawable = convertBitmapToDrawable(nonDimBitmap, context).apply {
-                        val rect = Rect(x, y - 80, x + it.width, y + it.height - 80)
+                        val rect = Rect(x, y - 88, x + it.width, y + it.height - 88)
                         bounds = rect
                     }
 
@@ -59,6 +61,7 @@ class DimView @Inject constructor(
         dimDrawable.setBounds(0, 0, parent.width, parent.height)
         val overlay = parent.overlay
         overlay.add(dimDrawable)
+        fade(parent)
     }
 
     private fun makeBlurredBitmap(view: View): Bitmap {
@@ -81,6 +84,12 @@ class DimView @Inject constructor(
     fun clearDim(parent: ViewGroup) {
         val overlay = parent.overlay
         overlay.clear()
+        fade(parent)
+    }
+
+    private fun fade(view: View) {
+        view.alpha = 0.5f
+        view.animate().alpha(1f).setDuration(700).start()
     }
 
 }
