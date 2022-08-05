@@ -44,7 +44,7 @@ class PopupMaker @Inject constructor(
         clicked = true
 
         viewToDim?.let {
-            dimView.applyDim(it, 60)
+            dimView.applyDim(it, 40)
         }
 
 
@@ -56,6 +56,8 @@ class PopupMaker @Inject constructor(
             inflate(menuRes)
 
             setOnMenuItemClickListener { menuItem ->
+                menuItem.isEnabled = false //to avoid multiple click
+
                 onMenuItemClick(menuItem)
                 return@setOnMenuItemClickListener true
             }
