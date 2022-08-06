@@ -16,6 +16,7 @@ import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentTodoDetailBinding
 import model.Priority
 import model.Todo
+import ui.component.PopupMaker
 import ui.component.bindingComponent.BaseViewBindingFragment
 import ui.dialog.DeleteDialog
 import utils.Constants
@@ -32,6 +33,9 @@ class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() 
 
     val viewModel by viewModels<TodoDetailViewModel>()
     private val notificationViewModel by viewModels<NotificationViewModel>()
+
+    @Inject
+    lateinit var popupMaker: PopupMaker
 
     @Inject
     lateinit var shareController: ShareController
@@ -154,9 +158,29 @@ class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() 
         }
 
         binding.aImgShare.setOnClickListener {
-            shareController.apply {
-                shareString(activity, prepareShareTodoContent(viewModel.todo))
-            }
+            popupMaker.showMenu(
+                anchor = it,
+
+                viewToDim = binding.root,
+
+                nonDimItem = it,
+
+                menuRes = R.menu.popup_menu_share_detail,
+
+                onMenuItemClick = itemClicked@{ menuItem ->
+                    when (menuItem.itemId) {
+                        R.id.menuNormalShare -> {
+                            shareController.apply {
+                                shareString(activity, prepareShareTodoContent(viewModel.todo))
+                            }
+                        }
+
+                        R.id.menuAdvencedShare -> {
+
+                        }
+                    }
+                }
+            )
         }
 
         binding.mBtnClose.setOnClickListener { back() }

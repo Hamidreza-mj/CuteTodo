@@ -18,9 +18,9 @@ import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentCategoriesBinding
 import model.Category
 import ui.adapter.CategoryAdapter
+import ui.component.PopupMaker
 import ui.component.bindingComponent.BaseViewBindingFragment
 import ui.dialog.DeleteDialog
-import ui.dialog.MoreDialog
 import ui.fragment.AddEditCategoryFragment.Companion.newInstance
 import utils.Constants
 import utils.TextHelper
@@ -44,6 +44,9 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
     @Inject
     lateinit var toastUtil: ToastUtil
 
+    @Inject
+    lateinit var popupMaker: PopupMaker
+
     companion object {
         @JvmStatic
         fun newInstance(): CategoriesFragment {
@@ -60,7 +63,8 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
     private fun initViews() {
         binding.aImgBack.setOnClickListener { back() }
 
-        binding.txtNotesEmpty.text = TextHelper.fromHtml(provideResource.getString(R.string.categories_empty_notes))
+        binding.txtNotesEmpty.text =
+            TextHelper.fromHtml(provideResource.getString(R.string.categories_empty_notes))
 
         setScrollBehavior()
         handleShadowScroll()
@@ -152,63 +156,72 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
         adapter = CategoryAdapter(
             context!!,
 
-            onClickMenuListener = { category: Category ->
+            onClickMenuListener = { category: Category, anchor: View, wholeItem: View ->
 
-                MoreDialog(context).apply {
-                    setWithDetail(false)
-                    show()
+                val popup = popupMaker.showMenu(
+                    anchor = anchor,
 
-                    //delete click event
-                    onClickDelete = {
-                        dismiss()
+                    viewToDim = binding.root,
 
-                        DeleteDialog(context).apply {
-                            show()
+                    nonDimItem = wholeItem,
 
-                            setTitle(provideResource.getString(R.string.delete_category))
+                    menuRes = R.menu.popup_menu_categories,
 
-                            val categoryName = category.name ?: ""
+                    onMenuItemClick = itemClicked@{ menuItem ->
+                        when (menuItem.itemId) {
+                            R.id.menuEdit -> {
+                                val fragment: Fragment = newInstance(category).apply {
+                                    enterTransition = Slide(Gravity.BOTTOM)
+                                }
 
-                            /*if (categoryName != null && categoryName.trim().length > 40)
-                                categoryName = categoryName.substring(0, 40).trim()*/
+                                parentFragmentManager.beginTransaction().apply {
+                                    add(
+                                        R.id.mainContainer,
+                                        fragment,
+                                        Constants.FragmentTag.ADD_EDIT_CATEGORY
+                                    )
 
-                            setMessage(
-                                provideResource.getString(R.string.delete_category_message, categoryName)
-                            )
+                                    addToBackStack(Constants.FragmentTag.ADD_EDIT_CATEGORY)
+                                }.commit()
+                            }
 
-                            onClickDelete = {
-                                categoryViewModel.deleteCategory(category)
-                                todoViewModel.fetch() //need to update todos if category was deleted
-                                scrollBehavior!!.slideUp(binding.frameLytButton)
-                                dismiss()
+                            R.id.menuDelete -> {
+                                DeleteDialog(context).apply {
+                                    show()
+
+                                    setTitle(provideResource.getString(R.string.delete_category))
+
+                                    val categoryName = category.name ?: ""
+
+                                    /*if (categoryName != null && categoryName.trim().length > 40)
+                                        categoryName = categoryName.substring(0, 40).trim()*/
+
+                                    setMessage(
+                                        provideResource.getString(
+                                            R.string.delete_category_message,
+                                            categoryName
+                                        )
+                                    )
+
+                                    onClickDelete = {
+                                        categoryViewModel.deleteCategory(category)
+                                        todoViewModel.fetch() //need to update todos if category was deleted
+                                        scrollBehavior!!.slideUp(binding.frameLytButton)
+                                        dismiss()
+                                    }
+                                }
                             }
                         }
                     }
+                )
 
-
-                    //edit click event
-                    onClickEdit = {
-                        dismiss()
-
-                        val fragment: Fragment = newInstance(category).apply {
-                            enterTransition = Slide(Gravity.BOTTOM)
-                        }
-
-                        parentFragmentManager.beginTransaction().apply {
-                            add(
-                                R.id.mainContainer,
-                                fragment,
-                                Constants.FragmentTag.ADD_EDIT_CATEGORY
-                            )
-
-                            addToBackStack(Constants.FragmentTag.ADD_EDIT_CATEGORY)
-                        }.commit()
-
-                    }
-
+                popupMaker.apply {
+                    popup?.changeTextColorOfItem(
+                        1,
+                        provideResource.getString(R.string.delete),
+                        provideResource.getColor(R.color.red)
+                    )
                 }
-
-
             }
         )
 

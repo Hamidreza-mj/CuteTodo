@@ -2,6 +2,7 @@ package ui.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
@@ -11,7 +12,7 @@ import model.Category
 
 class CategoryAdapter(
     private val context: Context,
-    private val onClickMenuListener: (category: Category) -> Unit
+    private val onClickMenuListener: (category: Category, anchor: View, wholeItem: View) -> Unit
 ) : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
 
     val differ: AsyncListDiffer<Category>
@@ -51,9 +52,12 @@ class CategoryAdapter(
     inner class ViewHolder(private val binding: ItemCategoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(category: Category, onClickMenuListener: (category: Category) -> Unit) {
+        fun bind(
+            category: Category,
+            onClickMenuListener: (category: Category, anchor: View, wholeItem: View) -> Unit
+        ) {
             binding.aImgMenu.setOnClickListener {
-                onClickMenuListener(category)
+                onClickMenuListener(category, it, binding.root)
             }
 
             binding.txtTitle.text = category.name
