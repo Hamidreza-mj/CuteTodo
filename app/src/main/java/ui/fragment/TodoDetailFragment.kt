@@ -1,6 +1,5 @@
 package ui.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.transition.Slide
 import android.view.Gravity
@@ -11,6 +10,7 @@ import androidx.core.os.bundleOf
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import controller.ShareController
 import dagger.hilt.android.AndroidEntryPoint
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentTodoDetailBinding
@@ -22,6 +22,7 @@ import utils.Constants
 import viewmodel.NotificationViewModel
 import viewmodel.TodoDetailViewModel
 import java.text.MessageFormat
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() {
@@ -31,6 +32,9 @@ class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() 
 
     val viewModel by viewModels<TodoDetailViewModel>()
     private val notificationViewModel by viewModels<NotificationViewModel>()
+
+    @Inject
+    lateinit var shareController: ShareController
 
     companion object {
 
@@ -53,8 +57,8 @@ class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (arguments != null && arguments!!.isEmpty.not()) {
-            val todo: Todo? = arguments!!.getParcelable(TODO_DETAIL_ARGS)
+        if (arguments != null && requireArguments().isEmpty.not()) {
+            val todo: Todo? = requireArguments().getParcelable(TODO_DETAIL_ARGS)
             viewModel.todo = todo
         } else {
             back()
@@ -150,17 +154,9 @@ class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() 
         }
 
         binding.aImgShare.setOnClickListener {
-            if (activity == null)
-                return@setOnClickListener
-
-            val sharingIntent = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, viewModel.shareContent())
+            shareController.apply {
+                shareString(activity, prepareShareTodoContent(viewModel.todo))
             }
-
-            activity?.startActivity(
-                Intent.createChooser(sharingIntent, provideResource.getString(R.string.share_using))
-            )
         }
 
         binding.mBtnClose.setOnClickListener { back() }

@@ -1,6 +1,5 @@
 package ui.fragment
 
-import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.transition.Slide
@@ -17,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
+import controller.ShareController
 import dagger.hilt.android.AndroidEntryPoint
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentHomeBinding
@@ -53,6 +53,9 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
 
     @Inject
     lateinit var popupMaker: PopupMaker
+
+    @Inject
+    lateinit var shareController: ShareController
 
     companion object {
         @JvmStatic
@@ -297,11 +300,11 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
         adapter = TodoAdapter(
             context!!,
 
-            { todoID: Int ->
+            onCheckChangedListener = { todoID: Int ->
                 todoViewModel.setDoneTodo(todoID.toLong())
             },
 
-            { todoMenu: Todo, menuView: View, wholeItem: View ->
+            onClickMenuListener = { todoMenu: Todo, menuView: View, wholeItem: View ->
                 val popup = popupMaker.showMenu(
                     anchor = menuView,
 
@@ -347,25 +350,12 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                             }
 
                             R.id.menuShare -> {
-                                activity?.let {
-                                    val sharingIntent = Intent(Intent.ACTION_SEND).apply {
-                                        type = "text/plain"
-                                        putExtra(
-                                            Intent.EXTRA_TEXT,
-                                            todoViewModel.shareContent(todoMenu)
-                                        )
-                                    }
-
-                                    it.startActivity(
-                                        Intent.createChooser(
-                                            sharingIntent,
-                                            provideResource.getString(R.string.share_using)
-                                        )
-                                    )
+                                shareController.apply {
+                                    shareString(activity, prepareShareTodoContent(todoMenu))
                                 }
                             }
 
-                            R.id.menuShare -> {}
+                            R.id.menuAdvencedShare -> {}
 
                             R.id.menuDelete -> {
                                 DeleteDialog(context).apply {
@@ -408,24 +398,6 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                         provideResource.getColor(R.color.red)
                     )
                 }
-
-                /*MoreDialog(context).apply {
-                    show()
-
-                    setWithDetail(true)
-
-                    onClickEdit = {
-                        dismiss()
-                    }
-
-                    onClickDetail = {
-                        dismiss()
-                    }
-
-                    onClickDelete = {
-                        dismiss()
-                    }
-                }*/
             }
         )
 

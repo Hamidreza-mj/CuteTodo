@@ -9,7 +9,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import hlv.cute.todo.R
 import ir.hamsaa.persiandatepicker.date.PersianDateImpl
 import model.DateTime
-import model.Priority
 import model.Todo
 import repo.dbRepoController.TodoDBRepository
 import utils.DateHelper
@@ -43,29 +42,6 @@ class TodoDetailViewModel @Inject constructor(
 
     val completeUpdatedAt: String
         get() = getCompleteDate(todo!!.updatedAt)
-
-    fun shareContent(): String {
-        todo?.let {
-            var content = getString(R.string.todo_title) + "\n" + it.title + "\n\n"
-
-            if (it.category != null)
-                content += getString(R.string.todo_category) + " " + it.category + "\n\n"
-
-            content += getString(R.string.todo_priority) + " " + getCurrentPriority() + "\n\n"
-
-            content += if (it.isDone) "انجام شده ✅" else "انجام نشده ❌️"
-            content += "\n\n"
-
-            if (it.arriveDate != 0L)
-                content += "🔔" + getString(R.string.todo_reminder) + "\n" + getCompleteDate(it.arriveDate) + "\n\n"
-
-            content += "\n" + getString(R.string.app_name) + "\n" + "اپلیکیشن مدیریت کارهای روزانه"
-
-            return content
-        }
-
-        return getString(R.string.app_name)
-    }
 
     fun getLytDateVisibility(): Int {
         return if (hasArriveDate()) View.VISIBLE else View.GONE
@@ -112,21 +88,6 @@ class TodoDetailViewModel @Inject constructor(
 
     fun getString(@StringRes stringRes: Int): String {
         return provideResource.getString(stringRes)
-    }
-
-    private fun getCurrentPriority(): String {
-        var priority = getString(R.string.low)
-
-        if (todo != null) {
-            priority = when (todo!!.priority) {
-                Priority.LOW -> getString(R.string.low)
-                Priority.NORMAL -> getString(R.string.normal)
-                Priority.HIGH -> getString(R.string.high)
-                else -> getString(R.string.low)
-            }
-        }
-
-        return priority
     }
 
     private fun getCompleteDate(timeMillis: Long): String {

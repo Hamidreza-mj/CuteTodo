@@ -16,6 +16,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayout.Tab
+import controller.ShareController
 import dagger.hilt.android.AndroidEntryPoint
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentSearchBinding
@@ -23,14 +24,15 @@ import model.Category
 import model.Search
 import model.Todo
 import ui.adapter.TodoAdapter
+import ui.component.PopupMaker
 import ui.component.bindingComponent.BaseViewBindingFragment
 import ui.dialog.DeleteDialog
-import ui.dialog.MoreDialog
 import ui.fragment.sheet.SearchModeBottomSheet
 import utils.Constants
 import utils.KeyboardUtil.focusAndShowKeyboard
 import utils.TextHelper
 import viewmodel.NotificationViewModel
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
@@ -44,6 +46,12 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
 
     private var afterTextChanged = false
     private var search: Search? = Search()
+
+    @Inject
+    lateinit var popupMaker: PopupMaker
+
+    @Inject
+    lateinit var shareController: ShareController
 
     companion object {
         @JvmStatic
@@ -257,71 +265,102 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                 searchViewModel.fetch()
             },
 
-            onClickMenuListener = { todoMenu: Todo, _: View, _: View ->
+            onClickMenuListener = { todoMenu: Todo, menuView: View, wholeItem: View ->
 
-                MoreDialog(context).apply {
-                    show()
-                    setWithDetail(true)
+                val popup = popupMaker.showMenu(
+                    anchor = menuView,
 
-                    onClickEdit = {
-                        dismiss()
+                    viewToDim = binding.root,
 
-                        val fragment: Fragment = AddEditTodoFragment.newInstance(todoMenu).apply {
-                            enterTransition = Slide(Gravity.BOTTOM)
-                        }
+                    nonDimItem = wholeItem,
 
-                        parentFragmentManager.beginTransaction().apply {
-                            add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO)
+                    menuRes = R.menu.popup_menu_todo_item,
 
-                            addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO)
-                        }.commit()
-                    }
+                    onMenuItemClick = itemClicked@{ menuItem ->
+                        when (menuItem.itemId) {
+                            R.id.menuEdit -> {
+                                val fragment: Fragment =
+                                    AddEditTodoFragment.newInstance(todoMenu).apply {
+                                        enterTransition = Slide(Gravity.BOTTOM)
+                                    }
 
-                    onClickDetail = {
-                        dismiss()
+                                parentFragmentManager.beginTransaction().apply {
+                                    add(
+                                        R.id.mainContainer,
+                                        fragment,
+                                        Constants.FragmentTag.ADD_EDIT_TODO
+                                    )
+                                    addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO)
+                                }.commit()
+                            }
 
-                        val fragment: Fragment = TodoDetailFragment.newInstance(todoMenu).apply {
-                            enterTransition = Slide(Gravity.BOTTOM)
-                        }
+                            R.id.menuDetail -> {
+                                val fragment: Fragment =
+                                    TodoDetailFragment.newInstance(todoMenu).apply {
+                                        enterTransition = Slide(Gravity.BOTTOM)
+                                    }
 
-                        parentFragmentManager.beginTransaction().apply {
-                            add(R.id.mainContainer, fragment, Constants.FragmentTag.TODO_DETAIL)
-                            addToBackStack(Constants.FragmentTag.TODO_DETAIL)
-                        }.commit()
+                                parentFragmentManager.beginTransaction().apply {
+                                    add(
+                                        R.id.mainContainer,
+                                        fragment,
+                                        Constants.FragmentTag.TODO_DETAIL
+                                    )
 
-                    }
+                                    addToBackStack(Constants.FragmentTag.TODO_DETAIL)
+                                }.commit()
+                            }
 
-                    onClickDelete = {
-                        dismiss()
+                            R.id.menuShare -> {
+                                shareController.apply {
+                                    shareString(activity, prepareShareTodoContent(todoMenu))
+                                }
+                            }
 
-                        DeleteDialog(context).apply {
-                            show()
+                            R.id.menuAdvencedShare -> {}
 
-                            setTitle(provideResource.getString(R.string.delete_todo))
+                            R.id.menuDelete -> {
+                                DeleteDialog(context).apply {
+                                    show()
 
-                            var todoTitle = todoMenu.title ?: ""
-                            if (todoTitle.trim().length > 60) todoTitle =
-                                todoTitle.substring(0, 60).trim()
+                                    setTitle(provideResource.getString(R.string.delete_todo))
 
-                            setMessage(
-                                provideResource.getString(
-                                    R.string.delete_todo_message,
-                                    todoTitle
-                                )
-                            )
+                                    var todoTitle = todoMenu.title ?: ""
+                                    if (todoTitle.trim().length > 30)
+                                        todoTitle =
+                                            todoTitle.substring(0, 30)
+                                                .trim() + provideResource.getString(R.string.ellipsis)
 
+                                    setMessage(
+                                        provideResource.getString(
+                                            R.string.delete_todo_message,
+                                            todoTitle
+                                        )
+                                    )
 
-                            onClickDelete = {
-                                if (todoMenu.arriveDate != 0L)
-                                    notificationViewModel.cancelAlarm(todoMenu)
+                                    onClickDelete = {
+                                        if (todoMenu.arriveDate != 0L)
+                                            notificationViewModel.cancelAlarm(todoMenu)
 
-                                todoViewModel.deleteTodo(todoMenu)
-                                searchViewModel.fetch()
-                                dismiss()
+                                        todoViewModel.deleteTodo(todoMenu)
+                                        searchViewModel.fetch()
+
+                                        dismiss()
+                                    }
+                                }
                             }
                         }
                     }
+                )
+
+                popupMaker.apply {
+                    popup?.changeTextColorOfItem(
+                        4,
+                        provideResource.getString(R.string.delete),
+                        provideResource.getColor(R.color.red)
+                    )
                 }
+
             }
         )
 
