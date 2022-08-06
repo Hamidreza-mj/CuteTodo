@@ -1,5 +1,6 @@
 package ui.component
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -12,6 +13,7 @@ import androidx.core.view.drawToBitmap
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.scopes.FragmentScoped
 import javax.inject.Inject
+import kotlin.math.abs
 
 
 @FragmentScoped
@@ -29,7 +31,7 @@ class DimView @Inject constructor(
             val overlay = parent.overlay
             overlay.add(blurDimDrawable)
 
-            fade(parent)
+            //fade(parent)
 
             nonDimView?.let {
                 try {
@@ -37,11 +39,14 @@ class DimView @Inject constructor(
 
                     val nonDimViewPos = IntArray(2)
                     it.getLocationInWindow(nonDimViewPos)
-                    val x = nonDimViewPos[0]
-                    val y = nonDimViewPos[1]
+                    val (x, y) = nonDimViewPos
 
                     val nonDimDrawable = convertBitmapToDrawable(nonDimBitmap, context).apply {
-                        val rect = Rect(x, y - 88, x + it.width, y + it.height - 88)
+                        val offsetHeight = abs(getStatusBarHeight())
+
+                        val rect =
+                            Rect(x, y - offsetHeight, x + it.width, y + it.height - offsetHeight)
+
                         bounds = rect
                     }
 
@@ -52,16 +57,38 @@ class DimView @Inject constructor(
 
         } catch (e: Exception) {
             applyDim(parent)
+
+            nonDimView?.let {
+                try {
+                    val nonDimBitmap = it.drawToBitmap()
+
+                    val nonDimViewPos = IntArray(2)
+                    it.getLocationInWindow(nonDimViewPos)
+                    val (x, y) = nonDimViewPos
+
+                    val nonDimDrawable = convertBitmapToDrawable(nonDimBitmap, context).apply {
+                        val offsetHeight = abs(getStatusBarHeight())
+
+                        val rect =
+                            Rect(x, y - offsetHeight, x + it.width, y + it.height - offsetHeight)
+
+                        bounds = rect
+                    }
+
+                    parent.overlay.add(nonDimDrawable)
+                } catch (ignored: Exception) {
+                }
+            }
         }
     }
 
-    fun applyDim(parent: ViewGroup, dimAmount: Int = 50) {
+    fun applyDim(parent: ViewGroup, dimAmount: Int = 80) {
         val dimDrawable = makeDimOpacity(dimAmount)
 
         dimDrawable.setBounds(0, 0, parent.width, parent.height)
         val overlay = parent.overlay
         overlay.add(dimDrawable)
-        fade(parent)
+        //fade(parent)
     }
 
     private fun makeBlurredBitmap(view: View): Bitmap {
@@ -84,12 +111,25 @@ class DimView @Inject constructor(
     fun clearDim(parent: ViewGroup) {
         val overlay = parent.overlay
         overlay.clear()
-        fade(parent)
+        //fade(parent)
     }
 
     private fun fade(view: View) {
-        view.alpha = 0.5f
+        view.alpha = 1f
         view.animate().alpha(1f).setDuration(700).start()
+    }
+
+    private fun getStatusBarHeight(): Int {
+        val rectangle = Rect()
+
+        val window = (context as Activity).window
+        window.decorView.getWindowVisibleDisplayFrame(rectangle)
+
+        val statusBarHeight = rectangle.top
+        //val contentViewTop: Int = window.findViewById<View>(Window.ID_ANDROID_CONTENT).top
+        //val titleBarHeight = contentViewTop - statusBarHeight
+
+        return statusBarHeight
     }
 
 }
