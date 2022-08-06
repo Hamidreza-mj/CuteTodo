@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="bottom"
     android:background="@color/transparent"
+    android:fitsSystemWindows="true"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
     <androidx.constraintlayout.widget.ConstraintLayout

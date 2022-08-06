@@ -28,7 +28,6 @@ import ui.dialog.DropDownCategoriesDialog
 import ui.dialog.ReminderGuideDialog
 import ui.dialog.TimePickerSheetDialog
 import ui.dialog.WarningDateDialog
-import ui.fragment.CategoriesFragment.Companion.newInstance
 import utils.Constants
 import utils.ToastUtil
 import viewmodel.AddEditTodoViewModel
@@ -250,7 +249,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
                 onclickManage = {
                     viewModel.commitCategory(null)
 
-                    val fragment: Fragment = newInstance().apply {
+                    val fragment = CategoriesFragment.newInstance().apply {
                         enterTransition = Slide(Gravity.BOTTOM)
                     }
 

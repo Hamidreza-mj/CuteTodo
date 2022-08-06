@@ -13,6 +13,7 @@ import hlv.cute.todo.R
 import hlv.cute.todo.databinding.ActivityShowNotificationBinding
 import model.Notification
 import model.Priority
+import ui.component.UiToolkit
 import ui.component.bindingComponent.BaseViewBindingActivity
 import utils.ToastUtil
 import viewmodel.ShowNotificationViewModel
@@ -29,6 +30,9 @@ class ShowNotificationActivity : BaseViewBindingActivity<ActivityShowNotificatio
 
     @Inject
     lateinit var toastUtil: ToastUtil
+
+    @Inject
+    lateinit var uiToolkit: UiToolkit
 
     override fun initiate() {
         initViewModel()
@@ -56,8 +60,8 @@ class ShowNotificationActivity : BaseViewBindingActivity<ActivityShowNotificatio
 
             binding.confetti.visibility = View.VISIBLE
 
-            val width = resources.displayMetrics.widthPixels
-            val height = resources.displayMetrics.heightPixels
+            val width = uiToolkit.displayWidth
+            val height = uiToolkit.displayHeight
 
             binding.confetti.lottieDrawable =
                 AXrLottieDrawable

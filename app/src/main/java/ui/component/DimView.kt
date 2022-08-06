@@ -1,6 +1,5 @@
 package ui.component
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -18,7 +17,8 @@ import kotlin.math.abs
 
 @FragmentScoped
 class DimView @Inject constructor(
-    @ActivityContext private val context: Context
+    @ActivityContext private val context: Context,
+    private val uiToolkit: UiToolkit
 ) {
 
     fun applyBlurDim(parent: ViewGroup, nonDimView: View? = null) {
@@ -79,19 +79,6 @@ class DimView @Inject constructor(
         view.animate().alpha(1f).setDuration(700).start()
     }
 
-    private fun getStatusBarHeight(): Int {
-        val rectangle = Rect()
-
-        val window = (context as Activity).window
-        window.decorView.getWindowVisibleDisplayFrame(rectangle)
-
-        val statusBarHeight = rectangle.top
-        //val contentViewTop: Int = window.findViewById<View>(Window.ID_ANDROID_CONTENT).top
-        //val titleBarHeight = contentViewTop - statusBarHeight
-
-        return statusBarHeight
-    }
-
     private fun handleNonDimView(parent: ViewGroup, nonDimView: View?) {
         nonDimView?.let {
             try {
@@ -102,7 +89,7 @@ class DimView @Inject constructor(
                 val (x, y) = nonDimViewPos
 
                 val nonDimDrawable = convertBitmapToDrawable(nonDimBitmap, context).apply {
-                    val offsetHeight = abs(getStatusBarHeight())
+                    val offsetHeight = abs(uiToolkit.statusBarHeight)
 
                     val rect =
                         Rect(x, y - offsetHeight, x + it.width, y + it.height - offsetHeight)
