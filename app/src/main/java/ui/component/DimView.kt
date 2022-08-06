@@ -21,7 +21,7 @@ class DimView @Inject constructor(
     @ActivityContext private val context: Context
 ) {
 
-    fun applyBlurDim(parent: ViewGroup, nonDimView: View?) {
+    fun applyBlurDim(parent: ViewGroup, nonDimView: View? = null) {
         try {
             val blurredBitmap: Bitmap = makeBlurredBitmap(parent)
             val blurDimDrawable = convertBitmapToDrawable(blurredBitmap, context).apply {
