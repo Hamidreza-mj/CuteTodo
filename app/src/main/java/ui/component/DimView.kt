@@ -33,52 +33,12 @@ class DimView @Inject constructor(
 
             //fade(parent)
 
-            nonDimView?.let {
-                try {
-                    val nonDimBitmap = it.drawToBitmap()
-
-                    val nonDimViewPos = IntArray(2)
-                    it.getLocationInWindow(nonDimViewPos)
-                    val (x, y) = nonDimViewPos
-
-                    val nonDimDrawable = convertBitmapToDrawable(nonDimBitmap, context).apply {
-                        val offsetHeight = abs(getStatusBarHeight())
-
-                        val rect =
-                            Rect(x, y - offsetHeight, x + it.width, y + it.height - offsetHeight)
-
-                        bounds = rect
-                    }
-
-                    overlay.add(nonDimDrawable)
-                } catch (ignored: Exception) {
-                }
-            }
+            handleNonDimView(parent, nonDimView)
 
         } catch (e: Exception) {
             applyDim(parent)
 
-            nonDimView?.let {
-                try {
-                    val nonDimBitmap = it.drawToBitmap()
-
-                    val nonDimViewPos = IntArray(2)
-                    it.getLocationInWindow(nonDimViewPos)
-                    val (x, y) = nonDimViewPos
-
-                    val nonDimDrawable = convertBitmapToDrawable(nonDimBitmap, context).apply {
-                        val offsetHeight = abs(getStatusBarHeight())
-
-                        val rect =
-                            Rect(x, y - offsetHeight, x + it.width, y + it.height - offsetHeight)
-
-                        bounds = rect
-                    }
-
-                    parent.overlay.add(nonDimDrawable)
-                } catch (ignored: Exception) {
-                }
-            }
+            handleNonDimView(parent, nonDimView)
         }
     }
 
@@ -130,6 +90,30 @@ class DimView @Inject constructor(
         //val titleBarHeight = contentViewTop - statusBarHeight
 
         return statusBarHeight
+    }
+
+    private fun handleNonDimView(parent: ViewGroup, nonDimView: View?) {
+        nonDimView?.let {
+            try {
+                val nonDimBitmap = it.drawToBitmap()
+
+                val nonDimViewPos = IntArray(2)
+                it.getLocationInWindow(nonDimViewPos)
+                val (x, y) = nonDimViewPos
+
+                val nonDimDrawable = convertBitmapToDrawable(nonDimBitmap, context).apply {
+                    val offsetHeight = abs(getStatusBarHeight())
+
+                    val rect =
+                        Rect(x, y - offsetHeight, x + it.width, y + it.height - offsetHeight)
+
+                    bounds = rect
+                }
+
+                parent.overlay.add(nonDimDrawable)
+            } catch (ignored: Exception) {
+            }
+        }
     }
 
 }
