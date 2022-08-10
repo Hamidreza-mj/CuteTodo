@@ -21,11 +21,11 @@ class ShowNotificationViewModel @Inject constructor(
     private val todoRepository: TodoDBRepository
 ) : ViewModel() {
 
-    private val _notificationLiveData: MutableLiveData<Notification> = MutableLiveData()
+    private val _notificationLiveData: MutableLiveData<Notification?> = MutableLiveData()
     private val _closeLive: MutableLiveData<Boolean> = MutableLiveData()
     private val _runMainLive: MutableLiveData<Boolean> = MutableLiveData()
 
-    val notificationLiveData: LiveData<Notification> = _notificationLiveData
+    val notificationLiveData: LiveData<Notification?> = _notificationLiveData
     val closeLive: LiveData<Boolean> = _closeLive
     val runMainLive: LiveData<Boolean> = _runMainLive
 

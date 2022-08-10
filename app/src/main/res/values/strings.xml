@@ -148,4 +148,6 @@
     <string name="share">ارسال</string>
     <string name="advenced_share">ارسال پیشرفته</string>
 
+    <string name="open_notif_action">نمایش کار 🔍</string>
+
 </resources>

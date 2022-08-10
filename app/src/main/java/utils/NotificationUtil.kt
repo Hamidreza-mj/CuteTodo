@@ -22,7 +22,8 @@ import ui.activity.ShowNotificationActivity
 import javax.inject.Inject
 
 class NotificationUtil @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val provideResource: ResourceProvider
 ) {
 
     private val defaultSound: Uri =
@@ -32,8 +33,6 @@ class NotificationUtil @Inject constructor(
         .setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT) //immediately communication like sms, chat,...
         .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
         .build()
-
-    private val provideResource = AppResourcesProvider(context)
 
     companion object {
         private const val CHANNEL_ID = "cute-todo-channel-id"
@@ -91,6 +90,7 @@ class NotificationUtil @Inject constructor(
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH) //.setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
             .setSound(defaultSound, AudioManager.STREAM_NOTIFICATION)
+            .addAction(R.drawable.ic_detail, provideResource.getString(R.string.open_notif_action), pendingIntent)
             .build()
 
         NotificationManagerCompat.from(context).notify(notificationID, notification)
