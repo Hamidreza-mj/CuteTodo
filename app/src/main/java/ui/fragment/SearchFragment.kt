@@ -1,6 +1,7 @@
 package ui.fragment
 
 import android.content.Context
+import android.graphics.Point
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
@@ -271,10 +272,12 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                 searchViewModel.fetch()
             },
 
-            onClickMenuListener = { todoMenu: Todo, menuView: View, wholeItem: View ->
+            onClickMenuListener = { todoMenu: Todo, menuView: View, wholeItem: View, coordinatePoint: Point? ->
 
                 val popup = popupMaker.showMenu(
                     anchor = menuView,
+
+                    coordinatePoint = coordinatePoint,
 
                     viewToDim = binding.root,
 

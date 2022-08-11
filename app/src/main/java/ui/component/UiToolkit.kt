@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Rect
 import android.util.TypedValue
+import android.view.ViewGroup
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.scopes.FragmentScoped
 import javax.inject.Inject
@@ -50,4 +51,7 @@ class UiToolkit @Inject constructor(
 
     val displayHeight: Int
         get() = context.resources.displayMetrics.heightPixels
+
+    val rootViewScreen: ViewGroup
+        get() = (context as Activity).window.decorView.findViewById(android.R.id.content) as ViewGroup
 }

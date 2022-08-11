@@ -1,6 +1,7 @@
 package ui.fragment
 
 import android.content.Context
+import android.graphics.Point
 import android.os.Handler
 import android.os.Looper
 import android.transition.Slide
@@ -310,9 +311,11 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                 todoViewModel.setDoneTodo(todoID.toLong())
             },
 
-            onClickMenuListener = { todoMenu: Todo, menuView: View, wholeItem: View ->
+            onClickMenuListener = { todoMenu: Todo, menuView: View, wholeItem: View, coordinatePoint: Point? ->
                 val popup = popupMaker.showMenu(
                     anchor = menuView,
+
+                    coordinatePoint = coordinatePoint,
 
                     viewToDim = binding.root,
 

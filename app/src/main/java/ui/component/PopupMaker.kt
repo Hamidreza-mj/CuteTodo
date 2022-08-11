@@ -1,7 +1,10 @@
 package ui.component
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.graphics.Color
+import android.graphics.Point
 import android.graphics.drawable.InsetDrawable
 import android.os.Build
 import android.text.SpannableString
@@ -31,6 +34,7 @@ class PopupMaker @Inject constructor(
     @SuppressLint("RestrictedApi")
     fun showMenu(
         anchor: View,
+        coordinatePoint: Point? = null,
         viewToDim: ViewGroup? = null,
         nonDimItem: View? = null,
         @MenuRes menuRes: Int,
@@ -53,7 +57,25 @@ class PopupMaker @Inject constructor(
             ContextThemeWrapper(context, if (isRtl) R.style.RTLStyle else R.style.LTRStyle)
 
 
-        val popup = PopupMenu(directionContext, anchor, gravity).apply {
+        var tempAnchor: View = anchor
+        var root: ViewGroup? = null
+
+        coordinatePoint?.let {
+            root =
+                (context as Activity).window.decorView.findViewById(android.R.id.content) as ViewGroup
+
+            tempAnchor = View(context)
+            tempAnchor.layoutParams = ViewGroup.LayoutParams(0, 0)
+            tempAnchor.setBackgroundColor(Color.TRANSPARENT)
+
+            root?.addView(tempAnchor)
+
+            tempAnchor.x = it.x.toFloat()
+            tempAnchor.y = it.y.toFloat()
+        }
+
+
+        val popup = PopupMenu(directionContext, tempAnchor, gravity).apply {
             inflate(menuRes)
 
             setOnMenuItemClickListener { menuItem ->
@@ -65,6 +87,8 @@ class PopupMaker @Inject constructor(
 
             setOnDismissListener {
                 clicked = false
+
+                root?.removeView(tempAnchor)
 
                 viewToDim?.let {
                     dimView.clearDim(it)

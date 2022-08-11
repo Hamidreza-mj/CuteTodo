@@ -1,7 +1,10 @@
 package ui.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Point
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
@@ -16,7 +19,7 @@ import utils.TextHelper
 class TodoAdapter(
     private val context: Context,
     private val onCheckChangedListener: (todoID: Int) -> Unit,
-    private val onClickMenuListener: (todo: Todo, anchor: View, wholeItem: View) -> Unit
+    private val onClickMenuListener: (todo: Todo, anchor: View, wholeItem: View, coordinatePoint: Point?) -> Unit,
 ) : RecyclerView.Adapter<TodoAdapter.ViewHolder>() {
 
     val differ: AsyncListDiffer<Todo>
@@ -55,10 +58,11 @@ class TodoAdapter(
     inner class ViewHolder(private val binding: ItemTodoBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        @SuppressLint("ClickableViewAccessibility")
         fun bind(
             todo: Todo,
             onCheckChangedListener: (todoID: Int) -> Unit,
-            onClickMenuListener: (todo: Todo, anchor: View, wholeItem: View) -> Unit
+            onClickMenuListener: (todo: Todo, anchor: View, wholeItem: View, coordinatePoint: Point?) -> Unit
         ) {
             //must be set null
             //to avoid when recyclerview scroll, default implemented interface body called!
@@ -90,8 +94,31 @@ class TodoAdapter(
                 }
             }
 
+            var rawClickPoint: Point? = null
+            binding.root.setOnTouchListener { _, event ->
+                if (event.actionMasked == MotionEvent.ACTION_DOWN)
+                    rawClickPoint = Point(event.rawX.toInt(), event.rawY.toInt())
 
-            binding.aImgMenu.setOnClickListener { onClickMenuListener(todo, it, binding.root) }
+                return@setOnTouchListener false
+            }
+
+            binding.root.setOnClickListener {
+                onClickMenuListener(
+                    todo,
+                    it,
+                    binding.root,
+                    rawClickPoint
+                )
+            }
+
+            binding.aImgMenu.setOnClickListener {
+                onClickMenuListener(
+                    todo,
+                    it,
+                    binding.root,
+                    null
+                )
+            }
 
             if (todo.category != null) {
                 binding.txtCategory.visibility = View.VISIBLE
