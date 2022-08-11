@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import com.yandex.metrica.push.YandexMetricaPush
+import controller.OpenAppIntentController.OpeningType
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.ActivityMainBinding
 import ui.component.bindingComponent.BaseViewBindingActivity
@@ -31,24 +32,24 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding>() {
         viewModel.handleOpeningType(intent)
 
         when (viewModel.openingType) {
-            MainViewModel.OpeningType.SCHEDULED_NOTIF -> {
+            OpeningType.SCHEDULED_NOTIF -> {
                 openShowNotification()
             }
 
-            MainViewModel.OpeningType.SHARE_MENU -> {
+            OpeningType.SHARE_MENU -> {
                 configIntentTodo(intent.getStringExtra(Intent.EXTRA_TEXT))
             }
 
-            MainViewModel.OpeningType.SHORTCUT_MENU -> {
+            OpeningType.SHORTCUT_MENU -> {
                 openAddEditTodo("")
             }
 
-            MainViewModel.OpeningType.POPUP_TEXT_SELECTION -> {
+            OpeningType.POPUP_TEXT_SELECTION -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                     configIntentTodo(intent.getStringExtra(Intent.EXTRA_PROCESS_TEXT))
             }
 
-            MainViewModel.OpeningType.PUSH_NOTIF -> {
+            OpeningType.PUSH_NOTIF -> {
                 val payload =
                     intent.getStringExtra(YandexMetricaPush.EXTRA_PAYLOAD) //TODO: yandex open with ntification
 
@@ -57,7 +58,7 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding>() {
                 initViews()
             }
 
-            MainViewModel.OpeningType.NORMAL -> {
+            OpeningType.NORMAL -> {
                 initViews()
             }
         }
