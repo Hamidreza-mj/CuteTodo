@@ -8,7 +8,6 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.viewModels
@@ -78,14 +77,10 @@ class ShowNotificationFragment : BaseViewBindingFragment<FragmentShowNotificatio
     override fun initiate() {
         initViews()
         handleObserver()
-        activity?.onBackPressedDispatcher?.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    if (isEnabled)
-                        close()
-                }
-            })
+
+        doOnBackPressedFragment {
+            close()
+        }
     }
 
     private fun initViews() {

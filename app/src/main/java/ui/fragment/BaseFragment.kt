@@ -1,11 +1,9 @@
 package ui.fragment
 
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IdRes
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.*
 import dagger.hilt.android.AndroidEntryPoint
 import utils.KeyboardUtil
 import utils.ResourceProvider
@@ -51,6 +49,19 @@ open class BaseFragment : Fragment() {
     protected fun back(@IdRes fragmentID: Int) {
         hideKeyboard()
         parentFragmentManager.popBackStack(fragmentID, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+    }
+
+    protected fun doOnBackPressedFragment(
+        fragmentActivity: FragmentActivity? = activity,
+        onBackPressed: (() -> Unit)?
+    ) {
+        fragmentActivity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (isEnabled) onBackPressed?.invoke()
+                }
+            })
     }
 
     protected fun transit(
