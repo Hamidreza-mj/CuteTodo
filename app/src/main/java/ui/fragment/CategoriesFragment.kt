@@ -1,5 +1,6 @@
 package ui.fragment
 
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.transition.Slide
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.qualifiers.ActivityContext
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentCategoriesBinding
 import model.Category
@@ -46,6 +48,10 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
 
     @Inject
     lateinit var popupMaker: PopupMaker
+
+    @Inject
+    @ActivityContext
+    lateinit var iContext: Context
 
     companion object {
         @JvmStatic
@@ -116,7 +122,7 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
                 return@setOnClickListener
             }
 
-            DeleteDialog(context).apply {
+            DeleteDialog(iContext).apply {
                 show()
 
                 setTitle(provideResource.getString(R.string.delete_all_categories))
@@ -154,7 +160,7 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
 
     private fun handleRecyclerView() {
         adapter = CategoryAdapter(
-            context!!,
+            iContext,
 
             onClickMenuListener = { category: Category, anchor: View, wholeItem: View ->
 
@@ -186,7 +192,7 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
                             }
 
                             R.id.menuDelete -> {
-                                DeleteDialog(context).apply {
+                                DeleteDialog(iContext).apply {
                                     show()
 
                                     setTitle(provideResource.getString(R.string.delete_category))
@@ -225,7 +231,7 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
             }
         )
 
-        val layoutManager = LinearLayoutManager(context)
+        val layoutManager = LinearLayoutManager(iContext)
 
         binding.rvCategory.apply {
             this.layoutManager = layoutManager

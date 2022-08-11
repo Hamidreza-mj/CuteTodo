@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import hlv.cute.todo.R
 import android.graphics.Typeface
+import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -37,9 +38,12 @@ class CustomNumberPicker : NumberPicker {
     private fun updateView(view: View) {
         if (view is TextView) {
             view.setTextColor(ContextCompat.getColor(context, R.color.black))
-            view.typeface = Typeface.createFromAsset(resources.assets, "font/vazir_rd_fd_medium.ttf")
+            view.typeface =
+                Typeface.createFromAsset(resources.assets, "font/vazir_rd_fd_medium.ttf")
+
             view.textSize = 20f
-            view.setAutoSizeTextTypeUniformWithConfiguration(8, 20, 1, 1)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                view.setAutoSizeTextTypeUniformWithConfiguration(8, 20, 1, 1)
         }
     }
 }

@@ -5,8 +5,10 @@ import android.content.Context
 import android.graphics.Rect
 import android.util.TypedValue
 import dagger.hilt.android.qualifiers.ActivityContext
+import dagger.hilt.android.scopes.FragmentScoped
 import javax.inject.Inject
 
+@FragmentScoped
 class UiToolkit @Inject constructor(
     @ActivityContext private val context: Context
 ) {

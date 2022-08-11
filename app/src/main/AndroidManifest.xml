@@ -24,11 +24,6 @@
         tools:ignore="DataExtractionRules">
 
         <activity
-            android:name="ui.activity.ShowNotificationActivity"
-            android:taskAffinity="ui.activity.ShowNotificationActivity"
-            android:theme="@style/Theme.CuteTodo" />
-
-        <activity
             android:name="ui.activity.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.CuteTodo">

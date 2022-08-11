@@ -2,10 +2,12 @@ package ui.activity
 
 import android.content.Intent
 import android.os.Build
+import android.transition.Fade
 import android.transition.Slide
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
+import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import com.yandex.metrica.push.YandexMetricaPush
 import hlv.cute.todo.R
@@ -14,47 +16,61 @@ import ui.component.bindingComponent.BaseViewBindingActivity
 import ui.fragment.AddEditTodoFragment
 import ui.fragment.CategoriesFragment
 import ui.fragment.HomeFragment
+import ui.fragment.ShowNotificationFragment
 import utils.Constants
+import viewmodel.MainViewModel
 
 class MainActivity : BaseViewBindingActivity<ActivityMainBinding>() {
 
     override val bindingInflater: (LayoutInflater) -> ActivityMainBinding
         get() = ActivityMainBinding::inflate
 
+    private val viewModel by viewModels<MainViewModel>()
 
     override fun initiate() {
-        val externalIntent = intent
-        val action = externalIntent.action
-        val type = externalIntent.type
+        viewModel.handleOpeningType(intent)
 
-        if (Intent.ACTION_SEND == action) { //share menu
-            if (type == "text/plain") {
-                configIntentTodo(externalIntent.getStringExtra(Intent.EXTRA_TEXT))
-                return
+        when (viewModel.openingType) {
+            MainViewModel.OpeningType.SCHEDULED_NOTIF -> {
+                openShowNotification()
             }
 
-        } else if ("cute.todo.from.shortcut.add" == action) { //shortcut menu
-            openAddEditTodo("")
-            return
-
-        } else if (Intent.ACTION_PROCESS_TEXT == action) { //pop up text selection
-            if (type == "text/plain") {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    configIntentTodo(
-                        externalIntent.getStringExtra(Intent.EXTRA_PROCESS_TEXT)
-                    )
-
-                    return
-                }
+            MainViewModel.OpeningType.SHARE_MENU -> {
+                configIntentTodo(intent.getStringExtra(Intent.EXTRA_TEXT))
             }
-        } else if (YandexMetricaPush.OPEN_DEFAULT_ACTIVITY_ACTION == action) {
-            val payload =
-                externalIntent.getStringExtra(YandexMetricaPush.EXTRA_PAYLOAD) //TODO: yandex open with ntification
 
-            Log.e(Constants.Tags.DEBUG, "onReceive: $payload")
+            MainViewModel.OpeningType.SHORTCUT_MENU -> {
+                openAddEditTodo("")
+            }
+
+            MainViewModel.OpeningType.POPUP_TEXT_SELECTION -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                    configIntentTodo(intent.getStringExtra(Intent.EXTRA_PROCESS_TEXT))
+            }
+
+            MainViewModel.OpeningType.PUSH_NOTIF -> {
+                val payload =
+                    intent.getStringExtra(YandexMetricaPush.EXTRA_PAYLOAD) //TODO: yandex open with ntification
+
+                Log.e(Constants.Tags.DEBUG, "onReceive: $payload")
+
+                initViews()
+            }
+
+            MainViewModel.OpeningType.NORMAL -> {
+                initViews()
+            }
         }
+    }
 
-        initViews()
+    private fun openShowNotification() {
+        val fragment: Fragment = ShowNotificationFragment.newInstance(intent)
+        fragment.enterTransition = Fade()
+
+        supportFragmentManager.beginTransaction().apply {
+            add(R.id.mainContainer, fragment, Constants.FragmentTag.SHOW_NOTIF)
+            addToBackStack(Constants.FragmentTag.SHOW_NOTIF)
+        }.commit()
     }
 
     private fun configIntentTodo(intentString: String?) {

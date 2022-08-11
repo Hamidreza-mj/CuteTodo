@@ -22,7 +22,7 @@ class AddEditTodoViewModel @Inject constructor(
     private val provideResource: ResourceProvider
 ) : ViewModel() {
 
-    private val _categoryLiveData: MutableLiveData<Category> = MutableLiveData()
+    private val _categoryLiveData: MutableLiveData<Category?> = MutableLiveData()
     private val _dateTimeLiveData: MutableLiveData<DateTime?> = MutableLiveData()
     private val oldDateTimeLiveData: MutableLiveData<DateTime?> = MutableLiveData()
 

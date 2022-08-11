@@ -1,5 +1,6 @@
 package ui.fragment
 
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.transition.Slide
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
 import controller.ShareController
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.qualifiers.ActivityContext
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentHomeBinding
 import model.Filter
@@ -56,6 +58,10 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
 
     @Inject
     lateinit var shareController: ShareController
+
+    @Inject
+    @ActivityContext
+    lateinit var iContext: Context
 
     companion object {
         @JvmStatic
@@ -167,7 +173,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                                     return@itemClicked //empty return
                                 }
 
-                                DeleteDialog(context).apply {
+                                DeleteDialog(iContext).apply {
                                     show()
 
                                     setTitle(provideResource.getString(R.string.delete_all_todos))
@@ -200,7 +206,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                                     return@itemClicked //empty return
                                 }
 
-                                DeleteDialog(context).apply {
+                                DeleteDialog(iContext).apply {
                                     show()
 
                                     setTitle(provideResource.getString(R.string.delete_all_done_todos))
@@ -298,7 +304,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
 
     private fun handleRecyclerView() {
         adapter = TodoAdapter(
-            context!!,
+            iContext,
 
             onCheckChangedListener = { todoID: Int ->
                 todoViewModel.setDoneTodo(todoID.toLong())
@@ -358,7 +364,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                             R.id.menuAdvencedShare -> {}
 
                             R.id.menuDelete -> {
-                                DeleteDialog(context).apply {
+                                DeleteDialog(iContext).apply {
                                     show()
 
                                     setTitle(provideResource.getString(R.string.delete_todo))
@@ -401,7 +407,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
             }
         )
 
-        val layoutManager = LinearLayoutManager(context)
+        val layoutManager = LinearLayoutManager(iContext)
         binding.rvTodo.apply {
             this.layoutManager = layoutManager
             adapter = this@HomeFragment.adapter

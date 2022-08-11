@@ -11,11 +11,11 @@ import android.widget.TextView
 import android.widget.Toast
 import com.airbnb.lottie.LottieAnimationView
 import dagger.hilt.android.qualifiers.ActivityContext
-import dagger.hilt.android.scopes.ActivityScoped
+import dagger.hilt.android.scopes.FragmentScoped
 import hlv.cute.todo.R
 import javax.inject.Inject
 
-@ActivityScoped
+@FragmentScoped
 class ToastUtil @Inject constructor(
     @ActivityContext private val context: Context
 ) {

@@ -1,5 +1,6 @@
 package ui.fragment
 
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
@@ -18,6 +19,7 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayout.Tab
 import controller.ShareController
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.qualifiers.ActivityContext
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentSearchBinding
 import model.Category
@@ -53,6 +55,10 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
     @Inject
     lateinit var shareController: ShareController
 
+    @Inject
+    @ActivityContext
+    lateinit var iContext: Context
+
     companion object {
         @JvmStatic
         fun newInstance(): SearchFragment {
@@ -74,7 +80,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
             binding.edtSearch.requestFocus()
         }, 50)
 
-        binding.edtSearch.focusAndShowKeyboard(requireContext())
+        binding.edtSearch.focusAndShowKeyboard(iContext)
 
         handleTabLayout()
         handleShadowScroll()
@@ -258,7 +264,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
 
     private fun handleRecyclerView() {
         adapter = TodoAdapter(
-            requireContext(),
+            iContext,
 
             onCheckChangedListener = { todoID: Int ->
                 todoViewModel.setDoneTodo(todoID.toLong())
@@ -320,7 +326,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                             R.id.menuAdvencedShare -> {}
 
                             R.id.menuDelete -> {
-                                DeleteDialog(context).apply {
+                                DeleteDialog(iContext).apply {
                                     show()
 
                                     setTitle(provideResource.getString(R.string.delete_todo))
@@ -364,7 +370,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
             }
         )
 
-        val layoutManager = LinearLayoutManager(context)
+        val layoutManager = LinearLayoutManager(iContext)
         binding.rvSearch.apply {
             this.layoutManager = layoutManager
             adapter = this@SearchFragment.adapter

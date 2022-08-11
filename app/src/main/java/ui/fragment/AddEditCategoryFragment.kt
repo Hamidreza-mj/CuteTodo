@@ -1,5 +1,6 @@
 package ui.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -7,18 +8,26 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.qualifiers.ActivityContext
 import hlv.cute.todo.databinding.FragmentAddEditCategoryBinding
 import model.Category
 import ui.component.bindingComponent.BaseViewBindingFragment
 import utils.KeyboardUtil.focusAndShowKeyboard
 import viewmodel.AddEditCategoryViewModel
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class AddEditCategoryFragment : BaseViewBindingFragment<FragmentAddEditCategoryBinding>() {
 
     val viewModel by viewModels<AddEditCategoryViewModel>()
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentAddEditCategoryBinding
         get() = FragmentAddEditCategoryBinding::inflate
+
+    @Inject
+    @ActivityContext
+    lateinit var iContext: Context
 
     companion object {
         private const val CATEGORY_ARGS = "category-args"
@@ -37,8 +46,8 @@ class AddEditCategoryFragment : BaseViewBindingFragment<FragmentAddEditCategoryB
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (arguments != null && arguments!!.isEmpty.not()) {
-            val category: Category? = arguments!!.getParcelable(CATEGORY_ARGS)
+        if (arguments != null && requireArguments().isEmpty.not()) {
+            val category: Category? = requireArguments().getParcelable(CATEGORY_ARGS)
 
             if (category != null) {
                 viewModel.isEditMode = true
@@ -57,7 +66,7 @@ class AddEditCategoryFragment : BaseViewBindingFragment<FragmentAddEditCategoryB
     private fun initLogic() {
         binding.aImgBack.setOnClickListener { back() }
 
-        binding.inpEdtName.focusAndShowKeyboard(context!!)
+        binding.inpEdtName.focusAndShowKeyboard(iContext)
 
         binding.txtTitle.text = viewModel.getTitleFragment()
 

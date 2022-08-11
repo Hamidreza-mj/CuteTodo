@@ -18,7 +18,7 @@ import androidx.core.app.NotificationManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import hlv.cute.todo.R
 import model.Priority
-import ui.activity.ShowNotificationActivity
+import ui.activity.MainActivity
 import javax.inject.Inject
 
 class NotificationUtil @Inject constructor(
@@ -48,8 +48,8 @@ class NotificationUtil @Inject constructor(
     ) {
         createNotificationChannel()
 
-        val intent = Intent(context, ShowNotificationActivity::class.java).apply {
-            //use with android:taskAffinity="ui.activity.ShowNotificationActivity"
+        val intent = Intent(context, MainActivity::class.java).apply {
+            //use with android:taskAffinity="ui.activity.MainActivity"
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
             putExtra(Constants.Keys.NOTIF_ID_DETAIL, notificationID)
         }

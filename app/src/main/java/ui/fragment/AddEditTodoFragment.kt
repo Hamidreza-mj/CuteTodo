@@ -14,6 +14,7 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.qualifiers.ActivityContext
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentAddEditTodoBinding
 import ir.hamsaa.persiandatepicker.PersianDatePickerDialog
@@ -46,6 +47,10 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
 
     @Inject
     lateinit var toastUtil: ToastUtil
+
+    @Inject
+    @ActivityContext
+    lateinit var iContext: Context
 
     companion object {
         private const val TODO_ARGS = "todo-args"
@@ -131,7 +136,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
         }
 
         binding.aImgReminderGuide.setOnClickListener {
-            ReminderGuideDialog(context).apply {
+            ReminderGuideDialog(iContext).apply {
                 show()
 
                 setTitle(provideResource.getString(R.string.set_reminder))
@@ -298,7 +303,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
 
 
         binding.mCardReminder.setOnClickListener {
-            handlePickers(activity, viewModel.oldDateTime?.date)
+            handlePickers(viewModel.oldDateTime?.date)
         }
 
         binding.aImgClear.setOnClickListener { viewModel.releaseAll() }
@@ -372,8 +377,8 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
         }
     }
 
-    private fun handlePickers(context: Context?, persianDate: PersianPickerDate?) {
-        val picker = PersianDatePickerDialog(context)
+    private fun handlePickers(persianDate: PersianPickerDate?) {
+        val picker = PersianDatePickerDialog(iContext)
 
         picker.setPositiveButtonString("مرحله بعد")
             .setNegativeButton("انصراف")
@@ -381,7 +386,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
             .setTodayButtonVisible(true)
             .setMinYear(1400)
             .setMaxYear(1440)
-            .setTypeFace(Typeface.createFromAsset(context!!.assets, "font/vazir_rd_fd_medium.ttf"))
+            .setTypeFace(Typeface.createFromAsset(iContext.assets, "font/vazir_rd_fd_medium.ttf"))
             .setTitleColor(provideResource.getColor(R.color.blue))
             .setAllButtonsTextSize(15)
             .setPickerBackgroundColor(provideResource.getColor(R.color.white))
@@ -395,7 +400,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
                     isPassed: Boolean
                 ) {
                     if (isPassed) {
-                        WarningDateDialog(context).apply {
+                        WarningDateDialog(iContext).apply {
                             show()
 
                             setTitle(provideResource.getString(R.string.passedDateTitle))
@@ -407,7 +412,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
                             continueClicked = {
                                 dismiss()
                                 picker.dismiss()
-                                dateSelectedAction(context, persianPickerDate)
+                                dateSelectedAction(persianPickerDate)
                             }
                         }
 
@@ -415,7 +420,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
                     }
 
                     picker.dismiss()
-                    dateSelectedAction(context, persianPickerDate)
+                    dateSelectedAction(persianPickerDate)
                 }
 
                 override fun onDismissed() {}
@@ -432,7 +437,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
         picker.show()
     }
 
-    private fun dateSelectedAction(context: Context?, persianPickerDate: PersianPickerDate?) {
+    private fun dateSelectedAction(persianPickerDate: PersianPickerDate?) {
         if (persianPickerDate == null)
             return
 
@@ -440,13 +445,13 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
 
         viewModel.setDateTemp(persianPickerDate)
 
-        TimePickerSheetDialog(context, true, viewModel.tempDateTime).apply timerPicker@{
+        TimePickerSheetDialog(iContext, true, viewModel.tempDateTime).apply timerPicker@{
             show()
 
             onClickApply = applyClick@{ pickedDateTime: DateTime? ->
                 if (viewModel.todayTtimePassed(pickedDateTime)) {
 
-                    WarningDateDialog(context).apply {
+                    WarningDateDialog(iContext).apply {
                         setTitle(provideResource.getString(R.string.passedDateTitle))
 
                         setMessage(provideResource.getString(R.string.passedTimeMessage))
@@ -474,7 +479,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
             }
 
             onBackClick = { date: PersianPickerDate? ->
-                handlePickers(context, date)
+                handlePickers(date)
             }
         }
     }

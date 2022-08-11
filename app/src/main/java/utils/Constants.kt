@@ -26,5 +26,6 @@ class Constants {
         const val ADD_EDIT_CATEGORY = "add-edit-category-fragment"
         const val SEARCH = "search-fragment"
         const val TODO_DETAIL = "todo-detail-fragment"
+        const val SHOW_NOTIF = "show-notif-fragment"
     }
 }

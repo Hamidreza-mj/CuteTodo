@@ -1,6 +1,7 @@
 package ui.fragment.sheet
 
 import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.qualifiers.ActivityContext
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.SheetFilterBinding
 import model.Category
@@ -24,6 +26,7 @@ import model.Filter
 import ui.adapter.FilterCategoryAdapter
 import ui.component.bindingComponent.BaseViewBindingBottomSheet
 import utils.KeyboardUtil
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class FilterBottomSheet : BaseViewBindingBottomSheet<SheetFilterBinding>() {
@@ -31,6 +34,9 @@ class FilterBottomSheet : BaseViewBindingBottomSheet<SheetFilterBinding>() {
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> SheetFilterBinding
         get() = SheetFilterBinding::inflate
 
+    @Inject
+    @ActivityContext
+    lateinit var iContext: Context
 
     private var filter: Filter? = null
 
@@ -63,11 +69,11 @@ class FilterBottomSheet : BaseViewBindingBottomSheet<SheetFilterBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null && !arguments!!.isEmpty) {
-            filter = arguments!!.getSerializable(FILTER_ARGS) as Filter?
+        if (arguments != null && !requireArguments().isEmpty) {
+            filter = requireArguments().getSerializable(FILTER_ARGS) as Filter?
 
             //@Suppress("UNCHECKED_CAST")
-            categories = arguments!!.getParcelableArrayList(CATEGORY_ARGS)
+            categories = requireArguments().getParcelableArrayList(CATEGORY_ARGS)
 
             if (categories != null && categories!!.isNotEmpty()) {
                 hasCategory = true
@@ -93,7 +99,7 @@ class FilterBottomSheet : BaseViewBindingBottomSheet<SheetFilterBinding>() {
     }
 
     private fun initData() {
-        adapter = FilterCategoryAdapter(context!!)
+        adapter = FilterCategoryAdapter(iContext)
 
         if (filter != null) {
             binding.aChkBoxDone.isChecked = filter!!.isDone
@@ -146,7 +152,7 @@ class FilterBottomSheet : BaseViewBindingBottomSheet<SheetFilterBinding>() {
             binding.rvCategory.visibility = View.GONE
         }
 
-        val layoutManager = FlexboxLayoutManager(context).apply {
+        val layoutManager = FlexboxLayoutManager(iContext).apply {
             flexDirection = FlexDirection.ROW_REVERSE
             justifyContent = JustifyContent.FLEX_START
             flexWrap = FlexWrap.WRAP
@@ -291,11 +297,7 @@ class FilterBottomSheet : BaseViewBindingBottomSheet<SheetFilterBinding>() {
 
     private val windowHeight: Int
         get() = try {
-            context?.let {
-                context!!.resources.displayMetrics.heightPixels
-            } ?: run {
-                1500
-            }
+            iContext.resources.displayMetrics.heightPixels
         } catch (e: Exception) {
             1500
         }

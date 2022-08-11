@@ -1,30 +1,37 @@
-package ui.activity
+package ui.fragment
 
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
-import androidx.activity.viewModels
+import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
+import androidx.core.os.bundleOf
 import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.viewModels
 import com.aghajari.rlottie.AXrLottie
 import com.aghajari.rlottie.AXrLottieDrawable
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.qualifiers.ActivityContext
 import hlv.cute.todo.R
-import hlv.cute.todo.databinding.ActivityShowNotificationBinding
+import hlv.cute.todo.databinding.FragmentShowNotificationBinding
 import model.Notification
 import model.Priority
+import ui.activity.MainActivity
 import ui.component.UiToolkit
-import ui.component.bindingComponent.BaseViewBindingActivity
+import ui.component.bindingComponent.BaseViewBindingFragment
 import utils.ToastUtil
 import viewmodel.ShowNotificationViewModel
 import javax.inject.Inject
 
-
 @AndroidEntryPoint
-class ShowNotificationActivity : BaseViewBindingActivity<ActivityShowNotificationBinding>() {
+class ShowNotificationFragment : BaseViewBindingFragment<FragmentShowNotificationBinding>() {
 
-    override val bindingInflater: (LayoutInflater) -> ActivityShowNotificationBinding
-        get() = ActivityShowNotificationBinding::inflate
+    override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentShowNotificationBinding
+        get() = FragmentShowNotificationBinding::inflate
 
     private val viewModel by viewModels<ShowNotificationViewModel>()
 
@@ -34,18 +41,55 @@ class ShowNotificationActivity : BaseViewBindingActivity<ActivityShowNotificatio
     @Inject
     lateinit var uiToolkit: UiToolkit
 
-    override fun initiate() {
-        initViewModel()
-        initViews()
-        handleObserver()
+    @Inject
+    @ActivityContext
+    lateinit var iContext: Context
+
+    companion object {
+        private const val INTENT_ARGS = "intent-args"
+
+        @JvmStatic
+        fun newInstance(intent: Intent): ShowNotificationFragment {
+            val fragment = ShowNotificationFragment()
+
+            val args = bundleOf(
+                INTENT_ARGS to intent
+            )
+
+            fragment.arguments = args
+            return fragment
+        }
     }
 
-    private fun initViewModel() {
-        viewModel.setIntent(intent)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        if (arguments != null && arguments!!.isEmpty.not()) {
+            val intent: Intent? = arguments!!.getParcelable(INTENT_ARGS)
+
+            intent?.let {
+                viewModel.setIntent(it)
+            } ?: run {
+                close()
+            }
+        }
+    }
+
+    override fun initiate() {
+        initViews()
+        handleObserver()
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (isEnabled)
+                        close()
+                }
+            })
     }
 
     private fun initViews() {
-        AXrLottie.init(this)
+        AXrLottie.init(iContext)
 
         binding.aImgBack.setOnClickListener { close() }
 
@@ -65,7 +109,7 @@ class ShowNotificationActivity : BaseViewBindingActivity<ActivityShowNotificatio
 
             binding.confetti.lottieDrawable =
                 AXrLottieDrawable
-                    .fromAssets(this, "congratulations_confetti_lottie.json") //from assets
+                    .fromAssets(iContext, "congratulations_confetti_lottie.json") //from assets
                     .setSize(width, height)
                     .setOnLottieLoaderListener(object : AXrLottieDrawable.OnLottieLoaderListener {
                         override fun onLoaded(drawable: AXrLottieDrawable?) {
@@ -118,12 +162,12 @@ class ShowNotificationActivity : BaseViewBindingActivity<ActivityShowNotificatio
 
         viewModel.runMainLive.observe(this) { runMain: Boolean ->
             if (runMain)
-                runActivity(MainActivity::class.java, true)
+                (activity as MainActivity).runActivity(MainActivity::class.java, true)
         }
 
         viewModel.notificationLiveData.observe(this) { notif: Notification? ->
             if (notif == null) { //when manual close and open with home
-                runActivity(MainActivity::class.java, true)
+                (activity as MainActivity).runActivity(MainActivity::class.java, true)
                 return@observe
             }
 
@@ -172,12 +216,7 @@ class ShowNotificationActivity : BaseViewBindingActivity<ActivityShowNotificatio
 
     private fun close() {
         viewModel.deleteNotification()
-        finish()
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        close()
+        activity?.finish()
     }
 
     override fun onDestroy() {

@@ -43,8 +43,8 @@ class SearchModeBottomSheet : BaseViewBindingBottomSheet<SheetSearchModeBinding>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (arguments != null && arguments!!.isEmpty.not())
-            search = arguments!!.getParcelable(SEARCH_MODE_ARGS)
+        if (arguments != null && requireArguments().isEmpty.not())
+            search = requireArguments().getParcelable(SEARCH_MODE_ARGS)
 
         activity?.let {
             KeyboardUtil.hideKeyboard(it)

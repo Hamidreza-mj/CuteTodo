@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import model.Category
 import repo.dbRepoController.CategoryDBRepository
-import repo.dbRepoController.NotificationDBRepository
 import javax.inject.Inject
 
 @HiltViewModel
