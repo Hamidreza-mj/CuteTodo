@@ -385,7 +385,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                     R.id.menuShare -> {
                         popupMaker.prepareForNestedMenu()
 
-                        Handler(Looper.getMainLooper()).postDelayed({
+                        binding.root.postOnAnimation {
                             val sharePopup = popupMaker.showMenu(
                                 anchor = menuView,
 
@@ -416,7 +416,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
 
                                         R.id.menuBack -> {
                                             popupMaker.prepareForNestedMenu()
-                                            Handler(Looper.getMainLooper()).postDelayed({
+                                            binding.root.postOnAnimation {
                                                 showPopupMenuItem(
                                                     todoMenu,
                                                     menuView,
@@ -424,7 +424,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                                                     coordinatePoint,
                                                     false
                                                 )
-                                            }, 0)
+                                            }
                                         }
                                     }
                                 }
@@ -437,7 +437,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                                     provideResource.getColor(R.color.gray_text)
                                 )
                             }
-                        }, 0)
+                        }
                     }
 
                     R.id.menuDelete -> {
