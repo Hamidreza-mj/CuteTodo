@@ -158,7 +158,7 @@ class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() 
         }
 
         binding.aImgShare.setOnClickListener {
-            popupMaker.showMenu(
+            val sharePopup = popupMaker.showMenu(
                 anchor = it,
 
                 viewToDim = binding.root,
@@ -181,6 +181,10 @@ class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() 
                     }
                 }
             )
+
+            popupMaker.apply {
+                sharePopup?.setVisibilityMenuItem(0, false)
+            }
         }
 
         binding.mBtnClose.setOnClickListener { back() }

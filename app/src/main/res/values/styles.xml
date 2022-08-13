@@ -269,6 +269,16 @@
         <item name="autoSizeTextType">uniform</item>
     </style>
 
+    <style name="PopupHeaderTextAppearance" parent="PopupTextAppearance">
+        <item name="fontFamily">@font/vazir_rd_fd_regular</item>
+        <item name="android:fontFamily">@font/vazir_rd_fd_regular</item>
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:textSize">14sp</item>
+        <item name="autoSizeMaxTextSize">14sp</item>
+        <item name="autoSizeMinTextSize">8sp</item>
+        <item name="autoSizeTextType">uniform</item>
+    </style>
+
     <style name="RTLStyle">
         <item name="android:layoutDirection">rtl</item>
         <item name="android:textDirection">rtl</item>

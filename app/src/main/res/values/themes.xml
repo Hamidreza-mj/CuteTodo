@@ -26,8 +26,10 @@
 
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
 
+        <item name="textAppearancePopupMenuHeader">@style/PopupHeaderTextAppearance</item>
         <item name="textAppearanceLargePopupMenu">@style/PopupTextAppearance</item>
         <item name="textAppearanceSmallPopupMenu">@style/PopupTextAppearance</item>
+
         <item name="popupMenuBackground">@drawable/popup_shape</item>
 
         <!--<item name="android:layoutDirection">ltr</item>-->

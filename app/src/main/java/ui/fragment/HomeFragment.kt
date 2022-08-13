@@ -312,101 +312,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
             },
 
             onClickMenuListener = { todoMenu: Todo, menuView: View, wholeItem: View, coordinatePoint: Point? ->
-                val popup = popupMaker.showMenu(
-                    anchor = menuView,
-
-                    coordinatePoint = coordinatePoint,
-
-                    viewToDim = binding.root,
-
-                    nonDimItem = wholeItem,
-
-                    menuRes = R.menu.popup_menu_todo_item,
-
-                    onMenuItemClick = itemClicked@{ menuItem ->
-                        when (menuItem.itemId) {
-                            R.id.menuEdit -> {
-                                val fragment: Fragment =
-                                    AddEditTodoFragment.newInstance(todoMenu).apply {
-                                        enterTransition = Slide(Gravity.BOTTOM)
-                                    }
-
-                                parentFragmentManager.beginTransaction().apply {
-                                    add(
-                                        R.id.mainContainer,
-                                        fragment,
-                                        Constants.FragmentTag.ADD_EDIT_TODO
-                                    )
-                                    addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO)
-                                }.commit()
-                            }
-
-                            R.id.menuDetail -> {
-                                val fragment: Fragment =
-                                    TodoDetailFragment.newInstance(todoMenu).apply {
-                                        enterTransition = Slide(Gravity.BOTTOM)
-                                    }
-
-                                parentFragmentManager.beginTransaction().apply {
-                                    add(
-                                        R.id.mainContainer,
-                                        fragment,
-                                        Constants.FragmentTag.TODO_DETAIL
-                                    )
-
-                                    addToBackStack(Constants.FragmentTag.TODO_DETAIL)
-                                }.commit()
-                            }
-
-                            R.id.menuShare -> {
-                                shareController.apply {
-                                    shareString(activity, prepareShareTodoContent(todoMenu))
-                                }
-                            }
-
-                            R.id.menuAdvencedShare -> {}
-
-                            R.id.menuDelete -> {
-                                DeleteDialog(iContext).apply {
-                                    show()
-
-                                    setTitle(provideResource.getString(R.string.delete_todo))
-
-                                    var todoTitle = todoMenu.title ?: ""
-                                    if (todoTitle.trim().length > 30)
-                                        todoTitle =
-                                            todoTitle.substring(0, 30)
-                                                .trim() + provideResource.getString(R.string.ellipsis)
-
-                                    setMessage(
-                                        provideResource.getString(
-                                            R.string.delete_todo_message,
-                                            todoTitle
-                                        )
-                                    )
-
-                                    onClickDelete = {
-                                        if (todoMenu.arriveDate != 0L)
-                                            notificationViewModel.cancelAlarm(todoMenu)
-
-                                        todoViewModel.deleteTodo(todoMenu)
-                                        scrollBehavior!!.slideUp(binding.frameLytButton)
-
-                                        dismiss()
-                                    }
-                                }
-                            }
-                        }
-                    }
-                )
-
-                popupMaker.apply {
-                    popup?.changeTextColorOfItem(
-                        4,
-                        provideResource.getString(R.string.delete),
-                        provideResource.getColor(R.color.red)
-                    )
-                }
+                showPopupMenuItem(todoMenu, menuView, wholeItem, coordinatePoint, true)
             }
         )
 
@@ -414,6 +320,169 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
         binding.rvTodo.apply {
             this.layoutManager = layoutManager
             adapter = this@HomeFragment.adapter
+        }
+    }
+
+    private fun showPopupMenuItem(
+        todoMenu: Todo,
+        menuView: View,
+        wholeItem: View,
+        coordinatePoint: Point?,
+        isFirstShow: Boolean
+    ) {
+        val popup = popupMaker.showMenu(
+            anchor = menuView,
+
+            coordinatePoint = coordinatePoint,
+
+            viewToDim = binding.root,
+
+            nonDimItem = wholeItem,
+
+            menuRes = R.menu.popup_menu_todo_item,
+
+            isFirstShow = isFirstShow,
+
+            onMenuItemClick = itemClicked@{ menuItem ->
+                when (menuItem.itemId) {
+                    R.id.menuTickDone -> {
+                        todoViewModel.setDoneTodo(todoMenu.id.toLong())
+                    }
+
+                    R.id.menuEdit -> {
+                        val fragment: Fragment =
+                            AddEditTodoFragment.newInstance(todoMenu).apply {
+                                enterTransition = Slide(Gravity.BOTTOM)
+                            }
+
+                        parentFragmentManager.beginTransaction().apply {
+                            add(
+                                R.id.mainContainer,
+                                fragment,
+                                Constants.FragmentTag.ADD_EDIT_TODO
+                            )
+                            addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO)
+                        }.commit()
+                    }
+
+                    R.id.menuDetail -> {
+                        val fragment: Fragment =
+                            TodoDetailFragment.newInstance(todoMenu).apply {
+                                enterTransition = Slide(Gravity.BOTTOM)
+                            }
+
+                        parentFragmentManager.beginTransaction().apply {
+                            add(
+                                R.id.mainContainer,
+                                fragment,
+                                Constants.FragmentTag.TODO_DETAIL
+                            )
+
+                            addToBackStack(Constants.FragmentTag.TODO_DETAIL)
+                        }.commit()
+                    }
+
+                    R.id.menuShare -> {
+                        popupMaker.prepareForNestedMenu()
+
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            val sharePopup = popupMaker.showMenu(
+                                anchor = menuView,
+
+                                coordinatePoint = coordinatePoint,
+
+                                viewToDim = binding.root,
+
+                                nonDimItem = wholeItem,
+
+                                menuRes = R.menu.popup_menu_share_detail,
+
+                                isFirstShow = false,
+
+                                onMenuItemClick = { shareMenuItem ->
+                                    when (shareMenuItem.itemId) {
+                                        R.id.menuNormalShare -> {
+                                            shareController.apply {
+                                                shareString(
+                                                    activity,
+                                                    prepareShareTodoContent(todoMenu)
+                                                )
+                                            }
+                                        }
+
+                                        R.id.menuAdvencedShare -> {
+
+                                        }
+
+                                        R.id.menuBack -> {
+                                            popupMaker.prepareForNestedMenu()
+                                            Handler(Looper.getMainLooper()).postDelayed({
+                                                showPopupMenuItem(
+                                                    todoMenu,
+                                                    menuView,
+                                                    wholeItem,
+                                                    coordinatePoint,
+                                                    false
+                                                )
+                                            }, 0)
+                                        }
+                                    }
+                                }
+                            )
+
+                            popupMaker.apply {
+                                sharePopup?.changeTextColorOfItem(
+                                    0,
+                                    provideResource.getString(R.string.share_type),
+                                    provideResource.getColor(R.color.gray_text)
+                                )
+                            }
+                        }, 0)
+                    }
+
+                    R.id.menuDelete -> {
+                        DeleteDialog(iContext).apply {
+                            show()
+
+                            setTitle(provideResource.getString(R.string.delete_todo))
+
+                            var todoTitle = todoMenu.title ?: ""
+                            if (todoTitle.trim().length > 30)
+                                todoTitle =
+                                    todoTitle.substring(0, 30)
+                                        .trim() + provideResource.getString(R.string.ellipsis)
+
+                            setMessage(
+                                provideResource.getString(
+                                    R.string.delete_todo_message,
+                                    todoTitle
+                                )
+                            )
+
+                            onClickDelete = {
+                                if (todoMenu.arriveDate != 0L)
+                                    notificationViewModel.cancelAlarm(todoMenu)
+
+                                todoViewModel.deleteTodo(todoMenu)
+                                scrollBehavior!!.slideUp(binding.frameLytButton)
+
+                                dismiss()
+                            }
+                        }
+                    }
+                }
+            }
+        )
+
+        popupMaker.apply {
+            popup?.changeTextColorOfItem(
+                4,
+                provideResource.getString(R.string.delete),
+                provideResource.getColor(R.color.red)
+            )
+
+            if (todoMenu.isDone)
+                popup?.setVisibilityMenuItem(0, false)
         }
     }
 

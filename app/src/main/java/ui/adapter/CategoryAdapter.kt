@@ -1,7 +1,10 @@
 package ui.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Point
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -12,7 +15,7 @@ import model.Category
 
 class CategoryAdapter(
     private val context: Context,
-    private val onClickMenuListener: (category: Category, anchor: View, wholeItem: View) -> Unit
+    private val onClickMenuListener: (category: Category, anchor: View, wholeItem: View, coordinatePoint: Point?) -> Unit
 ) : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
 
     val differ: AsyncListDiffer<Category>
@@ -52,12 +55,25 @@ class CategoryAdapter(
     inner class ViewHolder(private val binding: ItemCategoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        @SuppressLint("ClickableViewAccessibility")
         fun bind(
             category: Category,
-            onClickMenuListener: (category: Category, anchor: View, wholeItem: View) -> Unit
+            onClickMenuListener: (category: Category, anchor: View, wholeItem: View, coordinatePoint: Point?) -> Unit
         ) {
             binding.aImgMenu.setOnClickListener {
-                onClickMenuListener(category, it, binding.root)
+                onClickMenuListener(category, it, binding.root, null)
+            }
+
+            var rawClickPoint: Point? = null
+            binding.root.setOnTouchListener { _, event ->
+                if (event.actionMasked == MotionEvent.ACTION_DOWN)
+                    rawClickPoint = Point(event.rawX.toInt(), event.rawY.toInt())
+
+                return@setOnTouchListener false
+            }
+
+            binding.root.setOnClickListener {
+                onClickMenuListener(category, it, binding.root, rawClickPoint)
             }
 
             binding.txtTitle.text = category.name

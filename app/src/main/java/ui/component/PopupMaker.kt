@@ -31,6 +31,10 @@ class PopupMaker @Inject constructor(
 
     private var clicked = false
 
+    private var viewToDim: ViewGroup? = null
+
+    private var isNestedMenu = false
+
     @SuppressLint("RestrictedApi")
     fun showMenu(
         anchor: View,
@@ -39,6 +43,7 @@ class PopupMaker @Inject constructor(
         nonDimItem: View? = null,
         @MenuRes menuRes: Int,
         isRtl: Boolean = true,
+        isFirstShow: Boolean = true,
         gravity: Int = Gravity.START,
         onMenuItemClick: (MenuItem) -> Unit,
         onDismiss: (() -> Unit)? = null
@@ -48,8 +53,11 @@ class PopupMaker @Inject constructor(
 
         clicked = true
 
+        this.viewToDim = viewToDim
+
         viewToDim?.let {
-            dimView.applyBlurDim(it, nonDimItem)
+            if (!isNestedMenu && isFirstShow)
+                dimView.applyBlurDim(it, nonDimItem)
         }
 
 
@@ -91,7 +99,10 @@ class PopupMaker @Inject constructor(
                 root?.removeView(tempAnchor)
 
                 viewToDim?.let {
-                    dimView.clearDim(it)
+                    if (!isNestedMenu)
+                        dimView.clearDim(it)
+
+                    isNestedMenu = false
                 }
 
                 onDismiss?.invoke()
@@ -136,6 +147,10 @@ class PopupMaker @Inject constructor(
         return popup
     }
 
+    fun prepareForNestedMenu() {
+        isNestedMenu = true
+    }
+
     fun PopupMenu.changeTextColorOfItem(position: Int, title: String, color: Int) {
         val item = this.menu.getItem(position)
         this.changeTextColorOfItem(item, title, color)
@@ -145,6 +160,30 @@ class PopupMaker @Inject constructor(
         val span = SpannableString(title)
         span.setSpan(ForegroundColorSpan(color), 0, span.length, 0)
         item.title = span
+    }
+
+    fun PopupMenu.setVisibilityMenuItem(position: Int, isVisible: Boolean) {
+        val item = this.menu.getItem(position)
+        this.setVisibilityMenuItem(item, isVisible)
+    }
+
+    fun PopupMenu.setVisibilityMenuItem(item: MenuItem, isVisible: Boolean) {
+        item.isVisible = isVisible
+    }
+
+    fun PopupMenu.setEnableMenuItem(position: Int, isEnable: Boolean) {
+        val item = this.menu.getItem(position)
+        this.setEnableMenuItem(item, isEnable)
+    }
+
+    fun PopupMenu.setEnableMenuItem(item: MenuItem, isEnable: Boolean) {
+        item.isEnabled = isEnable
+    }
+
+    fun clearAllDim() {
+        viewToDim?.let {
+            dimView.clearDim(it)
+        }
     }
 
     private val Number.dp2px: Int

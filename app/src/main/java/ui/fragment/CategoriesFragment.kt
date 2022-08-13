@@ -1,6 +1,7 @@
 package ui.fragment
 
 import android.content.Context
+import android.graphics.Point
 import android.os.Handler
 import android.os.Looper
 import android.transition.Slide
@@ -162,10 +163,12 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
         adapter = CategoryAdapter(
             iContext,
 
-            onClickMenuListener = { category: Category, anchor: View, wholeItem: View ->
+            onClickMenuListener = { category: Category, anchor: View, wholeItem: View, coordinatePoint: Point? ->
 
                 val popup = popupMaker.showMenu(
                     anchor = anchor,
+
+                    coordinatePoint = coordinatePoint,
 
                     viewToDim = binding.root,
 
