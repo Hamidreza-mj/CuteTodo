@@ -69,6 +69,8 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
     @Inject
     lateinit var dimView: DimView
 
+    private var moreDialog: ShowMoreDialog? = null
+
     companion object {
         @JvmStatic
         fun newInstance(): HomeFragment {
@@ -293,15 +295,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
         }
 
         binding.mBtnAdd.setOnClickListener {
-            val fragment: Fragment = AddEditTodoFragment.newInstance(null).apply {
-                enterTransition = Slide(Gravity.BOTTOM)
-            }
-
-            parentFragmentManager.beginTransaction().apply {
-                add(R.id.mainContainer, fragment, Constants.FragmentTag.ADD_EDIT_TODO)
-
-                addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO)
-            }.commit()
+            openAddEditFragment()
         }
 
 
@@ -313,7 +307,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
             iContext,
 
             onCheckChangedListener = { todoID: Int ->
-                todoViewModel.setDoneTodo(todoID.toLong())
+                doneTodo(todoID)
             },
 
             onClickMenuListener = { todoMenu: Todo, menuView: View, wholeItem: View, coordinatePoint: Point? ->
@@ -321,42 +315,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
             },
 
             onClickMoreListener = { todoMore ->
-                ShowMoreDialog(iContext).apply {
-                    show()
-
-                    setMessage(todoMore.title)
-
-                    onShowDialog = {
-                        binding.root.postOnAnimation {
-                            dimView.applyBlurDim(binding.root)
-                        }
-                    }
-
-                    onDismissDialog = {
-                        binding.root.postOnAnimation {
-                            dimView.clearDim(binding.root)
-                        }
-                    }
-
-                    onClickOpen = {
-                        dismiss()
-
-                        val fragment: Fragment =
-                            TodoDetailFragment.newInstance(todoMore).apply {
-                                enterTransition = Slide(Gravity.BOTTOM)
-                            }
-
-                        parentFragmentManager.beginTransaction().apply {
-                            add(
-                                R.id.mainContainer,
-                                fragment,
-                                Constants.FragmentTag.TODO_DETAIL
-                            )
-
-                            addToBackStack(Constants.FragmentTag.TODO_DETAIL)
-                        }.commit()
-                    }
-                }
+                openMoreDialog(todoMore)
             }
         )
 
@@ -364,6 +323,129 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
         binding.rvTodo.apply {
             this.layoutManager = layoutManager
             adapter = this@HomeFragment.adapter
+        }
+    }
+
+    private fun openMoreDialog(todo: Todo) {
+        moreDialog?.dismiss()
+
+        moreDialog = ShowMoreDialog(iContext).apply {
+            show()
+
+            setMessage(todo.title)
+            isDone(todo.isDone)
+
+            onShowDialog = {
+                binding.root.postOnAnimation {
+                    dimView.applyBlurDim(binding.root)
+                }
+            }
+
+            onDismissDialog = {
+                binding.root.postOnAnimation {
+                    dimView.clearDim(binding.root)
+                }
+            }
+
+            //actions
+            onClickDelete = {
+                openDeleteDialog(todo)
+            }
+
+            onClickEdit = {
+                dismiss()
+                openAddEditFragment(todo)
+            }
+
+            onClickDone = {
+                doneTodo(todo.id)
+                showConfetti()
+            }
+
+            onClickShare = { view ->
+                val sharePopup = popupMaker.showMenu(
+                    anchor = view,
+
+                    menuRes = R.menu.popup_menu_share_detail,
+
+                    gravity = Gravity.END,
+
+                    onMenuItemClick = itemClicked@{ menuItem ->
+                        when (menuItem.itemId) {
+                            R.id.menuNormalShare -> {
+                                shareController.apply {
+                                    shareString(activity, prepareShareTodoContent(todo))
+                                }
+                            }
+
+                            R.id.menuAdvencedShare -> {
+
+                            }
+                        }
+                    }
+                )
+
+                popupMaker.apply {
+                    sharePopup?.setVisibilityMenuItem(0, false)
+                }
+            }
+
+            onClickDetail = {
+                dismiss()
+                openTodoDetailFragment(todo)
+            }
+        }
+    }
+
+    private fun doneTodo(todoID: Int) {
+        todoViewModel.setDoneTodo(todoID.toLong())
+    }
+
+    private fun openAddEditFragment(todo: Todo? = null) {
+        val fragment: Fragment =
+            AddEditTodoFragment.newInstance(todo).apply {
+                enterTransition = Slide(Gravity.BOTTOM)
+            }
+
+        parentFragmentManager.beginTransaction().apply {
+            add(
+                R.id.mainContainer,
+                fragment,
+                Constants.FragmentTag.ADD_EDIT_TODO
+            )
+            addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO)
+        }.commit()
+    }
+
+    private fun openDeleteDialog(todo: Todo) {
+        DeleteDialog(iContext).apply {
+            show()
+
+            setTitle(provideResource.getString(R.string.delete_todo))
+
+            var todoTitle = todo.title ?: ""
+            if (todoTitle.trim().length > 30)
+                todoTitle =
+                    todoTitle.substring(0, 30)
+                        .trim() + provideResource.getString(R.string.ellipsis)
+
+            setMessage(
+                provideResource.getString(
+                    R.string.delete_todo_message,
+                    todoTitle
+                )
+            )
+
+            onClickDelete = {
+                if (todo.arriveDate != 0L)
+                    notificationViewModel.cancelAlarm(todo)
+
+                todoViewModel.deleteTodo(todo)
+                scrollBehavior!!.slideUp(binding.frameLytButton)
+
+                moreDialog?.dismiss()
+                dismiss()
+            }
         }
     }
 
@@ -390,40 +472,19 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
             onMenuItemClick = itemClicked@{ menuItem ->
                 when (menuItem.itemId) {
                     R.id.menuTickDone -> {
-                        todoViewModel.setDoneTodo(todoMenu.id.toLong())
+                        doneTodo(todoMenu.id)
                     }
 
                     R.id.menuEdit -> {
-                        val fragment: Fragment =
-                            AddEditTodoFragment.newInstance(todoMenu).apply {
-                                enterTransition = Slide(Gravity.BOTTOM)
-                            }
-
-                        parentFragmentManager.beginTransaction().apply {
-                            add(
-                                R.id.mainContainer,
-                                fragment,
-                                Constants.FragmentTag.ADD_EDIT_TODO
-                            )
-                            addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO)
-                        }.commit()
+                        openAddEditFragment(todoMenu)
                     }
 
                     R.id.menuDetail -> {
-                        val fragment: Fragment =
-                            TodoDetailFragment.newInstance(todoMenu).apply {
-                                enterTransition = Slide(Gravity.BOTTOM)
-                            }
+                        openTodoDetailFragment(todoMenu)
+                    }
 
-                        parentFragmentManager.beginTransaction().apply {
-                            add(
-                                R.id.mainContainer,
-                                fragment,
-                                Constants.FragmentTag.TODO_DETAIL
-                            )
-
-                            addToBackStack(Constants.FragmentTag.TODO_DETAIL)
-                        }.commit()
+                    R.id.menuFastShow -> {
+                        openMoreDialog(todoMenu)
                     }
 
                     R.id.menuShare -> {
@@ -485,34 +546,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                     }
 
                     R.id.menuDelete -> {
-                        DeleteDialog(iContext).apply {
-                            show()
-
-                            setTitle(provideResource.getString(R.string.delete_todo))
-
-                            var todoTitle = todoMenu.title ?: ""
-                            if (todoTitle.trim().length > 30)
-                                todoTitle =
-                                    todoTitle.substring(0, 30)
-                                        .trim() + provideResource.getString(R.string.ellipsis)
-
-                            setMessage(
-                                provideResource.getString(
-                                    R.string.delete_todo_message,
-                                    todoTitle
-                                )
-                            )
-
-                            onClickDelete = {
-                                if (todoMenu.arriveDate != 0L)
-                                    notificationViewModel.cancelAlarm(todoMenu)
-
-                                todoViewModel.deleteTodo(todoMenu)
-                                scrollBehavior!!.slideUp(binding.frameLytButton)
-
-                                dismiss()
-                            }
-                        }
+                        openDeleteDialog(todoMenu)
                     }
                 }
             }
@@ -520,14 +554,31 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
 
         popupMaker.apply {
             popup?.changeTextColorOfItem(
-                4,
+                5,
                 provideResource.getString(R.string.delete),
                 provideResource.getColor(R.color.red)
             )
 
-            if (todoMenu.isDone)
-                popup?.setVisibilityMenuItem(0, false)
+            //if (todoMenu.isDone)
+            popup?.setVisibilityMenuItem(0, false)
         }
+    }
+
+    private fun openTodoDetailFragment(todo: Todo) {
+        val fragment: Fragment =
+            TodoDetailFragment.newInstance(todo).apply {
+                enterTransition = Slide(Gravity.BOTTOM)
+            }
+
+        parentFragmentManager.beginTransaction().apply {
+            add(
+                R.id.mainContainer,
+                fragment,
+                Constants.FragmentTag.TODO_DETAIL
+            )
+
+            addToBackStack(Constants.FragmentTag.TODO_DETAIL)
+        }.commit()
     }
 
     private fun handleObserver() {

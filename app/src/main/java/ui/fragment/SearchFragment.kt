@@ -65,6 +65,8 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
     @Inject
     lateinit var dimView: DimView
 
+    private var moreDialog: ShowMoreDialog? = null
+
     companion object {
         @JvmStatic
         fun newInstance(): SearchFragment {
@@ -273,8 +275,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
             iContext,
 
             onCheckChangedListener = { todoID: Int ->
-                todoViewModel.setDoneTodo(todoID.toLong())
-                searchViewModel.fetch()
+                doneTodo(todoID)
             },
 
             onClickMenuListener = { todoMenu: Todo, menuView: View, wholeItem: View, coordinatePoint: Point? ->
@@ -282,43 +283,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
             },
 
             onClickMoreListener = { todoMore ->
-                ShowMoreDialog(iContext).apply {
-                    show()
-
-                    setMessage(todoMore.title)
-
-                    onShowDialog = {
-                        binding.root.postOnAnimation {
-                            dimView.applyBlurDim(binding.root)
-                        }
-                    }
-
-                    onDismissDialog = {
-                        binding.root.postOnAnimation {
-                            dimView.clearDim(binding.root)
-                        }
-                    }
-
-
-                    onClickOpen = {
-                        dismiss()
-
-                        val fragment: Fragment =
-                            TodoDetailFragment.newInstance(todoMore).apply {
-                                enterTransition = Slide(Gravity.BOTTOM)
-                            }
-
-                        parentFragmentManager.beginTransaction().apply {
-                            add(
-                                R.id.mainContainer,
-                                fragment,
-                                Constants.FragmentTag.TODO_DETAIL
-                            )
-
-                            addToBackStack(Constants.FragmentTag.TODO_DETAIL)
-                        }.commit()
-                    }
-                }
+                openMoreDialog(todoMore)
             }
         )
 
@@ -326,6 +291,59 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
         binding.rvSearch.apply {
             this.layoutManager = layoutManager
             adapter = this@SearchFragment.adapter
+        }
+    }
+
+    private fun doneTodo(todoID: Int) {
+        todoViewModel.setDoneTodo(todoID.toLong())
+        searchViewModel.fetch()
+    }
+
+    private fun openAddEditFragment(todo: Todo? = null) {
+        val fragment: Fragment =
+            AddEditTodoFragment.newInstance(todo).apply {
+                enterTransition = Slide(Gravity.BOTTOM)
+            }
+
+        parentFragmentManager.beginTransaction().apply {
+            add(
+                R.id.mainContainer,
+                fragment,
+                Constants.FragmentTag.ADD_EDIT_TODO
+            )
+            addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO)
+        }.commit()
+    }
+
+    private fun openDeleteDialog(todo: Todo) {
+        DeleteDialog(iContext).apply {
+            show()
+
+            setTitle(provideResource.getString(R.string.delete_todo))
+
+            var todoTitle = todo.title ?: ""
+            if (todoTitle.trim().length > 30)
+                todoTitle =
+                    todoTitle.substring(0, 30)
+                        .trim() + provideResource.getString(R.string.ellipsis)
+
+            setMessage(
+                provideResource.getString(
+                    R.string.delete_todo_message,
+                    todoTitle
+                )
+            )
+
+            onClickDelete = {
+                if (todo.arriveDate != 0L)
+                    notificationViewModel.cancelAlarm(todo)
+
+                todoViewModel.deleteTodo(todo)
+                searchViewModel.fetch()
+
+                moreDialog?.dismiss()
+                dismiss()
+            }
         }
     }
 
@@ -352,41 +370,19 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
             onMenuItemClick = itemClicked@{ menuItem ->
                 when (menuItem.itemId) {
                     R.id.menuTickDone -> {
-                        todoViewModel.setDoneTodo(todoMenu.id.toLong())
-                        searchViewModel.fetch()
+                        doneTodo(todoMenu.id)
                     }
 
                     R.id.menuEdit -> {
-                        val fragment: Fragment =
-                            AddEditTodoFragment.newInstance(todoMenu).apply {
-                                enterTransition = Slide(Gravity.BOTTOM)
-                            }
-
-                        parentFragmentManager.beginTransaction().apply {
-                            add(
-                                R.id.mainContainer,
-                                fragment,
-                                Constants.FragmentTag.ADD_EDIT_TODO
-                            )
-                            addToBackStack(Constants.FragmentTag.ADD_EDIT_TODO)
-                        }.commit()
+                        openAddEditFragment(todoMenu)
                     }
 
                     R.id.menuDetail -> {
-                        val fragment: Fragment =
-                            TodoDetailFragment.newInstance(todoMenu).apply {
-                                enterTransition = Slide(Gravity.BOTTOM)
-                            }
+                        openTodoDetailFragment(todoMenu)
+                    }
 
-                        parentFragmentManager.beginTransaction().apply {
-                            add(
-                                R.id.mainContainer,
-                                fragment,
-                                Constants.FragmentTag.TODO_DETAIL
-                            )
-
-                            addToBackStack(Constants.FragmentTag.TODO_DETAIL)
-                        }.commit()
+                    R.id.menuFastShow -> {
+                        openMoreDialog(todoMenu)
                     }
 
                     R.id.menuShare -> {
@@ -448,34 +444,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                     }
 
                     R.id.menuDelete -> {
-                        DeleteDialog(iContext).apply {
-                            show()
-
-                            setTitle(provideResource.getString(R.string.delete_todo))
-
-                            var todoTitle = todoMenu.title ?: ""
-                            if (todoTitle.trim().length > 30)
-                                todoTitle =
-                                    todoTitle.substring(0, 30)
-                                        .trim() + provideResource.getString(R.string.ellipsis)
-
-                            setMessage(
-                                provideResource.getString(
-                                    R.string.delete_todo_message,
-                                    todoTitle
-                                )
-                            )
-
-                            onClickDelete = {
-                                if (todoMenu.arriveDate != 0L)
-                                    notificationViewModel.cancelAlarm(todoMenu)
-
-                                todoViewModel.deleteTodo(todoMenu)
-                                searchViewModel.fetch()
-
-                                dismiss()
-                            }
-                        }
+                        openDeleteDialog(todoMenu)
                     }
                 }
             }
@@ -483,14 +452,102 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
 
         popupMaker.apply {
             popup?.changeTextColorOfItem(
-                4,
+                5,
                 provideResource.getString(R.string.delete),
                 provideResource.getColor(R.color.red)
             )
 
-            if (todoMenu.isDone)
-                popup?.setVisibilityMenuItem(0, false)
+            //if (todoMenu.isDone)
+            popup?.setVisibilityMenuItem(0, false)
         }
+    }
+
+    private fun openMoreDialog(todo: Todo) {
+        moreDialog?.dismiss()
+
+        moreDialog = ShowMoreDialog(iContext).apply {
+            show()
+
+            setMessage(todo.title)
+            isDone(todo.isDone)
+
+            onShowDialog = {
+                binding.root.postOnAnimation {
+                    dimView.applyBlurDim(binding.root)
+                }
+            }
+
+            onDismissDialog = {
+                binding.root.postOnAnimation {
+                    dimView.clearDim(binding.root)
+                }
+            }
+
+            //actions
+            onClickDelete = {
+                openDeleteDialog(todo)
+            }
+
+            onClickEdit = {
+                dismiss()
+                openAddEditFragment(todo)
+            }
+
+            onClickDone = {
+                doneTodo(todo.id)
+                showConfetti()
+            }
+
+            onClickShare = { view ->
+                val sharePopup = popupMaker.showMenu(
+                    anchor = view,
+
+                    menuRes = R.menu.popup_menu_share_detail,
+
+                    gravity = Gravity.END,
+
+                    onMenuItemClick = itemClicked@{ menuItem ->
+                        when (menuItem.itemId) {
+                            R.id.menuNormalShare -> {
+                                shareController.apply {
+                                    shareString(activity, prepareShareTodoContent(todo))
+                                }
+                            }
+
+                            R.id.menuAdvencedShare -> {
+
+                            }
+                        }
+                    }
+                )
+
+                popupMaker.apply {
+                    sharePopup?.setVisibilityMenuItem(0, false)
+                }
+            }
+
+            onClickDetail = {
+                dismiss()
+                openTodoDetailFragment(todo)
+            }
+        }
+    }
+
+    private fun openTodoDetailFragment(todo: Todo) {
+        val fragment: Fragment =
+            TodoDetailFragment.newInstance(todo).apply {
+                enterTransition = Slide(Gravity.BOTTOM)
+            }
+
+        parentFragmentManager.beginTransaction().apply {
+            add(
+                R.id.mainContainer,
+                fragment,
+                Constants.FragmentTag.TODO_DETAIL
+            )
+
+            addToBackStack(Constants.FragmentTag.TODO_DETAIL)
+        }.commit()
     }
 
     private fun handleObserver() {

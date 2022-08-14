@@ -21,6 +21,12 @@
         app:iconTint="@color/black" />
 
     <item
+        android:id="@+id/menuFastShow"
+        android:icon="@drawable/ic_discovery_fastshow"
+        android:title="@string/fastShow"
+        app:iconTint="@color/black" />
+
+    <item
         android:id="@+id/menuShare"
         android:icon="@drawable/ic_send"
         android:title="@string/share"

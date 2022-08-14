@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <com.aghajari.rlottie.AXrLottieImageView
+        android:id="@+id/confetti"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:translationZ="30dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
@@ -15,17 +27,46 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.85">
+        app:layout_constraintWidth_percent="0.9">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/aImgClose"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="@string/close"
+                android:focusable="true"
+                android:padding="11dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_close_simple"
+                tools:ignore="TouchTargetSizeCheck" />
+
+            <TextView
+                android:id="@+id/txtEdit"
+                style="@style/Fa_Black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/fastShow"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/aImgClose"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/aImgClose" />
+
             <ScrollView
                 android:id="@+id/scrollView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:fadingEdge="vertical"
                 android:fadingEdgeLength="20dp"
                 android:overScrollMode="never"
@@ -34,9 +75,9 @@
                 android:scrollbarThumbVertical="@drawable/scrollbar"
                 android:scrollbars="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHeight_percent="0.75"
+                app:layout_constraintHeight_percent="0.78"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/aImgClose">
 
                 <TextView
                     android:id="@+id/txtTodo"
@@ -50,67 +91,98 @@
                     android:paddingHorizontal="13dp"
                     android:paddingTop="10dp"
                     android:paddingBottom="40dp"
-                    android:text="@string/large_lorem"
-                    android:textColor="@color/black"
+                    android:text=""
+                    android:textColor="#393939"
                     android:textColorLink="@color/blue"
                     android:textIsSelectable="true" />
 
             </ScrollView>
 
-            <View
-                android:id="@+id/line1"
+            <LinearLayout
+                android:id="@+id/lytActions"
                 android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_marginVertical="0dp"
-                android:background="@color/line_color"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/scrollView" />
-
-            <TextView
-                android:id="@+id/txtOpenDetail"
-                style="@style/TextMD14"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:background="@color/white"
+                android:elevation="8dp"
                 android:gravity="center"
-                android:padding="13dp"
-                android:text="@string/open_detail"
-                android:textColor="@color/blue"
-                android:textSize="15sp"
+                android:orientation="horizontal"
+                android:paddingVertical="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/line1" />
+                app:layout_constraintTop_toBottomOf="@id/scrollView">
 
-            <View
-                android:id="@+id/line2"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_marginVertical="0dp"
-                android:background="@color/line_color"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txtOpenDetail" />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/aImgDelete"
+                    android:layout_width="@dimen/actionImgSize"
+                    android:layout_height="@dimen/actionImgSize"
+                    android:layout_marginHorizontal="@dimen/actionImgMargin"
+                    android:background="@drawable/ripple_icon_red"
+                    android:clickable="true"
+                    android:contentDescription="حذف کار"
+                    android:focusable="true"
+                    android:padding="10dp"
+                    android:tint="@color/red"
+                    app:srcCompat="@drawable/ic_delete"
+                    tools:ignore="HardcodedText,DuplicateSpeakableTextCheck,TouchTargetSizeCheck" />
 
-            <TextView
-                android:id="@+id/txtClose"
-                style="@style/TextRG16"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center"
-                android:padding="13dp"
-                android:text="@string/close"
-                android:textColor="@color/gray_text"
-                android:textSize="15sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/line2" />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/aImgEdit"
+                    android:layout_width="@dimen/actionImgSize"
+                    android:layout_height="@dimen/actionImgSize"
+                    android:layout_marginHorizontal="@dimen/actionImgMargin"
+                    android:background="@drawable/ripple_icon_orange"
+                    android:clickable="true"
+                    android:contentDescription="ویرایش کار"
+                    android:focusable="true"
+                    android:padding="9dp"
+                    android:tint="@color/orange"
+                    app:srcCompat="@drawable/ic_edit"
+                    tools:ignore="HardcodedText,TouchTargetSizeCheck,ImageContrastCheck" />
 
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/aImgDone"
+                    android:layout_width="@dimen/actionImgSize"
+                    android:layout_height="@dimen/actionImgSize"
+                    android:layout_marginHorizontal="@dimen/actionImgMargin"
+                    android:background="@drawable/ripple_icon_green"
+                    android:clickable="true"
+                    android:contentDescription="انجام کار"
+                    android:focusable="true"
+                    android:padding="9dp"
+                    android:tint="@color/green"
+                    app:srcCompat="@drawable/ic_simple_tick_big"
+                    tools:ignore="HardcodedText,TouchTargetSizeCheck,ImageContrastCheck" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/aImgShare"
+                    android:layout_width="@dimen/actionImgSize"
+                    android:layout_height="@dimen/actionImgSize"
+                    android:layout_marginHorizontal="@dimen/actionImgMargin"
+                    android:background="@drawable/ripple_icon_blue"
+                    android:clickable="true"
+                    android:contentDescription="ارسال کار"
+                    android:focusable="true"
+                    android:padding="10dp"
+                    android:tint="@color/blue"
+                    app:srcCompat="@drawable/ic_send"
+                    tools:ignore="HardcodedText,TouchTargetSizeCheck" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/aImgDetail"
+                    android:layout_width="@dimen/actionImgSize"
+                    android:layout_height="@dimen/actionImgSize"
+                    android:layout_marginHorizontal="@dimen/actionImgMargin"
+                    android:background="@drawable/ripple_icon_black"
+                    android:clickable="true"
+                    android:contentDescription="جزییات کار"
+                    android:focusable="true"
+                    android:padding="9dp"
+                    android:tint="@color/black"
+                    app:srcCompat="@drawable/ic_detail"
+                    tools:ignore="HardcodedText,TouchTargetSizeCheck" />
+
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -26,6 +26,7 @@
         <entry key="app/src/main/res/drawable/ic_delete.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_delete_all_done.xml" value="0.1785" />
         <entry key="app/src/main/res/drawable/ic_detail.xml" value="0.1785" />
+        <entry key="app/src/main/res/drawable/ic_discovery_fastshow.xml" value="0.1785" />
         <entry key="app/src/main/res/drawable/ic_edit.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_expand.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ic_filter.xml" value="0.31979166666666664" />
@@ -53,7 +54,9 @@
         <entry key="app/src/main/res/drawable/priority_normal_shape.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/radiobutton.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/rec.xml" value="0.31979166666666664" />
+        <entry key="app/src/main/res/drawable/ripple_icon_black.xml" value="0.1785" />
         <entry key="app/src/main/res/drawable/ripple_icon_blue.xml" value="0.31979166666666664" />
+        <entry key="app/src/main/res/drawable/ripple_icon_green.xml" value="0.1785" />
         <entry key="app/src/main/res/drawable/ripple_icon_orange.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ripple_icon_red.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/drawable/ripple_radius.xml" value="0.31979166666666664" />
@@ -71,7 +74,7 @@
         <entry key="app/src/main/res/layout/dialog_global_menu.xml" value="0.33" />
         <entry key="app/src/main/res/layout/dialog_more.xml" value="0.25" />
         <entry key="app/src/main/res/layout/dialog_reminder_guide.xml" value="0.22" />
-        <entry key="app/src/main/res/layout/dialog_show_more.xml" value="0.24084621643612694" />
+        <entry key="app/src/main/res/layout/dialog_show_more.xml" value="0.25" />
         <entry key="app/src/main/res/layout/dialog_warning_date.xml" value="0.30364583333333334" />
         <entry key="app/src/main/res/layout/fragment_add_edit_category.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_add_edit_todo.xml" value="0.25" />
@@ -80,6 +83,7 @@
         <entry key="app/src/main/res/layout/fragment_categories.xml" value="0.30364583333333334" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.26805555555555555" />
         <entry key="app/src/main/res/layout/fragment_search.xml" value="0.26805555555555555" />
+        <entry key="app/src/main/res/layout/fragment_show_notification.xml" value="0.2740740740740741" />
         <entry key="app/src/main/res/layout/fragment_todo_detail.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_category.xml" value="0.30364583333333334" />
         <entry key="app/src/main/res/layout/item_category_filter.xml" value="0.26805555555555555" />

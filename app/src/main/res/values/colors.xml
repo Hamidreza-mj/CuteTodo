@@ -12,6 +12,7 @@
     <color name="red">#FF2E2E</color>
     <color name="whiteBlue">#E9F3FA</color>
     <color name="orange">#FF7A00</color>
+    <color name="green">#22BF29</color>
 
     <color name="blue20">#331F8EF3</color>
     <color name="orange20">#33FF7A00</color>
@@ -21,8 +22,10 @@
 
     <!-- Ripple Icon-->
     <color name="ripple_blue_icon">#801F8EF3</color>
+    <color name="ripple_black_icon">#80353535</color>
     <color name="ripple_red_icon">#80FF2E2E</color>
     <color name="ripple_orange_icon">#80FF7A00</color>
+    <color name="ripple_green_icon">#80219700</color>
 
     <!-- Light -->
     <!-- Dark -->

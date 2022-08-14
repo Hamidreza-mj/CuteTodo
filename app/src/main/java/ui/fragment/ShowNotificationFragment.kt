@@ -3,8 +3,6 @@ package ui.fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -108,7 +106,7 @@ class ShowNotificationFragment : BaseViewBindingFragment<FragmentShowNotificatio
                     .setSize(width, height)
                     .setOnLottieLoaderListener(object : AXrLottieDrawable.OnLottieLoaderListener {
                         override fun onLoaded(drawable: AXrLottieDrawable?) {
-                            Handler(Looper.myLooper()!!).postDelayed({ close() }, 3_000L)
+                            binding.root.postOnAnimationDelayed({ close() }, 3_000L)
                         }
 
                         override fun onError(drawable: AXrLottieDrawable?, error: Throwable?) {

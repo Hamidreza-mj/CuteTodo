@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/ripple_black_icon">
+
+    <!-- pressed -->
+    <item android:id="@android:id/mask">
+        <shape>
+            <solid android:color="@color/ripple_black_icon" />
+            <corners android:radius="@dimen/corner_icon_ripple" />
+        </shape>
+    </item>
+
+    <!-- normal state -->
+    <item android:drawable="@android:color/transparent" />
+</ripple>
