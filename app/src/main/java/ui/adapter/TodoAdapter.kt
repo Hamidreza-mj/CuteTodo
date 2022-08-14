@@ -20,6 +20,7 @@ class TodoAdapter(
     private val context: Context,
     private val onCheckChangedListener: (todoID: Int) -> Unit,
     private val onClickMenuListener: (todo: Todo, anchor: View, wholeItem: View, coordinatePoint: Point?) -> Unit,
+    private val onClickMoreListener: (todoMore: Todo) -> Unit,
 ) : RecyclerView.Adapter<TodoAdapter.ViewHolder>() {
 
     val differ: AsyncListDiffer<Todo>
@@ -48,7 +49,12 @@ class TodoAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(differ.currentList[position], onCheckChangedListener, onClickMenuListener)
+        holder.bind(
+            differ.currentList[position],
+            onCheckChangedListener,
+            onClickMenuListener,
+            onClickMoreListener
+        )
     }
 
     override fun getItemCount(): Int {
@@ -62,7 +68,8 @@ class TodoAdapter(
         fun bind(
             todo: Todo,
             onCheckChangedListener: (todoID: Int) -> Unit,
-            onClickMenuListener: (todo: Todo, anchor: View, wholeItem: View, coordinatePoint: Point?) -> Unit
+            onClickMenuListener: (todo: Todo, anchor: View, wholeItem: View, coordinatePoint: Point?) -> Unit,
+            onClickMoreListener: (todoMore: Todo) -> Unit
         ) {
             //must be set null
             //to avoid when recyclerview scroll, default implemented interface body called!
@@ -159,6 +166,18 @@ class TodoAdapter(
                     binding.txtNormalPriority.visibility = View.GONE
                     binding.txtHighPriority.visibility = View.GONE
                 }
+            }
+
+            binding.root.postOnAnimation {
+                if (binding.aChkBoxTitle.lineCount >= 4) {
+                    binding.txtMore.visibility = View.VISIBLE
+                } else {
+                    binding.txtMore.visibility = View.GONE
+                }
+            }
+
+            binding.txtMore.setOnClickListener {
+                onClickMoreListener(todo)
             }
         }
 

@@ -67,10 +67,11 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_show_notification.xml" value="0.25" />
         <entry key="app/src/main/res/layout/dialog_delete.xml" value="0.26805555555555555" />
-        <entry key="app/src/main/res/layout/dialog_dropdown_categories.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/dialog_dropdown_categories.xml" value="0.1" />
         <entry key="app/src/main/res/layout/dialog_global_menu.xml" value="0.33" />
         <entry key="app/src/main/res/layout/dialog_more.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/dialog_reminder_guide.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/dialog_reminder_guide.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/dialog_show_more.xml" value="0.24084621643612694" />
         <entry key="app/src/main/res/layout/dialog_warning_date.xml" value="0.30364583333333334" />
         <entry key="app/src/main/res/layout/fragment_add_edit_category.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_add_edit_todo.xml" value="0.25" />

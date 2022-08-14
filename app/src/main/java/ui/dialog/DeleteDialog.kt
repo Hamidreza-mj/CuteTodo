@@ -34,8 +34,6 @@ class DeleteDialog(context: Context?, cancelable: Boolean = true) {
 
         if (dialog == null)
             dialog = builder.create()
-
-        //dialog?.window?.setDimAmount(0f)
     }
 
     fun show() = dialog?.show()

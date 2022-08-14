@@ -27,9 +27,11 @@ import model.Category
 import model.Search
 import model.Todo
 import ui.adapter.TodoAdapter
+import ui.component.DimView
 import ui.component.PopupMaker
 import ui.component.bindingComponent.BaseViewBindingFragment
 import ui.dialog.DeleteDialog
+import ui.dialog.ShowMoreDialog
 import ui.fragment.sheet.SearchModeBottomSheet
 import utils.Constants
 import utils.KeyboardUtil.focusAndShowKeyboard
@@ -59,6 +61,9 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
     @Inject
     @ActivityContext
     lateinit var iContext: Context
+
+    @Inject
+    lateinit var dimView: DimView
 
     companion object {
         @JvmStatic
@@ -274,6 +279,46 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
 
             onClickMenuListener = { todoMenu: Todo, menuView: View, wholeItem: View, coordinatePoint: Point? ->
                 showPopupMenuItem(todoMenu, menuView, wholeItem, coordinatePoint, true)
+            },
+
+            onClickMoreListener = { todoMore ->
+                ShowMoreDialog(iContext).apply {
+                    show()
+
+                    setMessage(todoMore.title)
+
+                    onShowDialog = {
+                        binding.root.postOnAnimation {
+                            dimView.applyBlurDim(binding.root)
+                        }
+                    }
+
+                    onDismissDialog = {
+                        binding.root.postOnAnimation {
+                            dimView.clearDim(binding.root)
+                        }
+                    }
+
+
+                    onClickOpen = {
+                        dismiss()
+
+                        val fragment: Fragment =
+                            TodoDetailFragment.newInstance(todoMore).apply {
+                                enterTransition = Slide(Gravity.BOTTOM)
+                            }
+
+                        parentFragmentManager.beginTransaction().apply {
+                            add(
+                                R.id.mainContainer,
+                                fragment,
+                                Constants.FragmentTag.TODO_DETAIL
+                            )
+
+                            addToBackStack(Constants.FragmentTag.TODO_DETAIL)
+                        }.commit()
+                    }
+                }
             }
         )
 

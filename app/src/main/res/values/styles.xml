@@ -301,9 +301,16 @@
         <item name="android:dropDownVerticalOffset">-126dp</item>
     </style>-->
 
-   <!-- <style name="PopupMenuStyle" parent="@style/Widget.AppCompat.PopupMenu">
-        <item name="android:popupBackground">@drawable/popup_shape</item>
-        <item name="android:popupElevation">8dp</item>
-    </style>-->
+    <!-- <style name="PopupMenuStyle" parent="@style/Widget.AppCompat.PopupMenu">
+         <item name="android:popupBackground">@drawable/popup_shape</item>
+         <item name="android:popupElevation">8dp</item>
+     </style>-->
+
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/popup_in</item>
+        <item name="android:windowExitAnimation">@anim/popup_out</item>
+        <!-- <item name="android:windowEnterAnimation">@android:anim/slide_in_left</item>
+        <item name="android:windowExitAnimation">@android:anim/slide_out_right</item>-->
+    </style>
 
 </resources>
