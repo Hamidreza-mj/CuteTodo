@@ -169,7 +169,7 @@ class TodoAdapter(
             }
 
             binding.root.postOnAnimation {
-                if (binding.aChkBoxTitle.lineCount >= 4) {
+                if (binding.aChkBoxTitle.lineCount >= 3) {
                     binding.txtMore.visibility = View.VISIBLE
                 } else {
                     binding.txtMore.visibility = View.GONE

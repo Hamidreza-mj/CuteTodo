@@ -153,6 +153,6 @@
 
     <string name="open_notif_action">نمایش کار 🔍</string>
     <string name="open_detail">باز کردن جزییات</string>
-    <string name="show_more"><![CDATA[نمایش بیشتر >]]></string>
+    <string name="show_more"><![CDATA[نمایش بیشتر…]]></string>
 
 </resources>

@@ -43,7 +43,7 @@
                 android:layout_marginTop="5dp"
                 android:ellipsize="end"
                 android:lineSpacingMultiplier="1.3"
-                android:maxLines="4"
+                android:maxLines="3"
                 android:text=""
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/aImgMenu"
@@ -69,7 +69,6 @@
                 style="@style/TextRG14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
                 android:layout_marginStart="5dp"
                 android:gravity="center_vertical"
                 android:lines="1"
@@ -81,7 +80,7 @@
                 app:autoSizeMinTextSize="8sp"
                 app:autoSizeStepGranularity="1sp"
                 app:autoSizeTextType="uniform"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@id/aImgMenu"
                 app:layout_constraintTop_toBottomOf="@id/aChkBoxTitle" />
 
             <TextView
@@ -101,8 +100,8 @@
                 app:autoSizeStepGranularity="1sp"
                 app:autoSizeTextType="uniform"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/txtMore"
-                app:layout_constraintTop_toBottomOf="@id/aChkBoxTitle"
+                app:layout_constraintStart_toEndOf="@id/aImgMenu"
+                app:layout_constraintTop_toBottomOf="@id/txtMore"
                 tools:ignore="HardcodedText,TextContrastCheck" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
