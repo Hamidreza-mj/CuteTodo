@@ -1,10 +1,13 @@
 package viewmodel
 
 import android.view.View
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import model.Filter
 import model.Notification
 import model.Todo
@@ -18,30 +21,17 @@ class TodoViewModel @Inject constructor(
     private val notifRepo: NotificationDBRepository
 ) : ViewModel() {
 
-    val todosLiveData: LiveData<List<Todo>?> = dbRepository.todosLiveDate
+    val todosFlow: Flow<List<Todo>?> = dbRepository.getAllTodos()
 
-    private val _filterLiveData: MutableLiveData<Filter?> = MutableLiveData()
-    val filterLiveData: LiveData<Filter?> = _filterLiveData
+    private val _filterStateFlow: MutableStateFlow<Filter?> = MutableStateFlow(null)
+    val filterStateFlow: StateFlow<Filter?> = _filterStateFlow.asStateFlow()
 
-    private val _goToTopLiveData: MutableLiveData<Boolean> = MutableLiveData()
-    val goToTopLiveData: LiveData<Boolean> = _goToTopLiveData
+    //--------------channels----------------
+    private val _goToTopChannel: Channel<Boolean> = Channel()
+    val goToTopFlow: Flow<Boolean> = _goToTopChannel.receiveAsFlow()
 
     val currentFilter: Filter?
-        get() = filterLiveData.value
-
-    val todosCount: Long
-        get() = try {
-            dbRepository.todosCount()
-        } catch (e: InterruptedException) {
-            0
-        }
-
-    val doneTodosCount: Long
-        get() = try {
-            dbRepository.doneTodosCount()
-        } catch (e: InterruptedException) {
-            0
-        }
+        get() = _filterStateFlow.value
 
     val filterIndicatorVisibility: Int
         get() {
@@ -55,36 +45,73 @@ class TodoViewModel @Inject constructor(
         deleteShownNotification()
     }
 
+    suspend fun getTodosCount(): Long {
+        var count = 0L
+
+        viewModelScope.launch(Dispatchers.IO) {
+            count = dbRepository.todosCount()
+        }.join()
+
+        return count
+    }
+
+    suspend fun todosCountIsEmpty(): Boolean {
+        var isEmpty = false
+        var todosCount = 0L
+
+        viewModelScope.launch(Dispatchers.IO) {
+            todosCount = getTodosCount()
+            isEmpty = todosCount == 0L
+        }.join()
+
+        return isEmpty
+    }
+
+    suspend fun getDoneTodosCount(): Long {
+        var count = 0L
+
+        viewModelScope.launch(Dispatchers.IO) {
+            count = dbRepository.doneTodosCount()
+        }.join()
+
+        return count
+    }
+
     fun applyFilter(filter: Filter?) {
-        _filterLiveData.value = filter
+        _filterStateFlow.value = filter
     }
 
     fun goToTop() {
-        _goToTopLiveData.value = true
+        viewModelScope.launch {
+            _goToTopChannel.send(true)
+        }
     }
 
     private fun deleteShownNotification() {
-        //in startup get all is shown and delete it
-        try {
-            notifRepo.deleteShownNotifications()
+        viewModelScope.launch(Dispatchers.IO) {
+            //in startup get all is shown and delete it
 
-            //for in notifs if arrive date < current time millis delete this
-            val allNotifications: List<Notification>? = notifRepo.getAllNotifications()
-            if (allNotifications != null) {
-                for (notif: Notification in allNotifications) {
-                    if (notif.arriveDate < System.currentTimeMillis()) //arrive date is passed
-                        notifRepo.deleteNotification(notif)
+            launch {
+                notifRepo.deleteShownNotifications()
+
+                //for in notifs if arrive date < current time millis delete this
+                val allNotifications: List<Notification>? = notifRepo.getAllNotifications()
+
+                if (allNotifications != null) {
+                    for (notif: Notification in allNotifications!!) {
+                        if (notif.arriveDate < System.currentTimeMillis()) //arrive date is passed
+                            notifRepo.deleteNotification(notif)
+                    }
                 }
-            }
 
-        } catch (ignored: InterruptedException) {
+            }.join()
         }
     }
 
     @JvmOverloads
     fun fetch(filter: Filter? = currentFilter) {
         if (filter == null) {
-            dbRepository.fetchAll()
+            dbRepository.getAllTodos()
         } else {
             try {
                 dbRepository.fetchWithFilter(filter)
@@ -93,67 +120,48 @@ class TodoViewModel @Inject constructor(
         }
     }
 
-    fun addTodo(todo: Todo?): Long {
-        var insertedRow: Long = 0
+    suspend fun addTodo(todo: Todo?): Long {
+        var insertedRow = 0L
 
-        try {
+        viewModelScope.launch(Dispatchers.IO) {
             insertedRow = dbRepository.addTodo(todo)
-        } catch (ignored: InterruptedException) {
-        }
-
-        fetch()
+        }.join()
 
         return insertedRow
     }
 
     fun editTodo(todo: Todo?) {
-        try {
+        viewModelScope.launch(Dispatchers.IO) {
             dbRepository.editTodo(todo)
-        } catch (ignored: InterruptedException) {
         }
-        fetch()
     }
 
     fun deleteTodo(todo: Todo?) {
-        try {
+        viewModelScope.launch(Dispatchers.IO) {
             dbRepository.deleteTodo(todo)
-        } catch (ignored: InterruptedException) {
         }
-        fetch()
     }
 
     fun deleteAllTodos() {
-        try {
+        viewModelScope.launch(Dispatchers.IO) {
             dbRepository.deleteAllTodos()
-        } catch (ignored: InterruptedException) {
+            applyFilter(null)
         }
-        applyFilter(null)
-        fetch()
     }
 
     fun deleteAllDoneTodos() {
-        try {
+        viewModelScope.launch(Dispatchers.IO) {
             dbRepository.deleteAllDoneTodos()
-        } catch (ignored: InterruptedException) {
+            applyFilter(null)
         }
-        applyFilter(null)
-        fetch()
     }
 
-    fun todosIsEmpty(): Boolean {
-        return todosCount == 0L
-    }
-
-    fun todosDoneIsEmpty(): Boolean {
-        return doneTodosCount == 0L
-    }
-
-    fun setDoneTodo(todoID: Long) {
-        try {
+    fun setDoneTodo(todoID: Long) = viewModelScope.launch(Dispatchers.IO) {
+        launch {
             dbRepository.setDoneTodo(todoID)
-            notifRepo.setDoneTodo(todoID) //set done todo for notifications
-        } catch (ignored: InterruptedException) {
-        }
+            notifRepo.setDoneTodo(todoID) //set done todo for notifications}
+        }.join()
+
         fetch()
     }
 

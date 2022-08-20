@@ -21,6 +21,7 @@ import ui.activity.MainActivity
 import ui.component.UiToolkit
 import ui.component.bindingComponent.BaseViewBindingFragment
 import utils.ToastUtil
+import utils.collectLatestLifecycleFlow
 import viewmodel.ShowNotificationViewModel
 import javax.inject.Inject
 
@@ -149,19 +150,18 @@ class ShowNotificationFragment : BaseViewBindingFragment<FragmentShowNotificatio
     }
 
     private fun handleObserver() {
-        viewModel.closeLive.observe(this) { mustClose: Boolean ->
-            if (mustClose) close()
+        collectLatestLifecycleFlow(viewModel.closeFlow) {
+            close()
         }
 
-        viewModel.runMainLive.observe(this) { runMain: Boolean ->
-            if (runMain)
-                (activity as MainActivity).runActivity(MainActivity::class.java, true)
+        collectLatestLifecycleFlow(viewModel.runMainFlow) {
+            (activity as MainActivity).runActivity(MainActivity::class.java, true)
         }
 
-        viewModel.notificationLiveData.observe(this) { notif: Notification? ->
+        collectLatestLifecycleFlow(viewModel.notificationStateFlow) { notif: Notification? ->
             if (notif == null) { //when manual close and open with home
                 (activity as MainActivity).runActivity(MainActivity::class.java, true)
-                return@observe
+                return@collectLatestLifecycleFlow
             }
 
             //set shown true in startup get all is shown and delete it

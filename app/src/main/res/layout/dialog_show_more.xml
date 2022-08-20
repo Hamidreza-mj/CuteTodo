@@ -75,7 +75,7 @@
                 android:scrollbarThumbVertical="@drawable/scrollbar"
                 android:scrollbars="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHeight_percent="0.78"
+                app:layout_constraintHeight_percent="0.75"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/aImgClose">
 

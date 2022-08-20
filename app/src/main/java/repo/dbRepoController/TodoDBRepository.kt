@@ -1,8 +1,7 @@
 package repo.dbRepoController
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import dagger.hilt.android.scopes.ViewModelScoped
+import kotlinx.coroutines.flow.*
 import model.Filter
 import model.Priority
 import model.Todo
@@ -15,19 +14,12 @@ class TodoDBRepository @Inject constructor(
     private val todoDao: TodoDao
 ) {
 
-    private val _todosLiveDate: MutableLiveData<List<Todo>?> = MutableLiveData()
-    val todosLiveDate: LiveData<List<Todo>?> = _todosLiveDate
+    fun getAllTodos(): Flow<List<Todo>?> =
+        todoDao.getAllTodos().distinctUntilChanged()
 
-    fun fetchAll() {
-        //it must call be in another thread
-        //use .postValue() instead of .setValue()
-        // because the .postValue() run in the background thread (non-ui thread)
-        Thread {
-            _todosLiveDate.postValue(todoDao.getAllTodos())
-        }.start()
-    }
+    private val _todosStateFlow: MutableStateFlow<List<Todo>?> = MutableStateFlow(null)
+    val todosStateFlow: StateFlow<List<Todo>?> = _todosStateFlow.asStateFlow()
 
-    @Throws(InterruptedException::class)
     fun fetchWithFilter(filter: Filter) {
         var priorities: List<Priority?> = filter.priorities
 
@@ -96,7 +88,7 @@ class TodoDBRepository @Inject constructor(
                 filterByCategory(filteredTodos, filter.categoryIds)
         }
 
-        _todosLiveDate.postValue(filteredTodos)
+        _todosStateFlow.value = filteredTodos
     }
 
     private fun filterByCategory(filteredTodos: MutableList<Todo>?, categoryIds: List<Int>?) {
@@ -157,118 +149,42 @@ class TodoDBRepository @Inject constructor(
         filteredTodos.addAll(newTodos)
     }
 
-    @Throws(InterruptedException::class)
-    fun addTodo(todo: Todo?): Long {
-        var insertedRow: Long = 0
+    suspend fun todosCount(): Long =
+        todoDao.getTodosCount()
 
-        Thread {
-            insertedRow = todoDao.create(todo)
-        }.apply {
-            start()
-            join()
-        }
-
-        return insertedRow
+    suspend fun doneTodosCount(): Long {
+        return todoDao.getDoneTodosCount()
     }
 
-    @Throws(InterruptedException::class)
-    fun editTodo(todo: Todo?) {
-        Thread {
-            todoDao.update(todo)
-        }.apply {
-            start()
-            join()
-        }
+    suspend fun getTodo(todoID: Long): Todo? {
+        return todoDao.getTodo(todoID)
     }
 
-    @Throws(InterruptedException::class)
-    fun deleteTodo(todo: Todo?) {
-        Thread {
-            todoDao.delete(todo)
-        }.apply {
-            start()
-            join()
-        }
+    suspend fun addTodo(todo: Todo?): Long {
+        return todoDao.create(todo)
     }
 
-    @Throws(InterruptedException::class)
-    fun deleteAllTodos() {
-        Thread {
-            todoDao.deleteAllTodos()
-        }.apply {
-            start()
-            join()
-        }
+    suspend fun editTodo(todo: Todo?) {
+        todoDao.update(todo)
     }
 
-    @Throws(InterruptedException::class)
-    fun deleteAllDoneTodos() {
-        Thread {
-            todoDao.deleteAllDoneTodo()
-        }.apply {
-            start()
-            join()
-        }
+    suspend fun deleteTodo(todo: Todo?) {
+        todoDao.delete(todo)
     }
 
-    @Throws(InterruptedException::class)
-    fun todosCount(): Long {
-        var count: Long = 0
-
-        Thread {
-            count = todoDao.getTodosCount()
-        }.apply {
-            start()
-            join()
-        }
-
-        return count
+    suspend fun deleteAllTodos() {
+        todoDao.deleteAllTodos()
     }
 
-    @Throws(InterruptedException::class)
-    fun doneTodosCount(): Long {
-        var doneCount: Long = 0
-        Thread {
-            doneCount = todoDao.getDoneTodosCount()
-        }.apply {
-            start()
-            join()
-        }
-
-        return doneCount
+    suspend fun deleteAllDoneTodos() {
+        todoDao.deleteAllDoneTodo()
     }
 
-    @Throws(InterruptedException::class)
-    fun setDoneTodo(todoID: Long) {
-        Thread {
-            todoDao.setDoneTodo(todoID)
-        }.apply {
-            start()
-            join()
-        }
+    suspend fun setDoneTodo(todoID: Long) {
+        todoDao.setDoneTodo(todoID)
     }
 
-    @Throws(InterruptedException::class)
-    fun getTodo(todoID: Long): Todo? {
-        var todo: Todo? = null
-
-        Thread {
-            todo = todoDao.getTodo(todoID)
-        }.apply {
-            start()
-            join()
-        }
-
-        return todo
-    }
-
-    @Throws(InterruptedException::class)
-    fun setTodoIsDone(todoID: Long) {
-        Thread {
-            todoDao.setTodoIsDone(todoID)
-        }.apply {
-            start()
-            join()
-        }
+    suspend fun setTodoIsDone(todoID: Long) {
+        todoDao.setTodoIsDone(todoID)
     }
 }

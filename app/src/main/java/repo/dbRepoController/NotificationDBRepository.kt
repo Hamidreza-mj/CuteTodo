@@ -8,42 +8,56 @@ class NotificationDBRepository @Inject constructor(
     private val notificationDao: NotificationDao
 ) {
 
-    @Throws(InterruptedException::class)
-    fun addNotification(notification: Notification?) {
-        Thread {
-            notificationDao.create(notification)
-        }.apply {
-            start()
-            join()
-        }
+    suspend fun getAllNotifications(): List<Notification>? {
+        return notificationDao.getAllNotifications()
+    }
+
+    suspend fun getAllDoneNotifications(): List<Notification>? {
+        return notificationDao.getAllDoneNotifications()
+    }
+
+    suspend fun getNotification(id: Long): Notification? {
+        return notificationDao.getNotification(id)
+    }
+
+    suspend fun addNotification(notification: Notification?) {
+        notificationDao.create(notification)
+    }
+
+    suspend fun editNotification(notification: Notification?) {
+        notificationDao.update(notification)
+    }
+
+    suspend fun deleteNotification(notification: Notification?) {
+        notificationDao.delete(notification)
+    }
+
+    suspend fun deleteShownNotifications() {
+        notificationDao.deleteShownNotifications()
+    }
+
+    suspend fun deleteAllNotifications() {
+        notificationDao.deleteAllNotifications()
+    }
+
+    suspend fun deleteAllDoneNotifications() {
+        notificationDao.deleteAllDoneNotifications()
+    }
+
+    suspend fun setDoneTodo(id: Long) {
+        notificationDao.setDoneTodo(id)
+    }
+
+    suspend fun setShownTodo(id: Long) {
+        notificationDao.setShownTodo(id)
     }
 
     @Throws(InterruptedException::class)
-    fun editNotification(notification: Notification?) {
-        Thread {
-            notificationDao.update(notification)
-        }.apply {
-            start()
-            join()
-        }
-    }
-
-    @Throws(InterruptedException::class)
-    fun deleteNotification(notification: Notification?) {
-        Thread {
-            notificationDao.delete(notification)
-        }.apply {
-            start()
-            join()
-        }
-    }
-
-    @Throws(InterruptedException::class)
-    fun getAllNotifications(): List<Notification>? {
+    fun getAllNotificationsWithinThread(): List<Notification>? {
         var notificationList: List<Notification>? = null
 
         Thread {
-            notificationList = notificationDao.getAllNotifications()
+            notificationList = notificationDao.getAllNotificationsThread()
         }.apply {
             start()
             join()
@@ -53,54 +67,11 @@ class NotificationDBRepository @Inject constructor(
     }
 
     @Throws(InterruptedException::class)
-    fun deleteShownNotifications() {
-        Thread {
-            notificationDao.deleteShownNotifications()
-        }.apply {
-            start()
-            join()
-        }
-    }
-
-    @Throws(InterruptedException::class)
-    fun getAllDoneNotifications(): List<Notification>? {
-        var notificationDoneList: List<Notification>? = null
-        Thread {
-            notificationDoneList = notificationDao.getAllDoneNotifications()
-        }.apply {
-            start()
-            join()
-        }
-
-        return notificationDoneList
-    }
-
-    @Throws(InterruptedException::class)
-    fun deleteAllNotifications() {
-        Thread {
-            notificationDao.deleteAllNotifications()
-        }.apply {
-            start()
-            join()
-        }
-    }
-
-    @Throws(InterruptedException::class)
-    fun deleteAllDoneNotifications() {
-        Thread {
-            notificationDao.deleteAllDoneNotifications()
-        }.apply {
-            start()
-            join()
-        }
-    }
-
-    @Throws(InterruptedException::class)
-    fun getNotification(id: Long): Notification? {
+    fun getNotificationWithinThread(id: Long): Notification? {
         var notification: Notification? = null
 
         Thread {
-            notification = notificationDao.getNotification(id)
+            notification = notificationDao.getNotificationThread(id)
         }.apply {
             start()
             join()
@@ -109,23 +80,4 @@ class NotificationDBRepository @Inject constructor(
         return notification
     }
 
-    @Throws(InterruptedException::class)
-    fun setDoneTodo(id: Long) {
-        Thread {
-            notificationDao.setDoneTodo(id)
-        }.apply {
-            start()
-            join()
-        }
-    }
-
-    @Throws(InterruptedException::class)
-    fun setShownTodo(id: Long) {
-        Thread {
-            notificationDao.setShownTodo(id)
-        }.apply {
-            start()
-            join()
-        }
-    }
 }

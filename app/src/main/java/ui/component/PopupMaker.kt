@@ -186,6 +186,10 @@ class PopupMaker @Inject constructor(
         }
     }
 
+    fun releaseClick() {
+        clicked = false
+    }
+
     private val Number.dp2px: Int
         get() =
             TypedValue.applyDimension(

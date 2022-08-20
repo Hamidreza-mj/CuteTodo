@@ -1,7 +1,10 @@
 package viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import model.Notification
 import model.Todo
 import repo.dbRepoController.NotificationDBRepository
@@ -14,24 +17,33 @@ class NotificationViewModel @Inject constructor(
     private val alarmUtil: AlarmUtil
 ) : ViewModel() {
 
+    private suspend fun getAllNotifications(): List<Notification>? {
+        return dbRepository.getAllNotifications()
+    }
+
+    private suspend fun getAllDoneNotifications(): List<Notification>? {
+        return dbRepository.getAllDoneNotifications()
+    }
 
     fun addNotification(todo: Todo) {
-        try {
-            if (todo.arriveDate < System.currentTimeMillis()) return
+        viewModelScope.launch(Dispatchers.IO) {
+            if (todo.arriveDate < System.currentTimeMillis())
+                return@launch
 
             val notification = Notification().apply {
                 initWith(todo)
             }
 
-            dbRepository.addNotification(notification)
-            alarmUtil.setAlarm(todo.id, todo.arriveDate)
+            launch {
+                dbRepository.addNotification(notification)
+            }.join()
 
-        } catch (ignored: InterruptedException) {
+            alarmUtil.setAlarm(todo.id, todo.arriveDate)
         }
     }
 
     private fun editNotification(todo: Todo) {
-        try {
+        viewModelScope.launch(Dispatchers.IO) {
             //cancel and delete old alarm
             val notification = Notification().apply {
                 initWith(todo)
@@ -40,101 +52,84 @@ class NotificationViewModel @Inject constructor(
             alarmUtil.cancelAlarm(notification.id)
 
             if (todo.arriveDate < System.currentTimeMillis()) {
-                deleteNotification(notification)
-                return
+                launch {
+                    dbRepository.deleteNotification(notification)
+                }.join()
+
+                return@launch
             }
 
-            dbRepository.editNotification(notification)
+            launch {
+                dbRepository.editNotification(notification)
+            }.join()
 
             alarmUtil.setAlarm(todo.id, todo.arriveDate)
-        } catch (ignored: InterruptedException) {
         }
     }
 
-    private fun deleteNotification(notification: Notification) {
-        try {
-            dbRepository.deleteNotification(notification)
-        } catch (ignored: InterruptedException) {
-        }
-    }
+    private suspend fun existsNotification(notificationId: Int): Boolean {
+        var notif: Notification? = null
 
-    private fun getAllNotifications(): List<Notification>? {
-        return try {
-            dbRepository.getAllNotifications()
-        } catch (e: InterruptedException) {
-            null
-        }
-    }
+        viewModelScope.launch(Dispatchers.IO) {
+            notif = dbRepository.getNotification(notificationId.toLong())
+        }.join()
 
-    private fun getAllDoneNotifications(): List<Notification>? {
-        return try {
-            dbRepository.getAllDoneNotifications()
-        } catch (e: InterruptedException) {
-            null
-        }
-    }
-
-    private fun getNotification(id: Int): Notification? {
-        return try {
-            dbRepository.getNotification(id.toLong())
-        } catch (e: InterruptedException) {
-            null
-        }
-    }
-
-    private fun existsNotification(id: Int): Boolean {
-        return getNotification(id) != null
+        return notif != null
     }
 
     fun setNotificationEditMode(todo: Todo) {
-        if (existsNotification(todo.id))
-            editNotification(todo)
-        else
-            addNotification(todo)
-    }
-
-    private fun deleteAllNotifications() {
-        try {
-            dbRepository.deleteAllNotifications()
-        } catch (ignored: InterruptedException) {
-        }
-    }
-
-    private fun deleteAllDoneNotifications() {
-        try {
-            dbRepository.deleteAllDoneNotifications()
-        } catch (ignored: InterruptedException) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (existsNotification(todo.id))
+                editNotification(todo)
+            else
+                addNotification(todo)
         }
     }
 
     fun cancelAllDoneAlarm() {
-        val notificationList = getAllDoneNotifications()
+        viewModelScope.launch(Dispatchers.IO) {
+            var notificationList: List<Notification>? = null
 
-        if (notificationList != null) {
-            for (notif: Notification in notificationList)
-                alarmUtil.cancelAlarm(notif.id)
+            launch {
+                notificationList = getAllDoneNotifications()
 
+                if (notificationList != null) {
+                    for (notif: Notification in notificationList!!)
+                        alarmUtil.cancelAlarm(notif.id)
+                }
+            }.join()
+
+            dbRepository.deleteAllDoneNotifications()
         }
-
-        deleteAllDoneNotifications()
     }
 
-    fun cancelAllAlarm() {
-        val notificationList = getAllNotifications()
-        if (notificationList != null) {
-            for (notif: Notification in notificationList)
-                alarmUtil.cancelAlarm(notif.id)
-        }
+    suspend fun cancelAllAlarm() {
+        viewModelScope.launch(Dispatchers.IO) {
+            var notificationList: List<Notification>? = null
 
-        deleteAllNotifications()
+            launch {
+                notificationList = getAllNotifications()
+
+                if (notificationList != null) {
+                    for (notif: Notification in notificationList!!)
+                        alarmUtil.cancelAlarm(notif.id)
+                }
+            }.join()
+
+            dbRepository.deleteAllNotifications()
+        }
     }
 
     fun cancelAlarm(todo: Todo?) {
-        val notification = Notification()
-        notification.initWith(todo)
+        val notification = Notification().apply {
+            initWith(todo)
+        }
+
         alarmUtil.cancelAlarm(notification.id)
 
-        deleteNotification(notification)
+        viewModelScope.launch(Dispatchers.IO) {
+            dbRepository.deleteNotification(notification)
+        }
     }
 
 }

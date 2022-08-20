@@ -1,13 +1,13 @@
 package viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hlv.cute.todo.R
 import ir.hamsaa.persiandatepicker.PersianDatePickerDialog
 import ir.hamsaa.persiandatepicker.api.PersianPickerDate
 import ir.hamsaa.persiandatepicker.date.PersianDateImpl
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import model.Category
 import model.DateTime
 import model.Priority
@@ -22,12 +22,13 @@ class AddEditTodoViewModel @Inject constructor(
     private val provideResource: ResourceProvider
 ) : ViewModel() {
 
-    private val _categoryLiveData: MutableLiveData<Category?> = MutableLiveData()
-    private val _dateTimeLiveData: MutableLiveData<DateTime?> = MutableLiveData()
-    private val oldDateTimeLiveData: MutableLiveData<DateTime?> = MutableLiveData()
+    private val _categoryStateFlow: MutableStateFlow<Category?> = MutableStateFlow(null)
+    val categoryStateFlow: StateFlow<Category?> = _categoryStateFlow
 
-    val categoryLiveData: LiveData<Category?> = _categoryLiveData
-    val dateTimeLiveData: LiveData<DateTime?> = _dateTimeLiveData
+    private val _dateTimeStateFlow: MutableStateFlow<DateTime?> = MutableStateFlow(null)
+    val dateTimeStateFlow: StateFlow<DateTime?> = _dateTimeStateFlow
+
+    private val oldDateTimeStateFlow: MutableStateFlow<DateTime?> = MutableStateFlow(null)
 
     var todo: Todo? = null
         set(value) {
@@ -47,13 +48,13 @@ class AddEditTodoViewModel @Inject constructor(
     var shareTitle: String? = null
 
     val category: Category?
-        get() = categoryLiveData.value
+        get() = categoryStateFlow.value
 
     private val dateTime: DateTime?
-        get() = dateTimeLiveData.value
+        get() = dateTimeStateFlow.value
 
     val oldDateTime: DateTime?
-        get() = oldDateTimeLiveData.value
+        get() = oldDateTimeStateFlow.value
 
     fun firstInitDateTime() {
         val firstDateTime: DateTime?
@@ -73,22 +74,22 @@ class AddEditTodoViewModel @Inject constructor(
             firstDateTime = DateTime()
         }
 
-        oldDateTimeLiveData.value = firstDateTime
-        _dateTimeLiveData.value = firstDateTime
+        oldDateTimeStateFlow.value = firstDateTime
+        _dateTimeStateFlow.value = firstDateTime
     }
 
     private fun oldDateTimeIsValid(): Boolean = oldDateTime != null && oldDateTime!!.date != null
 
     fun commitCategory(category: Category?) {
-        _categoryLiveData.value = category
+        _categoryStateFlow.value = category
     }
 
     fun commitDateTime(dateTime: DateTime?) {
-        _dateTimeLiveData.value = dateTime ?: DateTime()
+        _dateTimeStateFlow.value = dateTime ?: DateTime()
     }
 
     fun commitOldDateTime(dateTime: DateTime?) {
-        oldDateTimeLiveData.value = dateTime ?: DateTime()
+        oldDateTimeStateFlow.value = dateTime ?: DateTime()
     }
 
     fun releaseAll() {

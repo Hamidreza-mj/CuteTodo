@@ -36,6 +36,7 @@ import ui.fragment.sheet.SearchModeBottomSheet
 import utils.Constants
 import utils.KeyboardUtil.focusAndShowKeyboard
 import utils.TextHelper
+import utils.collectLatestLifecycleFlow
 import viewmodel.NotificationViewModel
 import javax.inject.Inject
 
@@ -90,16 +91,15 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
 
         binding.edtSearch.focusAndShowKeyboard(iContext)
 
-        handleTabLayout()
         handleShadowScroll()
     }
 
-    private fun handleTabLayout() {
-        val allCategories = categoryViewModel.getAllCategories()
+    private fun handleTabLayout(list: ArrayList<Category>?) {
+        binding.tabLyt.removeAllTabs()
 
         val lp = (binding.tabLyt.layoutParams as ConstraintLayout.LayoutParams)
 
-        if (allCategories.isNullOrEmpty()) {
+        if (list.isNullOrEmpty()) {
             binding.tabLyt.visibility = View.INVISIBLE
             lp.height = provideResource.getDimen(R.dimen.heigh_invisible_space).toInt()
 
@@ -111,6 +111,9 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
 
         binding.tabLyt.layoutParams = lp
         binding.tabLyt.requestLayout()
+
+        //use toMutableList() to clone it for avoid changing every time
+        val allCategories = list.toMutableList()
 
         val categoryAllItem = Category().apply {
             id = 0
@@ -139,37 +142,39 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
         }
 
 
-        val lastTabPos = binding.tabLyt.tabCount - 1
+        //val lastTabPos = binding.tabLyt.tabCount - 1
 
         Handler(Looper.getMainLooper()).postDelayed({
             search!!.categoryId = categoryAllItem.id
-            binding.tabLyt.selectTab(binding.tabLyt.getTabAt(lastTabPos), true)
+            binding.tabLyt.selectTab(binding.tabLyt.getTabAt(binding.tabLyt.tabCount - 1), true)
         }, 100)
 
+        binding.tabLyt.clearOnTabSelectedListeners()
         binding.tabLyt.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: Tab) {
-
                 val tabCategoryId = allCategories[tab.position].id
 
                 search!!.categoryId = tabCategoryId
 
                 binding.nested.smoothScrollTo(0, 0, 500)
 
-                if (tab.position == lastTabPos) { //all
-                    searchViewModel.fetch()
+                if (tab.position == binding.tabLyt.tabCount - 1) { //all
+                    searchViewModel.search()
                 } else {
                     val searchText = binding.edtSearch.text.toString()
 
                     if (searchText.isEmpty()) {
-                        searchViewModel.fetch(tabCategoryId)
+                        searchViewModel.search(categoryId = tabCategoryId)
                     } else {
                         search!!.term = searchText
-                        searchViewModel.fetch(search)
+                        searchViewModel.search(search)
                     }
                 }
             }
 
-            override fun onTabUnselected(tab: Tab) {}
+            override fun onTabUnselected(tab: Tab) {
+            }
+
             override fun onTabReselected(tab: Tab) {
                 binding.nested.smoothScrollTo(0, 0, 500)
             }
@@ -296,7 +301,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
 
     private fun doneTodo(todoID: Int) {
         todoViewModel.setDoneTodo(todoID.toLong())
-        searchViewModel.fetch()
+        searchViewModel.search()
     }
 
     private fun openAddEditFragment(todo: Todo? = null) {
@@ -339,7 +344,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                     notificationViewModel.cancelAlarm(todo)
 
                 todoViewModel.deleteTodo(todo)
-                searchViewModel.fetch()
+                searchViewModel.search()
 
                 moreDialog?.dismiss()
                 dismiss()
@@ -478,6 +483,8 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
             }
 
             onDismissDialog = {
+                popupMaker.releaseClick()
+
                 binding.root.postOnAnimation {
                     dimView.clearDim(binding.root)
                 }
@@ -551,9 +558,9 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
     }
 
     private fun handleObserver() {
-        searchViewModel.fetch()
+        searchViewModel.search()
 
-        searchViewModel.todosLiveData.observe(viewLifecycleOwner) { todos: List<Todo>? ->
+        collectLatestLifecycleFlow(searchViewModel.searchedTodosFlow) { todos: List<Todo>? ->
 
             if (todos == null || todos.isEmpty()) {
                 binding.txtResult.visibility = View.GONE
@@ -563,7 +570,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                 binding.txtNotes.visibility = View.VISIBLE
 
 
-                if (todoViewModel.todosIsEmpty()) {
+                if (todoViewModel.getTodosCount() == 0L) {
                     binding.txtNotes.text = provideResource.getString(R.string.todos_empty)
                 } else {
                     var term = searchViewModel.currentTerm
@@ -592,7 +599,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                     provideResource.getString(
                         R.string.search_result,
                         todos.size,
-                        todoViewModel.todosCount,
+                        todoViewModel.getTodosCount(),
                         searchViewModel.titleTermResult
                     )
                 )
@@ -605,6 +612,11 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                 binding.rvSearch.post { adapter?.differ?.submitList(todos) }
             }
         }
+
+        collectLatestLifecycleFlow(categoryViewModel.categoriesFlow) { categories: List<Category>? ->
+            val allCategories = categories as ArrayList<Category>?
+            handleTabLayout(allCategories)
+        }
     }
 
     override fun onDestroyView() {
@@ -614,6 +626,6 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
 
     override fun onResume() {
         super.onResume()
-        searchViewModel.fetch()
+        searchViewModel.search()
     }
 }

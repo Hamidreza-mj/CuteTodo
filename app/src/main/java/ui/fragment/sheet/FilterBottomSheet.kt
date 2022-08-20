@@ -43,7 +43,7 @@ class FilterBottomSheet : BaseViewBindingBottomSheet<SheetFilterBinding>() {
     var onApplyClick: (() -> Unit)? = null
     var onClearClick: (() -> Unit)? = null
 
-    private var categories: ArrayList<Category>? = null
+    private var categories: MutableList<Category>? = null
 
     private var adapter: FilterCategoryAdapter? = null
 
@@ -54,7 +54,7 @@ class FilterBottomSheet : BaseViewBindingBottomSheet<SheetFilterBinding>() {
         private const val CATEGORY_ARGS = "categories-args"
 
         @JvmStatic
-        fun newInstance(filter: Filter?, categories: ArrayList<Category?>?): FilterBottomSheet {
+        fun newInstance(filter: Filter?, categories: MutableList<Category?>?): FilterBottomSheet {
             val filterBottomSheet = FilterBottomSheet()
 
             val args = bundleOf(
@@ -72,8 +72,9 @@ class FilterBottomSheet : BaseViewBindingBottomSheet<SheetFilterBinding>() {
         if (arguments != null && !requireArguments().isEmpty) {
             filter = requireArguments().getSerializable(FILTER_ARGS) as Filter?
 
-            //@Suppress("UNCHECKED_CAST")
-            categories = requireArguments().getParcelableArrayList(CATEGORY_ARGS)
+            //use toMutableList() to clone it for avoid changing every time
+            categories =
+                requireArguments().getParcelableArrayList<Category?>(CATEGORY_ARGS)?.toMutableList()
 
             if (categories != null && categories!!.isNotEmpty()) {
                 hasCategory = true
@@ -83,7 +84,7 @@ class FilterBottomSheet : BaseViewBindingBottomSheet<SheetFilterBinding>() {
                     name = null
                 }
 
-                categories?.add(0, firstCat)
+                categories!!.add(0, firstCat)
             }
         }
 

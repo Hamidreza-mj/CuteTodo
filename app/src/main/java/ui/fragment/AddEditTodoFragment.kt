@@ -13,6 +13,7 @@ import androidx.core.os.bundleOf
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ActivityContext
 import hlv.cute.todo.R
@@ -20,6 +21,7 @@ import hlv.cute.todo.databinding.FragmentAddEditTodoBinding
 import ir.hamsaa.persiandatepicker.PersianDatePickerDialog
 import ir.hamsaa.persiandatepicker.api.PersianPickerDate
 import ir.hamsaa.persiandatepicker.api.PersianPickerListener
+import kotlinx.coroutines.launch
 import model.Category
 import model.DateTime
 import model.Priority
@@ -31,6 +33,8 @@ import ui.dialog.TimePickerSheetDialog
 import ui.dialog.WarningDateDialog
 import utils.Constants
 import utils.ToastUtil
+import utils.collectLatestLifecycleFlow
+import utils.collectLifecycleFlow
 import viewmodel.AddEditTodoViewModel
 import viewmodel.NotificationViewModel
 import java.text.MessageFormat
@@ -51,6 +55,8 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
     @Inject
     @ActivityContext
     lateinit var iContext: Context
+
+    private var allCategories: ArrayList<Category>? = null
 
     companion object {
         private const val TODO_ARGS = "todo-args"
@@ -241,9 +247,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
     @SuppressLint("NonConstantResourceId")
     private fun handleAction() {
         binding.mCardCategory.setOnClickListener {
-            val categories = categoryViewModel.getAllCategories()
-
-            DropDownCategoriesDialog(activity!!, categories).apply {
+            DropDownCategoriesDialog(activity!!, allCategories).apply {
                 show()
 
                 onClickCategory = { category: Category? ->
@@ -325,7 +329,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
 
                     todoViewModel.editTodo(editedTodo)
 
-                    searchViewModel.fetch()
+                    searchViewModel.search()
 
                     updateDetail(editedTodo)
 
@@ -347,11 +351,13 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
                 if (res == null) {
                     todoViewModel.goToTop()
 
-                    val insertedId = todoViewModel.addTodo(newTodo)
+                    lifecycleScope.launch {
+                        val insertedId = todoViewModel.addTodo(newTodo)
 
-                    if (newTodo.arriveDate != 0L) {
-                        newTodo.id = insertedId.toInt()
-                        notificationViewModel.addNotification(newTodo)
+                        if (newTodo.arriveDate != 0L) {
+                            newTodo.id = insertedId.toInt()
+                            notificationViewModel.addNotification(newTodo)
+                        }
                     }
 
                     toastUtil.successToast(provideResource.getString(R.string.todo_added_successfully_simple))
@@ -485,7 +491,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
     }
 
     private fun handleObserver() {
-        viewModel.dateTimeLiveData.observe(viewLifecycleOwner) { changedDateTime: DateTime? ->
+        collectLatestLifecycleFlow(viewModel.dateTimeStateFlow) { changedDateTime: DateTime? ->
 
             if (changedDateTime?.date != null) {
                 binding.txtDate.setTextColor(
@@ -509,13 +515,17 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
             }
         }
 
-        viewModel.categoryLiveData.observe(viewLifecycleOwner) {
+        collectLatestLifecycleFlow(viewModel.categoryStateFlow) {
             binding.txtCategory.text = viewModel.categoryTitleText
 
             if (viewModel.categoryIsValid())
                 binding.txtCategory.setTextColor(provideResource.getColor(R.color.black))
             else
                 binding.txtCategory.setTextColor(provideResource.getColor(R.color.gray))
+        }
+
+        collectLifecycleFlow(categoryViewModel.categoriesFlow) { categories ->
+            allCategories = categories as ArrayList<Category>?
         }
     }
 

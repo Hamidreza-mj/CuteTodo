@@ -1,75 +1,73 @@
 package viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import model.Category
 import repo.dbRepoController.CategoryDBRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
-    private val dbRepository: CategoryDBRepository
+    private val repo: CategoryDBRepository
 ) : ViewModel() {
 
-    private val _categoriesLiveDate: MutableLiveData<List<Category>?> =
-        dbRepository.categoriesLiveData
+    val categoriesFlow: SharedFlow<List<Category>?> = repo.getAllCategories().shareIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(),
+        1
+    )
 
-    val categoriesLiveDate: LiveData<List<Category>?> = _categoriesLiveDate
+    //--------------channels----------------
+    private val _goToTopChannel: Channel<Boolean> = Channel()
+    val goToTopFlow: Flow<Boolean> = _goToTopChannel.receiveAsFlow()
 
-    private val _goToTopLiveData: MutableLiveData<Boolean> = MutableLiveData()
+    suspend fun getCategoriesCount(): Long {
+        var count = 0L
 
-    val goToTopLiveData: LiveData<Boolean> = _goToTopLiveData
+        viewModelScope.launch(Dispatchers.IO) {
+            count = repo.categoriesCount()
+        }.join()
 
-    fun fetch() = dbRepository.fetchAllCategories()
-
-    fun addCategory(category: Category?) {
-        try {
-            dbRepository.addCategory(category)
-        } catch (ignored: InterruptedException) {
-        }
+        return count
     }
 
-    fun getAllCategories(): ArrayList<Category>? {
-        return try {
-            dbRepository.getAllCategories() as ArrayList<Category>
-        } catch (e: InterruptedException) {
-            null
+    suspend fun categoriesIsEmpty(): Boolean {
+        var isEmpty = false
+
+        viewModelScope.launch(Dispatchers.IO) {
+            isEmpty = repo.categoriesCount() == 0L
+        }.join()
+
+        return isEmpty
+    }
+
+    fun addCategory(category: Category?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.addCategory(category)
         }
     }
 
     fun editCategory(category: Category?) {
-        try {
-            dbRepository.editCategory(category!!)
-        } catch (ignored: InterruptedException) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.editCategory(category!!)
         }
     }
 
     fun deleteCategory(category: Category?) {
-        try {
-            dbRepository.deleteCategory(category!!)
-        } catch (ignored: InterruptedException) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.deleteCategory(category!!)
         }
     }
 
     fun deleteAllCategories() {
-        try {
-            dbRepository.deleteAllCategories()
-        } catch (ignored: InterruptedException) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.deleteAllCategories()
         }
-    }
-
-    fun getCategoriesCount(): Long {
-        return try {
-            dbRepository.categoriesCount()
-        } catch (e: InterruptedException) {
-            0
-        }
-    }
-
-    fun categoriesIsEmpty(): Boolean {
-        return getCategoriesCount() == 0L
     }
 
     private fun pureValidateCategory(category: Category): Boolean {
@@ -85,7 +83,9 @@ class CategoryViewModel @Inject constructor(
     }
 
     fun goToTop() {
-        _goToTopLiveData.value = true
+        viewModelScope.launch {
+            _goToTopChannel.send(true)
+        }
     }
 
 }

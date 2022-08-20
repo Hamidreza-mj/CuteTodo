@@ -2,12 +2,15 @@ package viewmodel
 
 import android.view.View
 import androidx.annotation.StringRes
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hlv.cute.todo.R
 import ir.hamsaa.persiandatepicker.date.PersianDateImpl
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import model.DateTime
 import model.Todo
 import repo.dbRepoController.TodoDBRepository
@@ -21,13 +24,13 @@ class TodoDetailViewModel @Inject constructor(
     private val todoRepo: TodoDBRepository
 ) : ViewModel() {
 
-    private val _todoLiveDate: MutableLiveData<Todo?> = MutableLiveData()
-    val todoLiveDate: LiveData<Todo?> = _todoLiveDate
+    private val _todoStateFlow: MutableStateFlow<Todo?> = MutableStateFlow(null)
+    val todoStateFlow: StateFlow<Todo?> = _todoStateFlow
 
     var todo: Todo?
-        get() = todoLiveDate.value
+        get() = todoStateFlow.value
         set(value) {
-            _todoLiveDate.value = value
+            _todoStateFlow.value = value
         }
 
 
@@ -116,15 +119,16 @@ class TodoDetailViewModel @Inject constructor(
     }
 
     fun fetchOnResume() {
-        var updatedTodo: Todo? = null
+        viewModelScope.launch(Dispatchers.IO) {
+            var updatedTodo: Todo? = null
 
-        try {
-            updatedTodo = todoRepo.getTodo(todo!!.id.toLong())
-        } catch (ignored: InterruptedException) {
-        }
+            launch {
+                updatedTodo = todoRepo.getTodo(todo!!.id.toLong())
+            }.join()
 
-        updatedTodo?.let {
-            todo = it
+            updatedTodo?.let {
+                todo = it
+            }
         }
     }
 

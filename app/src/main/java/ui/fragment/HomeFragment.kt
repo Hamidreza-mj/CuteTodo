@@ -16,6 +16,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
 import controller.ShareController
@@ -23,6 +24,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ActivityContext
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentHomeBinding
+import kotlinx.coroutines.launch
+import model.Category
 import model.Filter
 import model.Todo
 import ui.adapter.TodoAdapter
@@ -32,9 +35,7 @@ import ui.component.bindingComponent.BaseViewBindingFragment
 import ui.dialog.DeleteDialog
 import ui.dialog.ShowMoreDialog
 import ui.fragment.sheet.FilterBottomSheet
-import utils.Constants
-import utils.TextHelper
-import utils.ToastUtil
+import utils.*
 import viewmodel.NotificationViewModel
 import javax.inject.Inject
 
@@ -52,6 +53,8 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
 
     var scrollYPos = 0
         private set
+
+    private var allCategories: ArrayList<Category?>? = null
 
     @Inject
     lateinit var toastUtil: ToastUtil
@@ -176,63 +179,70 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                             }
 
                             R.id.menuDeleteAll -> {
-                                if (todoViewModel.todosIsEmpty()) {
-                                    toastUtil.toast(provideResource.getString(R.string.todos_is_empty))
-                                    return@itemClicked //empty return
-                                }
+                                lifecycleScope.launch {
+                                    if (todoViewModel.todosCountIsEmpty()) {
+                                        toastUtil.toast(provideResource.getString(R.string.todos_is_empty))
+                                        return@launch //empty return
+                                    }
 
-                                DeleteDialog(iContext).apply {
-                                    show()
+                                    DeleteDialog(iContext).apply {
+                                        show()
 
-                                    setTitle(provideResource.getString(R.string.delete_all_todos))
+                                        setTitle(provideResource.getString(R.string.delete_all_todos))
 
-                                    setMessage(
-                                        provideResource.getString(
-                                            R.string.delete_all_todos_message,
-                                            todoViewModel.todosCount
+                                        setMessage(
+                                            provideResource.getString(
+                                                R.string.delete_all_todos_message,
+                                                todoViewModel.getTodosCount()
+                                            )
                                         )
-                                    )
 
-                                    onClickDelete = {
-                                        notificationViewModel.cancelAllAlarm()
-                                        todoViewModel.deleteAllTodos()
-                                        scrollBehavior!!.slideUp(binding.frameLytButton)
+                                        onClickDelete = {
+                                            launch {
+                                                notificationViewModel.cancelAllAlarm()
+                                            }
 
-                                        dismiss()
+                                            todoViewModel.deleteAllTodos()
+                                            scrollBehavior!!.slideUp(binding.frameLytButton)
+
+                                            dismiss()
+                                        }
                                     }
                                 }
                             }
 
                             R.id.menuDeleteAllDone -> {
-                                if (todoViewModel.todosIsEmpty()) {
-                                    toastUtil.toast(provideResource.getString(R.string.todos_is_empty))
-                                    return@itemClicked //empty return
-                                }
-
-                                if (todoViewModel.todosDoneIsEmpty()) {
-                                    toastUtil.toast(provideResource.getString(R.string.todos_done_is_empty))
-                                    return@itemClicked //empty return
-                                }
-
-                                DeleteDialog(iContext).apply {
-                                    show()
-
-                                    setTitle(provideResource.getString(R.string.delete_all_done_todos))
-
-                                    setMessage(
-                                        provideResource.getString(
-                                            R.string.delete_all_done_todos_message,
-                                            todoViewModel.doneTodosCount
-                                        )
-                                    )
-
-                                    onClickDelete = {
-                                        notificationViewModel.cancelAllDoneAlarm()
-                                        todoViewModel.deleteAllDoneTodos()
-                                        scrollBehavior!!.slideUp(binding.frameLytButton)
-                                        dismiss()
+                                lifecycleScope.launch {
+                                    if (todoViewModel.todosCountIsEmpty()) {
+                                        toastUtil.toast(provideResource.getString(R.string.todos_is_empty))
+                                        return@launch //empty return
                                     }
 
+                                    if (todoViewModel.getDoneTodosCount() == 0L) {
+                                        toastUtil.toast(provideResource.getString(R.string.todos_done_is_empty))
+                                        return@launch //empty return
+                                    }
+
+                                    DeleteDialog(iContext).apply {
+                                        show()
+
+                                        setTitle(provideResource.getString(R.string.delete_all_done_todos))
+
+                                        setMessage(
+                                            provideResource.getString(
+                                                R.string.delete_all_done_todos_message,
+                                                todoViewModel.getDoneTodosCount()
+                                            )
+                                        )
+
+                                        onClickDelete = {
+                                            notificationViewModel.cancelAllDoneAlarm()
+                                            todoViewModel.deleteAllDoneTodos()
+                                            scrollBehavior!!.slideUp(binding.frameLytButton)
+                                            dismiss()
+                                        }
+
+                                    }
                                 }
                             }
                         }
@@ -258,7 +268,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
         binding.aImgFilter.setOnClickListener {
             FilterBottomSheet.newInstance(
                 todoViewModel.currentFilter,
-                categoryViewModel.getAllCategories()?.let { list -> ArrayList(list) }
+                allCategories
             ).apply {
                 onApplyClick = {
                     disableViews()
@@ -342,6 +352,8 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
             }
 
             onDismissDialog = {
+                popupMaker.releaseClick()
+
                 binding.root.postOnAnimation {
                     dimView.clearDim(binding.root)
                 }
@@ -587,7 +599,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
 
         todoViewModel.fetch()
 
-        todoViewModel.todosLiveData.observe(viewLifecycleOwner) { todos: List<Todo>? ->
+        collectLatestLifecycleFlow(todoViewModel.todosFlow) { todos: List<Todo>? ->
 
             if (todos == null || todos.isEmpty()) {
                 binding.rvTodo.visibility = View.GONE
@@ -624,14 +636,17 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
             }
         }
 
-        todoViewModel.filterLiveData.observe(viewLifecycleOwner) { filter: Filter? ->
+        collectLatestLifecycleFlow(todoViewModel.filterStateFlow) { filter: Filter? ->
             todoViewModel.fetch(filter)
         }
 
-        todoViewModel.goToTopLiveData.observe(viewLifecycleOwner) {
+        collectLatestLifecycleFlow(todoViewModel.goToTopFlow) {
             goToTop(1000)
         }
 
+        collectLifecycleFlow(categoryViewModel.categoriesFlow) { categories: List<Category?>? ->
+            allCategories = categories as ArrayList<Category?>?
+        }
     }
 
     fun goToTop(duration: Int) {

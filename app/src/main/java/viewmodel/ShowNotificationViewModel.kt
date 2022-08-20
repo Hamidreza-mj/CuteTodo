@@ -2,13 +2,17 @@ package viewmodel
 
 import android.content.Intent
 import android.view.View
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ir.hamsaa.persiandatepicker.date.PersianDateImpl
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import model.DateTime
 import model.Notification
+import model.Todo
 import repo.dbRepoController.NotificationDBRepository
 import repo.dbRepoController.TodoDBRepository
 import utils.Constants
@@ -21,16 +25,20 @@ class ShowNotificationViewModel @Inject constructor(
     private val todoRepository: TodoDBRepository
 ) : ViewModel() {
 
-    private val _notificationLiveData: MutableLiveData<Notification?> = MutableLiveData()
-    private val _closeLive: MutableLiveData<Boolean> = MutableLiveData()
-    private val _runMainLive: MutableLiveData<Boolean> = MutableLiveData()
+    private val _notificationStateFlow: MutableStateFlow<Notification?> = MutableStateFlow(null)
+    val notificationStateFlow: StateFlow<Notification?> = _notificationStateFlow.asStateFlow()
 
-    val notificationLiveData: LiveData<Notification?> = _notificationLiveData
-    val closeLive: LiveData<Boolean> = _closeLive
-    val runMainLive: LiveData<Boolean> = _runMainLive
+
+    //--------------channels----------------
+    private val _closeChannel: Channel<Boolean> = Channel()
+    val closeFlow: Flow<Boolean> = _closeChannel.receiveAsFlow()
+
+    private val _runMainChannel: Channel<Boolean> = Channel()
+    val runMainFlow: Flow<Boolean> = _runMainChannel.receiveAsFlow()
+
 
     val notification: Notification?
-        get() = notificationLiveData.value
+        get() = _notificationStateFlow.value
 
     fun setIntent(intent: Intent) = handleExtras(intent)
 
@@ -93,71 +101,82 @@ class ShowNotificationViewModel @Inject constructor(
     }
 
     private fun handleExtras(intent: Intent) {
-        if (!intent.hasExtra(Constants.Keys.NOTIF_ID_DETAIL)) {
-            mustClose()
-            return
-        }
+        viewModelScope.launch(Dispatchers.IO) {
+            if (!intent.hasExtra(Constants.Keys.NOTIF_ID_DETAIL)) {
+                mustClose()
+                return@launch
+            }
 
-        val notifId = intent.getIntExtra(Constants.Keys.NOTIF_ID_DETAIL, 0)
-        if (notifId == 0) {
-            mustClose()
-            return
-        }
+            val notifId = intent.getIntExtra(Constants.Keys.NOTIF_ID_DETAIL, 0)
+            if (notifId == 0) {
+                mustClose()
+                return@launch
+            }
 
-        var notification: Notification? = null
-        try {
-            notification = dbRepository.getNotification(notifId.toLong())
-        } catch (ignored: InterruptedException) {
-        }
+            var notification: Notification? = null
+            launch {
+                notification = dbRepository.getNotification(notifId.toLong())
+            }.join()
 
-        if (notification == null) {
-            try {
-                val todo = todoRepository.getTodo(notifId.toLong())
+            if (notification == null) {
+                var todo: Todo? = null
+
+                launch {
+                    todo = todoRepository.getTodo(notifId.toLong())
+                }.join()
+
                 if (todo != null) {
                     val newNotification = Notification().apply {
                         initWith(todo)
                     }
 
-                    _notificationLiveData.value = newNotification
-                    return
+                    _notificationStateFlow.value = newNotification
+                    return@launch
                 }
-            } catch (ignored: InterruptedException) {
+
+
+                _runMainChannel.send(true) //run main if notification or todo == null
+                return@launch
             }
 
-            _runMainLive.value = true //run main if notification or todo == null
-            return
+            _notificationStateFlow.value = notification
         }
-
-        _notificationLiveData.value = notification
     }
 
     fun deleteNotification() {
-        if (notification == null) return
-        try {
-            dbRepository.deleteNotification(notification)
-        } catch (ignored: InterruptedException) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (notification == null) return@launch
+
+            launch {
+                dbRepository.deleteNotification(notification)
+            }.join()
         }
     }
 
     fun done() {
-        if (notification == null) return
-        try {
-            todoRepository.setTodoIsDone(notification!!.id.toLong())
-        } catch (ignored: InterruptedException) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (notification == null) return@launch
+
+            launch {
+                todoRepository.setTodoIsDone(notification!!.id.toLong())
+            }.join()
         }
     }
 
     fun setShown() {
-        if (notification == null) return
-        try {
-            dbRepository.setShownTodo(notification!!.id.toLong())
-        } catch (ignored: InterruptedException) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (notification == null) return@launch
+
+            launch {
+                dbRepository.setShownTodo(notification!!.id.toLong())
+            }.join()
         }
     }
 
-
     private fun mustClose() {
-        _closeLive.value = true
+        viewModelScope.launch {
+            _closeChannel.send(true)
+        }
     }
 
 }

@@ -13,12 +13,14 @@ import android.widget.FrameLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ActivityContext
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentCategoriesBinding
+import kotlinx.coroutines.launch
 import model.Category
 import ui.adapter.CategoryAdapter
 import ui.component.PopupMaker
@@ -28,6 +30,7 @@ import ui.fragment.AddEditCategoryFragment.Companion.newInstance
 import utils.Constants
 import utils.TextHelper
 import utils.ToastUtil
+import utils.collectLifecycleFlow
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -118,29 +121,31 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
 
     private fun handleActions() {
         binding.aImgDeleteAll.setOnClickListener {
-            if (categoryViewModel.categoriesIsEmpty()) {
-                toastUtil.toast(provideResource.getString(R.string.categories_is_empty))
-                return@setOnClickListener
-            }
+            lifecycleScope.launch {
+                if (categoryViewModel.categoriesIsEmpty()) {
+                    toastUtil.toast(provideResource.getString(R.string.categories_is_empty))
+                    return@launch
+                }
 
-            DeleteDialog(iContext).apply {
-                show()
+                DeleteDialog(iContext).apply {
+                    show()
 
-                setTitle(provideResource.getString(R.string.delete_all_categories))
+                    setTitle(provideResource.getString(R.string.delete_all_categories))
 
-                setMessage(
-                    provideResource.getString(
-                        R.string.delete_all_categories_message,
-                        categoryViewModel.getCategoriesCount()
+                    setMessage(
+                        provideResource.getString(
+                            R.string.delete_all_categories_message,
+                            categoryViewModel.getCategoriesCount()
+                        )
                     )
-                )
 
-                onClickDelete = {
-                    categoryViewModel.deleteAllCategories()
-                    todoViewModel.fetch() //need to update todos if categories was deleted
-                    searchViewModel.fetch()
-                    scrollBehavior!!.slideUp(binding.frameLytButton)
-                    dismiss()
+                    onClickDelete = {
+                        categoryViewModel.deleteAllCategories()
+                        todoViewModel.fetch() //need to update todos if categories was deleted
+                        searchViewModel.search()
+                        scrollBehavior!!.slideUp(binding.frameLytButton)
+                        dismiss()
+                    }
                 }
             }
         }
@@ -243,9 +248,7 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
     }
 
     private fun handleObserver() {
-        categoryViewModel.fetch()
-
-        categoryViewModel.categoriesLiveDate.observe(viewLifecycleOwner) { categories: List<Category>? ->
+        collectLifecycleFlow(categoryViewModel.categoriesFlow) { categories ->
             if (categories == null || categories.isEmpty()) {
                 binding.rvCategory.visibility = View.GONE
                 binding.cLytEmpty.visibility = View.VISIBLE
@@ -256,7 +259,7 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
             }
         }
 
-        categoryViewModel.goToTopLiveData.observe(viewLifecycleOwner) {
+        collectLifecycleFlow(categoryViewModel.goToTopFlow) {
             goToTop(1000)
         }
     }
@@ -270,10 +273,5 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
         Handler(Looper.getMainLooper()).postDelayed({
             scrollBehavior!!.slideUp(binding.frameLytButton)
         }, 500)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        categoryViewModel.fetch()
     }
 }

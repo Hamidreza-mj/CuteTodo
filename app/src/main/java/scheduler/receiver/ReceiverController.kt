@@ -52,7 +52,7 @@ class ReceiverController @Inject constructor() {
 
         if (mustBeSetAgain) {
             try {
-                val notifications = repository.getAllNotifications()
+                val notifications = repository.getAllNotificationsWithinThread()
                 if (notifications != null) {
                     for ((id, _, _, _, arriveDate) in notifications) {
                         //AlarmUtil.with(context.getApplicationContext()).cancelAlarm(notification.getId());
@@ -73,7 +73,7 @@ class ReceiverController @Inject constructor() {
         var notification: Notification? = null
 
         try {
-            notification = repository.getNotification(notifID.toLong())
+            notification = repository.getNotificationWithinThread(notifID.toLong())
         } catch (ignored: InterruptedException) {
         }
 

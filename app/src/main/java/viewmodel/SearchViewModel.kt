@@ -1,9 +1,14 @@
 package viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.launch
 import model.Search
 import model.Search.SearchMode
 import model.Todo
@@ -15,41 +20,55 @@ class SearchViewModel @Inject constructor(
     private val dbRepository: SearchDBRepository
 ) : ViewModel() {
 
-    val todosLiveData: LiveData<List<Todo>?> = dbRepository.todosLive
-    private val _searchLiveData: MutableLiveData<Search?> = MutableLiveData()
-    val searchLiveData: LiveData<Search?> = _searchLiveData
+    private var _searchedTodosFlow: MutableStateFlow<List<Todo>?> = MutableStateFlow(null)
+    var searchedTodosFlow: StateFlow<List<Todo>?> = _searchedTodosFlow.asStateFlow()
 
-    @JvmOverloads
-    fun fetch(search: Search? = this.search) {
-        if (search == null)
-            dbRepository.initFetch()
-        else
-            search(search)
-    }
+    private val _searchStateFlow: MutableStateFlow<Search?> = MutableStateFlow(null)
 
-    fun fetch(categoryId: Int) {
-        dbRepository.initFetch(categoryId)
-    }
-
-    fun search(search: Search) {
-        _searchLiveData.value = search
-
-        when (search.searchMode) {
-            SearchMode.TODO -> {
-                if (search.categoryId == 0)
-                    dbRepository.searchTodo(search.term)
-                else
-                    dbRepository.searchTodo(search.term, search.categoryId)
+    fun search(search: Search? = _searchStateFlow.value, categoryId: Int? = null) {
+        viewModelScope.launch(Dispatchers.IO) {
+            categoryId?.let { id ->
+                _searchedTodosFlow.emitAll(dbRepository.getAllTodosInSpecificCategory(id))
+                return@launch
             }
 
-            SearchMode.CATEGORY -> dbRepository.searchCategory(search.term)
+            if (search == null) {
+                _searchedTodosFlow.emitAll(dbRepository.getAllTodos())
+                return@launch
+            }
 
-            SearchMode.BOTH -> dbRepository.searchTodoWithCategory(search.term)
+            _searchStateFlow.value = search
+
+            when (search.searchMode) {
+                SearchMode.TODO -> {
+                    if (search.categoryId == 0)
+                        _searchedTodosFlow.emitAll(dbRepository.searchTodo(search.term))
+                    else
+                        _searchedTodosFlow.emitAll(
+                            dbRepository.searchTodoInSpecificCategory(
+                                search.term,
+                                search.categoryId
+                            )
+                        )
+                }
+
+                SearchMode.CATEGORY -> _searchedTodosFlow.emitAll(
+                    dbRepository.searchInCategories(
+                        search.term
+                    )
+                )
+
+                SearchMode.BOTH -> _searchedTodosFlow.emitAll(
+                    dbRepository.searchInTodosAndCategories(
+                        search.term
+                    )
+                )
+            }
         }
     }
 
     val search: Search?
-        get() = if (_searchLiveData.value != null) _searchLiveData.value else null
+        get() = if (_searchStateFlow.value != null) _searchStateFlow.value else null
 
     val currentTerm: String
         get() = if (search != null) search!!.term!!.trim() else ""
@@ -58,7 +77,7 @@ class SearchViewModel @Inject constructor(
         get() = if (search != null) search!!.searchMode else SearchMode.TODO
 
     fun release() {
-        _searchLiveData.value = null
+        _searchStateFlow.value = null
     }
 
     val titleTerm: String

@@ -10,16 +10,19 @@ import androidx.core.os.bundleOf
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import controller.ShareController
 import dagger.hilt.android.AndroidEntryPoint
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentTodoDetailBinding
+import kotlinx.coroutines.launch
 import model.Priority
 import model.Todo
 import ui.component.PopupMaker
 import ui.component.bindingComponent.BaseViewBindingFragment
 import ui.dialog.DeleteDialog
 import utils.Constants
+import utils.collectLatestLifecycleFlow
 import viewmodel.NotificationViewModel
 import viewmodel.TodoDetailViewModel
 import java.text.MessageFormat
@@ -132,10 +135,12 @@ class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() 
 
                     todoViewModel.deleteTodo(viewModel.todo)
                     todoViewModel.fetch() //need to update todos if categories was deleted
-                    searchViewModel.fetch()
+                    searchViewModel.search()
 
-                    if (todoViewModel.todosIsEmpty())
-                        todoViewModel.goToTop()
+                    lifecycleScope.launch {
+                        if (todoViewModel.getTodosCount() == 0L)
+                            todoViewModel.goToTop()
+                    }
 
                     dismiss()
                     back()
@@ -191,7 +196,7 @@ class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() 
     }
 
     private fun handleObserver() {
-        viewModel.todoLiveDate.observe(viewLifecycleOwner) { todo: Todo? ->
+        collectLatestLifecycleFlow(viewModel.todoStateFlow) { todo: Todo? ->
             if (todo != null) {
                 //binding.getRoot().setTransitionName("t-" + todo.getId());
                 binding.txtTodoTitle.text = todo.title

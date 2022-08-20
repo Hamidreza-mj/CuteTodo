@@ -21,7 +21,7 @@ public class BlurBuilder {
     /**
      * if need raduis > 25, must be call again & againg result bitmap with the blur method | or call this with level {@link #multipleBlur(Context, Bitmap, int)}
      */
-    private static final float DEFAULT_RADIUS = 25f;
+    private static final float DEFAULT_RADIUS = 20f;
 
     /**
      * blur image bit map

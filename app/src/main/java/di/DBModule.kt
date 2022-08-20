@@ -9,6 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import repo.dao.CategoryDao
 import repo.dao.NotificationDao
+import repo.dao.SearchDao
 import repo.dao.TodoDao
 import repo.database.TodoDatabase
 import utils.Constants
@@ -44,5 +45,9 @@ object DBModule {
     @Singleton
     @Provides
     fun provideTodoDao(db: TodoDatabase): TodoDao = db.todoDao
+
+    @Singleton
+    @Provides
+    fun provideSearchDao(db: TodoDatabase): SearchDao = db.searchDao
 
 }

@@ -1,54 +1,33 @@
 package repo.dbRepoController
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import dagger.hilt.android.scopes.ViewModelScoped
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import model.Todo
-import repo.dao.TodoDao
+import repo.dao.SearchDao
 import javax.inject.Inject
 
 @ViewModelScoped
 class SearchDBRepository @Inject constructor(
-    private val todoDao: TodoDao
+    private val dao: SearchDao
 ) {
 
-    private val _todosLive: MutableLiveData<List<Todo>?> = MutableLiveData()
-    val todosLive: LiveData<List<Todo>?> = _todosLive
+    fun getAllTodos(): Flow<List<Todo>?> =
+        dao.getAllTodos().distinctUntilChanged()
 
-    fun initFetch() {
-        Thread {
-            _todosLive.postValue(todoDao.getAllTodos())
-        }.start()
-    }
+    fun getAllTodosInSpecificCategory(categoryId: Int): Flow<List<Todo>?> =
+        dao.getTodosWithCategory(categoryId).distinctUntilChanged()
 
-    fun initFetch(categoryId: Int) {
-        Thread {
-            _todosLive.postValue(todoDao.getTodosWithCategory(categoryId))
-        }.start()
-    }
+    fun searchTodo(term: String?): Flow<List<Todo>?> =
+        dao.searchTodo(term).distinctUntilChanged()
 
-    fun searchTodo(term: String?) {
-        Thread {
-            _todosLive.postValue(todoDao.searchTodo(term))
-        }.start()
-    }
+    fun searchTodoInSpecificCategory(term: String?, categoryId: Int): Flow<List<Todo>?> =
+        dao.searchTodoWithCategoryId(term, categoryId).distinctUntilChanged()
 
-    fun searchTodo(term: String?, categoryId: Int) {
-        Thread {
-            _todosLive.postValue(todoDao.searchTodoWithCategoryId(term, categoryId))
-        }.start()
-    }
+    fun searchInCategories(term: String?): Flow<List<Todo>?> =
+        dao.searchCategory(term).distinctUntilChanged()
 
-    fun searchCategory(term: String?) {
-        Thread {
-            _todosLive.postValue(todoDao.searchCategory(term))
-        }.start()
-    }
-
-    fun searchTodoWithCategory(term: String?) {
-        Thread {
-            _todosLive.postValue(todoDao.searchTodoWithCategory(term))
-        }.start()
-    }
+    fun searchInTodosAndCategories(term: String?): Flow<List<Todo>?> =
+        dao.searchTodoWithCategory(term).distinctUntilChanged()
 
 }

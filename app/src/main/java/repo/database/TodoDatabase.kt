@@ -7,6 +7,7 @@ import model.Notification
 import model.Todo
 import repo.dao.CategoryDao
 import repo.dao.NotificationDao
+import repo.dao.SearchDao
 import repo.dao.TodoDao
 
 @Database(
@@ -17,6 +18,7 @@ import repo.dao.TodoDao
 abstract class TodoDatabase : RoomDatabase() {
 
     abstract val todoDao: TodoDao
+    abstract val searchDao: SearchDao
     abstract val categoryDao: CategoryDao
     abstract val notificationDao: NotificationDao
 

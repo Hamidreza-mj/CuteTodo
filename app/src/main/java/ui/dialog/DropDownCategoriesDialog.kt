@@ -14,7 +14,7 @@ import utils.TextHelper
 
 class DropDownCategoriesDialog(
     context: Context,
-    val categories: MutableList<Category>?,
+    var categories: MutableList<Category>?,
     cancelable: Boolean = true
 ) {
 
@@ -32,6 +32,8 @@ class DropDownCategoriesDialog(
             setCancelable(cancelable)
             setView(binding.root)
         }
+
+        categories = categories?.toMutableList()
 
         binding.txtNotesEmpty.text =
             TextHelper.fromHtml(context.getString(R.string.manage_categories_notes))
@@ -54,7 +56,7 @@ class DropDownCategoriesDialog(
     }
 
     private fun handleRecyclerView(context: Context) {
-        if (categories == null || categories.isEmpty()) {
+        if (categories.isNullOrEmpty()) {
             binding.rvCategory.visibility = View.GONE
             binding.cLytEmpty.visibility = View.VISIBLE
 
@@ -89,7 +91,7 @@ class DropDownCategoriesDialog(
             name = null
         }
 
-        categories.add(0, firstCat)
+        categories?.add(0, firstCat)
 
         adapter.differ.submitList(categories)
     }
