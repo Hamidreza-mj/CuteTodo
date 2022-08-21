@@ -26,7 +26,6 @@ import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentHomeBinding
 import kotlinx.coroutines.launch
 import model.Category
-import model.Filter
 import model.Todo
 import ui.adapter.TodoAdapter
 import ui.component.DimView
@@ -599,18 +598,20 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
 
         //todoViewModel.fetch() init fetch run in this,
         //because MutableStateFlow emit with null default value at first
-        collectLatestLifecycleFlow(todoViewModel.filterStateFlow) { filter: Filter? ->
-            todoViewModel.fetch(filter)
+        collectLatestLifecycleFlow(todoViewModel.filterStateFlow) {
+            todoViewModel.fetch()
         }
 
         collectLatestLifecycleFlow(
             todoViewModel.todosFlow,
 
             map = { mappedList ->
-
+                //apply filter when collectiong datas
+                //has filter
                 todoViewModel.currentFilter?.let { currentFilter -> //for avoid remove filter after update todos
                     todoViewModel.fetchWithFilter(currentFilter)
                 } ?: run {
+                    //without filter
                     mappedList
                 }
             },

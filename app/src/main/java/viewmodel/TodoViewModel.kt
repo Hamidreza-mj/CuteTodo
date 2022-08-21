@@ -111,13 +111,9 @@ class TodoViewModel @Inject constructor(
         }
     }
 
-    fun fetch(filter: Filter? = currentFilter) {
+    fun fetch() {
         viewModelScope.launch(Dispatchers.IO) {
-            if (filter == null) {
-                _todosSharedFlow.emitAll(dbRepository.getAllTodos())
-            } else {
-                _todosSharedFlow.emit(fetchWithFilter(filter))
-            }
+            _todosSharedFlow.emitAll(dbRepository.getAllTodos())
         }
     }
 
