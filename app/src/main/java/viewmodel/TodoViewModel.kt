@@ -121,7 +121,7 @@ class TodoViewModel @Inject constructor(
         }
     }
 
-    private suspend fun fetchWithFilter(filter: Filter): List<Todo>? {
+    suspend fun fetchWithFilter(filter: Filter): List<Todo>? {
         var priorities: List<Priority?> = filter.priorities
 
         if (priorities.isEmpty())

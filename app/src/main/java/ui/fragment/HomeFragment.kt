@@ -603,41 +603,53 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
             todoViewModel.fetch(filter)
         }
 
-        collectLatestLifecycleFlow(todoViewModel.todosFlow) { todos: List<Todo>? ->
-            if (todos == null || todos.isEmpty()) {
-                binding.rvTodo.visibility = View.GONE
-                binding.cLytEmpty.visibility = View.VISIBLE
-                if (todoViewModel.currentFilter == null /*|| getTodoViewModel().getCurrentFilter().filterIsEmpty()*/) {
-                    binding.filterIndicator.visibility = View.GONE
-                    binding.cLytGuide.visibility = View.VISIBLE
+        collectLatestLifecycleFlow(
+            todoViewModel.todosFlow,
 
-                    binding.txtEmpty.text = provideResource.getString(R.string.todos_empty)
-                    binding.txtNotesEmpty.text =
-                        TextHelper.fromHtml(provideResource.getString(R.string.todos_empty_notes))
+            map = { mappedList ->
 
-                    params.verticalBias = 0.2f
-                } else {
-                    binding.filterIndicator.visibility = View.VISIBLE
-                    binding.cLytGuide.visibility = View.GONE
-
-                    binding.txtEmpty.text =
-                        provideResource.getString(R.string.empty_todos_with_filter)
-
-                    binding.txtNotesEmpty.text =
-                        provideResource.getString(R.string.empty_todos_with_filter_notes)
-
-                    params.verticalBias = 0.35f
+                todoViewModel.currentFilter?.let { currentFilter -> //for avoid remove filter after update todos
+                    todoViewModel.fetchWithFilter(currentFilter)
+                } ?: run {
+                    mappedList
                 }
+            },
 
-                box.layoutParams = params
-            } else {
-                binding.filterIndicator.visibility = todoViewModel.filterIndicatorVisibility
+            collect = { todos: List<Todo>? ->
+                if (todos == null || todos.isEmpty()) {
+                    binding.rvTodo.visibility = View.GONE
+                    binding.cLytEmpty.visibility = View.VISIBLE
+                    if (todoViewModel.currentFilter == null /*|| getTodoViewModel().getCurrentFilter().filterIsEmpty()*/) {
+                        binding.filterIndicator.visibility = View.GONE
+                        binding.cLytGuide.visibility = View.VISIBLE
 
-                binding.cLytEmpty.visibility = View.GONE
-                binding.rvTodo.visibility = View.VISIBLE
-                binding.rvTodo.post { adapter?.differ?.submitList(todos) }
-            }
-        }
+                        binding.txtEmpty.text = provideResource.getString(R.string.todos_empty)
+                        binding.txtNotesEmpty.text =
+                            TextHelper.fromHtml(provideResource.getString(R.string.todos_empty_notes))
+
+                        params.verticalBias = 0.2f
+                    } else {
+                        binding.filterIndicator.visibility = View.VISIBLE
+                        binding.cLytGuide.visibility = View.GONE
+
+                        binding.txtEmpty.text =
+                            provideResource.getString(R.string.empty_todos_with_filter)
+
+                        binding.txtNotesEmpty.text =
+                            provideResource.getString(R.string.empty_todos_with_filter_notes)
+
+                        params.verticalBias = 0.35f
+                    }
+
+                    box.layoutParams = params
+                } else {
+                    binding.filterIndicator.visibility = todoViewModel.filterIndicatorVisibility
+
+                    binding.cLytEmpty.visibility = View.GONE
+                    binding.rvTodo.visibility = View.VISIBLE
+                    binding.rvTodo.post { adapter?.differ?.submitList(todos) }
+                }
+            })
 
         collectLatestLifecycleFlow(todoViewModel.goToTopFlow) {
             goToTop(1000)
