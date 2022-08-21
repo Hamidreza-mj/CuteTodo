@@ -15,6 +15,7 @@ import controller.ShareController
 import dagger.hilt.android.AndroidEntryPoint
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentTodoDetailBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import model.Priority
 import model.Todo
@@ -134,7 +135,7 @@ class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() 
                         notificationViewModel.cancelAlarm(viewModel.todo)
 
                     todoViewModel.deleteTodo(viewModel.todo)
-                    todoViewModel.fetch() //need to update todos if categories was deleted
+                    //todoViewModel.fetch() //need to update todos if categories was deleted
                     searchViewModel.search()
 
                     lifecycleScope.launch {
@@ -260,6 +261,11 @@ class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() 
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshTodo()
     }
 
 }

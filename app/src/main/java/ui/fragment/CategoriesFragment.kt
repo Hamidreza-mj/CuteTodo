@@ -20,6 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ActivityContext
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentCategoriesBinding
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import model.Category
 import ui.adapter.CategoryAdapter
@@ -143,6 +144,7 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
                         categoryViewModel.deleteAllCategories()
                         //todoViewModel.fetch() //need to update todos if categories was deleted
                         searchViewModel.search(search = null)
+                        updateTodoDetail()
                         scrollBehavior!!.slideUp(binding.frameLytButton)
                         dismiss()
                     }
@@ -219,6 +221,7 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
 
                                     onClickDelete = {
                                         categoryViewModel.deleteCategory(category)
+                                        updateTodoDetail()
                                         //todoViewModel.fetch() //need to update todos if category was deleted
                                         scrollBehavior!!.slideUp(binding.frameLytButton)
                                         dismiss()
@@ -274,4 +277,16 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
             scrollBehavior!!.slideUp(binding.frameLytButton)
         }, 500)
     }
+
+    private fun updateTodoDetail() {
+        lifecycleScope.launch {
+            delay(200L) //need some delay to get new todo from db
+
+            val fragment =
+                parentFragmentManager.findFragmentByTag(Constants.FragmentTag.TODO_DETAIL) as TodoDetailFragment?
+
+            fragment?.viewModel?.refreshTodo()
+        }
+    }
+
 }

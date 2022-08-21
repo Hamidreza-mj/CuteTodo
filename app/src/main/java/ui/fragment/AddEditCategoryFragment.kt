@@ -8,11 +8,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ActivityContext
 import hlv.cute.todo.databinding.FragmentAddEditCategoryBinding
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import model.Category
 import ui.component.bindingComponent.BaseViewBindingFragment
+import utils.Constants
 import utils.KeyboardUtil.focusAndShowKeyboard
 import viewmodel.AddEditCategoryViewModel
 import javax.inject.Inject
@@ -98,6 +102,7 @@ class AddEditCategoryFragment : BaseViewBindingFragment<FragmentAddEditCategoryB
 
                 if (res == null) {
                     categoryViewModel.editCategory(editedCategory)
+                    updateTodoDetail()
                     //todoViewModel.fetch() //need to update todos if category was edited
                     //searchViewModel.search()
                     back()
@@ -124,4 +129,16 @@ class AddEditCategoryFragment : BaseViewBindingFragment<FragmentAddEditCategoryB
             }
         }
     }
+
+    private fun updateTodoDetail() {
+        lifecycleScope.launch {
+            delay(200L) //need some delay to get new todo from db
+
+            val fragment =
+                parentFragmentManager.findFragmentByTag(Constants.FragmentTag.TODO_DETAIL) as TodoDetailFragment?
+
+            fragment?.viewModel?.refreshTodo()
+        }
+    }
+
 }
