@@ -301,7 +301,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
 
     private fun doneTodo(todoID: Int) {
         todoViewModel.setDoneTodo(todoID.toLong())
-        searchViewModel.search()
+       // searchViewModel.search()
     }
 
     private fun openAddEditFragment(todo: Todo? = null) {
@@ -344,7 +344,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                     notificationViewModel.cancelAlarm(todo)
 
                 todoViewModel.deleteTodo(todo)
-                searchViewModel.search()
+                //searchViewModel.search()
 
                 moreDialog?.dismiss()
                 dismiss()
@@ -560,8 +560,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
     private fun handleObserver() {
         searchViewModel.search()
 
-        collectLatestLifecycleFlow(searchViewModel.searchedTodosFlow) { todos: List<Todo>? ->
-
+        collectLatestLifecycleFlow(searchViewModel.searchedTodosStateFlow) { todos: List<Todo>? ->
             if (todos == null || todos.isEmpty()) {
                 binding.txtResult.visibility = View.GONE
                 binding.nested.visibility = View.GONE
@@ -622,10 +621,5 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
     override fun onDestroyView() {
         super.onDestroyView()
         searchViewModel.release()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        searchViewModel.search()
     }
 }

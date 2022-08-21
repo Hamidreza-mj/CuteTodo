@@ -98,8 +98,8 @@ class AddEditCategoryFragment : BaseViewBindingFragment<FragmentAddEditCategoryB
 
                 if (res == null) {
                     categoryViewModel.editCategory(editedCategory)
-                    todoViewModel.fetch() //need to update todos if category was edited
-                    searchViewModel.search()
+                    //todoViewModel.fetch() //need to update todos if category was edited
+                    //searchViewModel.search()
                     back()
 
                     return@setOnClickListener

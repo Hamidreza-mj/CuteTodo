@@ -329,7 +329,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
 
                     todoViewModel.editTodo(editedTodo)
 
-                    searchViewModel.search()
+                    //searchViewModel.search()
 
                     updateDetail(editedTodo)
 

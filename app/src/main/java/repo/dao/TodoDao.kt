@@ -42,9 +42,9 @@ interface TodoDao {
     suspend fun setTodoIsDone(todoID: Long)
 
     @Query("SELECT * FROM todos WHERE is_done = :isDone AND priority IN (:priorities) ORDER BY is_done, id DESC;")
-    fun filterByDoneTodos(isDone: Boolean, priorities: List<Priority?>?): Flow<List<Todo>?>
+    suspend fun filterByDoneTodos(isDone: Boolean, priorities: List<Priority?>?): List<Todo>?
 
     @Query("SELECT * FROM todos WHERE priority IN (:priorities) ORDER BY is_done, id DESC;")
-    fun filterByAllTodos(priorities: List<Priority?>?): Flow<List<Todo>?>
+    suspend fun filterByAllTodos(priorities: List<Priority?>?): List<Todo>?
 
 }

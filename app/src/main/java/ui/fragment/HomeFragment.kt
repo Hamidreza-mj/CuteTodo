@@ -35,7 +35,10 @@ import ui.component.bindingComponent.BaseViewBindingFragment
 import ui.dialog.DeleteDialog
 import ui.dialog.ShowMoreDialog
 import ui.fragment.sheet.FilterBottomSheet
-import utils.*
+import utils.Constants
+import utils.TextHelper
+import utils.ToastUtil
+import utils.collectLatestLifecycleFlow
 import viewmodel.NotificationViewModel
 import javax.inject.Inject
 
@@ -198,10 +201,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                                         )
 
                                         onClickDelete = {
-                                            launch {
-                                                notificationViewModel.cancelAllAlarm()
-                                            }
-
+                                            notificationViewModel.cancelAllAlarm()
                                             todoViewModel.deleteAllTodos()
                                             scrollBehavior!!.slideUp(binding.frameLytButton)
 
@@ -597,10 +597,13 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
         val box = binding.box
         val params = box.layoutParams as ConstraintLayout.LayoutParams
 
-        todoViewModel.fetch()
+        //todoViewModel.fetch() init fetch run in this,
+        //because MutableStateFlow emit with null default value at first
+        collectLatestLifecycleFlow(todoViewModel.filterStateFlow) { filter: Filter? ->
+            todoViewModel.fetch(filter)
+        }
 
         collectLatestLifecycleFlow(todoViewModel.todosFlow) { todos: List<Todo>? ->
-
             if (todos == null || todos.isEmpty()) {
                 binding.rvTodo.visibility = View.GONE
                 binding.cLytEmpty.visibility = View.VISIBLE
@@ -636,15 +639,11 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
             }
         }
 
-        collectLatestLifecycleFlow(todoViewModel.filterStateFlow) { filter: Filter? ->
-            todoViewModel.fetch(filter)
-        }
-
         collectLatestLifecycleFlow(todoViewModel.goToTopFlow) {
             goToTop(1000)
         }
 
-        collectLifecycleFlow(categoryViewModel.categoriesFlow) { categories: List<Category?>? ->
+        collectLatestLifecycleFlow(categoryViewModel.categoriesFlow) { categories: List<Category?>? ->
             allCategories = categories as ArrayList<Category?>?
         }
     }
@@ -660,8 +659,4 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
         }, 500)
     }
 
-    override fun onResume() {
-        super.onResume()
-        todoViewModel.fetch()
-    }
 }

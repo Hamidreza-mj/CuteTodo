@@ -10,9 +10,11 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import model.Filter
 import model.Notification
+import model.Priority
 import model.Todo
 import repo.dbRepoController.NotificationDBRepository
 import repo.dbRepoController.TodoDBRepository
+import utils.DateHelper
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,10 +23,11 @@ class TodoViewModel @Inject constructor(
     private val notifRepo: NotificationDBRepository
 ) : ViewModel() {
 
-    val todosFlow: Flow<List<Todo>?> = dbRepository.getAllTodos()
+    private val _todosSharedFlow = MutableSharedFlow<List<Todo>?>()
+    val todosFlow: Flow<List<Todo>?> = _todosSharedFlow.asSharedFlow()
 
     private val _filterStateFlow: MutableStateFlow<Filter?> = MutableStateFlow(null)
-    val filterStateFlow: StateFlow<Filter?> = _filterStateFlow.asStateFlow()
+    val filterStateFlow: Flow<Filter?> = _filterStateFlow.asStateFlow()
 
     //--------------channels----------------
     private val _goToTopChannel: Channel<Boolean> = Channel()
@@ -57,7 +60,7 @@ class TodoViewModel @Inject constructor(
 
     suspend fun todosCountIsEmpty(): Boolean {
         var isEmpty = false
-        var todosCount = 0L
+        var todosCount: Long
 
         viewModelScope.launch(Dispatchers.IO) {
             todosCount = getTodosCount()
@@ -98,7 +101,7 @@ class TodoViewModel @Inject constructor(
                 val allNotifications: List<Notification>? = notifRepo.getAllNotifications()
 
                 if (allNotifications != null) {
-                    for (notif: Notification in allNotifications!!) {
+                    for (notif: Notification in allNotifications) {
                         if (notif.arriveDate < System.currentTimeMillis()) //arrive date is passed
                             notifRepo.deleteNotification(notif)
                     }
@@ -108,17 +111,138 @@ class TodoViewModel @Inject constructor(
         }
     }
 
-    @JvmOverloads
     fun fetch(filter: Filter? = currentFilter) {
-        if (filter == null) {
-            dbRepository.getAllTodos()
-        } else {
-            try {
-                dbRepository.fetchWithFilter(filter)
-            } catch (ignored: InterruptedException) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (filter == null) {
+                _todosSharedFlow.emitAll(dbRepository.getAllTodos())
+            } else {
+                _todosSharedFlow.emit(fetchWithFilter(filter))
             }
         }
     }
+
+    private suspend fun fetchWithFilter(filter: Filter): List<Todo>? {
+        var priorities: List<Priority?> = filter.priorities
+
+        if (priorities.isEmpty())
+            priorities = filter.addAllPriorities()
+
+        var filteredTodos: ArrayList<Todo>? = ArrayList()
+
+        if (filter.isDone && filter.isUndone || !filter.isDone && !filter.isUndone) { //not need check isDone
+            viewModelScope.launch(Dispatchers.IO) {
+                filteredTodos = dbRepository.filterByAllTodos(priorities) as ArrayList<Todo>?
+            }.join()
+
+            //need to reverse for or iterator (because the main list index has changed)
+            //need to starts from end or use the way that independent on index
+            /*for (int i = filteredTodos.get().size() - 1; i >= 0; i--)
+                    Todo currentTodo = filteredTodos.get().get(i);
+                    if (currentTodo.getArriveDate() == 0)
+                        filteredTodos.get().remove(currentTodo);*/
+
+            if (filter.isScheduled)
+                filterByScheduled(filteredTodos)
+
+            if (filter.isToday)
+                filterByToday(filteredTodos)
+
+            if (filter.needToFilterByCategory())
+                filterByCategory(filteredTodos, filter.categoryIds)
+
+        } else if (filter.isDone) {
+            viewModelScope.launch(Dispatchers.IO) {
+                filteredTodos =
+                    dbRepository.filterByDoneTodos(true, priorities) as ArrayList<Todo>?
+            }.join()
+
+            if (filter.isScheduled)
+                filterByScheduled(filteredTodos)
+
+            if (filter.isToday)
+                filterByToday(filteredTodos)
+
+            if (filter.needToFilterByCategory())
+                filterByCategory(filteredTodos, filter.categoryIds)
+
+
+        } else if (filter.isUndone) {
+            viewModelScope.launch(Dispatchers.IO) {
+                filteredTodos =
+                    dbRepository.filterByDoneTodos(false, priorities) as ArrayList<Todo>?
+            }.join()
+
+            if (filter.isScheduled)
+                filterByScheduled(filteredTodos)
+
+            if (filter.isToday)
+                filterByToday(filteredTodos)
+
+            if (filter.needToFilterByCategory())
+                filterByCategory(filteredTodos, filter.categoryIds)
+        }
+
+        return filteredTodos
+    }
+
+    private fun filterByCategory(filteredTodos: MutableList<Todo>?, categoryIds: List<Int>?) {
+        if (filteredTodos == null)
+            return
+
+        val newTodos: MutableList<Todo> = mutableListOf()
+
+        for (todo in filteredTodos) {
+            if (categoryIds!!.contains(todo.categoryId))
+                newTodos.add(todo)
+        }
+
+        filteredTodos.clear()
+        filteredTodos.addAll(newTodos)
+    }
+
+    private fun filterByScheduled(filteredTodos: MutableList<Todo>?) {
+        if (filteredTodos == null)
+            return
+
+        val newTodos: MutableList<Todo> = mutableListOf()
+
+        for (todo in filteredTodos) {
+            if (todo.arriveDate != 0L)
+                newTodos.add(todo)
+        }
+
+        filteredTodos.clear()
+        filteredTodos.addAll(newTodos)
+    }
+
+    private fun filterByToday(filteredTodos: MutableList<Todo>?) {
+        if (filteredTodos == null)
+            return
+
+        val newTodos: MutableList<Todo> = mutableListOf()
+
+        //filter by scheduled todos
+        filterByScheduled(filteredTodos)
+
+        for (todo in filteredTodos) {
+            val todoDate = DateHelper(todo.arriveDate)
+            val nowDate = DateHelper(System.currentTimeMillis())
+
+            val todoYear = todoDate.getYear()
+            val todoMonth = todoDate.getMonth()
+            val todoDay = todoDate.getDay()
+            val nowYear = nowDate.getYear()
+            val nowMonth = nowDate.getMonth()
+            val nowDay = nowDate.getDay()
+
+            if (todoYear == nowYear && todoMonth == nowMonth && todoDay == nowDay)
+                newTodos.add(todo)
+        }
+
+        filteredTodos.clear()
+        filteredTodos.addAll(newTodos)
+    }
+
 
     suspend fun addTodo(todo: Todo?): Long {
         var insertedRow = 0L
@@ -161,8 +285,6 @@ class TodoViewModel @Inject constructor(
             dbRepository.setDoneTodo(todoID)
             notifRepo.setDoneTodo(todoID) //set done todo for notifications}
         }.join()
-
-        fetch()
     }
 
     private fun pureValidateTodo(todo: Todo): Boolean {

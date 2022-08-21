@@ -141,8 +141,8 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
 
                     onClickDelete = {
                         categoryViewModel.deleteAllCategories()
-                        todoViewModel.fetch() //need to update todos if categories was deleted
-                        searchViewModel.search()
+                        //todoViewModel.fetch() //need to update todos if categories was deleted
+                        searchViewModel.search(search = null)
                         scrollBehavior!!.slideUp(binding.frameLytButton)
                         dismiss()
                     }
@@ -219,7 +219,7 @@ class CategoriesFragment : BaseViewBindingFragment<FragmentCategoriesBinding>() 
 
                                     onClickDelete = {
                                         categoryViewModel.deleteCategory(category)
-                                        todoViewModel.fetch() //need to update todos if category was deleted
+                                        //todoViewModel.fetch() //need to update todos if category was deleted
                                         scrollBehavior!!.slideUp(binding.frameLytButton)
                                         dismiss()
                                     }

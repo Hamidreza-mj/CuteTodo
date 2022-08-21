@@ -88,7 +88,7 @@ class NotificationViewModel @Inject constructor(
 
     fun cancelAllDoneAlarm() {
         viewModelScope.launch(Dispatchers.IO) {
-            var notificationList: List<Notification>? = null
+            var notificationList: List<Notification>?
 
             launch {
                 notificationList = getAllDoneNotifications()
@@ -103,9 +103,9 @@ class NotificationViewModel @Inject constructor(
         }
     }
 
-    suspend fun cancelAllAlarm() {
+    fun cancelAllAlarm() {
         viewModelScope.launch(Dispatchers.IO) {
-            var notificationList: List<Notification>? = null
+            var notificationList: List<Notification>?
 
             launch {
                 notificationList = getAllNotifications()

@@ -20,20 +20,20 @@ class SearchViewModel @Inject constructor(
     private val dbRepository: SearchDBRepository
 ) : ViewModel() {
 
-    private var _searchedTodosFlow: MutableStateFlow<List<Todo>?> = MutableStateFlow(null)
-    var searchedTodosFlow: StateFlow<List<Todo>?> = _searchedTodosFlow.asStateFlow()
+    private var _searchedTodosStateFlow: MutableStateFlow<List<Todo>?> = MutableStateFlow(null)
+    var searchedTodosStateFlow: StateFlow<List<Todo>?> = _searchedTodosStateFlow.asStateFlow()
 
     private val _searchStateFlow: MutableStateFlow<Search?> = MutableStateFlow(null)
 
     fun search(search: Search? = _searchStateFlow.value, categoryId: Int? = null) {
         viewModelScope.launch(Dispatchers.IO) {
             categoryId?.let { id ->
-                _searchedTodosFlow.emitAll(dbRepository.getAllTodosInSpecificCategory(id))
+                _searchedTodosStateFlow.emitAll(dbRepository.getAllTodosInSpecificCategory(id))
                 return@launch
             }
 
             if (search == null) {
-                _searchedTodosFlow.emitAll(dbRepository.getAllTodos())
+                _searchedTodosStateFlow.emitAll(dbRepository.getAllTodos())
                 return@launch
             }
 
@@ -42,9 +42,9 @@ class SearchViewModel @Inject constructor(
             when (search.searchMode) {
                 SearchMode.TODO -> {
                     if (search.categoryId == 0)
-                        _searchedTodosFlow.emitAll(dbRepository.searchTodo(search.term))
+                        _searchedTodosStateFlow.emitAll(dbRepository.searchTodo(search.term))
                     else
-                        _searchedTodosFlow.emitAll(
+                        _searchedTodosStateFlow.emitAll(
                             dbRepository.searchTodoInSpecificCategory(
                                 search.term,
                                 search.categoryId
@@ -52,13 +52,13 @@ class SearchViewModel @Inject constructor(
                         )
                 }
 
-                SearchMode.CATEGORY -> _searchedTodosFlow.emitAll(
+                SearchMode.CATEGORY -> _searchedTodosStateFlow.emitAll(
                     dbRepository.searchInCategories(
                         search.term
                     )
                 )
 
-                SearchMode.BOTH -> _searchedTodosFlow.emitAll(
+                SearchMode.BOTH -> _searchedTodosStateFlow.emitAll(
                     dbRepository.searchInTodosAndCategories(
                         search.term
                     )

@@ -262,8 +262,4 @@ class TodoDetailFragment : BaseViewBindingFragment<FragmentTodoDetailBinding>() 
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.fetchOnResume()
-    }
 }

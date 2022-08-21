@@ -3,17 +3,13 @@ package viewmodel
 import android.view.View
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hlv.cute.todo.R
 import ir.hamsaa.persiandatepicker.date.PersianDateImpl
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import model.DateTime
 import model.Todo
-import repo.dbRepoController.TodoDBRepository
 import utils.DateHelper
 import utils.ResourceProvider
 import javax.inject.Inject
@@ -21,7 +17,6 @@ import javax.inject.Inject
 @HiltViewModel
 class TodoDetailViewModel @Inject constructor(
     private val provideResource: ResourceProvider,
-    private val todoRepo: TodoDBRepository
 ) : ViewModel() {
 
     private val _todoStateFlow: MutableStateFlow<Todo?> = MutableStateFlow(null)
@@ -116,20 +111,6 @@ class TodoDetailViewModel @Inject constructor(
 
     fun getClockReminder(): String {
         return todo?.arriveDate?.let { getDate(it).clock } ?: ""
-    }
-
-    fun fetchOnResume() {
-        viewModelScope.launch(Dispatchers.IO) {
-            var updatedTodo: Todo? = null
-
-            launch {
-                updatedTodo = todoRepo.getTodo(todo!!.id.toLong())
-            }.join()
-
-            updatedTodo?.let {
-                todo = it
-            }
-        }
     }
 
 }
