@@ -95,6 +95,52 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:shimmer_auto_start="true"
+            app:shimmer_base_alpha="0.6"
+            app:shimmer_direction="top_to_bottom"
+            app:shimmer_duration="900"
+            app:shimmer_highlight_alpha="1"
+            app:shimmer_repeat_delay="0"
+            app:shimmer_repeat_mode="restart"
+            app:shimmer_shape="linear"
+            app:shimmer_tilt="0">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <include layout="@layout/item_todo_shimmer" />
+
+                <include layout="@layout/item_todo_shimmer" />
+
+                <include layout="@layout/item_todo_shimmer" />
+
+                <include layout="@layout/item_todo_shimmer" />
+
+                <include layout="@layout/item_todo_shimmer" />
+
+                <include layout="@layout/item_todo_shimmer" />
+
+                <include layout="@layout/item_todo_shimmer" />
+
+                <include layout="@layout/item_todo_shimmer" />
+
+                <include layout="@layout/item_todo_shimmer" />
+
+            </LinearLayout>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nested"
             android:layout_width="0dp"

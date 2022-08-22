@@ -26,6 +26,8 @@ class SearchViewModel @Inject constructor(
     private val _searchStateFlow: MutableStateFlow<Search?> = MutableStateFlow(null)
 
     fun search(search: Search? = _searchStateFlow.value, categoryId: Int? = null) {
+        _searchStateFlow.value = search
+
         viewModelScope.launch(Dispatchers.IO) {
             categoryId?.let { id ->
                 _searchedTodosStateFlow.emitAll(dbRepository.getAllTodosInSpecificCategory(id))
@@ -36,8 +38,6 @@ class SearchViewModel @Inject constructor(
                 _searchedTodosStateFlow.emitAll(dbRepository.getAllTodos())
                 return@launch
             }
-
-            _searchStateFlow.value = search
 
             when (search.searchMode) {
                 SearchMode.TODO -> {

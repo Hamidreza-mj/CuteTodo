@@ -41,6 +41,7 @@ import utils.collectLatestLifecycleFlow
 import viewmodel.NotificationViewModel
 import javax.inject.Inject
 
+
 @AndroidEntryPoint
 class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
 
@@ -75,6 +76,8 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
     lateinit var dimView: DimView
 
     private var moreDialog: ShowMoreDialog? = null
+
+    private var isFirstCollectTodo = true
 
     companion object {
         @JvmStatic
@@ -644,12 +647,20 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
 
                     box.layoutParams = params
                 } else {
-                    binding.filterIndicator.visibility = todoViewModel.filterIndicatorVisibility
+                    if (isFirstCollectTodo)
+                        startShimmer()
 
+                    binding.filterIndicator.visibility = todoViewModel.filterIndicatorVisibility
                     binding.cLytEmpty.visibility = View.GONE
                     binding.rvTodo.visibility = View.VISIBLE
-                    binding.rvTodo.post { adapter?.differ?.submitList(todos) }
+
+                    binding.rvTodo.post {
+                        stopShimmer()
+                        adapter?.differ?.submitList(todos)
+                    }
                 }
+
+                isFirstCollectTodo = false
             })
 
         collectLatestLifecycleFlow(todoViewModel.goToTopFlow) {
@@ -670,6 +681,20 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
         Handler(Looper.getMainLooper()).postDelayed({
             scrollBehavior!!.slideUp(binding.frameLytButton)
         }, 500)
+    }
+
+    private fun stopShimmer() {
+        binding.shimmer.apply {
+            visibility = View.GONE
+            stopShimmer()
+        }
+    }
+
+    private fun startShimmer() {
+        binding.shimmer.apply {
+            visibility = View.VISIBLE
+            startShimmer()
+        }
     }
 
 }
