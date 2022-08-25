@@ -13,7 +13,8 @@ data class Search(
 
     ) : Parcelable {
 
-    enum class SearchMode {
+    @Parcelize
+    enum class SearchMode : Parcelable {
         TODO, CATEGORY, BOTH
     }
 }

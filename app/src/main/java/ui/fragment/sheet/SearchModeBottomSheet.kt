@@ -7,7 +7,6 @@ import android.widget.RadioGroup
 import androidx.core.os.bundleOf
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.SheetSearchModeBinding
-import model.Search
 import model.Search.SearchMode
 import ui.component.bindingComponent.BaseViewBindingBottomSheet
 import utils.KeyboardUtil
@@ -17,17 +16,17 @@ class SearchModeBottomSheet : BaseViewBindingBottomSheet<SheetSearchModeBinding>
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> SheetSearchModeBinding
         get() = SheetSearchModeBinding::inflate
 
-    private var search: Search? = null
-    var onCheckChanged: ((search: Search?) -> Unit)? = null
+    private var searchMode: SearchMode = SearchMode.TODO
+    lateinit var onCheckChanged: (searchMode: SearchMode) -> Unit
 
     companion object {
         private const val SEARCH_MODE_ARGS = "search-mode-args"
 
         @JvmStatic
-        fun newInstance(search: Search?): SearchModeBottomSheet {
+        fun newInstance(searchMode: SearchMode): SearchModeBottomSheet {
             val bottomSheet = SearchModeBottomSheet()
 
-            val args = bundleOf(SEARCH_MODE_ARGS to search)
+            val args = bundleOf(SEARCH_MODE_ARGS to searchMode)
             bottomSheet.arguments = args
 
             return bottomSheet
@@ -44,7 +43,7 @@ class SearchModeBottomSheet : BaseViewBindingBottomSheet<SheetSearchModeBinding>
         super.onCreate(savedInstanceState)
 
         if (arguments != null && requireArguments().isEmpty.not())
-            search = requireArguments().getParcelable(SEARCH_MODE_ARGS)
+            searchMode = requireArguments().getParcelable(SEARCH_MODE_ARGS) ?: SearchMode.TODO
 
         activity?.let {
             KeyboardUtil.hideKeyboard(it)
@@ -52,11 +51,10 @@ class SearchModeBottomSheet : BaseViewBindingBottomSheet<SheetSearchModeBinding>
     }
 
     private fun initData() {
-        when (search?.searchMode) {
+        when (searchMode) {
             SearchMode.TODO -> binding.radioBtnTodo.isChecked = true
             SearchMode.CATEGORY -> binding.radioBtnCategory.isChecked = true
             SearchMode.BOTH -> binding.radioBtnBoth.isChecked = true
-            else -> binding.radioBtnTodo.isChecked = true
         }
     }
 
@@ -65,19 +63,14 @@ class SearchModeBottomSheet : BaseViewBindingBottomSheet<SheetSearchModeBinding>
         binding.mBtnClose.setOnClickListener { dismiss() }
 
         binding.radioGP.setOnCheckedChangeListener { _: RadioGroup?, id: Int ->
-            if (onCheckChanged == null) {
-                dismiss()
-                return@setOnCheckedChangeListener
+            searchMode = when (id) {
+                R.id.radioBtnTodo -> SearchMode.TODO
+                R.id.radioBtnCategory -> SearchMode.CATEGORY
+                R.id.radioBtnBoth -> SearchMode.BOTH
+                else -> SearchMode.TODO
             }
 
-            when (id) {
-                R.id.radioBtnTodo -> search!!.searchMode = SearchMode.TODO
-                R.id.radioBtnCategory -> search!!.searchMode = SearchMode.CATEGORY
-                R.id.radioBtnBoth -> search!!.searchMode = SearchMode.BOTH
-                else -> search!!.searchMode = SearchMode.TODO
-            }
-
-            onCheckChanged!!(search)
+            onCheckChanged(searchMode)
         }
     }
 

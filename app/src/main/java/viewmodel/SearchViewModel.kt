@@ -18,7 +18,6 @@ class SearchViewModel @Inject constructor(
     private val dbRepository: SearchDBRepository
 ) : ViewModel() {
 
-    //----------------stateFlows -----------------
     private var _searchedTodosStateFlow: MutableSharedFlow<List<Todo>?> = MutableSharedFlow()
     var searchedTodosStateFlow: SharedFlow<List<Todo>?> = _searchedTodosStateFlow.asSharedFlow()
 
@@ -86,13 +85,13 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    suspend fun search(search: Search, mainList: List<Todo>? = null): List<Todo>? {
+    suspend fun search(search: Search): List<Todo>? {
         var filteredTodos: List<Todo>? = emptyList()
 
         when (search.searchMode) {
             SearchMode.TODO -> {
-                search.categoryId?.let { cid ->
-                    if (cid == 0) {
+                search.categoryId.let { cid ->
+                    if (cid == null || cid == 0) {
                         viewModelScope.launch(Dispatchers.IO) {
                             filteredTodos = dbRepository.searchTodo(search.term)
                         }.join()
@@ -101,10 +100,6 @@ class SearchViewModel @Inject constructor(
                             filteredTodos =
                                 dbRepository.searchTodoInSpecificCategory(search.term, cid)
                         }.join()
-                    }
-                } ?: run {
-                    withContext(Dispatchers.IO) {
-                        filteredTodos = mainList //passed from collect
                     }
                 }
             }

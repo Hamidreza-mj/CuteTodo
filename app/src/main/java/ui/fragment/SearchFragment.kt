@@ -7,7 +7,6 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.transition.Slide
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -141,11 +140,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
             }
         }
 
-
-        //val lastTabPos = binding.tabLyt.tabCount - 1
-
         Handler(Looper.getMainLooper()).postDelayed({
-            //searchViewModel.applySearchState(categoryId = categoryAllItem.id)
             binding.tabLyt.selectTab(binding.tabLyt.getTabAt(binding.tabLyt.tabCount - 1), true)
         }, 100)
 
@@ -154,21 +149,10 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
             override fun onTabSelected(tab: Tab) {
                 val tabCategoryId = allCategories[tab.position].id
 
-                searchViewModel.applySearchState(categoryId = tabCategoryId)
-
                 binding.nested.smoothScrollTo(0, 0, 500)
 
-                if (tab.position == binding.tabLyt.tabCount - 1) { //all
-                    searchViewModel.applySearchState(categoryId = categoryAllItem.id)
-                } else {
-                    val searchText = binding.edtSearch.text.toString()
-
-                    //if (searchText.isEmpty()) {
-                    // searchViewModel.applySearchState(categoryId = tabCategoryId)
-                    // } else {
-                    searchViewModel.applySearchState(term = searchText, categoryId = tabCategoryId)
-                    //}
-                }
+                val searchText = binding.edtSearch.text.toString()
+                searchViewModel.applySearchState(term = searchText, categoryId = tabCategoryId)
             }
 
             override fun onTabUnselected(tab: Tab) {
@@ -217,19 +201,19 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                 searchViewModel.applySearchState(term = "", searchMode = Search.SearchMode.TODO)
             }
 
-            SearchModeBottomSheet.newInstance(searchViewModel.currentSearch).apply {
-                onCheckChanged = { search: Search? ->
+            SearchModeBottomSheet.newInstance(searchViewModel.searchMode).apply {
+                onCheckChanged = { newSearchwMode: Search.SearchMode? ->
                     disableViews()
 
                     searchViewModel.applySearchState(
                         searchViewModel.currentTerm,
-                        search?.searchMode ?: searchViewModel.searchMode,
-                        search?.categoryId
+                        newSearchwMode ?: searchViewModel.searchMode,
+                        if (newSearchwMode === Search.SearchMode.CATEGORY) null else 0/*search?.categoryId*/
                     )
 
                     val lp = binding.tabLyt.layoutParams as ConstraintLayout.LayoutParams
 
-                    if (search?.searchMode === Search.SearchMode.CATEGORY || search?.searchMode === Search.SearchMode.BOTH) {
+                    if (newSearchwMode === Search.SearchMode.CATEGORY || newSearchwMode === Search.SearchMode.BOTH) {
                         binding.tabLyt.visibility = View.INVISIBLE
                         lp.height = provideResource.getDimen(R.dimen.heigh_invisible_space).toInt()
                     } else {
@@ -344,7 +328,6 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                     notificationViewModel.cancelAlarm(todo)
 
                 todoViewModel.deleteTodo(todo)
-                //searchViewModel.search()
 
                 moreDialog?.dismiss()
                 dismiss()
@@ -569,10 +552,8 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                 //apply filter when collectiong datas
                 //has filter
                 searchViewModel.currentSearch?.let { currentSearch ->
-                    Log.e(Constants.Tags.DEBUG, "has filter") //not called need bg
-                    searchViewModel.search(currentSearch, mainList)
+                    searchViewModel.search(currentSearch)
                 } ?: run {
-                    Log.e(Constants.Tags.DEBUG, "main")
                     mainList
                 }
             },
