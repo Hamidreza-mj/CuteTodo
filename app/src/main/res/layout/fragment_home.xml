@@ -105,7 +105,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar"
             app:shimmer_auto_start="true"
-            app:shimmer_base_alpha="0.6"
+            app:shimmer_base_alpha="0.5"
             app:shimmer_direction="top_to_bottom"
             app:shimmer_duration="900"
             app:shimmer_highlight_alpha="1"

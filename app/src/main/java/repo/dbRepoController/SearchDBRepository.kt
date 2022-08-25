@@ -15,19 +15,20 @@ class SearchDBRepository @Inject constructor(
     fun getAllTodos(): Flow<List<Todo>?> =
         dao.getAllTodos().distinctUntilChanged()
 
-    fun getAllTodosInSpecificCategory(categoryId: Int): Flow<List<Todo>?> =
-        dao.getTodosWithCategory(categoryId).distinctUntilChanged()
+    suspend fun searchTodo(term: String?): List<Todo>? {
+        return dao.searchTodo(term)
+    }
 
-    fun searchTodo(term: String?): Flow<List<Todo>?> =
-        dao.searchTodo(term).distinctUntilChanged()
+    suspend fun searchTodoInSpecificCategory(term: String?, categoryId: Int): List<Todo>? {
+        return dao.searchTodoWithCategoryId(term, categoryId)
+    }
 
-    fun searchTodoInSpecificCategory(term: String?, categoryId: Int): Flow<List<Todo>?> =
-        dao.searchTodoWithCategoryId(term, categoryId).distinctUntilChanged()
+    suspend fun searchInCategories(term: String?): List<Todo>? {
+        return dao.searchCategory(term)
+    }
 
-    fun searchInCategories(term: String?): Flow<List<Todo>?> =
-        dao.searchCategory(term).distinctUntilChanged()
-
-    fun searchInTodosAndCategories(term: String?): Flow<List<Todo>?> =
-        dao.searchTodoWithCategory(term).distinctUntilChanged()
+    suspend fun searchInTodosAndCategories(term: String?): List<Todo>? {
+        return dao.searchTodoWithCategory(term)
+    }
 
 }

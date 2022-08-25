@@ -11,18 +11,15 @@ interface SearchDao {
     @Query("SELECT * FROM todos ORDER BY is_done, id DESC;")
     fun getAllTodos(): Flow<List<Todo>?>
 
-    @Query("SELECT * FROM todos WHERE category_id = :categoryId ORDER BY is_done, id DESC;")
-    fun getTodosWithCategory(categoryId: Int): Flow<List<Todo>?>
-
     @Query("SELECT * FROM todos WHERE title LIKE '%' || :term || '%' ORDER BY is_done, id DESC;")
-    fun searchTodo(term: String?): Flow<List<Todo>?>
+    suspend fun searchTodo(term: String?): List<Todo>?
 
     @Query("SELECT * FROM todos WHERE title LIKE '%' || :term || '%' AND category_id = :categoryId ORDER BY is_done, id DESC;")
-    fun searchTodoWithCategoryId(term: String?, categoryId: Int): Flow<List<Todo>?>
+    suspend fun searchTodoWithCategoryId(term: String?, categoryId: Int): List<Todo>?
 
     @Query("SELECT * FROM todos WHERE category LIKE '%' || :term || '%' ORDER BY is_done, id DESC;")
-    fun searchCategory(term: String?): Flow<List<Todo>?>
+    suspend fun searchCategory(term: String?): List<Todo>?
 
     @Query("SELECT * FROM todos WHERE title LIKE '%' || :term || '%' OR category LIKE '%' || :term || '%' ORDER BY is_done, id DESC;")
-    fun searchTodoWithCategory(term: String?): Flow<List<Todo>?>
+    suspend fun searchTodoWithCategory(term: String?): List<Todo>?
 }

@@ -7,6 +7,7 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.transition.Slide
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -51,7 +52,6 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
     private var adapter: TodoAdapter? = null
 
     private var afterTextChanged = false
-    private var search: Search? = Search()
 
     @Inject
     lateinit var popupMaker: PopupMaker
@@ -145,7 +145,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
         //val lastTabPos = binding.tabLyt.tabCount - 1
 
         Handler(Looper.getMainLooper()).postDelayed({
-            search!!.categoryId = categoryAllItem.id
+            //searchViewModel.applySearchState(categoryId = categoryAllItem.id)
             binding.tabLyt.selectTab(binding.tabLyt.getTabAt(binding.tabLyt.tabCount - 1), true)
         }, 100)
 
@@ -154,21 +154,20 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
             override fun onTabSelected(tab: Tab) {
                 val tabCategoryId = allCategories[tab.position].id
 
-                search!!.categoryId = tabCategoryId
+                searchViewModel.applySearchState(categoryId = tabCategoryId)
 
                 binding.nested.smoothScrollTo(0, 0, 500)
 
                 if (tab.position == binding.tabLyt.tabCount - 1) { //all
-                    searchViewModel.search()
+                    searchViewModel.applySearchState(categoryId = categoryAllItem.id)
                 } else {
                     val searchText = binding.edtSearch.text.toString()
 
-                    if (searchText.isEmpty()) {
-                        searchViewModel.search(categoryId = tabCategoryId)
-                    } else {
-                        search!!.term = searchText
-                        searchViewModel.search(search)
-                    }
+                    //if (searchText.isEmpty()) {
+                    // searchViewModel.applySearchState(categoryId = tabCategoryId)
+                    // } else {
+                    searchViewModel.applySearchState(term = searchText, categoryId = tabCategoryId)
+                    //}
                 }
             }
 
@@ -214,22 +213,23 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
 
     private fun handleActions() {
         binding.aImgFilter.setOnClickListener {
-            if (search!!.term == null) {
-                search!!.term = ""
-                search!!.searchMode = Search.SearchMode.TODO
+            if (searchViewModel.currentSearch?.term == null) {
+                searchViewModel.applySearchState(term = "", searchMode = Search.SearchMode.TODO)
             }
 
-            SearchModeBottomSheet.newInstance(search).apply {
+            SearchModeBottomSheet.newInstance(searchViewModel.currentSearch).apply {
                 onCheckChanged = { search: Search? ->
                     disableViews()
 
-                    search!!.term = searchViewModel.currentTerm
-
-                    searchViewModel.search(search)
+                    searchViewModel.applySearchState(
+                        searchViewModel.currentTerm,
+                        search?.searchMode ?: searchViewModel.searchMode,
+                        search?.categoryId
+                    )
 
                     val lp = binding.tabLyt.layoutParams as ConstraintLayout.LayoutParams
 
-                    if (search.searchMode === Search.SearchMode.CATEGORY || search.searchMode === Search.SearchMode.BOTH) {
+                    if (search?.searchMode === Search.SearchMode.CATEGORY || search?.searchMode === Search.SearchMode.BOTH) {
                         binding.tabLyt.visibility = View.INVISIBLE
                         lp.height = provideResource.getDimen(R.dimen.heigh_invisible_space).toInt()
                     } else {
@@ -265,10 +265,11 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                     binding.txtResult.visibility = View.GONE
                     binding.aImgClear.visibility = View.INVISIBLE
                 }
-                search!!.term = editable.toString().trim()
-                search!!.searchMode = searchViewModel.searchMode
 
-                searchViewModel.search(search!!)
+                searchViewModel.applySearchState(
+                    term = editable.toString().trim(),
+                    searchMode = searchViewModel.searchMode
+                )
             }
         })
 
@@ -301,7 +302,6 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
 
     private fun doneTodo(todoID: Int) {
         todoViewModel.setDoneTodo(todoID.toLong())
-       // searchViewModel.search()
     }
 
     private fun openAddEditFragment(todo: Todo? = null) {
@@ -558,59 +558,75 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
     }
 
     private fun handleObserver() {
-        searchViewModel.search()
-
-        collectLatestLifecycleFlow(searchViewModel.searchedTodosStateFlow) { todos: List<Todo>? ->
-            if (todos == null || todos.isEmpty()) {
-                binding.txtResult.visibility = View.GONE
-                binding.nested.visibility = View.GONE
-                binding.rvSearch.visibility = View.GONE
-
-                binding.txtNotes.visibility = View.VISIBLE
-
-
-                if (todoViewModel.getTodosCount() == 0L) {
-                    binding.txtNotes.text = provideResource.getString(R.string.todos_empty)
-                } else {
-                    var term = searchViewModel.currentTerm
-
-                    if (term.isEmpty()) {
-                        term = "موردی یافت نشد!"
-                        binding.txtNotes.text = term
-                    } else {
-                        binding.txtNotes.text = TextHelper.fromHtml(
-                            provideResource.getString(
-                                R.string.todo_not_found,
-                                searchViewModel.titleTerm,
-                                term
-                            )
-                        )
-                    }
-                }
-
-                binding.vector.visibility = View.VISIBLE
-
-            } else {
-                binding.txtNotes.visibility = View.GONE
-                binding.vector.visibility = View.GONE
-
-                binding.txtResult.text = TextHelper.fromHtml(
-                    provideResource.getString(
-                        R.string.search_result,
-                        todos.size,
-                        todoViewModel.getTodosCount(),
-                        searchViewModel.titleTermResult
-                    )
-                )
-
-                binding.txtResult.visibility = if (afterTextChanged) View.VISIBLE else View.GONE
-
-                binding.nested.visibility = View.VISIBLE
-                binding.rvSearch.visibility = View.VISIBLE
-
-                binding.rvSearch.post { adapter?.differ?.submitList(todos) }
-            }
+        collectLatestLifecycleFlow(searchViewModel.searchStateFlow) {
+            searchViewModel.fetch()
         }
+
+        collectLatestLifecycleFlow(
+            flow = searchViewModel.searchedTodosStateFlow,
+
+            map = { mainList ->
+                //apply filter when collectiong datas
+                //has filter
+                searchViewModel.currentSearch?.let { currentSearch ->
+                    Log.e(Constants.Tags.DEBUG, "has filter") //not called need bg
+                    searchViewModel.search(currentSearch, mainList)
+                } ?: run {
+                    Log.e(Constants.Tags.DEBUG, "main")
+                    mainList
+                }
+            },
+
+            collect = { todos: List<Todo>? ->
+                if (todos == null || todos.isEmpty()) {
+                    binding.txtResult.visibility = View.GONE
+                    binding.nested.visibility = View.GONE
+                    binding.rvSearch.visibility = View.GONE
+
+                    binding.txtNotes.visibility = View.VISIBLE
+
+                    if (todoViewModel.getTodosCount() == 0L) {
+                        binding.txtNotes.text = provideResource.getString(R.string.todos_empty)
+                    } else {
+                        var term = searchViewModel.currentTerm
+
+                        if (term.isEmpty()) {
+                            term = "موردی یافت نشد!"
+                            binding.txtNotes.text = term
+                        } else {
+                            binding.txtNotes.text = TextHelper.fromHtml(
+                                provideResource.getString(
+                                    R.string.todo_not_found,
+                                    searchViewModel.titleTerm,
+                                    term
+                                )
+                            )
+                        }
+                    }
+
+                    binding.vector.visibility = View.VISIBLE
+
+                } else {
+                    binding.txtNotes.visibility = View.GONE
+                    binding.vector.visibility = View.GONE
+
+                    binding.txtResult.text = TextHelper.fromHtml(
+                        provideResource.getString(
+                            R.string.search_result,
+                            todos.size,
+                            todoViewModel.getTodosCount(),
+                            searchViewModel.titleTermResult
+                        )
+                    )
+
+                    binding.txtResult.visibility = if (afterTextChanged) View.VISIBLE else View.GONE
+
+                    binding.nested.visibility = View.VISIBLE
+                    binding.rvSearch.visibility = View.VISIBLE
+
+                    binding.rvSearch.postOnAnimation { adapter?.differ?.submitList(todos) }
+                }
+            })
 
         collectLatestLifecycleFlow(categoryViewModel.categoriesFlow) { categories: List<Category>? ->
             val allCategories = categories as ArrayList<Category>?

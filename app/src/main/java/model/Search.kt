@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
 data class Search(
     var term: String? = null,
     var searchMode: SearchMode = SearchMode.TODO,
-    var categoryId: Int = 0,
+    var categoryId: Int? = null,
 
     ) : Parcelable {
 
