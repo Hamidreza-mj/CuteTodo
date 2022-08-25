@@ -57,6 +57,12 @@ class SearchViewModel @Inject constructor(
             return title
         }
 
+    /**
+     * need for switching search mode from any to SearchMode.Todo
+     * for remember what category are selected before switching
+     * to navigate to this with cid
+     */
+    var lastSelectedCategory: Int = 0
 
     fun applySearchState(
         term: String? = currentSearch?.term,
@@ -124,6 +130,13 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _searchStateFlow.emit(null)
         }
+    }
+
+    fun getCategoryIdAfterSwitchMode(newMode: SearchMode): Int? {
+        return if (newMode == SearchMode.CATEGORY)
+            null //to reset
+        else
+            lastSelectedCategory
     }
 
 }

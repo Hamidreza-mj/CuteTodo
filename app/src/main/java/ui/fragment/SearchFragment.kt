@@ -15,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayout.Tab
@@ -23,6 +24,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ActivityContext
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentSearchBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import model.Category
 import model.Search
 import model.Todo
@@ -149,6 +153,8 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
             override fun onTabSelected(tab: Tab) {
                 val tabCategoryId = allCategories[tab.position].id
 
+                searchViewModel.lastSelectedCategory = tabCategoryId
+
                 binding.nested.smoothScrollTo(0, 0, 500)
 
                 val searchText = binding.edtSearch.text.toString()
@@ -202,13 +208,13 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
             }
 
             SearchModeBottomSheet.newInstance(searchViewModel.searchMode).apply {
-                onCheckChanged = { newSearchwMode: Search.SearchMode? ->
+                onCheckChanged = { newSearchwMode: Search.SearchMode ->
                     disableViews()
 
                     searchViewModel.applySearchState(
                         searchViewModel.currentTerm,
-                        newSearchwMode ?: searchViewModel.searchMode,
-                        if (newSearchwMode === Search.SearchMode.CATEGORY) null else 0/*search?.categoryId*/
+                        newSearchwMode,
+                        searchViewModel.getCategoryIdAfterSwitchMode(newSearchwMode)
                     )
 
                     val lp = binding.tabLyt.layoutParams as ConstraintLayout.LayoutParams
@@ -219,6 +225,8 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                     } else {
                         binding.tabLyt.visibility = View.VISIBLE
                         lp.height = ViewGroup.LayoutParams.WRAP_CONTENT
+
+                        scrollToSelectedTab() //when switch to Todo mode
                     }
 
                     binding.tabLyt.layoutParams = lp
@@ -258,6 +266,23 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
         })
 
         handleRecyclerView()
+    }
+
+    /**
+     *  scroll to last selected tab when change search mode to Todo
+     */
+    private fun scrollToSelectedTab() {
+        lifecycleScope.launch(Dispatchers.Main) {
+            delay(200L)
+            try {
+                binding.tabLyt.apply {
+                    isSmoothScrollingEnabled = true
+
+                    getTabAt(selectedTabPosition)?.select()
+                }
+            } catch (ignored: Exception) {
+            }
+        }
     }
 
     private fun handleRecyclerView() {
