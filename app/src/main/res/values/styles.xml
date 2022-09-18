@@ -19,7 +19,8 @@
 
 
     <!-- Toolbar title in english style -->
-    <style name="ToolbarTitleEN">
+    <style name="ToolbarTitleEN" parent="BaseAutoFitFont">
+        <item name="autoSizeMaxTextSize">17sp</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">17sp</item>
@@ -267,6 +268,7 @@
         <item name="autoSizeMaxTextSize">15sp</item>
         <item name="autoSizeMinTextSize">8sp</item>
         <item name="autoSizeTextType">uniform</item>
+        <item name="autoSizeStepGranularity">1sp</item>
     </style>
 
     <style name="PopupHeaderTextAppearance" parent="PopupTextAppearance">
@@ -277,6 +279,7 @@
         <item name="autoSizeMaxTextSize">14sp</item>
         <item name="autoSizeMinTextSize">8sp</item>
         <item name="autoSizeTextType">uniform</item>
+        <item name="autoSizeStepGranularity">1sp</item>
     </style>
 
     <style name="RTLStyle">

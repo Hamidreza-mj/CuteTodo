@@ -684,17 +684,17 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
     }
 
     private fun stopShimmer() {
-        binding.shimmer.apply {
+       /* binding.shimmer.apply {
             visibility = View.GONE
             stopShimmer()
-        }
+        }*/
     }
 
     private fun startShimmer() {
-        binding.shimmer.apply {
+       /* binding.shimmer.apply {
             visibility = View.VISIBLE
             startShimmer()
-        }
+        }*/
     }
 
 }

@@ -95,7 +95,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.facebook.shimmer.ShimmerFrameLayout
+        <!--<com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/shimmer"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -139,7 +139,7 @@
 
             </LinearLayout>
 
-        </com.facebook.shimmer.ShimmerFrameLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>-->
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nested"

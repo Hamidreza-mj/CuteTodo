@@ -96,7 +96,7 @@
         <entry key="app/src/main/res/layout/item_todo_shimmer.xml" value="0.2740740740740741" />
         <entry key="app/src/main/res/layout/popup.xml" value="0.27314814814814814" />
         <entry key="app/src/main/res/layout/share_menu_header.xml" value="0.27314814814814814" />
-        <entry key="app/src/main/res/layout/sheet_filter.xml" value="0.26805555555555555" />
+        <entry key="app/src/main/res/layout/sheet_filter.xml" value="0.25" />
         <entry key="app/src/main/res/layout/sheet_search_mode.xml" value="0.33" />
         <entry key="app/src/main/res/layout/sheet_time_picker.xml" value="0.33" />
         <entry key="app/src/main/res/layout/toast.xml" value="0.33" />

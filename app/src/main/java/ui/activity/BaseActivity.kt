@@ -1,8 +1,10 @@
 package ui.activity
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -69,6 +71,20 @@ open class BaseActivity : AppCompatActivity() {
     @JvmOverloads
     fun runActivity(targetActivity: Class<*>, finishBackActivity: Boolean = false) {
         runActivity(targetActivity, null, finishBackActivity)
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        val newConfiguration = Configuration(newBase?.resources?.configuration)
+
+        //to ignore scaling font when changed from settings device
+        newConfiguration.apply {
+            if (fontScale > 1.35f)
+                fontScale = 1.35f
+
+            applyOverrideConfiguration(this)
+        }
+
+        super.attachBaseContext(newBase)
     }
 
 }
