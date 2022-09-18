@@ -51,7 +51,7 @@
 
             <TextView
                 android:id="@+id/txtMessage"
-                style="@style/TextRG16"
+                style="@style/TextRG15"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
@@ -79,7 +79,7 @@
 
             <TextView
                 android:id="@+id/txtOk"
-                style="@style/TextRG16"
+                style="@style/TextMD14"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="?attr/selectableItemBackground"

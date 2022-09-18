@@ -189,7 +189,7 @@
 
             <TextView
                 android:id="@+id/txtClose"
-                style="@style/TextRG16"
+                style="@style/TextRG15"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:background="?attr/selectableItemBackground"
@@ -216,7 +216,7 @@
 
             <TextView
                 android:id="@+id/txtManageCategories"
-                style="@style/TextRG16"
+                style="@style/TextRG15"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:background="?attr/selectableItemBackground"
