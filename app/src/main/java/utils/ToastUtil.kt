@@ -48,7 +48,7 @@ class ToastUtil @Inject constructor(
         }
     }
 
-    fun successToast(message: String?, isLongDuration: Boolean = false) {
+    fun successToast(message: String?, isLongDuration: Boolean = true) {
         Handler(Looper.getMainLooper()).post {
             for (toast in toasts)
                 toast.cancel()

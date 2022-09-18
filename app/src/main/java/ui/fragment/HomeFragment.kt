@@ -654,10 +654,10 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                     binding.cLytEmpty.visibility = View.GONE
                     binding.rvTodo.visibility = View.VISIBLE
 
-                    binding.rvTodo.post {
-                        stopShimmer()
-                        adapter?.differ?.submitList(todos)
-                    }
+                    //binding.rvTodo.post {
+                    stopShimmer()
+                    adapter?.differ?.submitList(todos)
+                    //}
                 }
 
                 isFirstCollectTodo = false

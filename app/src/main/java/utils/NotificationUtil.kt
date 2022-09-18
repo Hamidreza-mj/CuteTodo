@@ -1,10 +1,8 @@
 package utils
 
-import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -18,12 +16,14 @@ import androidx.core.app.NotificationManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import hlv.cute.todo.R
 import model.Priority
+import scheduler.alarm.AlarmUtil
 import ui.activity.MainActivity
 import javax.inject.Inject
 
 class NotificationUtil @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val provideResource: ResourceProvider
+    private val provideResource: ResourceProvider,
+    private val alarmUtil: AlarmUtil
 ) {
 
     private val defaultSound: Uri =
@@ -54,14 +54,7 @@ class NotificationUtil @Inject constructor(
             putExtra(Constants.Keys.NOTIF_ID_DETAIL, notificationID)
         }
 
-        @SuppressLint("UnspecifiedImmutableFlag")
-        val pendingIntent =
-            PendingIntent.getActivity(
-                context,
-                notificationID,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
+        val pendingIntent = alarmUtil.getSafePendingIntentActivity(context, notificationID, intent)
 
 
         val priorityColor = when (priority) {
@@ -90,7 +83,11 @@ class NotificationUtil @Inject constructor(
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH) //.setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
             .setSound(defaultSound, AudioManager.STREAM_NOTIFICATION)
-            .addAction(R.drawable.ic_detail, provideResource.getString(R.string.open_notif_action), pendingIntent)
+            .addAction(
+                R.drawable.ic_detail,
+                provideResource.getString(R.string.open_notif_action),
+                pendingIntent
+            )
             .build()
 
         NotificationManagerCompat.from(context).notify(notificationID, notification)

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,6 +24,12 @@ class SearchViewModel @Inject constructor(
 
     private val _searchStateFlow: MutableStateFlow<Search?> = MutableStateFlow(null)
     val searchStateFlow: Flow<Search?> = _searchStateFlow.asStateFlow()
+
+    private var fetchJob: Job? = null
+    private var searchStateJob: Job? = null
+    private var searchTodoJob: Job? = null
+    private var searchCategoryJob: Job? = null
+    private var searchBothJob: Job? = null
 
     val currentSearch: Search?
         get() = _searchStateFlow.value
@@ -69,7 +76,9 @@ class SearchViewModel @Inject constructor(
         searchMode: SearchMode = currentSearch?.searchMode ?: SearchMode.TODO,
         categoryId: Int? = currentSearch?.categoryId
     ) {
-        viewModelScope.launch {
+        searchStateJob?.cancel()
+
+        searchStateJob = viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 //need to copy for sequence emiting, if not copy the same value not emit
                 val newSearch = currentSearch?.copy()?.also {
@@ -86,7 +95,9 @@ class SearchViewModel @Inject constructor(
     }
 
     fun fetch() {
-        viewModelScope.launch(Dispatchers.IO) {
+        fetchJob?.cancel()
+
+        fetchJob = viewModelScope.launch(Dispatchers.IO) {
             _searchedTodosStateFlow.emitAll(dbRepository.getAllTodos())
         }
     }
@@ -94,32 +105,44 @@ class SearchViewModel @Inject constructor(
     suspend fun search(search: Search): List<Todo>? {
         var filteredTodos: List<Todo>? = emptyList()
 
+        searchTodoJob?.cancel()
+        searchCategoryJob?.cancel()
+        searchBothJob?.cancel()
+
         when (search.searchMode) {
             SearchMode.TODO -> {
                 search.categoryId.let { cid ->
                     if (cid == null || cid == 0) {
-                        viewModelScope.launch(Dispatchers.IO) {
+                        searchTodoJob = viewModelScope.launch(Dispatchers.IO) {
                             filteredTodos = dbRepository.searchTodo(search.term)
-                        }.join()
+                        }
+
+                        searchTodoJob?.join()
                     } else {
-                        viewModelScope.launch(Dispatchers.IO) {
+                        searchTodoJob = viewModelScope.launch(Dispatchers.IO) {
                             filteredTodos =
                                 dbRepository.searchTodoInSpecificCategory(search.term, cid)
-                        }.join()
+                        }
+
+                        searchTodoJob?.join()
                     }
                 }
             }
 
             SearchMode.CATEGORY -> {
-                viewModelScope.launch(Dispatchers.IO) {
+                searchCategoryJob = viewModelScope.launch(Dispatchers.IO) {
                     filteredTodos = dbRepository.searchInCategories(search.term)
-                }.join()
+                }
+
+                searchCategoryJob?.join()
             }
 
             SearchMode.BOTH -> {
-                viewModelScope.launch(Dispatchers.IO) {
+                searchBothJob = viewModelScope.launch(Dispatchers.IO) {
                     filteredTodos = dbRepository.searchInTodosAndCategories(search.term)
-                }.join()
+                }
+
+                searchBothJob?.join()
             }
         }
 

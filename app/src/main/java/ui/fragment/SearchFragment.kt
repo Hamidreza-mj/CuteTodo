@@ -630,7 +630,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                     binding.nested.visibility = View.VISIBLE
                     binding.rvSearch.visibility = View.VISIBLE
 
-                    binding.rvSearch.postOnAnimation { adapter?.differ?.submitList(todos) }
+                    adapter?.differ?.submitList(todos)
                 }
             })
 

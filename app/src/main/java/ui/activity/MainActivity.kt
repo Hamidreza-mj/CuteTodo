@@ -29,6 +29,7 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding>() {
     private val viewModel by viewModels<MainViewModel>()
 
     override fun initiate() {
+        window.setBackgroundDrawable(null)
         viewModel.handleOpeningType(intent)
 
         when (viewModel.openingType) {

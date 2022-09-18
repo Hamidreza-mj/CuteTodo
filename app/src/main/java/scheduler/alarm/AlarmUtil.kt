@@ -1,6 +1,5 @@
 package scheduler.alarm
 
-import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -32,10 +31,8 @@ class AlarmUtil @Inject constructor(
         val intent = Intent(context, NotificationReceiver::class.java)
 
         intent.putExtra(Constants.Keys.NOTIF_ID_KEY, notificationID)
-        @SuppressLint("UnspecifiedImmutableFlag")
-        val pendingIntent = PendingIntent.getBroadcast(
-            context, notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT
-        )
+
+        val pendingIntent = getSafePendingIntentBroadCast(context, notificationID, intent)
 
         //alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(timeAt, pendingIntent), pendingIntent);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -59,11 +56,54 @@ class AlarmUtil @Inject constructor(
         //setAlarm(notificationID, "", 0);
         val intent = Intent(context, NotificationReceiver::class.java)
 
-        @SuppressLint("UnspecifiedImmutableFlag")
-        val pendingIntent = PendingIntent.getBroadcast(
-            context, notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT
-        )
+        val pendingIntent = getSafePendingIntentBroadCast(context, notificationID, intent)
 
         alarmManager?.cancel(pendingIntent)
     }
+
+    /**
+     *  Targeting S+ (version 31 and above) requires that one of FLAG_IMMUTABLE or FLAG_MUTABLE
+     *  be specified when creating a PendingIntent.
+     *  Strongly consider using FLAG_IMMUTABLE,
+     *  only use FLAG_MUTABLE if some functionality depends on the PendingIntent being mutable, e.g.
+     *  if it needs to be used with inline replies or bubbles.
+     */
+    private fun getSafePendingIntentBroadCast(
+        context: Context,
+        requestCode: Int,
+        intent: Intent
+    ): PendingIntent {
+        val pendingIntent: PendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.getBroadcast(
+                context, requestCode, intent, PendingIntent.FLAG_MUTABLE
+            )
+        } else {
+            //noinspection UnspecifiedImmutableFlag
+            PendingIntent.getBroadcast(
+                context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        }
+
+        return pendingIntent
+    }
+
+    fun getSafePendingIntentActivity(
+        context: Context,
+        requestCode: Int,
+        intent: Intent
+    ): PendingIntent {
+        val pendingIntent: PendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.getActivity(
+                context, requestCode, intent, PendingIntent.FLAG_MUTABLE
+            )
+        } else {
+            //noinspection UnspecifiedImmutableFlag
+            PendingIntent.getActivity(
+                context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        }
+
+        return pendingIntent
+    }
+
 }
