@@ -289,7 +289,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
         adapter = TodoAdapter(
             iContext,
 
-            onCheckChangedListener = { todoID: Int ->
+            onCheckChangedListener = { todoID: Int, _ ->
                 doneTodo(todoID)
             },
 

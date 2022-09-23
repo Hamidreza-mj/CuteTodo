@@ -18,7 +18,7 @@ import utils.TextHelper
 
 class TodoAdapter(
     private val context: Context,
-    private val onCheckChangedListener: (todoID: Int) -> Unit,
+    private val onCheckChangedListener: (todoID: Int, oldValueDone: Boolean?) -> Unit,
     private val onClickMenuListener: (todo: Todo, anchor: View, wholeItem: View, coordinatePoint: Point?) -> Unit,
     private val onClickMoreListener: (todoMore: Todo) -> Unit,
 ) : RecyclerView.Adapter<TodoAdapter.ViewHolder>() {
@@ -67,7 +67,7 @@ class TodoAdapter(
         @SuppressLint("ClickableViewAccessibility")
         fun bind(
             todo: Todo,
-            onCheckChangedListener: (todoID: Int) -> Unit,
+            onCheckChangedListener: (todoID: Int, oldValueDone: Boolean?) -> Unit,
             onClickMenuListener: (todo: Todo, anchor: View, wholeItem: View, coordinatePoint: Point?) -> Unit,
             onClickMoreListener: (todoMore: Todo) -> Unit
         ) {
@@ -90,14 +90,17 @@ class TodoAdapter(
             binding.aChkBoxTitle.setOnCheckedChangeListener { compoundButton: CompoundButton, checked: Boolean ->
                 //after checked
                 if (compoundButton.isPressed) {
+                    val oldValueDone = todo.isDone
+
                     todo.isDone = checked
+
 
                     if (todo.isDone)
                         TextHelper.addLineThrough(binding.aChkBoxTitle)
                     else
                         TextHelper.removeLineThrough(binding.aChkBoxTitle)
 
-                    onCheckChangedListener(todo.id)
+                    onCheckChangedListener(todo.id, oldValueDone)
                 }
             }
 

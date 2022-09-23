@@ -18,6 +18,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.aghajari.rlottie.AXrLottie
+import com.aghajari.rlottie.AXrLottieDrawable
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
 import controller.ShareController
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,6 +32,7 @@ import model.Todo
 import ui.adapter.TodoAdapter
 import ui.component.DimView
 import ui.component.PopupMaker
+import ui.component.UiToolkit
 import ui.component.bindingComponent.BaseViewBindingFragment
 import ui.dialog.DeleteDialog
 import ui.dialog.ShowMoreDialog
@@ -75,6 +78,9 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
     @Inject
     lateinit var dimView: DimView
 
+    @Inject
+    lateinit var uiToolkit: UiToolkit
+
     private var moreDialog: ShowMoreDialog? = null
 
     private var isFirstCollectTodo = true
@@ -87,6 +93,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
     }
 
     override fun initiate() {
+        AXrLottie.init(iContext)
         initViews()
         handleActions()
         handleObserver()
@@ -318,8 +325,12 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
         adapter = TodoAdapter(
             iContext,
 
-            onCheckChangedListener = { todoID: Int ->
+            onCheckChangedListener = { todoID: Int, oldValueDone: Boolean? ->
                 doneTodo(todoID)
+
+                oldValueDone?.let { oldValueIsDone ->
+                    if (!oldValueIsDone) showFullConfetti()
+                }
             },
 
             onClickMenuListener = { todoMenu: Todo, menuView: View, wholeItem: View, coordinatePoint: Point? ->
@@ -664,6 +675,38 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
         collectLatestLifecycleFlow(categoryViewModel.categoriesFlow) { categories: List<Category?>? ->
             allCategories = categories as ArrayList<Category?>?
         }
+    }
+
+    private fun showFullConfetti() {
+        binding.confetti.visibility = View.VISIBLE
+
+        val width = uiToolkit.displayWidth
+        val height = uiToolkit.displayHeight
+
+        binding.confetti.lottieDrawable =
+            AXrLottieDrawable
+                .fromAssets(
+                    iContext,
+                    "congratulations_confetti_lottie.json"
+                ) //from assets
+                .setSize(width, height)
+                .setOnLottieLoaderListener(object : AXrLottieDrawable.OnLottieLoaderListener {
+                    override fun onLoaded(drawable: AXrLottieDrawable?) {
+                        binding.confetti.postOnAnimationDelayed({
+                            binding.confetti.visibility = View.GONE
+                            binding.confetti.release()
+                        }, 3_000L)
+                    }
+
+                    override fun onError(
+                        drawable: AXrLottieDrawable?,
+                        error: Throwable?
+                    ) {
+                    }
+                })
+                .build()
+
+        binding.confetti.playAnimation()
     }
 
     fun goToTop(duration: Int) {
