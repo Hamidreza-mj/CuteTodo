@@ -4,12 +4,14 @@ class Constants {
 
     object Names {
         const val DB_NAME = "TodoDB"
+        const val CUTE_PREF_NAME = "CutePrefs"
     }
 
     object Keys {
         const val NOTIF_ID_KEY = "notif-id"
-        const val NOTIF_CONTENT_KEY = "notif-content"
         const val NOTIF_ID_DETAIL = "notif-id-detail"
+
+        const val FIRST_RUN_V1 = "is_first_run_v1"
     }
 
     object Tags {

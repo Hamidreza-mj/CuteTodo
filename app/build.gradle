@@ -135,6 +135,9 @@ dependencies {
     //detect leak
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.9.1'
 
+    //Preferences DataStore
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
+
     //test libs
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

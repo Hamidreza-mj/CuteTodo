@@ -54,7 +54,7 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding>() {
                 val payload =
                     intent.getStringExtra(YandexMetricaPush.EXTRA_PAYLOAD) //TODO: yandex open with ntification
 
-                Log.e(Constants.Tags.DEBUG, "onReceive: $payload")
+                //Log.e(Constants.Tags.DEBUG, "onReceive: $payload")
 
                 initViews()
             }

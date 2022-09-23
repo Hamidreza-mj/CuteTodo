@@ -93,7 +93,7 @@ class NotificationUtil @Inject constructor(
         NotificationManagerCompat.from(context).notify(notificationID, notification)
     }
 
-    private fun createNotificationChannel() {
+    fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel =
                 NotificationChannel(
