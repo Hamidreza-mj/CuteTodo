@@ -15,6 +15,7 @@ abstract class BaseViewBindingActivity<VB : ViewBinding> : BaseActivity() {
         get() = _binding as VB
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        beforeOnCreate()
         super.onCreate(savedInstanceState)
         _binding = bindingInflater.invoke(layoutInflater)
         setContentView(requireNotNull(_binding).root)
@@ -22,6 +23,8 @@ abstract class BaseViewBindingActivity<VB : ViewBinding> : BaseActivity() {
     }
 
     abstract fun initiate()
+
+    open fun beforeOnCreate() {}
 
     override fun onDestroy() {
         super.onDestroy()

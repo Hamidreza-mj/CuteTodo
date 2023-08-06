@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/whiteBlue"
+    android:background="?attr/background"
     android:clickable="true"
     android:fitsSystemWindows="true"
     android:focusable="true">
@@ -32,6 +32,7 @@
                 android:layout_marginEnd="8dp"
                 android:gravity="right"
                 android:text="@string/add_new_todo"
+                android:textColor="?attr/colorOnBackground"
                 app:layout_constraintEnd_toStartOf="@id/aImgBack"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -51,7 +52,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/txtTitle"
                 app:layout_constraintTop_toTopOf="@id/txtTitle"
-                app:srcCompat="@drawable/ic_back_light2" />
+                app:srcCompat="@drawable/ic_back_light2"
+                app:tint="?attr/colorOnBackground" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -122,7 +124,7 @@
                     android:layout_marginTop="40dp"
                     android:clickable="true"
                     android:focusable="true"
-                    app:cardBackgroundColor="@color/whiteBlue"
+                    app:cardBackgroundColor="?attr/background"
                     app:cardCornerRadius="@dimen/cornersInput"
                     app:cardElevation="0dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -145,7 +147,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="8dp"
                             android:text="@string/select_category"
-                            android:textColor="@color/gray"
+                            android:textColor="?attr/grayTint"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@id/arrow"
@@ -156,7 +158,7 @@
                             android:layout_width="35dp"
                             android:layout_height="35dp"
                             android:padding="4dp"
-                            android:tint="#808080"
+                            android:tint="?attr/grayTint"
                             app:layout_constraintBottom_toBottomOf="@id/txtCategory"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="@id/txtCategory"
@@ -167,39 +169,6 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/inpCategory"
-                    style="@style/ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="20dp"
-                    android:layout_marginTop="40dp"
-                    android:hint="@string/enter_category_name"
-                    android:visibility="gone"
-                    app:boxStrokeColor="@color/blue"
-                    app:endIconTint="@color/blue"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/inpTitle">
-
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/menuCategory"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/vazir_medium"
-                        android:imeOptions="actionDone"
-                        android:lines="1"
-                        android:maxLines="1"
-                        android:paddingVertical="16dp"
-                        android:singleLine="true"
-                        android:textAllCaps="false"
-                        android:textColor="@color/black"
-                        android:textSize="16sp"
-                        android:textStyle="normal"
-                        tools:ignore="TextContrastCheck" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
                 <TextView
                     android:id="@+id/priority"
                     style="@style/TextNormalMD16"
@@ -208,6 +177,7 @@
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="40dp"
                     android:text="@string/priority"
+                    android:textColor="?attr/colorOnBackground"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/mCardCategory" />
@@ -283,6 +253,7 @@
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
                     android:text="@string/set_reminder"
+                    android:textColor="?attr/colorOnBackground"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1"
                     app:layout_constraintStart_toStartOf="parent"
@@ -297,7 +268,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:paddingVertical="5dp"
-                    android:tint="@color/gray_text"
+                    android:tint="?attr/grayTint"
                     app:layout_constraintBottom_toBottomOf="@id/reminder"
                     app:layout_constraintEnd_toStartOf="@id/reminder"
                     app:layout_constraintTop_toTopOf="@id/reminder"
@@ -313,7 +284,7 @@
                     android:layout_marginBottom="30dp"
                     android:clickable="true"
                     android:focusable="true"
-                    app:cardBackgroundColor="@color/whiteBlue"
+                    app:cardBackgroundColor="?attr/background"
                     app:cardCornerRadius="@dimen/cornersInput"
                     app:cardElevation="0dp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -338,7 +309,7 @@
                             android:layout_marginHorizontal="2dp"
                             android:lineSpacingMultiplier="1.2"
                             android:text="@string/set_date_time"
-                            android:textColor="@color/gray"
+                            android:textColor="?attr/grayTint"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/calender"
                             app:layout_constraintStart_toEndOf="@id/aImgClear"
@@ -349,7 +320,7 @@
                             android:layout_width="35dp"
                             android:layout_height="35dp"
                             android:padding="4dp"
-                            android:tint="#808080"
+                            android:tint="?attr/grayTint"
                             app:layout_constraintBottom_toBottomOf="@id/txtDate"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="@id/txtDate"
@@ -364,7 +335,7 @@
                             android:contentDescription="حذف یادآوری"
                             android:focusable="true"
                             android:padding="6dp"
-                            android:tint="@color/gray"
+                            android:tint="?attr/grayTint"
                             app:layout_constraintBottom_toBottomOf="@id/txtDate"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="@id/txtDate"

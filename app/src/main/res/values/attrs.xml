@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="mainBg" format="color|reference" />
+    <attr name="itemBg" format="color|reference" />
+    <attr name="middleGray" format="color|reference" />
+    <attr name="grayTint" format="color|reference" />
+    <attr name="popupBg" format="color|reference" />
+    <attr name="sheetBg" format="color|reference" />
+    <attr name="rippleBlack" format="color|reference" />
+    <attr name="btnSecond" format="color|reference" />
+</resources>

@@ -108,7 +108,7 @@
         <item name="android:paddingTop">15dp</item>
         <item name="android:paddingBottom">15dp</item>
         <item name="android:paddingEnd">8dp</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">?attr/colorOnBackground</item>
     </style>
 
 
@@ -137,8 +137,8 @@
 
     <!-- TextInputLayout Style -->
     <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="android:textColorHint">@color/gray</item>
-        <item name="boxBackgroundColor">@color/whiteBlue</item>
+        <item name="android:textColorHint">?attr/grayTint</item>
+        <item name="boxBackgroundColor">?attr/background</item>
         <item name="boxBackgroundMode">outline</item>
         <item name="boxCornerRadiusTopEnd">@dimen/cornersInput</item>
         <item name="boxCornerRadiusTopStart">@dimen/cornersInput</item>
@@ -157,14 +157,14 @@
         <item name="helperTextTextColor">@color/blue</item>
         <item name="hintTextColor">@color/blue</item>
         <item name="placeholderTextColor">@color/blue</item>
-        <item name="prefixTextColor">@color/black</item>
-        <item name="suffixTextColor">@color/black</item>
+        <item name="prefixTextColor">?attr/colorOnBackground</item>
+        <item name="suffixTextColor">?attr/colorOnBackground</item>
     </style>
 
     <!-- ExposedDropdownMenu Style -->
     <style name="ExposedDropdownMenu" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
-        <item name="android:textColorHint">@color/gray</item>
-        <item name="boxBackgroundColor">@color/whiteBlue</item>
+        <item name="android:textColorHint">?attr/grayTint</item>
+        <item name="boxBackgroundColor">?attr/background</item>
         <item name="boxBackgroundMode">outline</item>
         <item name="boxCornerRadiusTopEnd">@dimen/cornersInput</item>
         <item name="boxCornerRadiusTopStart">@dimen/cornersInput</item>
@@ -183,8 +183,8 @@
         <item name="helperTextTextColor">@color/blue</item>
         <item name="hintTextColor">@color/blue</item>
         <item name="placeholderTextColor">@color/blue</item>
-        <item name="prefixTextColor">@color/black</item>
-        <item name="suffixTextColor">@color/black</item>
+        <item name="prefixTextColor">?attr/colorOnBackground</item>
+        <item name="suffixTextColor">?attr/colorOnBackground</item>
     </style>
 
 
@@ -193,7 +193,7 @@
         <item name="android:textSize">16sp</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">?attr/colorOnBackground</item>
         <item name="android:textColorHint">@color/gray</item>
         <item name="android:fontFamily">@font/vazir_rd_fd_regular</item>
     </style>
@@ -242,7 +242,7 @@
     <!-- NumberPicker -->
     <style name="NumberPicker">
         <!-- text color -->
-        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorPrimary">?attr/colorOnBackground</item>
         <!-- line divider color -->
         <item name="colorControlNormal">#5ECCCCCC</item>
         <item name="android:fontFamily">@font/vazir_rd_fd_medium</item>

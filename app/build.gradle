@@ -12,13 +12,13 @@ def keyProperties = new Properties()
 keyProperties.load(new FileInputStream(keyPropertiesFile))
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "hlv.cute.todo"
         minSdk 21
-        targetSdk 32
-        versionCode 1
+        targetSdk 33
+        versionCode 2
         versionName "1.0"
 
         vectorDrawables.useSupportLibrary = true
@@ -32,6 +32,11 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            applicationIdSuffix '.debug'
+            versionNameSuffix "-debug"
         }
     }
 
@@ -67,7 +72,7 @@ dependencies {
 //    implementation 'com.mohamadamin:persianmaterialdatetimepicker:1.2.1'
 
 //    implementation 'com.github.aliab:Persian-Date-Picker-Dialog:1.7.1'
-    implementation 'com.github.Hamidreza-mj:Persian-Date-Picker-Dialog:cute4.3'
+    implementation 'com.github.Hamidreza-mj:Persian-Date-Picker-Dialog:cute-dark-2'
     implementation 'com.airbnb.android:lottie:4.1.0'
     implementation 'io.github.aghajari:AXrLottie:1.3.1'
 
@@ -137,6 +142,10 @@ dependencies {
 
     //Preferences DataStore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
+
+    //SpinKit
+    //implementation 'com.github.ybq:Android-SpinKit:1.4.0'
+    //implementation 'com.wang.avi:library:2.1.3'
 
     //test libs
     testImplementation 'junit:junit:4.13.2'

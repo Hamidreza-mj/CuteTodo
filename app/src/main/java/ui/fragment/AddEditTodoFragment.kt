@@ -21,6 +21,7 @@ import hlv.cute.todo.databinding.FragmentAddEditTodoBinding
 import ir.hamsaa.persiandatepicker.PersianDatePickerDialog
 import ir.hamsaa.persiandatepicker.api.PersianPickerDate
 import ir.hamsaa.persiandatepicker.api.PersianPickerListener
+import ir.hamsaa.persiandatepicker.date.PersianDateImpl
 import kotlinx.coroutines.launch
 import model.Category
 import model.DateTime
@@ -31,6 +32,7 @@ import ui.dialog.DropDownCategoriesDialog
 import ui.dialog.ReminderGuideDialog
 import ui.dialog.TimePickerSheetDialog
 import ui.dialog.WarningDateDialog
+import ui.util.AppThemeHandler
 import utils.Constants
 import utils.ToastUtil
 import utils.collectLatestLifecycleFlow
@@ -55,6 +57,9 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
     @Inject
     @ActivityContext
     lateinit var iContext: Context
+
+    @Inject
+    lateinit var themeHandler: AppThemeHandler
 
     private var allCategories: ArrayList<Category>? = null
 
@@ -92,9 +97,9 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (arguments != null && arguments!!.isEmpty.not()) {
+        if (arguments != null && requireArguments().isEmpty.not()) {
 
-            val todo: Todo? = arguments!!.getParcelable(TODO_ARGS)
+            val todo: Todo? = requireArguments().getParcelable(TODO_ARGS)
 
             if (todo != null) {
                 //edit mode
@@ -104,7 +109,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
             } else {
                 //add mode (share or normal)
                 viewModel.isEditMode = false
-                val shareTitle = arguments!!.getString(SHARE_MODE_ARGS)
+                val shareTitle = requireArguments().getString(SHARE_MODE_ARGS)
 
                 if (shareTitle != null) {
                     viewModel.isShareMode = true
@@ -247,7 +252,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
     @SuppressLint("NonConstantResourceId")
     private fun handleAction() {
         binding.mCardCategory.setOnClickListener {
-            DropDownCategoriesDialog(activity!!, allCategories).apply {
+            DropDownCategoriesDialog(requireActivity(), allCategories).apply {
                 show()
 
                 onClickCategory = { category: Category? ->
@@ -388,14 +393,14 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
 
         picker.setPositiveButtonString("مرحله بعد")
             .setNegativeButton("انصراف")
-            .setTodayButton("تاریخ امروز")
+            .setTodayButton("امروز")
             .setTodayButtonVisible(true)
             .setMinYear(1400)
             .setMaxYear(1440)
             .setTypeFace(Typeface.createFromAsset(iContext.assets, "font/vazir_rd_fd_medium.ttf"))
             .setTitleColor(provideResource.getColor(R.color.blue))
             .setAllButtonsTextSize(15)
-            .setPickerBackgroundColor(provideResource.getColor(R.color.white))
+            .setPickerBackgroundColor(themeHandler.getColorFromAttr(iContext, R.attr.sheetBg))
             .setTitleType(PersianDatePickerDialog.WEEKDAY_DAY_MONTH_YEAR)
             .setShowInBottomSheet(true)
             .setEnableBellView(false)
@@ -439,7 +444,12 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
         val month = date[1]
         val day = date[2]
 
-        picker.setInitDate(year, month, day)
+        val normalizedDate = PersianDateImpl().apply {
+            setDate(year, month, day)
+        }
+
+        //need to set force to false to avoid crash
+        picker.setInitDate(normalizedDate, false)
         picker.show()
     }
 
@@ -495,7 +505,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
 
             if (changedDateTime?.date != null) {
                 binding.txtDate.setTextColor(
-                    provideResource.getColor(R.color.black)
+                    themeHandler.getColorFromAttr(iContext, R.attr.colorOnBackground)
                 )
 
                 binding.txtDate.text = MessageFormat.format(
@@ -507,7 +517,7 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
                 binding.aImgClear.visibility = View.VISIBLE
             } else {
                 binding.txtDate.setTextColor(
-                    provideResource.getColor(R.color.gray)
+                    themeHandler.getColorFromAttr(iContext, R.attr.grayTint)
                 )
 
                 binding.txtDate.text = provideResource.getString(R.string.set_date_time)
@@ -519,9 +529,19 @@ class AddEditTodoFragment : BaseViewBindingFragment<FragmentAddEditTodoBinding>(
             binding.txtCategory.text = viewModel.categoryTitleText
 
             if (viewModel.categoryIsValid())
-                binding.txtCategory.setTextColor(provideResource.getColor(R.color.black))
+                binding.txtCategory.setTextColor(
+                    themeHandler.getColorFromAttr(
+                        iContext,
+                        R.attr.colorOnBackground
+                    )
+                )
             else
-                binding.txtCategory.setTextColor(provideResource.getColor(R.color.gray))
+                binding.txtCategory.setTextColor(
+                    themeHandler.getColorFromAttr(
+                        iContext,
+                        R.attr.grayTint
+                    )
+                )
         }
 
         collectLifecycleFlow(categoryViewModel.categoriesFlow) { categories ->

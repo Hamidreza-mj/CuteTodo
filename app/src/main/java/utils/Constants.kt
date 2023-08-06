@@ -12,6 +12,7 @@ class Constants {
         const val NOTIF_ID_DETAIL = "notif-id-detail"
 
         const val FIRST_RUN_V1 = "is_first_run_v1"
+        const val THEME_MODE = "theme-mode"
     }
 
     object Tags {

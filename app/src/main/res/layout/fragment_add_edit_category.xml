@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/whiteBlue"
+    android:background="?attr/background"
     android:clickable="true"
     android:fitsSystemWindows="true"
     android:focusable="true"
@@ -19,6 +19,7 @@
         android:layout_marginEnd="8dp"
         android:gravity="right"
         android:text="@string/add_new_category"
+        android:textColor="?attr/colorOnBackground"
         app:layout_constraintEnd_toStartOf="@id/aImgBack"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,7 +39,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/txtTitle"
         app:layout_constraintTop_toTopOf="@id/txtTitle"
-        app:srcCompat="@drawable/ic_back_light2" />
+        app:srcCompat="@drawable/ic_back_light2"
+        app:tint="?attr/colorOnBackground" />
 
     <ScrollView
         android:layout_width="0dp"

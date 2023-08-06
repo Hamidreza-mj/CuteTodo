@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/whiteBlue"
+    android:background="?attr/background"
     android:clickable="true"
     android:fitsSystemWindows="true"
     android:focusable="true">
@@ -46,7 +46,8 @@
             app:layout_constraintBottom_toBottomOf="@id/searchToolbar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/searchToolbar"
-            app:srcCompat="@drawable/ic_back_light" />
+            app:srcCompat="@drawable/ic_back_light"
+            app:tint="?attr/colorOnBackground" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/aImgFilter"
@@ -60,7 +61,8 @@
             app:layout_constraintBottom_toBottomOf="@id/searchToolbar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/searchToolbar"
-            app:srcCompat="@drawable/ic_filter" />
+            app:srcCompat="@drawable/ic_filter"
+            app:tint="?attr/colorOnBackground" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/searchToolbar"
@@ -85,7 +87,8 @@
                 android:imeOptions="actionDone"
                 android:importantForAutofill="no"
                 android:inputType="text"
-                android:textColorHint="@color/gray"
+                android:textColor="?attr/colorOnBackground"
+                android:textColorHint="?attr/grayTint"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/aImgSearch"
                 app:layout_constraintStart_toEndOf="@id/aImgClear"
@@ -102,7 +105,7 @@
                 android:contentDescription="پاک کردن"
                 android:focusable="true"
                 android:padding="1dp"
-                android:tint="@color/gray"
+                android:tint="?attr/grayTint"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@id/edtSearch"
                 app:layout_constraintStart_toStartOf="parent"
@@ -118,7 +121,7 @@
                 android:layout_marginEnd="10dp"
                 android:contentDescription="@string/search"
                 android:padding="1dp"
-                android:tint="@color/gray"
+                android:tint="?attr/grayTint"
                 app:layout_constraintBottom_toBottomOf="@id/edtSearch"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/edtSearch"
@@ -155,7 +158,7 @@
             app:tabRippleColor="@color/blue"
             app:tabSelectedTextColor="@color/blue"
             app:tabTextAppearance="@style/TextRG14"
-            app:tabTextColor="@color/gray_text" />
+            app:tabTextColor="?attr/middleGray" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -240,7 +243,7 @@
             android:layout_marginHorizontal="30dp"
             android:gravity="center"
             android:text="@string/search_note"
-            android:textColor="@color/gray"
+            android:textColor="?attr/grayTint"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

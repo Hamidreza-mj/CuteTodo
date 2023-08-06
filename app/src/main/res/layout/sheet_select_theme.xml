@@ -14,9 +14,9 @@
         android:layout_width="45dp"
         android:layout_height="6dp"
         android:layout_marginTop="4dp"
+        android:alpha="0.3"
         app:cardBackgroundColor="?attr/grayTint"
         app:cardCornerRadius="3dp"
-        android:alpha="0.3"
         app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,10 +27,10 @@
         style="@style/TextNormalMD16"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:textColor="?attr/colorOnBackground"
+        android:layout_marginTop="10dp"
         android:gravity="center"
-        android:text="@string/search_by"
+        android:text="@string/select_theme"
+        android:textColor="?attr/middleGray"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -46,100 +46,52 @@
         android:clickable="true"
         android:contentDescription="@string/close"
         android:focusable="true"
-        app:tint="?attr/grayTint"
         android:padding="11dp"
         app:layout_constraintBottom_toBottomOf="@id/txtTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/txtTitle"
         app:srcCompat="@drawable/ic_close_simple"
+        app:tint="?attr/grayTint"
         tools:ignore="TouchTargetSizeCheck" />
-
-    <TextView
-        android:id="@+id/txtSortBy"
-        style="@style/TextRG14"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="15dp"
-        android:text="@string/search_mode_notes"
-        android:textColor="?attr/middleGray"
-        app:layout_constraintEnd_toEndOf="@id/aImgClose"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtTitle"
-        tools:ignore="TextContrastCheck" />
 
 
     <RadioGroup
         android:id="@+id/radioGP"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15sp"
+        android:layout_marginVertical="15dp"
         android:layout_marginEnd="15dp"
         android:gravity="end|right"
         android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/aImgClose"
-        app:layout_constraintTop_toBottomOf="@id/txtSortBy">
+        app:layout_constraintTop_toBottomOf="@id/txtTitle">
 
         <RadioButton
-            android:id="@+id/radioBtnTodo"
+            android:id="@+id/radioBtnSysDef"
             style="@style/RadioButtonClickable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="@string/search_by_todo" />
+            android:text="@string/sysdef_mode"
+            android:textColor="?attr/colorOnBackground" />
 
         <RadioButton
-            android:id="@+id/radioBtnCategory"
+            android:id="@+id/radioBtnDay"
             style="@style/RadioButtonClickable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/search_by_category" />
+            android:text="@string/day_mode"
+            android:textColor="?attr/colorOnBackground" />
 
         <RadioButton
-            android:id="@+id/radioBtnBoth"
+            android:id="@+id/radioBtnNight"
             style="@style/RadioButtonClickable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/search_by_both" />
+            android:text="@string/night_mode"
+            android:textColor="?attr/colorOnBackground" />
 
     </RadioGroup>
-
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/radioGP"
-        app:layout_constraintVertical_bias="1">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/mBtnClose"
-            style="@style/TextNormalMD16"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="12dp"
-            android:backgroundTint="@color/blue"
-            android:gravity="center"
-            android:letterSpacing="0"
-            android:paddingVertical="11dp"
-            android:stateListAnimator="@null"
-            android:text="@string/close"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            app:cornerRadius="12dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:rippleColor="@color/rippleBlue"
-            app:strokeWidth="0dp"
-            tools:ignore="TextContrastCheck" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

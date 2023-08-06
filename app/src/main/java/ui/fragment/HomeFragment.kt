@@ -10,13 +10,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aghajari.rlottie.AXrLottie
 import com.aghajari.rlottie.AXrLottieDrawable
@@ -26,7 +29,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ActivityContext
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.FragmentHomeBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import model.Category
 import model.Todo
 import ui.adapter.TodoAdapter
@@ -37,6 +42,8 @@ import ui.component.bindingComponent.BaseViewBindingFragment
 import ui.dialog.DeleteDialog
 import ui.dialog.ShowMoreDialog
 import ui.fragment.sheet.FilterBottomSheet
+import ui.fragment.sheet.SelectThemeBottomSheet
+import ui.util.AppThemeHandler
 import utils.Constants
 import utils.TextHelper
 import utils.ToastUtil
@@ -80,6 +87,9 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
 
     @Inject
     lateinit var uiToolkit: UiToolkit
+
+    @Inject
+    lateinit var themeHandler: AppThemeHandler
 
     private var moreDialog: ShowMoreDialog? = null
 
@@ -190,6 +200,50 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                                 }.commit()
                             }
 
+                            R.id.menuSettings -> {
+                                lifecycleScope.launch {
+//                                    themeHandler.activity = activity as AppCompatActivity?
+
+                                    val currentTheme = themeHandler.getCurrentTheme()
+
+                                    SelectThemeBottomSheet.newInstance(currentTheme).apply {
+                                        onCheckChanged = { newThemeType ->
+                                            lifecycleScope.launch {
+                                                themeHandler.applyNewTheme(
+                                                    themeType = newThemeType,
+
+                                                    onThemeChange = {
+                                                        activity?.let { activity ->
+                                                            val delegate =
+                                                                AppCompatDelegate.create(
+                                                                    activity,
+                                                                    null
+                                                                )
+                                                            delegate.applyDayNight()
+                                                        }
+                                                    }
+                                                )
+                                            }
+
+                                            /*val fragment =
+                                                parentFragmentManager.findFragmentById(R.id.mainContainer)
+
+                                            fragment?.let {
+                                                parentFragmentManager.beginTransaction().apply {
+                                                    detach(fragment)
+                                                }.commit()
+
+                                                parentFragmentManager.beginTransaction().apply {
+                                                    attach(fragment)
+                                                }.commit()
+                                            }*/
+
+                                            dismiss()
+                                        }
+                                    }.show(childFragmentManager, null)
+                                }
+                            }
+
                             R.id.menuDeleteAll -> {
                                 lifecycleScope.launch {
                                     if (todoViewModel.todosCountIsEmpty()) {
@@ -260,13 +314,13 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
 
             popupMaker.apply {
                 popup?.changeTextColorOfItem(
-                    1,
+                    2,
                     provideResource.getString(R.string.delete_all_todos),
                     provideResource.getColor(R.color.red)
                 )
 
                 popup?.changeTextColorOfItem(
-                    2,
+                    3,
                     provideResource.getString(R.string.delete_all_done_todos),
                     provideResource.getColor(R.color.red)
                 )
@@ -327,6 +381,9 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
 
             onCheckChangedListener = { todoID: Int, oldValueDone: Boolean? ->
                 doneTodo(todoID)
+
+                binding.confetti.lottieDrawable = null
+                binding.confetti.release()
 
                 oldValueDone?.let { oldValueIsDone ->
                     if (!oldValueIsDone) showFullConfetti()
@@ -564,7 +621,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                                 sharePopup?.changeTextColorOfItem(
                                     0,
                                     provideResource.getString(R.string.share_type),
-                                    provideResource.getColor(R.color.gray_text)
+                                    themeHandler.getColorFromAttr(iContext, R.attr.grayTint)
                                 )
                             }
                         }
@@ -607,6 +664,8 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
     }
 
     private fun handleObserver() {
+        binding.loader.visibility = View.VISIBLE
+
         val box = binding.box
         val params = box.layoutParams as ConstraintLayout.LayoutParams
 
@@ -620,18 +679,22 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
             todoViewModel.todosFlow,
 
             map = { mappedList ->
-                //apply filter when collectiong datas
-                //has filter
-                todoViewModel.currentFilter?.let { currentFilter -> //for avoid remove filter after update todos
-                    todoViewModel.fetchWithFilter(currentFilter)
-                } ?: run {
-                    //without filter
-                    mappedList
+                withContext(Dispatchers.IO) {
+                    //apply filter when collectiong datas
+                    //has filter
+                    todoViewModel.currentFilter?.let { currentFilter -> //for avoid remove filter after update todos
+                        todoViewModel.fetchWithFilter(currentFilter)
+                    } ?: run {
+                        //without filter
+                        mappedList
+                    }
                 }
             },
 
             collect = { todos: List<Todo>? ->
-                if (todos == null || todos.isEmpty()) {
+                if (todos.isNullOrEmpty()) {
+                    binding.loader.visibility = View.GONE
+
                     binding.rvTodo.visibility = View.GONE
                     binding.cLytEmpty.visibility = View.VISIBLE
                     if (todoViewModel.currentFilter == null /*|| getTodoViewModel().getCurrentFilter().filterIsEmpty()*/) {
@@ -662,7 +725,13 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                     binding.cLytEmpty.visibility = View.GONE
                     binding.rvTodo.visibility = View.VISIBLE
 
-                    binding.rvTodo.post { adapter?.differ?.submitList(todos) }
+                    lifecycleScope.launch {
+                        repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                            adapter?.differ?.submitList(todos) {
+                                binding.loader.visibility = View.GONE
+                            }
+                        }
+                    }
                 }
 
                 isFirstCollectTodo = false
@@ -678,7 +747,7 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
     }
 
     private fun showFullConfetti() {
-        binding.confetti.visibility = View.VISIBLE
+        //binding.confetti.visibility = View.VISIBLE
 
         val width = uiToolkit.displayWidth
         val height = uiToolkit.displayHeight
@@ -693,7 +762,8 @@ class HomeFragment : BaseViewBindingFragment<FragmentHomeBinding>() {
                 .setOnLottieLoaderListener(object : AXrLottieDrawable.OnLottieLoaderListener {
                     override fun onLoaded(drawable: AXrLottieDrawable?) {
                         binding.confetti.postOnAnimationDelayed({
-                            binding.confetti.visibility = View.GONE
+                            binding.confetti.stopAnimation()
+                            binding.confetti.lottieDrawable = null
                             binding.confetti.release()
                         }, 3_000L)
                     }

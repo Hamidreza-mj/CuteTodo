@@ -15,7 +15,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayout.Tab
@@ -27,6 +29,7 @@ import hlv.cute.todo.databinding.FragmentSearchBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import model.Category
 import model.Search
 import model.Todo
@@ -37,6 +40,7 @@ import ui.component.bindingComponent.BaseViewBindingFragment
 import ui.dialog.DeleteDialog
 import ui.dialog.ShowMoreDialog
 import ui.fragment.sheet.SearchModeBottomSheet
+import ui.util.AppThemeHandler
 import utils.Constants
 import utils.KeyboardUtil.focusAndShowKeyboard
 import utils.TextHelper
@@ -68,6 +72,9 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
 
     @Inject
     lateinit var dimView: DimView
+
+    @Inject
+    lateinit var themeHandler: AppThemeHandler
 
     private var moreDialog: ShowMoreDialog? = null
 
@@ -450,7 +457,7 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                                 sharePopup?.changeTextColorOfItem(
                                     0,
                                     provideResource.getString(R.string.share_type),
-                                    provideResource.getColor(R.color.gray_text)
+                                    themeHandler.getColorFromAttr(iContext, R.attr.grayTint)
                                 )
                             }
                         }
@@ -574,17 +581,19 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
             flow = searchViewModel.searchedTodosStateFlow,
 
             map = { mainList ->
-                //apply filter when collectiong datas
-                //has filter
-                searchViewModel.currentSearch?.let { currentSearch ->
-                    searchViewModel.search(currentSearch)
-                } ?: run {
-                    mainList
+                withContext(Dispatchers.IO) {
+                    //apply filter when collectiong datas
+                    //has filter
+                    searchViewModel.currentSearch?.let { currentSearch ->
+                        searchViewModel.search(currentSearch)
+                    } ?: run {
+                        mainList
+                    }
                 }
             },
 
             collect = { todos: List<Todo>? ->
-                if (todos == null || todos.isEmpty()) {
+                if (todos.isNullOrEmpty()) {
                     binding.txtResult.visibility = View.GONE
                     binding.nested.visibility = View.GONE
                     binding.rvSearch.visibility = View.GONE
@@ -630,7 +639,12 @@ class SearchFragment : BaseViewBindingFragment<FragmentSearchBinding>() {
                     binding.nested.visibility = View.VISIBLE
                     binding.rvSearch.visibility = View.VISIBLE
 
-                    binding.rvSearch.post { adapter?.differ?.submitList(todos) }
+                    lifecycleScope.launch {
+                        repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                            delay(10L)
+                            adapter?.differ?.submitList(todos)
+                        }
+                    }
                 }
             })
 

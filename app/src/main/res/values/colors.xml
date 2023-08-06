@@ -28,7 +28,27 @@
     <color name="ripple_green_icon">#80219700</color>
 
     <!-- Light -->
+    <color name="bg_light">#E9F3FA</color>
+    <color name="item_bg_light">#F9FCFF</color>
+    <color name="title_light">#1B1B1B</color>
+    <color name="body_light">#757575</color>
+    <color name="gray_tint_light">#8D8D8D</color>
+    <color name="popup_light">#FFFFFF</color>
+    <color name="sheet_bg_light">#FFFFFF</color>
+    <color name="ripple_black_light">#80353535</color>
+    <color name="btn_second_light">#CFE8FF</color>
+
     <!-- Dark -->
+    <color name="bg_dark">#22252E</color>
+    <color name="item_bg_dark">#2A2F3C</color>
+    <color name="title_dark">#F8F8F8</color>
+    <color name="body_dark">#BFBFBF</color>
+    <color name="gray_tint_dark">#9C9C9C</color>
+    <color name="popup_dark">#383E4E</color>
+    <color name="sheet_bg_dark">#2A2F3C</color>
+    <color name="ripple_black_dark">#80BDBDBD</color>
+    <color name="btn_second_dark">#396B8097</color>
+
 
     <!-- for unfocused TextInputLayout stroke color -->
     <color name="mtrl_textinput_default_box_stroke_color">#8d8d8d</color>

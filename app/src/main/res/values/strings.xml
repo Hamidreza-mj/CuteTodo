@@ -156,4 +156,12 @@
     <string name="show_more"><![CDATA[نمایش بیشتر…]]></string>
     <string name="fastShow">نمایش سریع</string>
 
+    <string name="settings">تنظیمات</string>
+    <string name="theme">ظاهر برنامه</string>
+    <string name="select_theme">انتخاب ظاهر برنامه</string>
+    <string name="about_me">درباره من</string>
+    <string name="day_mode">حالت روز</string>
+    <string name="night_mode">حالت شب</string>
+    <string name="sysdef_mode">بر اساس تنظیمات گوشی</string>
+
 </resources>

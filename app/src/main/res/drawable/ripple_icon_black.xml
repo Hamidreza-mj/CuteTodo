@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@color/ripple_black_icon">
+    android:color="?attr/rippleBlack">
 
     <!-- pressed -->
     <item android:id="@android:id/mask">
         <shape>
-            <solid android:color="@color/ripple_black_icon" />
+            <solid android:color="?attr/rippleBlack" />
             <corners android:radius="@dimen/corner_icon_ripple" />
         </shape>
     </item>

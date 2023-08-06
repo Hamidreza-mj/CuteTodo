@@ -1,3 +1,4 @@
 /build
 ../key.properties
-google-services.json
+/release/app-release.apk
+/release/output-metadata.json

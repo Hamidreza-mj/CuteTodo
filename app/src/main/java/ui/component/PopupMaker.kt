@@ -18,15 +18,19 @@ import androidx.annotation.MenuRes
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.forEach
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.scopes.FragmentScoped
 import hlv.cute.todo.R
+import ui.util.AppThemeHandler
 import javax.inject.Inject
 
 @FragmentScoped
 class PopupMaker @Inject constructor(
     @ActivityContext private val context: Context,
-    private val dimView: DimView
+    private val dimView: DimView,
+    private val uiToolkit: UiToolkit,
+    private val themeHandler: AppThemeHandler
 ) {
 
     private var clicked = false
@@ -48,6 +52,7 @@ class PopupMaker @Inject constructor(
         onMenuItemClick: (MenuItem) -> Unit,
         onDismiss: (() -> Unit)? = null
     ): PopupMenu? {
+        var finalGravity = gravity
 
         if (clicked) return null
 
@@ -80,10 +85,20 @@ class PopupMaker @Inject constructor(
 
             tempAnchor.x = it.x.toFloat()
             tempAnchor.y = it.y.toFloat()
+
+            val centerOfScreen = uiToolkit.displayWidth / 2
+
+            if (it.x > centerOfScreen) {
+                finalGravity = Gravity.END
+            } else if (it.x == centerOfScreen) {
+                finalGravity = Gravity.CENTER
+            } else if (it.x < centerOfScreen) {
+                finalGravity = Gravity.START
+            }
         }
 
 
-        val popup = PopupMenu(directionContext, tempAnchor, gravity).apply {
+        val popup = PopupMenu(directionContext, tempAnchor, finalGravity).apply {
             inflate(menuRes)
 
             setOnMenuItemClickListener { menuItem ->
@@ -109,6 +124,9 @@ class PopupMaker @Inject constructor(
                 dismiss()
             }
         }
+
+        configureTextMenuColor(popup)
+
 
         if (popup.menu is MenuBuilder) {
             val menuBuilder = (popup.menu as MenuBuilder).apply {
@@ -145,6 +163,16 @@ class PopupMaker @Inject constructor(
 
         popup.show()
         return popup
+    }
+
+    private fun configureTextMenuColor(popup: PopupMenu) {
+        popup.menu.forEach { menuItem: MenuItem ->
+            popup.changeTextColorOfItem(
+                item = menuItem,
+                title = menuItem.title.toString(),
+                color = themeHandler.getColorFromAttr(context, R.attr.colorOnBackground)
+            )
+        }
     }
 
     fun prepareForNestedMenu() {

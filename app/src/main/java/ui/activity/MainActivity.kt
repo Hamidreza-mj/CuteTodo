@@ -4,13 +4,16 @@ import android.content.Intent
 import android.os.Build
 import android.transition.Fade
 import android.transition.Slide
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import com.yandex.metrica.push.YandexMetricaPush
 import controller.OpenAppIntentController.OpeningType
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.components.SingletonComponent
 import hlv.cute.todo.R
 import hlv.cute.todo.databinding.ActivityMainBinding
 import ui.component.bindingComponent.BaseViewBindingActivity
@@ -18,15 +21,40 @@ import ui.fragment.AddEditTodoFragment
 import ui.fragment.CategoriesFragment
 import ui.fragment.HomeFragment
 import ui.fragment.ShowNotificationFragment
+import ui.util.AppThemeHandler
 import utils.Constants
 import viewmodel.MainViewModel
 
+@AndroidEntryPoint
 class MainActivity : BaseViewBindingActivity<ActivityMainBinding>() {
 
     override val bindingInflater: (LayoutInflater) -> ActivityMainBinding
         get() = ActivityMainBinding::inflate
 
     private val viewModel by viewModels<MainViewModel>()
+
+    @EntryPoint
+    @InstallIn(SingletonComponent::class)
+    interface AppThemeHandlerFactory {
+        fun getAppTheme(): AppThemeHandler
+    }
+
+
+    override fun beforeOnCreate() {
+//        val factory = EntryPointAccessors.fromApplication(this, AppThemeHandlerFactory::class.java)
+//        val themeHandler = factory.getAppTheme()
+
+
+        /*lifecycleScope.launch {
+            themeHandler.activity = this@MainActivity
+
+            val currentTheme = themeHandler.getCurrentTheme(this@MainActivity)
+
+            lifecycleScope.launch {
+                themeHandler.applyNewTheme(currentTheme)
+            }
+        }*/
+    }
 
     override fun initiate() {
         window.setBackgroundDrawable(null)
@@ -63,6 +91,38 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding>() {
                 initViews()
             }
         }
+    }
+
+    /* override fun onConfigurationChanged(newConfig: Configuration) {
+         super.onConfigurationChanged(newConfig)
+         updateViewsForNewTheme()
+
+
+         val currentNightMode = newConfig.uiMode and Configuration.UI_MODE_NIGHT_MASK
+         when (currentNightMode) {
+             Configuration.UI_MODE_NIGHT_NO -> {
+                 //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                 themeHandler.applyNewTheme(AppThemeHandler.ThemeType.Light)
+             }
+
+             Configuration.UI_MODE_NIGHT_YES -> {
+                 //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                 themeHandler.applyNewTheme(AppThemeHandler.ThemeType.Dark)
+             }
+         }
+     }*/
+
+    private fun updateViewsForNewTheme() {
+        /*val fragment = supportFragmentManager.findFragmentById(R.id.mainContainer)
+        fragment?.let {
+            supportFragmentManager.beginTransaction().apply {
+                detach(fragment)
+            }.commit()
+
+            supportFragmentManager.beginTransaction().apply {
+                attach(fragment)
+            }.commit()
+        }*/
     }
 
     private fun openShowNotification() {

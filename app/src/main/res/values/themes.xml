@@ -11,6 +11,9 @@
         <item name="colorSecondaryVariant">@color/blue</item>
         <item name="colorOnSecondary">@color/blue</item>
 
+        <item name="background">@color/bg_light</item>
+        <item name="colorOnBackground">@color/title_light</item>
+
         <!-- StatusBar color -->
         <item name="android:statusBarColor">@color/whiteBlue</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
@@ -31,6 +34,15 @@
         <item name="textAppearanceSmallPopupMenu">@style/PopupTextAppearance</item>
 
         <item name="popupMenuBackground">@drawable/popup_shape</item>
+
+        <item name="mainBg">@color/bg_light</item>
+        <item name="itemBg">@color/item_bg_light</item>
+        <item name="middleGray">@color/body_light</item>
+        <item name="grayTint">@color/gray_tint_light</item>
+        <item name="popupBg">@color/popup_light</item>
+        <item name="sheetBg">@color/sheet_bg_light</item>
+        <item name="rippleBlack">@color/ripple_black_light</item>
+        <item name="btnSecond">@color/btn_second_light</item>
 
         <!--<item name="android:layoutDirection">ltr</item>-->
 

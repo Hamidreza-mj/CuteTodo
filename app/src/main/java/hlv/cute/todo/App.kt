@@ -2,43 +2,68 @@ package hlv.cute.todo
 
 import android.app.Application
 import android.content.ComponentName
-import android.content.Context
 import android.content.pm.PackageManager
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.preferencesDataStore
 import com.google.firebase.FirebaseApp
 import com.yandex.metrica.YandexMetrica
 import com.yandex.metrica.YandexMetricaConfig
 import com.yandex.metrica.push.YandexMetricaPush
 import dagger.hilt.android.HiltAndroidApp
+import data.datastore.DataStoreManager
+import data.datastore.PrefsDataStore
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import scheduler.receiver.BootCompleteReceiver
-import utils.Constants
+import ui.util.AppThemeHandler
 import utils.NotificationUtil
 import javax.inject.Inject
 
 @HiltAndroidApp
 class App : Application() {
 
-    private var scope: CoroutineScope? = MainScope()
-
-    private val Context.dataStoreCutePref: DataStore<Preferences> by preferencesDataStore(name = Constants.Names.CUTE_PREF_NAME)
-    private val firstRunPrefKey = booleanPreferencesKey(Constants.Keys.FIRST_RUN_V1)
+    private var scope: CoroutineScope? = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     @Inject
     lateinit var notificationUtil: NotificationUtil
 
+    @Inject
+    lateinit var themeHandler: AppThemeHandler
+
+    @Inject
+    lateinit var prefsDataStore: PrefsDataStore
+
     override fun onCreate() {
         super.onCreate()
+
+        runBlocking {
+            val currentTheme = themeHandler.getCurrentTheme()
+            /*AppThemeHandler.ThemeType.Dark*/
+//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+
+//            scope?.launch {
+            themeHandler.applyNewTheme(
+                themeType = currentTheme,
+                onThemeChange = {
+//                        activity?.let { activity ->
+//                            val delegate =
+//                                AppCompatDelegate.create(
+//                                    activity,
+//                                    null
+//                                )
+//                            delegate.applyDayNight()
+//                        }
+                }
+            )
+//            }
+        }
+
 
         activateAppMetrica()
 
@@ -123,34 +148,44 @@ class App : Application() {
      * which the app creates on its first launch.
      */
     private suspend fun isFirstActivationAsUpdateOrInstall(): Boolean {
-        var isFirstRun: Boolean? = applicationContext.dataStoreCutePref.data
-            .catch {
-                Log.e(Constants.Tags.DEBUG, "exception occured in first run!")
-            }
-            .first()
-            .toPreferences()[firstRunPrefKey]
+        val firstRunKey: Preferences.Key<Boolean> = PrefsDataStore.PreferencesKeys.firstRunPrefKey
+
+        val dataStore: DataStore<Preferences>
+        prefsDataStore.apply {
+            dataStore = applicationContext.appDataStore
+        }
+
+        val isFirstRun: Boolean? = DataStoreManager.readPreference(
+            dataStore = dataStore,
+            preferenceKey = firstRunKey,
+            false
+        ).firstOrNull()
 
         when (isFirstRun) {
             null -> {
                 //is first run, it has not been handled before!
-                applicationContext.dataStoreCutePref.edit { preferences ->
-                    preferences[firstRunPrefKey] = true
-                    isFirstRun = true
-                }
+                DataStoreManager.writePreference(
+                    dataStore = dataStore,
+                    preferenceKey = firstRunKey,
+                    value = true
+                )
 
-                return isFirstRun ?: true
+                return true
             }
 
             true -> {
-                applicationContext.dataStoreCutePref.edit { preferences ->
-                    preferences[firstRunPrefKey] = false
-                    isFirstRun = false
-                }
+                //not first run
+                DataStoreManager.writePreference(
+                    dataStore = dataStore,
+                    preferenceKey = firstRunKey,
+                    value = false
+                )
 
-                return isFirstRun ?: false
+                return false
             }
 
             false -> {
+                //not first run
                 return false
             }
         }

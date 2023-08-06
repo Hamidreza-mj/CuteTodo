@@ -6,31 +6,31 @@
         android:id="@+id/menuTickDone"
         android:icon="@drawable/ic_simple_tick_big"
         android:title="@string/set_done"
-        app:iconTint="@color/black" />
+        app:iconTint="?attr/colorOnBackground" />
 
     <item
         android:id="@+id/menuEdit"
         android:icon="@drawable/ic_edit"
         android:title="@string/edit"
-        app:iconTint="@color/black" />
+        app:iconTint="?attr/colorOnBackground" />
 
     <item
         android:id="@+id/menuDetail"
         android:icon="@drawable/ic_detail"
         android:title="@string/detail"
-        app:iconTint="@color/black" />
+        app:iconTint="?attr/colorOnBackground" />
 
     <item
         android:id="@+id/menuFastShow"
         android:icon="@drawable/ic_discovery_fastshow"
         android:title="@string/fastShow"
-        app:iconTint="@color/black" />
+        app:iconTint="?attr/colorOnBackground" />
 
     <item
         android:id="@+id/menuShare"
         android:icon="@drawable/ic_send"
         android:title="@string/share"
-        app:iconTint="@color/black" />
+        app:iconTint="?attr/colorOnBackground" />
 
     <item
         android:id="@+id/menuDelete"

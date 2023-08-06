@@ -12,12 +12,12 @@
         android:id="@+id/menuNormalShare"
         android:icon="@drawable/ic_send"
         android:title="@string/normal_share"
-        app:iconTint="@color/black" />
+        app:iconTint="?attr/colorOnBackground" />
 
     <item
         android:id="@+id/menuAdvencedShare"
         android:icon="@drawable/ic_advenced_share"
         android:title="@string/advenced_share"
-        app:iconTint="@color/black" />
+        app:iconTint="?attr/colorOnBackground" />
 
 </menu>
